@@ -1,17 +1,25 @@
 <!doctype html>
-<html lang="ru">
+<html lang="be">
 <head>
     <meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="meu">
-    <title>Grammaticon</title>
+	<meta name="description" content="Smart Annotation Tool">
+    <title>Elemental</title>
     <!-- <script src="../js/handlebars.js"></script> -->
     
 	<!-- <link rel="icon" type="image/x-icon" href="favicon.ico?v1"> -->
-	<link rel="icon" type="image/png" href="plant.png" />
+	<!-- <link rel="icon" type="image/png" href="plant.png" /> -->
+    <link rel="shortcut icon" href="https://img.icons8.com/fluent/48/000000/fire-element.png" type="image/x-icon">
+    
+    
 	<link rel="stylesheet" href="spectre.min.css">
 	<link rel="stylesheet" href="spectre-exp.min.css">
 	<link rel="stylesheet" href="spectre-icons.min.css">
+    
+	<link rel="stylesheet" href="test.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@simonwep/selection-js/dist/selection.min.js"></script>    
+    
+    
 	<link rel="stylesheet" href="jquery.webui-popover.min.css">
 	<link rel="stylesheet" href="css/iziModal.min.css">
 	<script src="jquery-3.3.1.min.js"></script>
@@ -47,10 +55,9 @@
 	background-color: #e85600;
 	color: #FFFFFF;
 	}
-	.pn{
-	background-color: #ffb700;
-	color: #FFFFFF;
-	}
+
+
+    
 	.pp{
 	background-color: #85144b;
 	color: #FFFFFF;
@@ -62,55 +69,235 @@
 	.nm{
 		background-color: lightblue;
 		color: black;
+	}	
+    .nb{
+		background-color: #b66935;
+		color: black;
 	}
 	.nn{
-		background-color: #3000ff;
+		background-color: #5f4bb5; /*#3000ff;*/
 		color: #FFFFFF;
 	}
-	.cj{
-	background-color: #0074D9;
+    .np{
+        background-color: #6948f6;
+        color:orange;
+		
+	}
+    .va{
+	background-color: #ffb700;
 	color: #FFFFFF;
 	}
-	.processed{
+    .pn{
+        background-color: navy;
+		color: #FFFFFF;
+	}
+
+    
+
+    .nw{
+        background-color: black;
+        color: yellow;
+	}
+
+    .vi{
+        background-color: #afe31b;
+        color:red;
+	}
+    .vg{
+        background-color: #0da6ca;
+        color: lightyellow;
+	}
+    .part{
+        background-color: pink;
+        color: red;
+	}
+    .det{
+        background-color: #00ff00;
+        color: navy;
+	}
+    .aux{
+        background-color: silver;
+        color: navy;
+	}
+    .prad{
+        background-color: #d61f1f;
+        color: white;
+	}
+    
+	.dm{
+        background-color: cyan;
+        color: gray;
+	}
+    .mod{
+        background-color: cyan;
+        color: red;
+        font-weight:bold;
+	}
+
+	.cj{
+        background-color: yellow;
+        color: gray;
+	}
+    .intj{
+        background-color: #065535;
+        color: white;
+	}
+    
+  *, *::before, *::after {
+  box-sizing: border-box;
+}
+
+@-webkit-keyframes rotate {
+  100% {
+    -webkit-transform: rotate(1turn);
+            transform: rotate(1turn);
+  }
+}
+
+@keyframes rotate {
+  100% {
+    -webkit-transform: rotate(1turn);
+            transform: rotate(1turn);
+  }
+}
+.processed {
+  position: relative;
+  z-index: 0;
+  /*width: 400px;
+  height: 300px;*/
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 2rem;
+}
+.processed::before {
+  content: '';
+  position: absolute;
+  z-index: -2;
+  left: -50%;
+  top: -50%;
+  width: 200%;
+  height: 200%;
+  background-color: #399953;
+  background-repeat: no-repeat;
+  background-size: 50% 50%, 50% 50%;
+  background-position: 0 0, 100% 0, 100% 100%, 0 100%;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#399953), to(#399953)), -webkit-gradient(linear, left top, left bottom, from(#fbb300), to(#fbb300)), -webkit-gradient(linear, left top, left bottom, from(#d53e33), to(#d53e33)), -webkit-gradient(linear, left top, left bottom, from(#377af5), to(#377af5));
+  background-image: linear-gradient(#399953, #399953), linear-gradient(#fbb300, #fbb300), linear-gradient(#d53e33, #d53e33), linear-gradient(#377af5, #377af5);
+  -webkit-animation: rotate 4s linear infinite;
+          animation: rotate 4s linear infinite;
+}
+.processed::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  /*left: 6px;
+  top: 6px;
+  width: calc(100% - 12px);
+  height: calc(100% - 12px);
+  */
+  left: 2px;
+  top: 2px;
+  width: calc(100% - 4px);
+  height: calc(100% - 4px);
+  background: white;
+  border-radius: 5px;
+}
+    
+	.processed2{
 		background-color: gray;
 		border: solid 2px black;
 	}
+    
+    
+    
+    
 	
+    .mgclick {
+    margin-right:3px;
+    }
+    
+    div.sticky {
+    z-index: 2;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  background-color: lightgray;
+  /* 
+  
+  padding: 50px; 
+  
+  font-size: 20px;
+  */
+  padding-bottom: 20px;
+  
+  vertical-align:middle;
+} 
+
+.tagged{
+    /* display:none; */
+}
 	</style>
 	<!-- азоўнік   лічэбнік   прыметнік   прыслоўе   займеннік дзеяслоў   злучнік   іншае -->
 </head>
 
 <body style="max-width:1024px;margin: 0 auto;">
-<header class="navbar">
-  <section class="navbar-section">
-    <a href="#" class="btn btn-link">Docs</a>
-    <a href="#" class="btn btn-link">Examples</a>
-  </section>
-  <section class="navbar-center">
+<!-- <header class="navbar"> -->
+  <!-- <section class="navbar-section"> -->
+    <!-- <a href="#" class="btn btn-link">Docs</a> -->
+    <!-- <a href="#" class="btn btn-link">Examples</a> -->
+  <!-- </section> -->
+  <!-- <section class="navbar-center"> -->
     <!-- centered logo or brand -->
-  </section>
-  <section class="navbar-section">
-    <a href="#" class="btn btn-link">Twitter</a>
-    <a href="#" class="btn btn-link">GitHub</a>
-  </section>
-</header>
+  <!-- </section> -->
+  <!-- <section class="navbar-section"> -->
+    <!-- <a href="#" class="btn btn-link">Twitter</a> -->
+    <!-- <a href="#" class="btn btn-link">GitHub</a> -->
+  <!-- </section> -->
+<!-- </header> -->
+<main>
 
-<div class="container">
-  <div class="columns">
-    <div class="column col-2">
-		<div class="magicPos">
-		</div>
-		<!-- <div>цяперашні час</div> -->
-		<!-- <div>прошлы час</div> -->
-		<!-- <div>будучы час</div> -->
-		
-		<!-- <a class="btn vb tooltip tooltip-bottom" data-tooltip="VB plact">беглі</a> -->
-		<!-- <a class="btn nn">сабакі</a> -->
-	</div>
-    <div class="column col-10 editfield" style="">
-	</div>
-  </div>
+<div class="sticky">
+<!-- <span class="modus" style="margin-left:20px;color:green;"></span> -->
+    <div class="modes">
+        <div class="inform" style="margin-left:20px;color:red;float:right;"></div>
+
+        <div class="form-group">
+            <label class="form-switch form-inline ">
+                <input type="checkbox" class="single-mode">
+                <i class="form-icon"></i>
+          </label>
+          Mode
+          <label class="form-radio form-inline ">
+            <input type="radio" name="mode" checked value="moz">
+            <i class="form-icon"></i> Mozaic
+          </label>
+          <label class="form-radio form-inline ">
+            <input type="radio" name="mode" value="gr">
+            <i class="form-icon"></i> Grouped
+          </label>      
+        </div>
+    </div>
+
+
+    <div class="toolbar">
+    </div>
 </div>
+<!-- form radio control -->
+
+
+<section class="sec demo gr">
+       <section class="box-wrap boxes green"></section>
+ </section>
+ 
+ <section class="moz">
+ 
+    <div class="container editfield"></div>
+ </section>
+ 
+ 
+ </main>
+
+
 
 <div id="modal" data-iziModal-group="grupo1" style="display:none;">
 	<div> 
