@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="meu">
+    <title>Grammaticon</title>
+    <!-- <script src="../js/handlebars.js"></script> -->
+    
+	<!-- <link rel="icon" type="image/x-icon" href="favicon.ico?v1"> -->
+	<link rel="icon" type="image/png" href="plant.png" />
+	<link rel="stylesheet" href="spectre.min.css">
+	<link rel="stylesheet" href="spectre-exp.min.css">
+	<link rel="stylesheet" href="spectre-icons.min.css">
+	<link rel="stylesheet" href="jquery.webui-popover.min.css">
+	<link rel="stylesheet" href="css/iziModal.min.css">
+	<script src="jquery-3.3.1.min.js"></script>
+	<script src="jquery.webui-popover.min.js"></script>
+	<!-- <script src="jquery.modal.min.js"></script> -->
+	<script src="js/iziModal.min.js"></script>
+	<script src="script.js"></script>
+	<style>
+	/* body {background-color: lightpink;} */
+	.board > label > span {
+		padding: 3px;
+		border-radius: 3px;
+	}
+	.token {
+		/*margin-bottom: 5px; */
+		margin-right: 0px;
+		color: black;
+		border: solid 2px white;
+	}
+	.ip{
+	font-size: .7rem;
+    height: 1.2rem;	
+    padding: .05rem .3rem;
+	background-color:lightgray;
+	
+	}
+	.vb{
+	background-color: #32b643;
+	color: #FFFFFF;
+	}
+
+	.aj{
+	background-color: #e85600;
+	color: #FFFFFF;
+	}
+	.pn{
+	background-color: #ffb700;
+	color: #FFFFFF;
+	}
+	.pp{
+	background-color: #85144b;
+	color: #FFFFFF;
+	}
+	.av{
+		background-color: #f801ff;
+		color: #FFFFFF;
+	}
+	.nm{
+		background-color: lightblue;
+		color: black;
+	}
+	.nn{
+		background-color: #3000ff;
+		color: #FFFFFF;
+	}
+	.cj{
+	background-color: #0074D9;
+	color: #FFFFFF;
+	}
+	.processed{
+		background-color: gray;
+		border: solid 2px black;
+	}
+	
+	</style>
+	<!-- азоўнік   лічэбнік   прыметнік   прыслоўе   займеннік дзеяслоў   злучнік   іншае -->
+</head>
+
+<body style="max-width:1024px;margin: 0 auto;">
+<header class="navbar">
+  <section class="navbar-section">
+    <a href="#" class="btn btn-link">Docs</a>
+    <a href="#" class="btn btn-link">Examples</a>
+  </section>
+  <section class="navbar-center">
+    <!-- centered logo or brand -->
+  </section>
+  <section class="navbar-section">
+    <a href="#" class="btn btn-link">Twitter</a>
+    <a href="#" class="btn btn-link">GitHub</a>
+  </section>
+</header>
+
+<div class="container">
+  <div class="columns">
+    <div class="column col-2">
+		<div class="magicPos">
+		</div>
+		<!-- <div>цяперашні час</div> -->
+		<!-- <div>прошлы час</div> -->
+		<!-- <div>будучы час</div> -->
+		
+		<!-- <a class="btn vb tooltip tooltip-bottom" data-tooltip="VB plact">беглі</a> -->
+		<!-- <a class="btn nn">сабакі</a> -->
+	</div>
+    <div class="column col-10 editfield" style="">
+	</div>
+  </div>
+</div>
+
+<div id="modal" data-iziModal-group="grupo1" style="display:none;">
+	<div> 
+	<!-- <h3>Часціны мовы</h3> -->
+		<div class="pos1 form-group">
+			<div class="col-12 board">
+				<button class="btn btn-default btn-sm pos2">
+					<i class="icon icon-arrow-right"></i>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,70 @@
+[
+{"pos":"nn","desc":"назоўнік","eng":"noun","class":"subst","ex":"асоба, парасон, падлоўчы"}
+,
+{"pos":"nm","desc":"гэта назвы лічбаў, без суфіксаў","eng":"main numeral","class":"num","ex":"пяць, два"}
+,
+{"pos":"nm","desc":"мае канчатак як у прыметніка, суфікса няма","eng":"cardinal numeral","class":"numadj","ex":"пяты, першы"}
+,
+{"pos":"nm","desc":"значыць зборныя лічбы, суфіксы -оj/-ёр","eng":"collective numeral","class":"numcol","ex":"пяцёра"}
+,
+{"pos":"aj","desc":"тыповы прыметнік, нематываваны альбо ўтвораны ад назоўніка","eng":"adjective","class":"adj","ex":"беларускі, зялёны"}
+,
+{"pos":"av","desc":"тыповае прыслоўе, утворанае ад прыметніка","eng":"adverb","class":"adv","ex":"добра, па-сяброўску"}
+,
+{"pos":"pn","desc":"я, ты, вы, мы","eng":"pronoun (non-3rd person)","class":"pronsub","ex":"я, ты, вы, мы, нам, імі"}
+,
+{"pos":"pn","desc":"ён, яна, яно","eng":"pronoun (3rd person)","class":"pronpers","ex":"ён, яна, яно, яму, ёй, ім"}
+,
+{"pos":"pn","desc":"займеннікі, якія не абазначаюць асоб","eng":"","class":"pronoun","ex":"што, колькі, які"}
+,
+{"pos":"pn","desc":"зваротны займеннік","eng":"reflexive pronoun","class":"refl","ex":"сябе, сабе, сабою"}
+,
+{"pos":"vb","desc":"звычайная простая форма дзеяслова, адзіны паказчык – канчатак","eng":"non-past form","class":"fin","ex":"ідзе, спявае, падумае, сцягне"}
+,
+{"pos":"vb","desc":"маркер будучага часу - формы слова быць","eng":"future być","class":"bud","ex":"буду, будзе, будзем"}
+,
+{"pos":"vb","desc":"L-форма дзеяслова («мінулы час»)","eng":"l-participle","class":"plact","ex":"хадзіла, злез, было"}
+,
+{"pos":"vb","desc":"загадны лад дзеяслова","eng":"imperative form","class":"impt","ex":"бяжы!"}
+,
+{"pos":"vb","desc":"інфінітыў (заканчваецца на -ць, ці, чы і пад.)","eng":"infinitive","class":"inf","ex":"стрыгчы"}
+,
+{"pos":"vb","desc":"дзеепрыслоўе незакончанага трывання","eng":"adv. contemp. prtcp.","class":"pcon","ex":"чытаючы"}
+,
+{"pos":"vb","desc":"дзеепрыслоўе закончанага трывання","eng":"adv. anter. prtcp.","class":"pant","ex":"пабачыўшы"}
+,
+{"pos":"vb","desc":"дзеепрыметнік актыўнага стану","eng":"adj. act. prtcp.","class":"pact","ex":"працуючая, працаваўшая"}
+,
+{"pos":"vb","desc":"дзеепрыметнік залежнага стану","eng":"adj. pass. prtcp.","class":"ppas","ex":"чытаны, чытаемы, біты, пачырванелы"}
+,
+{"pos":"pp","desc":"прыназоўнік (кіруе склонам назоўніка)","eng":"preposition","class":"prep","ex":"да, каля, дзеля"}
+,
+{"pos":"cj","desc":"злучнік (звязвае раўнапраўныя сказы)","eng":"coord. conjunction","class":"conj","ex":"ды, або, ці"}
+,
+{"pos":"cj","desc":"злучнік (падпарадкоўвае сказы)","eng":"subord. conjunction","class":"comp","ex":"каб, калі"}
+,
+{"pos":"mr","desc":"маркер адмаўлення","eng":"negation marker","class":"nil","ex":"не, ні"}
+,
+{"pos":"mr","desc":"маркер умоўнага ладу","eng":"condtional marker","class":"cond","ex":"бы, б"}
+,
+{"pos":"mr","desc":"маркер «ладу пажадання»","eng":"iussivus marker","class":"jus","ex":"хай, няхай"}
+,
+{"pos":"mr","desc":"маркер пытання да сказа","eng":"interrogative marker","class":"rog","ex":"ці"}
+,
+{"pos":"mr","desc":"іншыя маркеры, якія адносяцца да слова ў сказе","eng":"lexical marker","class":"symlex","ex":"толькі, вельмі"}
+,
+{"pos":"mr","desc":"іншыя маркеры, якія не адносяцца да пэўнага слова ў сказе","eng":"syntax marker","class":"symsyn","ex":"ж, хіба"}
+,
+{"pos":"mr","desc":"іншыя маркеры, якія не звязаныя з пэўным словам ў сказе, але выражаюць стаўленне да ўсяго сказа","eng":"discourse marker","class":"symtex","ex":"напэўна, можа, ай"}
+,
+{"pos":"ab","desc":"скарачэнне","eng":"abbreviation","class":"abbr","ex":"rok, i tak dalej"}
+,
+{"pos":"ph","desc":"слова, якое не мае самастойнага сэнсу і не ўжываецца асобна","eng":"bound word","class":"phras","ex":"наўрад"}
+,
+{"pos":"ip","desc":"знак пунктуацыі","eng":"punctuation","class":"interp","ex":";, ., (, ]"}
+,
+{"pos":"fn","desc":"незасвоенае запазычанне альбо цытата на іншай мове","eng":"foreign","class":"xxx","ex":"cool, nihil"}
+,
+{"pos":"ig","desc":"невядома што (гэтая пазнака ў тэорыі ніколі не спатрэбіцца)","eng":"unknown form","class":"ign","ex":""}
+
+]
