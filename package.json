@@ -2,7 +2,12 @@
   "name": "grammaticon",
   "version": "1.0.0",
   "description": "Super backend with SQLite",
+  
   "main": "index.js",
+    "repository": {
+    "type": "git",
+    "url": "git://github.com/yaskevich/elemental.git"
+  }, 
   "directories": {
     "test": "test"
   },
