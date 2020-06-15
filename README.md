@@ -11,5 +11,5 @@ NodeJS
 
 #### Demo
 
-Demo version of development version is deployed here:​ https://elemental.philology.by 
+Demo version of development version is deployed here:​ https://elemental.philology.by  (some functions work in read-only mode).
 

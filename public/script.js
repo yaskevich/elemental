@@ -110,28 +110,53 @@ const selection = Selection.create({
 
 var quickPos = '';
 
+// var basePos = {
+	// 'vb': ["дзеяслоў", 'd'],
+	// 'vi': ["інфінітыў", ''],
+	// 'vg': ["дзеепрыслоўе", ''],
+	// 'nn': ["назоўнік", 'f'],
+	// 'np': ["імя ўласнае", 'p'],
+	// 'nb': ["не беларускае", 'b'],
+	// 'nw': ["не слова", ''],
+	// 'part': ["часціца", ''],
+	// 'nm': ["лічэбнік", 'xx'],
+	// 'aj': ["прыметнік", 's'],
+    // 'va': ["дзеепрыметнік", ''],
+	// 'av': ["прыслоўе", 'a'],
+	// 'pn': ["займеннік", 'z'],
+	// 'pp': ["прыназоўнік", 'v'],
+	// 'cj': ["злучнік", 'c'],
+	// 'intj': ["выклічнік", 'c'],
+	// 'det': ["вызначальнік", ''],
+	// 'aux': ["дапаможнік", ''],
+	// 'prad': ["займ. прысл", ''],
+	// // 'dm': ["дыс. маркер", ''],
+	// 'mod': ["мадыфікатар", ''],
+	// 'ip': ["!?..", ''],
+	// // 'sm': ["іншае", 'q']
+// };
 var basePos = {
-	'vb': ["дзеяслоў", 'd'],
-	'vi': ["інфінітыў", ''],
-	'vg': ["дзеепрыслоўе", ''],
-	'nn': ["назоўнік", 'f'],
-	'np': ["імя ўласнае", 'p'],
-	'nb': ["не беларускае", 'b'],
-	'nw': ["не слова", ''],
-	'part': ["часціца", ''],
-	'nm': ["лічэбнік", 'xx'],
-	'aj': ["прыметнік", 's'],
-    'va': ["дзеепрыметнік", ''],
-	'av': ["прыслоўе", 'a'],
-	'pn': ["займеннік", 'z'],
-	'pp': ["прыназоўнік", 'v'],
-	'cj': ["злучнік", 'c'],
-	'intj': ["выклічнік", 'c'],
-	'det': ["вызначальнік", ''],
-	'aux': ["дапаможнік", ''],
-	'prad': ["займ. прысл", ''],
+	'vb': ["finite verb", 'd'],
+	'vi': ["infinitive", ''],
+	'vg': ["adv. participle", ''],
+	'nn': ["noun", 'f'],
+	'np': ["proper", 'p'],
+	'nb': ["non Bel.", 'b'],
+	'nw': ["nonword", ''],
+	'part': ["particle", ''],
+	'nm': ["numeral", 'xx'],
+	'aj': ["adjective", 's'],
+    'va': ["participle", ''],
+	'av': ["adverb", 'a'],
+	'pn': ["pronoun", 'z'],
+	'pp': ["preposition", 'v'],
+	'cj': ["conjunction", 'c'],
+	'intj': ["interjection", 'c'],
+	'det': ["determiner", ''],
+	'aux': ["auxiliary", ''],
+	'prad': ["pronom. adv.", ''],
 	// 'dm': ["дыс. маркер", ''],
-	'mod': ["мадыфікатар", ''],
+	'mod': ["modifier", ''],
 	'ip': ["!?..", ''],
 	// 'sm': ["іншае", 'q']
 };
@@ -341,7 +366,20 @@ $("#modal").iziModal({
     }
 });
 
-$('body').on('click', 'a.token', function(e) {
+$('body')
+.on('click', '.conll', function(e) {
+	
+	jQuery.get('/conll', function(data) {
+		var fn = "kolas-uph.conll";
+		var file = new Blob([data], {
+			type: 'application/octet-stream',
+			name: fn
+		});
+		saveAs(file, fn);
+	});
+	
+})
+.on('click', 'a.token', function(e) {
 			var txt = $(e.target).data("token");
             var tid  = $(e.target).data('tid');
             $('.processed').removeClass('processed');
