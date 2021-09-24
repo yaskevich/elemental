@@ -23,6 +23,7 @@
     "izimodal": "^1.5.1",
     "jquery": "^3.6.0",
     "spectre.css": "^0.5.9",
-    "sqlite3": "^5.0.2"
+    "sqlite3": "^5.0.2",
+    "webui-popover": "^1.2.18"
   }
 }
