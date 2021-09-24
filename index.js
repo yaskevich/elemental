@@ -19,6 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.use(express.static(__dirname + '/node_modules/spectre.css/dist'));
 app.use(express.static(__dirname + '/node_modules/iziModal/css'));
 app.use(express.static(__dirname + '/node_modules/iziModal/js'));
+app.use(express.static(__dirname + '/node_modules/jquery/dist'));
 app.use(express.static('public'));
 
 app.get('/',function(req,res){
