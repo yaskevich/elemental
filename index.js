@@ -21,6 +21,7 @@ app.use(express.static(__dirname + '/node_modules/iziModal/css'));
 app.use(express.static(__dirname + '/node_modules/iziModal/js'));
 app.use(express.static(__dirname + '/node_modules/jquery/dist'));
 app.use(express.static(__dirname + '/node_modules/webui-popover/dist'));
+app.use(express.static(__dirname + '/node_modules/file-saver/dist'));
 app.use(express.static('public'));
 
 app.get('/',function(req,res){
