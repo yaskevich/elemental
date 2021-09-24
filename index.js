@@ -16,7 +16,7 @@ const port = process.env.PORT || 7000;
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-
+app.use(express.static(__dirname + '/node_modules/spectre.css/dist'));
 app.use(express.static('public'));
 
 app.get('/',function(req,res){
