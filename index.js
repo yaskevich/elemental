@@ -5,7 +5,7 @@
 const path = require("path");
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database('m.db');
+var db = new sqlite3.Database('./data/m.db');
 const Promise = require('bluebird');
 
 var bodyParser = require('body-parser');
