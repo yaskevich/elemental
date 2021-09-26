@@ -23,6 +23,7 @@ app.use(express.static(__dirname + '/node_modules/jquery/dist'));
 app.use(express.static(__dirname + '/node_modules/webui-popover/dist'));
 app.use(express.static(__dirname + '/node_modules/file-saver/dist'));
 app.use(express.static(__dirname + '/node_modules/@simonwep/selection-js/lib'));
+app.use(express.static(__dirname + '/node_modules/bulma/css'));
 app.use(express.static('public'));
 
 app.get('/',function(req,res){
