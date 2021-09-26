@@ -62,7 +62,7 @@ $.getJSON( "/api/data", function( data ) {
 
 
 // Initialize selectionjs
-const selection = Selection.create({
+const selection = new SelectionArea({
 
     // Class for the selection-area
     class: 'selection',
