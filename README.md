@@ -1,15 +1,23 @@
 # Elemental
 Smart Annotation Tool
 
+### Preprocessing
+
+- Create SQLite database file with the structure as it is in `text2db.py`
+- Run:
+
+```
+python text2db.py file.txt
+```
+
 #### Requirements 
 
 NodeJS
 
-#### Instructions
+#### Running the application
 
 `npm install`
 
-#### Demo
+`node index.js`
 
-Demo version of development version is deployed here:​ https://elemental.philology.by  (some functions work in read-only mode).
-
+Obviously, in production one should not use bare node instance, but some manager, such as PM2.
