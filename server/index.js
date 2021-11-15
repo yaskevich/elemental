@@ -14,7 +14,7 @@ const Promise = require('bluebird');
 var bodyParser = require('body-parser');
 
 const app = express();
-const port = process.env.PORT || 7000;
+const port = process.env.PORT || 8080;
 
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
