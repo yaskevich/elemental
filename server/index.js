@@ -34,14 +34,14 @@ app.get('/',function(req,res){
 });
 
 app.get('/api/texts', async (req, res, next) => {
-  try {    
+  try {
     // tokens.meta as cl
 	db.all("select strings.id as sid, strings.p, strings.form as v, strings.s, strings.token_id as tid, strings.repr, tokens.token as utoken, strings.unit_id as uid, pos as cl, feats, lemma from strings left  join tokens on strings.token_id = tokens.id  left  join units on strings.unit_id = units.id", function(err, corpus) {
         // console.log(corpus[0]);
 		res.send(corpus);
 	});
-    
-	
+
+
   } catch (err) {
     next(err);
   }
@@ -64,24 +64,24 @@ const xpos2upos = {
 	'av': "ADV",
 	'pn': "PRON",
 	'pp': "ADP",
-	'cj': "CONJ", 
+	'cj': "CONJ",
 	'intj': "INTJ",
 	'det': "DET",
 	'aux': "AUX",
 	'prad': "ADV", // "займ. прысл"
 	'mod': "ADV", // "мадыфікатар"
 	'ip': "PUNCT"
-}; 
+};
 
 const sconj  = ['што', 'калі', 'бо', 'то', 'хоць', 'дык', 'покі', 'каб', 'пакуль', 'або', 'таксама', 'нібы', 'затое', 'абы', 'нібыта', 'шчоб', 'быццам'];
 const cconj = ['а', 'і', 'але', 'ды', 'ні', 'дый', 'ці', 'прычым', 'аднак'];
 
 app.get('/conll', function (req, res) {
-	try {    
+	try {
 	// tokens.meta as cl
 		db.all("select strings.id as sid, strings.p, strings.form as v, strings.s, strings.token_id as tid, strings.repr, tokens.token as utoken, strings.unit_id as uid, pos as cl, feats, lemma from strings left  join tokens on strings.token_id = tokens.id  left  join units on strings.unit_id = units.id", function(err, corpus) {
 		// console.log(corpus[0]);
-			
+
 			// res.send('random.text');
 			let result = '# newdoc\n';
 			let sent_id = 0;
@@ -90,16 +90,16 @@ app.get('/conll', function (req, res) {
 				if (i === corpus.length || corpus[i]["s"] != sent_id) {
 					// console.log("--", sent_id,  corpus[i]["s"]);
 					// console.log(stack);
-					
-					
+
+
 					// # sent_id = telegraf-2011032001-3-1-be
 					const tokens  = stack.filter(x => x.cl != 'ip').map(x => x.v);
 					result +=  "# sent_id = " + "kolas-uph-"+ sent_id+"-be\n";
 					result += "# text = "+tokens.join(' ') + "\n";
 					result += "# genre = fiction\n";
-					
-					
-					
+
+
+
 					for (var ii = 0; ii < stack.length; ii++) {
 						let xpos  = stack[ii]["cl"];
 						let tag = xpos2upos[xpos]
@@ -110,11 +110,11 @@ app.get('/conll', function (req, res) {
 									if (cconj.includes(xpos)) {
 										tag = "CCONJ";
 									}
-							}	
-								
+							}
+
 						result += (ii+1) + "\t"  + stack[ii]["repr"] + "\t"+ stack[ii]["utoken"]  + "\t"+tag+"\t"+ xpos.toUpperCase()  + "\n";
 					}
-					
+
 					if (i !== corpus.length){
 						sent_id = corpus[i]["s"];
 						stack = [];
@@ -128,7 +128,7 @@ app.get('/conll', function (req, res) {
 	next(err);
 	}
 
-  
+
 });
 
 
@@ -138,13 +138,13 @@ app.post('/api/tokens', function(req, res){
     var mode = +req.body.mode;
     var uid = +req.body.uid;
     var sid = +req.body.sid;
-	console.log(`Strings ID ${sid} Token ID ${id}, class ${cls}, single-mode ${mode}, unit ${uid}`); 
+	console.log(`Strings ID ${sid} Token ID ${id}, class ${cls}, single-mode ${mode}, unit ${uid}`);
     // db.run("UPDATE units SET pos = ? WHERE id = ?", [cls, id], function(err, row){
-        
+
     db.all("SELECT id, pos from units where token_id = ?",[id], (err, units) => {
         // console.log("units", units);
         // let unit_db_id = uid;
-        
+
         db.run("UPDATE tokens SET meta = ? WHERE id = ?", [cls, id], function(err, row){
             if (err){
                 console.err(err);
@@ -158,11 +158,11 @@ app.post('/api/tokens', function(req, res){
                             newuid = units[i]["id"]
                         }
                     }
-                    
+
                     if(newuid) {
                         console.log("DB:",newuid);
                     }
-                    
+
                     let sql = newuid ? "SELECT * from units where pos = ? AND token_id = ?":  "INSERT INTO units (pos, token_id) VALUES (?, ?)";
                     console.log(sql);
                     db.run(sql, [cls, id], function(err, row){
@@ -173,19 +173,19 @@ app.post('/api/tokens', function(req, res){
                         console.log("string", sid, newuid);
                         if (sid){
                             db.run("UPDATE strings SET unit_id = ? WHERE id = ?", [newuid, sid], function(err, row){
-                                res.json({"id": newuid, "pos": cls, "sid": sid});   
-                                         
+                                res.json({"id": newuid, "pos": cls, "sid": sid});
+
                             });
                         } else {
                             res.status(500);
                             res.end();
                         }
-                                             
+
                     });
                 }
                 else {
                     let sql = uid? 'UPDATE units SET pos = ? where id = ?' : "INSERT INTO units (pos, token_id) VALUES (?, ?)";
-                    
+
                     db.run(sql, [cls, uid], function(err, row){
                         // console.log(sql);
                         if (!uid) {
@@ -196,51 +196,51 @@ app.post('/api/tokens', function(req, res){
                         db.run("UPDATE strings SET unit_id = ? WHERE token_id = ?", [uid, id], function(err, row){
                             // db.get("SELECT COUNT(*) as res from tokens where meta is null or meta = ''", (err, row) => {
                             db.all("SELECT token from tokens where meta is null or meta = ''", (err, row) => {
-                            // process the row here 
+                            // process the row here
                             console.log(row);
                             // const tagged = Math.round(100 - +row["res"]/(11084/100), 1);
                                 // console.log(`${tagged} % [${row["res"]}]`);
                             });
                             // res.status(202);
-                            res.json({"id": uid, "pos": cls});                        
+                            res.json({"id": uid, "pos": cls});
                         });
-                        
+
                     });
-                        
-                }        
+
+                }
                 // if (uid) {
-                
+
                 // if (units.length < 2) {
                     // if (units.length){
                         // unit_db_id  = units[0]["id"];
                     // } else {
-                        
+
                     // }
-                    
+
                     // if (mode) {
                         // console.log("SERVER: single mode!");
                     // } else {
                     // console.log("set", unit_db_id);
                     // db.run("UPDATE strings SET unit_id = ? WHERE token_id = ?", [unit_db_id, id], function(err, row){
-                        
+
                     // });
 
 
                     // }
                 // } else {
                     // console.log("two variants! not processed!")
-                // }              
-            
-                    
-                    
+                // }
+
+
+
 
             }
             // res.end();
-        });        
-        
+        });
 
-    });            
-        
+
+    });
+
 
 	// res.status(500)
 	// res.send('error', { error: err })
@@ -262,9 +262,13 @@ app.get('/api/data', function(req, res){
 	// res.send()
 });
 
+app.get('/api/test', function(req, res){
+	res.json({"message": "ok"});
+});
 
 
-app.listen(port);  
+
+app.listen(port);
 // while(true){};
 
 console.log("Running at Port "+ port);
