@@ -4,8 +4,11 @@
 
 const path = require("path");
 const express = require('express');
+const dotenv = require('dotenv');
 const sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database('./data/m.db');
+
+dotenv.config();
+var db = new sqlite3.Database(process.env.SQLITE);
 const Promise = require('bluebird');
 
 var bodyParser = require('body-parser');
