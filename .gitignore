@@ -1,5 +1,11 @@
+.ftpignore
+.ftpconfig
 data/
-
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
 package-lock.json
 
 # Logs
