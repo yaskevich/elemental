@@ -13,6 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config();
 
+(async () => {
 const db = new sqlite3.Database(process.env.SQLITE);
 const app = express();
 const port = process.env.PORT || 8080;
@@ -214,9 +215,6 @@ app.post('/api/tokens', function(req, res){
             // res.end();
         });
     });
-	// res.status(500)
-	// res.send('error', { error: err })
-	// res.send()
 });
 
 function reverse(str){
@@ -229,18 +227,13 @@ app.get('/api/data', function(req, res){
     db.all("SELECT * from  tokens where meta is null or meta = ''", (err, data) => {
         res.json(data)
     });
-	// res.status(500)
-	// res.send('error', { error: err })
-	// res.send()
 });
 
-app.get('/api/test', function(req, res){
-	res.json({"message": "ok"});
+  app.get('/api/test', function(req, res){
+    res.json({"message": "ok"});
+  });
+
+  app.listen(port);
+  console.log("Running at Port "+ port);
+
 });
-
-
-
-app.listen(port);
-// while(true){};
-
-console.log("Running at Port "+ port);
