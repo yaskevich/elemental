@@ -236,4 +236,4 @@ app.get('/api/data', function(req, res){
   app.listen(port);
   console.log("Running at Port "+ port);
 
-});
+})();
