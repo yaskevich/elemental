@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import router from './router'
 import {
   // create naive ui
   create,
@@ -13,4 +14,5 @@ const naive = create({
 
 createApp(App)
   .use(naive)
+  .use(router)
   .mount('#app')
