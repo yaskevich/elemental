@@ -24,7 +24,14 @@ const pool = new Pool();
 
  export default {
    async getCorpusAsConll() {
-     const sql = `select strings.id as sid, strings.p, strings.form as v, strings.s, strings.token_id as tid, strings.repr, tokens.token as utoken, strings.unit_id as uid, pos as cl, feats, lemma from strings left  join tokens on strings.token_id = tokens.id  left  join units on strings.unit_id = units.id`;
-     return await pool.query(sql);
-   }
+     const sql = `select strings.id as sid, strings.p, strings.form as v, strings.s, strings.token_id as tid, strings.repr, tokens.token as utoken, strings.unit_id as uid, pos as cl, feats, lemma from strings left  join tokens on strings.token_id = tokens.id  left  join units on strings.unit_id = units.id order by sid`;
+     let conll = [];
+     try {
+      const result = await pool.query(sql);
+      conll = result?.rows;
+     } catch (err) {
+       console.error(err);
+     }
+     return conll;
+   },
  }
