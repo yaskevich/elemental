@@ -8,6 +8,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import sqlite3 from 'sqlite3';
 import bodyParser from 'body-parser';
+import nlp from './nlp.js';
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,8 +23,8 @@ app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 app.use(express.static(__dirname + '/node_modules/spectre.css/dist'));
-app.use(express.static(__dirname + '/node_modules/iziModal/css'));
-app.use(express.static(__dirname + '/node_modules/iziModal/js'));
+app.use(express.static(__dirname + '/node_modules/izimodal/css'));
+app.use(express.static(__dirname + '/node_modules/izimodal/js'));
 app.use(express.static(__dirname + '/node_modules/jquery/dist'));
 app.use(express.static(__dirname + '/node_modules/webui-popover/dist'));
 app.use(express.static(__dirname + '/node_modules/file-saver/dist'));
@@ -48,77 +49,11 @@ app.get('/api/texts', async (req, res, next) => {
   }
 });
 
-const xpos2upos = {
-	'vb': "VERB",
-	'vi': "VERB",
-	'vg': "VERB",
-	'nn': "NOUN",
-	'np': "PROPN",
-	'nb': "X", // non Belarusian
-	'nw': "X", // non-word
-	'part': "PART",
-	'nm': "NUM",
-	'aj': "ADJ",
-    'va': "VERB", // "дзеепрыметнік"
-	'av': "ADV",
-	'pn': "PRON",
-	'pp': "ADP",
-	'cj': "CONJ",
-	'intj': "INTJ",
-	'det': "DET",
-	'aux': "AUX",
-	'prad': "ADV", // "займ. прысл"
-	'mod': "ADV", // "мадыфікатар"
-	'ip': "PUNCT"
-};
-
-const sconj  = ['што', 'калі', 'бо', 'то', 'хоць', 'дык', 'покі', 'каб', 'пакуль', 'або', 'таксама', 'нібы', 'затое', 'абы', 'нібыта', 'шчоб', 'быццам'];
-const cconj = ['а', 'і', 'але', 'ды', 'ні', 'дый', 'ці', 'прычым', 'аднак'];
-
 app.get('/conll', function (req, res) {
 	try {
-	// tokens.meta as cl
 		db.all("select strings.id as sid, strings.p, strings.form as v, strings.s, strings.token_id as tid, strings.repr, tokens.token as utoken, strings.unit_id as uid, pos as cl, feats, lemma from strings left  join tokens on strings.token_id = tokens.id  left  join units on strings.unit_id = units.id", function(err, corpus) {
-		// console.log(corpus[0]);
-
-			// res.send('random.text');
-			let result = '# newdoc\n';
-			let sent_id = 0;
-			let stack = [];
-			for (var i = 0; i <= corpus.length; i++) {
-				if (i === corpus.length || corpus[i]["s"] != sent_id) {
-					// console.log("--", sent_id,  corpus[i]["s"]);
-					// console.log(stack);
-
-					// # sent_id = telegraf-2011032001-3-1-be
-					const tokens  = stack.filter(x => x.cl != 'ip').map(x => x.v);
-					result +=  "# sent_id = " + "kolas-uph-"+ sent_id+"-be\n";
-					result += "# text = "+tokens.join(' ') + "\n";
-					result += "# genre = fiction\n";
-
-					for (var ii = 0; ii < stack.length; ii++) {
-						let xpos  = stack[ii]["cl"];
-						let tag = xpos2upos[xpos]
-						    if (tag == "CONJ"){
-									if (sconj.includes(xpos)) {
-										tag = "SCONJ";
-									}
-									if (cconj.includes(xpos)) {
-										tag = "CCONJ";
-									}
-							}
-
-						result += (ii+1) + "\t"  + stack[ii]["repr"] + "\t"+ stack[ii]["utoken"]  + "\t"+tag+"\t"+ xpos.toUpperCase()  + "\n";
-					}
-
-					if (i !== corpus.length){
-						sent_id = corpus[i]["s"];
-						stack = [];
-					}
-				}
-				stack.push(corpus[i])
-			}
-			res.send(result);
+			const conll = nlp.convertToConll(corpus);
+			res.send(conll);
 	});
 	} catch (err) {
 	next(err);
@@ -216,10 +151,6 @@ app.post('/api/tokens', function(req, res){
         });
     });
 });
-
-function reverse(str){
-  return [...str].reverse().join('');
-}
 
 app.get('/api/data', function(req, res){
 	var id = req.body.id;
