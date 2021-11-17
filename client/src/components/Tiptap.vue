@@ -1,0 +1,47 @@
+<template>
+  <editor-content :editor="editor" style="display: inline-block; text-align: left;min-width:300px;"/>
+</template>
+
+<script>
+import { useEditor, EditorContent } from '@tiptap/vue-3'
+// import StarterKit from '@tiptap/starter-kit'
+import Document from '@tiptap/extension-document'
+import Paragraph from '@tiptap/extension-paragraph'
+import Text from '@tiptap/extension-text'
+import History from '@tiptap/extension-history'
+import TextStyle from '@tiptap/extension-text-style'
+import Color from '@tiptap/extension-color'
+
+export default {
+  components: {
+    EditorContent,
+  },
+
+  setup() {
+    const editor = useEditor({
+      content: '<p>Some editable text...</p>',
+      autofocus: true,
+      editable: true,
+      extensions: [
+        Document,
+        Paragraph,
+        Text,
+        History,
+        TextStyle,
+        Color,
+        // StarterKit,
+      ],
+    })
+
+    return { editor }
+  },
+}
+</script>
+
+<style>
+.ProseMirror p {
+  margin: 1em 0;
+  background-color:lightyellow;
+  padding: 15px;
+}
+</style>
