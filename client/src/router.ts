@@ -1,5 +1,6 @@
 import { createWebHistory, createRouter } from 'vue-router';
 import Home from './components/Home.vue';
+import Comment from './components/Comment.vue';
 import Comments from './components/Comments.vue';
 
 const routes = [
@@ -20,7 +21,11 @@ const routes = [
 		name: 'Comments',
     component: Comments,
 	},
-
+	{
+		path: '/comment/:id?',
+		component: Comment,
+		name: 'Comment',
+	},
 ];
 
 const router = createRouter({
