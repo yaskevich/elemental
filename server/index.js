@@ -13,7 +13,6 @@ import db from './db.js';
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-dotenv.config();
 
 (async () => {
 const sqlitedb = new sqlite3.Database(process.env.SQLITE);
@@ -50,15 +49,10 @@ app.get('/api/texts', async (req, res, next) => {
   }
 });
 
-app.get('/conll', function (req, res) {
-	try {
-		sqlitedb.all("select strings.id as sid, strings.p, strings.form as v, strings.s, strings.token_id as tid, strings.repr, tokens.token as utoken, strings.unit_id as uid, pos as cl, feats, lemma from strings left  join tokens on strings.token_id = tokens.id  left  join units on strings.unit_id = units.id", function(err, corpus) {
-			const conll = nlp.convertToConll(corpus);
-			res.send(conll);
-	});
-	} catch (err) {
-	next(err);
-	}
+app.get('/api/conll', async(req,res) => {
+  const corpus = await db.getCorpusAsConll();
+  const conll = nlp.convertToConll(corpus);
+  res.send(conll);
 });
 
 app.post('/api/tokens', function(req, res){
