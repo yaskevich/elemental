@@ -7,6 +7,8 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "@tiptap/starter-kit": "^2.0.0-beta.140",
+    "@tiptap/vue-3": "^2.0.0-beta.80",
     "axios": "^0.24.0",
     "vue": "^3.2.16",
     "vue-router": "^4.0.12"
