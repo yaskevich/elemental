@@ -141,4 +141,15 @@ export default {
 
     return {tokenId, wordClass, mode, unitId, sentenceId};
   },
+  async getTexts() {
+    const sql = `SELECT * from texts`;
+    let data = [];
+    try {
+      const result = await pool.query(sql);
+      data = result?.rows;
+    } catch (err) {
+      console.error(err);
+    }
+    return data;
+  },
 };

@@ -55,6 +55,11 @@ const __dirname = path.dirname(__filename);
     res.json(strings);
   });
 
+  app.get('/api/texts', async (req, res) => {
+    const strings = await db.getTexts();
+    res.json(strings);
+  });
+
   app.get('/api/conll', async(req, res) => {
     const corpus = await db.getCorpusAsConll();
     const conll = nlp.convertToConll(corpus);
