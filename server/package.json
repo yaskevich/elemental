@@ -30,5 +30,8 @@
     "spectre.css": "^0.5.9",
     "sqlite3": "^5.0.2",
     "webui-popover": "^1.2.18"
+  },
+  "devDependencies": {
+    "eslint": "^8.2.0"
   }
 }
