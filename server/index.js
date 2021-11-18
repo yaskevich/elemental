@@ -36,25 +36,6 @@ app.get('/',function(req,res){
      res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.get('/api/texts', async (req, res, next) => {
-  try {
-    // tokens.meta as cl
-	sqlitedb.all("select strings.id as sid, strings.p, strings.form as v, strings.s, strings.token_id as tid, strings.repr, tokens.token as utoken, strings.unit_id as uid, pos as cl, feats, lemma from strings left  join tokens on strings.token_id = tokens.id  left  join units on strings.unit_id = units.id", function(err, corpus) {
-        // console.log(corpus[0]);
-		res.send(corpus);
-	});
-
-  } catch (err) {
-    next(err);
-  }
-});
-
-app.get('/api/conll', async(req,res) => {
-  const corpus = await db.getCorpusAsConll();
-  const conll = nlp.convertToConll(corpus);
-  res.send(conll);
-});
-
 app.post('/api/tokens', function(req, res){
 	var id = req.body.id;
     var cls = req.body.cls;
@@ -147,15 +128,23 @@ app.post('/api/tokens', function(req, res){
     });
 });
 
-app.get('/api/data', function(req, res){
-	var id = req.body.id;
-    var props = req.body.props;
-    sqlitedb.all("SELECT * from  tokens where meta is null or meta = ''", (err, data) => {
-        res.json(data)
-    });
-});
+  app.get('/api/data', async(req, res) => {
+    const strings = await db.getUntagged();
+    res.json(strings);
+  });
 
-  app.get('/api/test', function(req, res){
+  app.get('/api/strings', async (req, res) => {
+    const strings = await db.getStrings();
+    res.json(strings);
+  });
+
+  app.get('/api/conll', async(req, res) => {
+    const corpus = await db.getCorpusAsConll();
+    const conll = nlp.convertToConll(corpus);
+    res.send(conll);
+  });
+
+  app.get('/api/test', (req, res) => {
     res.json({"message": "ok"});
   });
 
