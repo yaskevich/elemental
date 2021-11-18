@@ -6,7 +6,6 @@
 import path from 'path';
 import express from 'express';
 import dotenv from 'dotenv';
-import sqlite3 from 'sqlite3';
 import bodyParser from 'body-parser';
 import nlp from './nlp.js';
 import db from './db.js';
@@ -15,7 +14,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 (async () => {
-const sqlitedb = new sqlite3.Database(process.env.SQLITE);
   const app = express();
   const port = process.env.PORT || 8080;
 
