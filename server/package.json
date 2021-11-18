@@ -1,7 +1,7 @@
 {
   "name": "grammaticon",
   "version": "1.0.0",
-  "description": "Super backend with SQLite",
+  "description": "Backend application",
   "main": "index.js",
   "type": "module",
   "repository": {
@@ -28,7 +28,6 @@
     "jquery": "^3.6.0",
     "pg": "^8.7.1",
     "spectre.css": "^0.5.9",
-    "sqlite3": "^5.0.2",
     "webui-popover": "^1.2.18"
   },
   "devDependencies": {
