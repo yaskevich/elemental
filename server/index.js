@@ -16,21 +16,21 @@ const __dirname = path.dirname(__filename);
 
 (async () => {
 const sqlitedb = new sqlite3.Database(process.env.SQLITE);
-const app = express();
-const port = process.env.PORT || 8080;
+  const app = express();
+  const port = process.env.PORT || 8080;
 
-app.use(bodyParser.json()); // support json encoded bodies
-app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+  app.use(bodyParser.json()); // support json encoded bodies
+  app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-app.use(express.static(__dirname + '/node_modules/spectre.css/dist'));
-app.use(express.static(__dirname + '/node_modules/izimodal/css'));
-app.use(express.static(__dirname + '/node_modules/izimodal/js'));
-app.use(express.static(__dirname + '/node_modules/jquery/dist'));
-app.use(express.static(__dirname + '/node_modules/webui-popover/dist'));
-app.use(express.static(__dirname + '/node_modules/file-saver/dist'));
-app.use(express.static(__dirname + '/node_modules/@simonwep/selection-js/lib'));
-app.use(express.static(__dirname + '/node_modules/bulma/css'));
-app.use(express.static('public'));
+  app.use(express.static(path.join(__dirname, 'node_modules', 'spectre.css', 'dist')));
+  app.use(express.static(path.join(__dirname, 'node_modules', 'izimodal', 'css')));
+  app.use(express.static(path.join(__dirname, 'node_modules', 'izimodal', 'js')));
+  app.use(express.static(path.join(__dirname, 'node_modules', 'jquery', 'dist')));
+  app.use(express.static(path.join(__dirname, 'node_modules', 'webui-popover', 'dist')));
+  app.use(express.static(path.join(__dirname, 'node_modules', 'file-saver', 'dist')));
+  app.use(express.static(path.join(__dirname, 'node_modules', '@simonwep', 'selection-js', 'lib')));
+  app.use(express.static(path.join(__dirname, 'node_modules', 'bulma', 'css')));
+  app.use(express.static('public'));
 
   app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
