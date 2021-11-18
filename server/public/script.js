@@ -269,7 +269,7 @@ $( "#modal" ).keypress(function( event ) {
  
  var tokens = {};
 
-$.getJSON( "/api/texts", function( data ) {
+$.getJSON( "/api/strings", function( data ) {
   var items = [];
   let previous = 0;
   
@@ -369,7 +369,7 @@ $("#modal").iziModal({
 $('body')
 .on('click', '.conll', function(e) {
 	
-	jQuery.get('/conll', function(data) {
+	jQuery.get('/api/conll', function(data) {
 		var fn = "kolas-uph.conll";
 		var file = new Blob([data], {
 			type: 'application/octet-stream',
