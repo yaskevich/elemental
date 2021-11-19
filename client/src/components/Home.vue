@@ -1,19 +1,30 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, reactive, onBeforeMount } from 'vue'
+import store from '../store'
 
 // defineProps<{ msg: string }>()
 
-const msg = "Smart Annotation Tool"
+// const msg = "Smart Annotation Tool"
+
+const data = ref();
+
+onBeforeMount(async () => {
+  data.value = await store.get('texts');
+});
 
 const count = ref(0)
 </script>
 
 <template>
-  <h1>{{ msg }}</h1>
+  <!-- <h1>{{ msg }}</h1> -->
+  <h3>Projects</h3>
 
-  <p>See <code>README.md</code> for more information.</p>
-
-  <button type="button" @click="count++">count is: {{ count }}</button>
+  <!-- <p>See <code>README.md</code> for more information.</p> -->
+  <div v-for="(value, key) in data" :key="key" style="padding:.5rem;" :title="value.meta">
+    <n-text type="info">{{value.author}}</n-text>.&nbsp;
+    «<n-text strong>{{value.title}}</n-text>»
+  </div>
+  <!-- <button type="button" @click="count++">count is: {{ count }}</button> -->
 
 </template>
 
