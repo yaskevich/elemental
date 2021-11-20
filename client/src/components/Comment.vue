@@ -48,7 +48,7 @@
     }
   });
 
-  const saveComment = () => {
+  const saveComment = async () => {
     const editorInstance = tiptapRef.value?.editor;
     if (editorInstance) {
       entry.content_json = editorInstance.getJSON();
@@ -56,6 +56,9 @@
       entry.content_html = editorInstance.getHTML();
       entry.content_text = editorInstance.getText();
       console.log('Content', entry.content_text);
+
+      const data = await store.post("comments", entry);
+      console.log('result', data);
     }
   };
 
