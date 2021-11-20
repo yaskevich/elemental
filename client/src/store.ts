@@ -24,8 +24,26 @@ const get = async(route: string, id?: string): Promise<any> => {
  // console.log("No key. Fail.");
 };
 
+const post = async(table: string, data: Object): Promise<any> => {
+  // if (state.token) {
+    try {
+      // const config = { headers: { Authorization: "Bearer " + state.token } };
+      const config = {};
+      // console.log(`POST ${table}`);
+      const response = await axios.post('/api/'+ table, data, config);
+      // console.log("store:response", response.data);
+      return response;
+   } catch (error) {
+     console.log("Cannot get", error);
+     return error;
+   }
+ // }
+ console.log("No token. Fail.");
+};
+
 export default {
   get,
+  post,
   // state: state,
   // version: project.version,
 };
