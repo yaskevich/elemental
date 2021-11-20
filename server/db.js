@@ -171,4 +171,27 @@ export default {
     }
     return data;
   },
+  async setComment(params) {
+    let {id, text_id, title, published, content_json,  content_html, content_text} = params;
+    text_id = Number(text_id);
+    const values = [text_id, title, published, content_json,  content_html, content_text];
+
+    let sql = "";
+    if (id) {
+      id =  Number(id);
+      values.push(id);
+      sql = 'UPDATE comments SET text_id = $1, title = $2, published= $3, content_json = $4, content_html = $5, content_text = $6 WHERE id = $7;';
+    } else {
+      sql = `INSERT INTO comments (text_id, title, published, content_json, content_html, content_text) VALUES ($1, $2, $3, $4, $5, $6);`;
+    }
+
+    let data = [];
+    try {
+      const result = await pool.query(sql, values);
+      data = result?.rows;
+    } catch (err) {
+      console.error(err);
+    }
+    return data;
+  },
 };
