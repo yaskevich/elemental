@@ -7,7 +7,13 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@tiptap/starter-kit": "^2.0.0-beta.140",
+    "@tiptap/extension-color": "^2.0.0-beta.8",
+    "@tiptap/extension-document": "^2.0.0-beta.15",
+    "@tiptap/extension-history": "^2.0.0-beta.21",
+    "@tiptap/extension-paragraph": "^2.0.0-beta.22",
+    "@tiptap/extension-placeholder": "^2.0.0-beta.44",
+    "@tiptap/extension-text": "^2.0.0-beta.15",
+    "@tiptap/extension-text-style": "^2.0.0-beta.22",
     "@tiptap/vue-3": "^2.0.0-beta.80",
     "axios": "^0.24.0",
     "vue": "^3.2.16",
