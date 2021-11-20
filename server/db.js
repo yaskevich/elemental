@@ -152,4 +152,23 @@ export default {
     }
     return data;
   },
+  async getComments(id) {
+    const values = [];
+    let sql = `SELECT * from comments`;
+    if (id) {
+       sql += ' WHERE id = $1';
+       values.push(id);
+    } else {
+      sql += ' ORDER BY id DESC';
+    }
+
+    let data = [];
+    try {
+      const result = await pool.query(sql, values);
+      data = result?.rows;
+    } catch (err) {
+      console.error(err);
+    }
+    return data;
+  },
 };
