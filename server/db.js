@@ -153,14 +153,33 @@ export default {
     return data;
   },
   async getComments(id) {
-    const values = [];
-    let sql = `SELECT * from comments`;
-    if (id) {
-       sql += ' WHERE id = $1';
-       values.push(id);
-    } else {
-      sql += ' ORDER BY id DESC';
+    const values = [id];
+    let sql = 'SELECT * from comments WHERE text_id = $1';
+    // if (id) {
+    //    sql += ' WHERE id = $1';
+    //    values.push(id);
+    // } else {
+    //   sql += ' ORDER BY id DESC';
+    // }
+
+    let data = [];
+    try {
+      const result = await pool.query(sql, values);
+      data = result?.rows;
+    } catch (err) {
+      console.error(err);
     }
+    return data;
+  },
+  async getComment(id) {
+    const values = [id];
+    let sql = 'SELECT * from comments WHERE id = $1';
+    // if (id) {
+    //    sql += ' WHERE id = $1';
+    //    values.push(id);
+    // } else {
+    //   sql += ' ORDER BY id DESC';
+    // }
 
     let data = [];
     try {
