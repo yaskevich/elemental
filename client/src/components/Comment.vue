@@ -8,9 +8,10 @@
         <template #unchecked>Draft</template>
       </n-switch>
       <n-input v-model:value="entry.title" type="text" placeholder="Heading" />
+      <n-text type="warning" v-if="!entry.title">Heading should not be empty!</n-text>
       <Tiptap ref="tiptapRef" />
     </div>
-    <n-button type="primary" @click="saveComment">Save</n-button>
+    <n-button type="primary" @click="saveComment" v-if="entry.title">Save</n-button>
   </div>
 
 </template>
@@ -33,7 +34,7 @@
 
   onBeforeMount(async () => {
     if (id) {
-      const data = await store.get(`comments/${id}`);
+      const data = await store.get(`comment/${id}`);
       console.log('data from server', data);
       if (data.length) {
         console.log("data", data);
@@ -49,6 +50,11 @@
   });
 
   const saveComment = async () => {
+    // store.state.user.text_id
+    if(!entry.text_id) {
+      console.log("no text_id", store.state.user.text_id);
+      entry.text_id = store.state.user.text_id;
+    }
     const editorInstance = tiptapRef.value?.editor;
     if (editorInstance) {
       entry.content_json = editorInstance.getJSON();
@@ -57,7 +63,7 @@
       entry.content_text = editorInstance.getText();
       console.log('Content', entry.content_text);
 
-      const data = await store.post("comments", entry);
+      const data = await store.post("comment", entry);
       console.log('result', data);
     }
   };
