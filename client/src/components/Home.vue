@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, onBeforeMount } from 'vue'
 import store from '../store'
+import router from '../router';
 
 // defineProps<{ msg: string }>()
 
@@ -12,6 +13,11 @@ onBeforeMount(async () => {
   data.value = await store.get('texts');
 });
 
+const goToText = (id) => {
+  console.log("go to text", id);
+  router.push('/comments/'+id);
+}
+
 const count = ref(0)
 </script>
 
@@ -21,8 +27,11 @@ const count = ref(0)
 
   <!-- <p>See <code>README.md</code> for more information.</p> -->
   <div v-for="(value, key) in data" :key="key" style="padding:.5rem;" :title="value.meta">
-    <n-text type="info">{{value.author}}</n-text>.&nbsp;
-    «<n-text strong>{{value.title}}</n-text>»
+    <n-button text @click="goToText(value.id)">
+      {{value.author}}.&nbsp;{{value.title}}
+      <!-- <n-text type="info">{{value.author}}</n-text>.&nbsp;
+      «<n-text strong>{{value.title}}</n-text>» -->
+    </n-button>
   </div>
   <!-- <button type="button" @click="count++">count is: {{ count }}</button> -->
 
