@@ -1,6 +1,12 @@
-// import { reactive } from "vue";
+import { reactive } from "vue";
 import axios from "axios";
 // import project from '../../package.json';
+
+const state = reactive({
+  token: localStorage.getItem('token') || '',
+  user: { text_id: localStorage.getItem('text_id') || null, },
+  error: "",
+});
 
 const get = async(route: string, id?: string): Promise<any> => {
   // if (state.key) {
@@ -42,6 +48,7 @@ const post = async(table: string, data: Object): Promise<any> => {
 };
 
 export default {
+  state,
   get,
   post,
   // state: state,
