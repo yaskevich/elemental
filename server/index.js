@@ -7,11 +7,13 @@ import path from 'path';
 import express from 'express';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
+import history from 'connect-history-api-fallback';
 import nlp from './nlp.js';
 import db from './db.js';
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
 
 (async () => {
   const app = express();
@@ -28,6 +30,7 @@ const __dirname = path.dirname(__filename);
   app.use(express.static(path.join(__dirname, 'node_modules', 'file-saver', 'dist')));
   app.use(express.static(path.join(__dirname, 'node_modules', '@simonwep', 'selection-js', 'lib')));
   app.use(express.static(path.join(__dirname, 'node_modules', 'bulma', 'css')));
+  app.use(history());
   app.use(express.static('public'));
 
   app.get('/', (req, res) => {
