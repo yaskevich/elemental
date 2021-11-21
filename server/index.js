@@ -55,13 +55,19 @@ const __dirname = path.dirname(__filename);
     res.json(strings);
   });
 
-  app.get('/api/comments/:id*?', async (req, res) => {
+  app.get('/api/comments/:id', async (req, res) => {
     // console.log("comment id", req.params['id']);
     const comments = await db.getComments(req.params['id']);
     res.json(comments);
   });
 
-  app.post('/api/comments', async (req, res) => {
+  app.get('/api/comment/:id', async (req, res) => {
+    // console.log("comment id", req.params['id']);
+    const comments = await db.getComment(req.params['id']);
+    res.json(comments);
+  });
+
+  app.post('/api/comment', async (req, res) => {
     // console.log("comment id", req.params['id']);
     // const comments = await db.getComments(req.params['id']);
     console.log(req.body);
