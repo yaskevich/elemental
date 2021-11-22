@@ -1,5 +1,6 @@
 import { createWebHistory, createRouter } from 'vue-router';
 import Home from './components/Home.vue';
+import Tags from './components/Tags.vue';
 import Comment from './components/Comment.vue';
 import Comments from './components/Comments.vue';
 
@@ -15,6 +16,11 @@ const routes = [
 		alias: ['/home'],
 		name: 'Home',
 		component: Home,
+	},
+	{
+		path: '/tags',
+		name: 'Tags',
+		component: Tags,
 	},
 	{
 		path: '/comments/:id?',
