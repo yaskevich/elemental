@@ -13,10 +13,12 @@ import {
   NAvatar,
   NIcon,
   NSpace,
+  NInputGroup,
+  NDynamicTags,
 } from 'naive-ui'
 
 const naive = create({
-  components: [NButton, NText, NInput, NSwitch, NDivider, NAvatar, NIcon, NSpace,]
+  components: [NButton, NText, NInput, NSwitch, NDivider, NAvatar, NIcon, NSpace, NInputGroup,NDynamicTags,]
 })
 
 createApp(App)
