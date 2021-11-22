@@ -11,6 +11,7 @@ import router from './router'
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/comments">Comments</router-link> |
+      <router-link to="/tags">Tags</router-link> |
       <!-- <span v-if="loggedIn">
         <router-link to="/profile">Моё</router-link> |
         <a href ="#" @click="doLogOut">Выйти</a>
@@ -33,10 +34,10 @@ import router from './router'
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  // margin-top: 60px;
 }
 #nav {
-  padding: 30px;
+  padding: 1rem;
 
   a {
     font-weight: bold;
