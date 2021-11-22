@@ -3,6 +3,7 @@
 // jshint ignore: start
 'use strict';
 
+import compression from 'compression';
 import path from 'path';
 import express from 'express';
 import dotenv from 'dotenv';
@@ -19,6 +20,8 @@ const __dirname = path.dirname(__filename);
   const app = express();
   const port = process.env.PORT || 8080;
 
+  app.use(compression());
+  app.set('trust proxy', 1);
   app.use(bodyParser.json()); // support json encoded bodies
   app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
