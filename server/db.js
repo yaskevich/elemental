@@ -152,9 +152,20 @@ export default {
     }
     return data;
   },
+  async getTags() {
+    const sql = `SELECT * from tags`;
+    let data = [];
+    try {
+      const result = await pool.query(sql);
+      data = result?.rows;
+    } catch (err) {
+      console.error(err);
+    }
+    return data;
+  },
   async getComments(id) {
     const values = [id];
-    let sql = 'SELECT * from comments WHERE text_id = $1';
+    let sql = 'SELECT * from comments WHERE text_id = $1 ORDER BY id DESC';
     // if (id) {
     //    sql += ' WHERE id = $1';
     //    values.push(id);
