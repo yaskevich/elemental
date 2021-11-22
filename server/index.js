@@ -73,7 +73,7 @@ const __dirname = path.dirname(__filename);
   app.post('/api/comment', async (req, res) => {
     // console.log("comment id", req.params['id']);
     // const comments = await db.getComments(req.params['id']);
-    console.log(req.body);
+    // console.log(req.body);
     const result = db.setComment(req.body);
     res.json(result);
   });
@@ -81,6 +81,11 @@ const __dirname = path.dirname(__filename);
   app.get('/api/texts', async (req, res) => {
     const strings = await db.getTexts();
     res.json(strings);
+  });
+
+  app.get('/api/tags', async (req, res) => {
+    const tags = await db.getTags();
+    res.json(tags);
   });
 
   app.get('/api/conll', async(req, res) => {
