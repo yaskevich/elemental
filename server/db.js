@@ -153,11 +153,34 @@ export default {
     return data;
   },
   async getTags() {
-    const sql = `SELECT * from tags`;
+    const sql = `SELECT * from tags ORDER by id DESC`;
     let data = [];
     try {
       const result = await pool.query(sql);
       data = result?.rows;
+    } catch (err) {
+      console.error(err);
+    }
+    return data;
+  },
+  async setTag(tag_id, en, ru) {
+    const values = [en, ru];
+    let sql = "";
+    if (tag_id) {
+      const id =  Number(tag_id);
+      values.push(id);
+      sql = 'UPDATE tags SET en = $1, ru = $2 WHERE id = $3';
+    } else {
+      sql = `INSERT INTO tags (en, ru) VALUES ($1, $2)`;
+    }
+
+    sql += " RETURNING id";
+    console.log(sql);
+
+    let data = [];
+    try {
+      const result = await pool.query(sql, values);
+      data = result?.rows?.[0];
     } catch (err) {
       console.error(err);
     }
