@@ -12,6 +12,7 @@ import router from './router'
       <router-link to="/">Home</router-link> |
       <router-link to="/comments">Comments</router-link> |
       <router-link to="/tags">Tags</router-link> |
+      <router-link to="/issues">Issues</router-link> |
       <!-- <span v-if="loggedIn">
         <router-link to="/profile">Моё</router-link> |
         <a href ="#" @click="doLogOut">Выйти</a>
