@@ -225,19 +225,19 @@ export default {
     return data;
   },
   async setComment(params) {
-    let {id, text_id, title, published, content_json,  content_html, content_text, brief_json, brief_html, brief_text, trans } = params;
+    let {id, text_id, title, published, content_json,  content_html, content_text, brief_json, brief_html, brief_text, trans, num_id } = params;
     text_id = Number(text_id);
-    const values = [text_id, title, published, content_json,  content_html, content_text, brief_json, brief_html, brief_text, trans];
+    const values = [text_id, title, published, content_json,  content_html, content_text, brief_json, brief_html, brief_text, trans, num_id];
 
     let sql = "";
     if (id) {
       id =  Number(id);
       values.push(id);
       sql = `UPDATE comments SET text_id = $1, title = $2, published= $3, content_json = $4, content_html = $5, content_text = $6,
-      brief_json = $7, brief_html = $8, brief_text = $9, trans = $10
-      WHERE id = $11`;
+      brief_json = $7, brief_html = $8, brief_text = $9, trans = $10, num_id = $11
+      WHERE id = $12`;
     } else {
-      sql = `INSERT INTO comments (text_id, title, published, content_json, content_html, content_text, brief_json, brief_html, brief_text, trans) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);`;
+      sql = `INSERT INTO comments (text_id, title, published, content_json, content_html, content_text, brief_json, brief_html, brief_text, trans) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`;
     }
 
     let data = [];
