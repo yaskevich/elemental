@@ -9,6 +9,7 @@
           <template #checked>Published</template>
           <template #unchecked>Draft</template>
         </n-switch>
+        <router-link :to="'/preview/'+entry.id" style="margin-left:5px;">Preview</router-link>
       </div>
       <n-text type="warning" v-if="!entry.num_id">ID should not be empty!</n-text>
       <n-input v-model:value="entry.title" type="text" placeholder="Heading" class="maininput" />
