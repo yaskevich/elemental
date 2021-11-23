@@ -1,6 +1,6 @@
 <template>
 
-  <editor-content :editor="editor" style="display: inline-block; text-align: left;min-width:300px;" />
+  <editor-content :editor="editor" style="display: inline-block; text-align: left;min-width:300px;" :class="editorclass" />
 
 </template>
 
@@ -19,6 +19,9 @@
   export default {
     components: {
       EditorContent,
+    },
+    props: {
+      editorclass: String,
     },
 
     setup() {
@@ -50,7 +53,6 @@
 
   .ProseMirror p {
     margin: 1em 0;
-    background-color: lightyellow;
     padding: 15px;
   }
 
@@ -60,6 +62,14 @@
     color: #adb5bd;
     pointer-events: none;
     height: 0;
+  }
+
+  .fulleditor div{
+    background-color: lightyellow;
+  }
+
+  .briefeditor div{
+    background-color: #feebdd;
   }
 
 </style>
