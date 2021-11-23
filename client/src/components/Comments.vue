@@ -7,6 +7,7 @@
   <n-button type="info" dashed @click="addComment">Create new comment +</n-button>
   <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;"/>
   <div v-for="item in comments" :key="item.id" style="padding:.5rem;">
+    {{item.num_id}} ▪
     <router-link :to="'/comment/'+item.id" style="text-decoration: none;">
       {{item.title}} <span v-if="item.published" style="margin-left:10px;color:blue;">✓</span>
     </router-link>
