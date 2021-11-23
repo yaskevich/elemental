@@ -3,10 +3,14 @@
   <!-- <h1>{{entry.title}}</h1> -->
   <div>
     <div style="max-width:300px;margin: 0 auto;">
-      <n-switch style="padding-bottom:1rem;" v-model:value="entry.published">
-        <template #checked>Published</template>
-        <template #unchecked>Draft</template>
-      </n-switch>
+      <div style="margin-bottom:.5rem;">
+        <n-input v-model:value="entry.num_id" style="width:75px;" type="text" placeholder="ID"/>
+        <n-switch style="padding-left:1rem;padding-bottom: 5px;" v-model:value="entry.published">
+          <template #checked>Published</template>
+          <template #unchecked>Draft</template>
+        </n-switch>
+      </div>
+      <n-text type="warning" v-if="!entry.num_id">ID should not be empty!</n-text>
       <n-input v-model:value="entry.title" type="text" placeholder="Heading" class="maininput" />
       <n-text type="warning" v-if="!entry.title">Heading should not be empty!</n-text>
       <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;"/>
@@ -17,7 +21,7 @@
       <Tiptap ref="contentRef" editorclass="fulleditor"/>
     </div>
     <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;"/>
-    <n-button type="primary" @click="saveComment" v-if="entry.title">Save</n-button>
+    <n-button type="primary" @click="saveComment" v-if="entry.title && entry.num_id">Save</n-button>
   </div>
 
 </template>
@@ -46,7 +50,6 @@
       if (data.length) {
         console.log("data", data);
         Object.assign(entry, data[0]);
-
 
         const editorInstance = contentRef.value?.editor;
         if (editorInstance) {
