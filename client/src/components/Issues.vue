@@ -5,18 +5,28 @@
   <n-space vertical>
     <n-input style="min-width:250px;" autosize v-model:value="newIssue.en" type="text" placeholder="English title" />
     <n-input autosize style="min-width:250px;" v-model:value="newIssue.ru" type="text" placeholder="Russian title" />
+    <div style="width:100px;text-align:center;margin: 0 auto;">
+      <n-color-picker v-model:value="newIssue.color"
+                      :show-alpha="false"
+                      :swatches="['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf']" />
+    </div>
     <n-button type="info" dashed @click="editIssue(newIssue)">Create new issue +</n-button>
   </n-space>
   <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" />
   <div v-if="!issues.length">
     <n-text type="error">There are no issues!</n-text>
   </div>
-  <div v-for="item in issues" :key="item.id" style="padding:.5rem;margin: 0 auto;display: table;">
-    <n-input-group>
-      <n-input autosize v-model:value="item.en" placeholder="English title" />
-      <n-input autosize v-model:value="item.ru" placeholder="Russian title" />
-      <n-button type="primary" ghost @click="editIssue(item)">Save</n-button>
-    </n-input-group>
+  <div class="center-column">
+    <div class="left-column">
+
+      <div v-for="item in issues" :key="item.id" style="padding:.5rem;margin: 0 auto;display: table;">
+        <n-input-group>
+          <n-input autosize v-model:value="item.en" placeholder="English title" />
+          <n-input autosize v-model:value="item.ru" placeholder="Russian title" />
+          <n-button type="primary" ghost @click="editIssue(item)">Save</n-button>
+        </n-input-group>
+      </div>
+    </div>
   </div>
 
 </template>
@@ -26,7 +36,9 @@
   import store from '../store';
   import { ref, reactive, onBeforeMount } from 'vue';
 
-  const newIssue = reactive({ en: '', ru: '' });
+  const getColor = () => '#' + Math.floor(Math.random() * 16777215).toString(16);
+
+  const newIssue = reactive({ en: '', ru: '', color: getColor() });
   const issues = reactive([]);
   onBeforeMount(async () => {
     const data = await store.get('issues');
@@ -42,17 +54,18 @@
     }
     params.en = issue.en;
     params.ru = issue.ru;
+    params.color = issue.color;
     const result = await store.post('issue', params);
     if (result?.data?.id) {
-        params.id = result.data.id;
-        if (!issue?.id) {
-          issues.push(params);
-          newIssue.en = newIssue.ru = '';
-        }
+      params.id = result.data.id;
+      if (!issue?.id) {
+        issues.push(params);
+        newIssue.en = newIssue.ru = '';
+        newIssue.color = getColor();
+      }
     } else {
-        console.log('error', result);
+      console.log('error', result);
     }
-
   };
 
 </script>
