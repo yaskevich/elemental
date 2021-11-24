@@ -49,4 +49,13 @@ import router from './router'
     }
   }
 }
+
+.center-column {
+  text-align: center;
+  padding-left:3rem;
+
+  .left-column {
+    display: inline-table; text-align: left;
+  }
+}
 </style>
