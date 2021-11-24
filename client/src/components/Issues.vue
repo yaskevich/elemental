@@ -18,9 +18,11 @@
   </div>
   <div class="center-column">
     <div class="left-column">
-
-      <div v-for="item in issues" :key="item.id" style="padding:.5rem;margin: 0 auto;display: table;">
+      <div v-for="item in issues" :key="item.id" style="padding:.5rem;margin:0 auto;display:block;">
         <n-input-group>
+          <n-color-picker style="width:70px;" v-model:value="item.color"
+                          :show-alpha="false"
+                          :swatches="['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf']" />
           <n-input autosize v-model:value="item.en" placeholder="English title" />
           <n-input autosize v-model:value="item.ru" placeholder="Russian title" />
           <n-button type="primary" ghost @click="editIssue(item)">Save</n-button>
@@ -48,6 +50,9 @@
 
   const editIssue = async issue => {
     console.log('edit issue', issue);
+    if (issue.en && issue.ru && issue.color){
+
+
     const params = {};
     if (issue?.id) {
       params.id = issue.id;
@@ -66,6 +71,9 @@
     } else {
       console.log('error', result);
     }
+  } else {
+    console.log("Fields are empty");
+  }
   };
 
 </script>
