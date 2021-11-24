@@ -15,10 +15,11 @@ import {
   NSpace,
   NInputGroup,
   NDynamicTags,
+  NColorPicker,
 } from 'naive-ui'
 
 const naive = create({
-  components: [NButton, NText, NInput, NSwitch, NDivider, NAvatar, NIcon, NSpace, NInputGroup,NDynamicTags,]
+  components: [NButton, NText, NInput, NSwitch, NDivider, NAvatar, NIcon, NSpace, NInputGroup,NDynamicTags, NColorPicker,]
 })
 
 createApp(App)
