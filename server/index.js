@@ -3,12 +3,14 @@
 // jshint ignore: start
 'use strict';
 
-import compression from 'compression';
-import path from 'path';
-import express from 'express';
-import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
+import compression from 'compression';
+import express from 'express';
 import history from 'connect-history-api-fallback';
+import jwt from 'jsonwebtoken';
+import passport from 'passport';
+import passportJWT from 'passport-jwt';
+import path from 'path';
 import nlp from './nlp.js';
 import db from './db.js';
 import { fileURLToPath } from 'url';
@@ -19,9 +21,35 @@ const __dirname = path.dirname(__filename);
 (async () => {
   const app = express();
   const port = process.env.PORT || 8080;
+  const JWTStrategy   = passportJWT.Strategy;
+  const ExtractJWT = passportJWT.ExtractJwt;
+
+  const createToken = (user) => {
+    return jwt.sign({
+      iss: 'elemental',
+      sub: user.id,
+      iat: new Date().getTime(),
+      exp: new Date().setDate(new Date().getDate() + 1)
+    }, process.env.JWT_SECRET);
+  };
+
+  const strategy  = new JWTStrategy(
+  {
+    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+    secretOrKey   : process.env.JWT_SECRET
+  },
+  (jwtPayload, done) =>
+    db.getUserDataByID(jwtPayload.sub)
+      .then(user => done(null, user))
+      .catch(err => done(err))
+  );
+
+  passport.use(strategy);
+	const auth = passport.authenticate('jwt', {session: false});
 
   app.use(compression());
   app.set('trust proxy', 1);
+  app.use(passport.initialize());
   app.use(bodyParser.json()); // support json encoded bodies
   app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
