@@ -22,6 +22,10 @@ const pool = new Pool();
 
 
 export default {
+  async getUserDataByID(id){
+		const res = await pool.query("SELECT * from users WHERE id = $1 AND activated = TRUE", [id]);
+		return res?.rows[0];
+	},
   async getCorpusAsConll() {
     const sql = `select strings.id as sid, strings.p, strings.form as v, strings.s, strings.token_id as tid, strings.repr, tokens.token as utoken, strings.unit_id as uid, pos as cl from strings left  join tokens on strings.token_id = tokens.id  left  join units on strings.unit_id = units.id order by sid`;
     let conll = [];
@@ -164,18 +168,18 @@ export default {
     return data;
   },
   async setIssue(issue_id, color, en, ru) {
-    const values = [en, ru];
+    const values = [color, en, ru];
     let sql = "";
     if (issue_id) {
       const id =  Number(issue_id);
       values.push(id);
       sql = 'UPDATE issues SET color = $1, en = $2, ru = $3  WHERE id = $4';
     } else {
-      sql = `INSERT INTO issues (color, en, ru) VALUES ($1, $2)`;
+      sql = `INSERT INTO issues (color, en, ru) VALUES ($1, $2, $3)`;
     }
 
     sql += " RETURNING id";
-    console.log(sql);
+    // console.log(sql);
 
     let data = [];
     try {
