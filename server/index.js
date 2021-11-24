@@ -83,13 +83,22 @@ const __dirname = path.dirname(__filename);
 
   app.post('/api/tag', async (req, res) => {
     const result = await db.setTag(req.body.id, req.body.en, req.body.ru);
-    console.log("api/tag", result);
+    res.json(result);
+  });
+
+  app.post('/api/issue', async (req, res) => {
+    const result = await db.setIssue(req.body.id, req.body.color, req.body.en, req.body.ru);
     res.json(result);
   });
 
   app.get('/api/texts', async (req, res) => {
     const strings = await db.getTexts();
     res.json(strings);
+  });
+
+  app.get('/api/issues', async (req, res) => {
+    const tags = await db.getIssues();
+    res.json(tags);
   });
 
   app.get('/api/tags', async (req, res) => {
