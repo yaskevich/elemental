@@ -152,6 +152,40 @@ export default {
     }
     return data;
   },
+  async getIssues() {
+    const sql = `SELECT * from issues ORDER by id DESC`;
+    let data = [];
+    try {
+      const result = await pool.query(sql);
+      data = result?.rows;
+    } catch (err) {
+      console.error(err);
+    }
+    return data;
+  },
+  async setIssue(issue_id, color, en, ru) {
+    const values = [en, ru];
+    let sql = "";
+    if (issue_id) {
+      const id =  Number(issue_id);
+      values.push(id);
+      sql = 'UPDATE issues SET color = $1, en = $2, ru = $3  WHERE id = $4';
+    } else {
+      sql = `INSERT INTO issues (color, en, ru) VALUES ($1, $2)`;
+    }
+
+    sql += " RETURNING id";
+    console.log(sql);
+
+    let data = [];
+    try {
+      const result = await pool.query(sql, values);
+      data = result?.rows?.[0];
+    } catch (err) {
+      console.error(err);
+    }
+    return data;
+  },
   async getTags() {
     const sql = `SELECT * from tags ORDER by id DESC`;
     let data = [];
