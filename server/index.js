@@ -17,6 +17,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 
 (async () => {
   const app = express();
@@ -92,7 +93,7 @@ const __dirname = path.dirname(__filename);
     // const settings = await db.getData("settings", 1);
     // const stats = await db.getStats();
     // res.json(Object.assign(req.user, {"settings": settings?.[0], "stats": stats, "commit": process.env.COMMIT, "server": __package.version, }));
-    res.json(Object.assign(req.user));
+    res.json({...req.user, "server": __package.version, "commit": process.env.COMMIT, });
    });
 
   app.post('/api/user/reg', async(req,res) => {
