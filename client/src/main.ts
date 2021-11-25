@@ -16,10 +16,15 @@ import {
   NInputGroup,
   NDynamicTags,
   NColorPicker,
+  NMessageProvider,
+  NForm,
+  NFormItem,
+  NRadioGroup,
+  NRadio,
 } from 'naive-ui'
 
 const naive = create({
-  components: [NButton, NText, NInput, NSwitch, NDivider, NAvatar, NIcon, NSpace, NInputGroup,NDynamicTags, NColorPicker,]
+  components: [NButton, NText, NInput, NSwitch, NDivider, NAvatar, NIcon, NSpace, NInputGroup,NDynamicTags, NColorPicker, NMessageProvider, NForm, NFormItem, NRadioGroup, NRadio,]
 })
 
 createApp(App)
