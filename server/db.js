@@ -19,12 +19,59 @@ import pg from 'pg';
 const { Pool } = pg;
 const pool = new Pool();
 
-
-
 export default {
   async getUserDataByID(id){
     const res = await pool.query("SELECT * from users WHERE id = $1 AND activated = TRUE", [id]);
     return res?.rows[0];
+  },
+  async getUserData(email, pwd){
+    if (!email) { return {"error": "email"}; }
+    else if (!pwd) { return {"error": "password"}; }
+
+    // console.log("email/pwd", email, pwd);
+    const res = await pool.query(`SELECT * FROM users WHERE email = $1`, [email]);
+    if (res.rows.length){
+      const data = res.rows[0];
+      // console.log("userdata", data);
+      // console.log("pass/hash", pwd, data._passhash);
+      if (data.activated) {
+        const result = await bcrypt.compare(pwd, data._passhash);
+        Reflect.deleteProperty(data, '_passhash');
+        // console.log("pass/hash result", result);
+        return result ? data : {"error": "password"};
+      } else {
+        return {"error": "user status"};
+      }
+    } else {
+       return {"error": "email"};
+    }
+
+    return {"error": "unknown"};
+  },
+  async createUser(data, isActivated = false){
+    console.log("create user", data);
+    const usersData = await pool.query(`SELECT * FROM users`);
+    if(usersData.rows.length) {
+      if (usersData.rows.filter(x=> x.email == data.email).length) {
+          return {"error": "email not unique"};
+      }
+    } else {
+      // if users table is empty it means it is first run and we have to create admin user
+      // make later regular set up UI
+      data.privs = 1;
+      isActivated = true;
+      console.log("create admin");
+    }
+    const pwd  = passGen.generate(passOptions);
+    console.log("make hash");
+    const hash = await bcrypt.hash(pwd, saltRounds);
+    console.log("ready");
+    // console.log(pwd, hash);
+    const result = await pool.query(`INSERT INTO users (firstname, lastname, email, sex, privs, _passhash, activated) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id`, [data.firstname, data.lastname, data.email, data.sex, data.privs, hash, isActivated]);
+    if (result.rows.length === 1) {
+      return { "message": pwd };
+    }
+    return {"error": "user"};
   },
   async getCorpusAsConll() {
     const sql = `select strings.id as sid, strings.p, strings.form as v, strings.s, strings.token_id as tid, strings.repr, tokens.token as utoken, strings.unit_id as uid, pos as cl from strings left  join tokens on strings.token_id = tokens.id  left  join units on strings.unit_id = units.id order by sid`;
