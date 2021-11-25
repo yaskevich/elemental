@@ -45,7 +45,7 @@ const __dirname = path.dirname(__filename);
   );
 
   passport.use(strategy);
-	const auth = passport.authenticate('jwt', {session: false});
+  const auth = passport.authenticate('jwt', {session: false});
 
   app.use(compression());
   app.set('trust proxy', 1);
@@ -66,6 +66,45 @@ const __dirname = path.dirname(__filename);
 
   app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  });
+
+  app.post('/api/user/login', async(req, res) => {
+    const userData = await db.getUserData(req.body['email'], req.body['password']);
+    if (userData && Object.keys(userData).length && !userData?.['error']) {
+      console.log(req.body['email'], '<SUCCESS>');
+      const token = createToken(userData);
+      userData['token'] = token;
+      res.json(userData);
+    } else {
+      console.log(`login attempt as [${req.body['email']}]•[${req.body['password']}]►${userData.error}◄`);
+      res.json(userData);
+    }
+  });
+
+  app.get('/api/user/logout', auth, async () => {
+    console.log('logging out');
+    // You can add 'issue time' to token and maintain 'last logout time' for each user on the server.
+    // When you check token validity, also check 'issue time' be after 'last logout time'.
+    // res.redirect('/login');
+  });
+
+  app.get('/api/user/info', auth, async(req,res) => {
+    // const settings = await db.getData("settings", 1);
+    // const stats = await db.getStats();
+    // res.json(Object.assign(req.user, {"settings": settings?.[0], "stats": stats, "commit": process.env.COMMIT, "server": __package.version, }));
+    res.json(Object.assign(req.user));
+   });
+
+  app.post('/api/user/reg', async(req,res) => {
+    const userdata = req.body;
+    userdata.privs = 5; // default privileges
+    const result = await db.createUser(userdata, false);
+    res.json(result);
+  });
+
+  app.post('/api/user/add', auth, async(req,res) => {
+    const result = await db.createUser(req.body, true);
+    res.json(result);
   });
 
   app.post('/api/tokens', async(req, res) => {
