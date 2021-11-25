@@ -9,11 +9,11 @@ if (!process.env.NODE_ENV && configLoaded.error) {
   process.exit(1);
 }
 
-// import bcrypt from 'bcrypt';
-// const saltRounds = 8;
-//
-// import passGen from 'generate-password';
-// const passOptions = { length: 18, numbers: true, uppercase: false, excludeSimilarCharacters: true, strict: true , symbols: false };
+import bcrypt from 'bcrypt';
+const saltRounds = 8;
+
+import passGen from 'generate-password';
+const passOptions = { length: 18, numbers: true, uppercase: false, excludeSimilarCharacters: true, strict: true , symbols: false };
 
 import pg from 'pg';
 const { Pool } = pg;
@@ -23,9 +23,9 @@ const pool = new Pool();
 
 export default {
   async getUserDataByID(id){
-		const res = await pool.query("SELECT * from users WHERE id = $1 AND activated = TRUE", [id]);
-		return res?.rows[0];
-	},
+    const res = await pool.query("SELECT * from users WHERE id = $1 AND activated = TRUE", [id]);
+    return res?.rows[0];
+  },
   async getCorpusAsConll() {
     const sql = `select strings.id as sid, strings.p, strings.form as v, strings.s, strings.token_id as tid, strings.repr, tokens.token as utoken, strings.unit_id as uid, pos as cl from strings left  join tokens on strings.token_id = tokens.id  left  join units on strings.unit_id = units.id order by sid`;
     let conll = [];
