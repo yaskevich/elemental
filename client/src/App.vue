@@ -21,7 +21,10 @@ import router from './router'
         <router-link to="/login">Войти</router-link>
       </span> -->
     </div>
-    <router-view/>
+    <n-message-provider>
+      <router-view/>
+    </n-message-provider>
+
 </div>
 <!-- <div v-else>
     загрузка...
