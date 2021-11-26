@@ -38,10 +38,13 @@
         </n-form-item>
 
       </n-form>
-      <div>
+      <div v-if="note" style="padding-bottom: 2rem;">
         <pre>
           {{note}}
         </pre>
+        <div>
+          Copy password and go to <router-link to="/login">login page</router-link>.
+        </div>
       </div>
     </div>
   </div>
