@@ -1,89 +1,62 @@
 <template>
-  <n-radio-group
-    v-model:value="size"
-    name="left-size"
-    style="margin-bottom: 12px;"
-  >
-    <n-radio-button value="small">Small</n-radio-button>
-    <n-radio-button value="medium">Medium</n-radio-button>
-    <n-radio-button value="large">Large</n-radio-button>
-  </n-radio-group>
-  <n-form
-    inline
-    :label-width="80"
-    :model="formValue"
-    :rules="rules"
-    :size="size"
-    ref="formRef"
-  >
-    <n-form-item label="Name" path="user.name">
-      <n-input v-model:value="formValue.user.name" placeholder="Input Name" />
-    </n-form-item>
-    <n-form-item label="Age" path="user.age">
-      <n-input placeholder="Input Age" v-model:value="formValue.user.age" />
-    </n-form-item>
-    <n-form-item label="Phone" path="phone">
-      <n-input placeholder="Phone Number" v-model:value="formValue.phone" />
-    </n-form-item>
-    <n-form-item>
-      <n-button @click="handleValidateClick">Validate</n-button>
-    </n-form-item>
-  </n-form>
 
-  <pre>
-  {{  JSON.stringify(formValue, 0, 2) }}
-  </pre>
+  <div class="center-column">
+    <div class="left-column">
+
+      <n-form :label-width="80"
+              :model="formValue"
+              ref="formRef">
+
+        <n-form-item label="E-mail">
+          <n-input v-model:value="formValue.email" placeholder="Input e-mail" />
+        </n-form-item>
+
+        <n-form-item path="password" label="Password">
+          <n-input v-model:value="formValue.password"
+                   type="password"
+                   @keydown.enter.prevent />
+        </n-form-item>
+
+        <n-form-item>
+          <n-button @click="handleValidateClick">Submit</n-button>
+        </n-form-item>
+
+      </n-form>
+
+    </div>
+  </div>
+
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
-import { useMessage } from 'naive-ui'
 
-export default defineComponent({
-  setup () {
-    const formRef = ref(null)
-    const message = useMessage()
-    return {
-      formRef,
-      size: ref('medium'),
-      formValue: ref({
-        user: {
-          name: '',
-          age: ''
-        },
-        phone: ''
-      }),
-      rules: {
-        user: {
-          name: {
-            required: true,
-            message: 'Please input your name',
-            trigger: 'blur'
-          },
-          age: {
-            required: true,
-            message: 'Please input your age',
-            trigger: ['input', 'blur']
+  import { defineComponent, ref, reactive } from 'vue';
+  import { useMessage } from 'naive-ui';
+  import store from '../store';
+
+  export default defineComponent({
+    setup() {
+      const formRef = ref(null);
+      const message = useMessage();
+      const formValue = reactive({email: '', password: '', });
+
+      return {
+        formRef,
+        formValue,
+        async handleValidateClick(e) {
+          e.preventDefault();
+          if (formValue.email  && formValue.password) {
+              console.log(formValue);
+              const result = await store.post('user/login', formValue);
+              console.log(result);
           }
+
+          // const result = await store.post('user/login', formValue.value.user);
+              // message.success('Valid');
+              // message.error('Invalid');
         },
-        phone: {
-          required: true,
-          message: 'Please input your number',
-          trigger: ['input']
-        }
-      },
-      handleValidateClick (e) {
-        e.preventDefault()
-        formRef.value.validate((errors) => {
-          if (!errors) {
-            message.success('Valid')
-          } else {
-            console.log(errors)
-            message.error('Invalid')
-          }
-        })
-      }
-    }
-  }
-})
+      };
+    },
+  });
+
 </script>
