@@ -38,7 +38,11 @@
         </n-form-item>
 
       </n-form>
-
+      <div>
+        <pre>
+          {{note}}
+        </pre>
+      </div>
     </div>
   </div>
 
@@ -48,11 +52,13 @@
 
   import { defineComponent, ref } from 'vue';
   import { useMessage } from 'naive-ui';
+  import store from '../store';
 
   export default defineComponent({
     setup() {
       const formRef = ref(null);
       const message = useMessage();
+      const note = ref('');
       const formValue = ref({
         user: {
           username: '',
@@ -64,6 +70,7 @@
       });
 
       return {
+        note,
         generalOptions: ['female', 'male'].map(
           (v, i) => ({
             label: v,
@@ -107,10 +114,14 @@
         handleValidateClick(e) {
           e.preventDefault();
           formValue.value.user.username = formValue.value.user.username.replace(/[^\x41-\x7F]/g, "");
-          formRef.value.validate(errors => {
+          formRef.value.validate(async(errors) => {
             if (!errors) {
               // message.success('Valid');
               console.log(formValue.value.user);
+              const result = await store.post('user/reg', formValue.value.user);
+              const pwd = result?.data?.message;
+              console.log(pwd);
+              note.value = pwd;
             } else {
               console.log(errors);
               // message.error('Invalid');
