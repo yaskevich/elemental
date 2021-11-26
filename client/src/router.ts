@@ -1,6 +1,7 @@
 import { createWebHistory, createRouter } from 'vue-router';
 import Home from './components/Home.vue';
 import Login from './components/Login.vue';
+import Register from './components/Register.vue';
 import Tags from './components/Tags.vue';
 import Issues from './components/Issues.vue';
 import Preview from './components/Preview.vue';
@@ -19,6 +20,11 @@ const routes = [
 		alias: ['/home'],
 		name: 'Home',
 		component: Home,
+	},
+	{
+		path: '/register',
+		name: 'Register',
+		component: Register,
 	},
 	{
 		path: '/login',
