@@ -67,7 +67,7 @@ export default {
     const hash = await bcrypt.hash(pwd, saltRounds);
     console.log("ready");
     // console.log(pwd, hash);
-    const result = await pool.query(`INSERT INTO users (firstname, lastname, email, sex, privs, _passhash, activated) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id`, [data.firstname, data.lastname, data.email, data.sex, data.privs, hash, isActivated]);
+    const result = await pool.query(`INSERT INTO users (username, firstname, lastname, email, sex, privs, _passhash, activated) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`, [data.username, data.firstname, data.lastname, data.email, data.sex, data.privs, hash, isActivated]);
     if (result.rows.length === 1) {
       return { "message": pwd };
     }
