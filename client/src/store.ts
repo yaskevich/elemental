@@ -47,10 +47,24 @@ const post = async(table: string, data: Object): Promise<any> => {
  console.log("No token. Fail.");
 };
 
+const getUser = async() => {
+    if(state.token) {
+      try {
+        const config = { headers: { Authorization: "Bearer " + state.token }, };
+        const response = await axios.get("/api/user/info", config);
+        state.user = {...state.user, ...response.data};
+      } catch (error) {
+        console.log("Cannot get user", error)
+        return error;
+      }
+  }
+};
+
 export default {
   state,
   get,
   post,
+  getUser,
   // state: state,
   // version: project.version,
 };
