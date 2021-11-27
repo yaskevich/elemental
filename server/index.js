@@ -6,6 +6,7 @@
 import bodyParser from 'body-parser';
 import compression from 'compression';
 import express from 'express';
+import fs from 'fs';
 import history from 'connect-history-api-fallback';
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
