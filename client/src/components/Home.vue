@@ -18,7 +18,7 @@ const goToText = (id) => {
   router.push('/comments/'+id);
 }
 
-const count = ref(0)
+const state = store.state;
 </script>
 
 <template>
@@ -34,7 +34,10 @@ const count = ref(0)
     </n-button>
   </div>
   <!-- <button type="button" @click="count++">count is: {{ count }}</button> -->
+  <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" />
 
+  <div>Server version {{state.user.server}}</div>
+  <div>Commit <a type="primary" :href="'https://github.com/yaskevich/persona/commit/' + state.user.commit" target="_blank">{{state.user.commit}}</a></div>
 </template>
 
 <style scoped>
