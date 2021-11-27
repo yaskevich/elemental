@@ -49,6 +49,9 @@
               console.log(formValue);
               const result = await store.post('user/login', formValue);
               console.log(result);
+              store.state.token = result.data.token;
+              localStorage.setItem('token', result.data.token);
+              store.state.user = {...store.state.user, ...result.data};
           }
 
           // const result = await store.post('user/login', formValue.value.user);
