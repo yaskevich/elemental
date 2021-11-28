@@ -2,13 +2,17 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
 import router from './router'
-import { ref, reactive, onBeforeMount } from 'vue'
+import { ref, reactive, onBeforeMount, computed, } from 'vue'
 import store from './store'
+import Login from './components/Login.vue'
+import Register from './components/Register.vue'
 
 
 onBeforeMount(async () => {
   await store.getUser();
 });
+
+const loggedIn = computed(() => store?.state?.token?.length);
 
 
 
@@ -16,7 +20,7 @@ onBeforeMount(async () => {
 
 <template>
   <!-- <div id="main" v-if="dataReady"> -->
-  <div id="main">
+  <div id="main" v-if="loggedIn">
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/comments">Comments</router-link> |
@@ -34,6 +38,12 @@ onBeforeMount(async () => {
       <router-view/>
     </n-message-provider>
 
+</div>
+<div v-else>
+  <h3>Login</h3>
+   <Login/>
+   If you do not have an account, please, register
+   <Register/>
 </div>
 <!-- <div v-else>
     загрузка...
