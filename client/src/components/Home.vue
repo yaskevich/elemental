@@ -36,6 +36,7 @@ const state = store.state;
   <!-- <button type="button" @click="count++">count is: {{ count }}</button> -->
   <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" />
 
+  <div>Client version {{store.version}}</div>
   <div>Server version {{state.user.server}}</div>
   <div>Commit <a type="primary" :href="'https://github.com/yaskevich/persona/commit/' + state.user.commit" target="_blank">{{state.user.commit}}</a></div>
 </template>
