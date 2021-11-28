@@ -14,6 +14,8 @@ onBeforeMount(async () => {
 
 const loggedIn = computed(() => store?.state?.token?.length);
 
+const state = store.state;
+
 
 
 </script>
@@ -26,6 +28,7 @@ const loggedIn = computed(() => store?.state?.token?.length);
       <router-link to="/comments">Comments</router-link> |
       <router-link to="/tags">Tags</router-link> |
       <router-link to="/issues">Issues</router-link> |
+      {{state.user.username}}
       <!-- <span v-if="loggedIn">
         <router-link to="/profile">Моё</router-link> |
         <a href ="#" @click="doLogOut">Выйти</a>
