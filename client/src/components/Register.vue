@@ -54,13 +54,13 @@
 <script>
 
   import { defineComponent, ref } from 'vue';
-  import { useMessage } from 'naive-ui';
+  // import { useMessage } from 'naive-ui';
   import store from '../store';
 
   export default defineComponent({
     setup() {
       const formRef = ref(null);
-      const message = useMessage();
+      // const message = useMessage();
       const note = ref('');
       const formValue = ref({
         user: {

@@ -31,13 +31,13 @@
 <script>
 
   import { defineComponent, ref, reactive } from 'vue';
-  import { useMessage } from 'naive-ui';
+  // import { useMessage } from 'naive-ui';
   import store from '../store';
 
   export default defineComponent({
     setup() {
       const formRef = ref(null);
-      const message = useMessage();
+      // const message = useMessage();
       const formValue = reactive({email: '', password: '', });
 
       return {
