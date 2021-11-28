@@ -1,6 +1,6 @@
 import { reactive } from "vue";
 import axios from "axios";
-// import project from '../../package.json';
+import project from '../package.json';
 
 const state = reactive({
   token: localStorage.getItem('token') || '',
@@ -65,6 +65,5 @@ export default {
   get,
   post,
   getUser,
-  // state: state,
-  // version: project.version,
+  version: project.version,
 };
