@@ -27,6 +27,10 @@
       </n-dropdown>
       <h4>Issues</h4>
       <n-dynamic-tags v-model:value="issues" />
+      <n-dropdown trigger="hover" @select="handleSelect" :options="issuesList">
+        <n-button> Add an issue</n-button>
+      </n-dropdown>
+
     </div>
     <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;"/>
     <n-button type="primary" @click="saveComment" v-if="entry.title && entry.num_id">Save</n-button>
@@ -53,6 +57,7 @@
   const issues = ref([]);
 
   const tagsList = reactive([]);
+  const issuesList = reactive([]);
   // const json = ref({});
   // let json = {};
 
@@ -65,6 +70,10 @@
       const tagData = await store.get('tags');
       const tagListData = tagData.map(x => ({label: x.ru, key: x.id, disabled: false}));
       Object.assign(tagsList, tagListData);
+
+      const issueData = await store.get('issues');
+      const issueListData = issueData.map(x => ({label: x.ru, key: x.id, disabled: false}));
+      Object.assign(issuesList, issueListData);
 
       const data = await store.get(`comment/${id}`);
       console.log('data from server', data);
