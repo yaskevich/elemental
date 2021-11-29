@@ -20,9 +20,14 @@
       <Tiptap ref="briefRef" editorclass="briefeditor" />
       <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;"/>
       <Tiptap ref="contentRef" editorclass="fulleditor"/>
+      <h4>Tags</h4>
+      <n-dynamic-tags v-model:value="tags" />
+      <h4>Issues</h4>
+      <n-dynamic-tags v-model:value="issues" />
     </div>
     <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;"/>
     <n-button type="primary" @click="saveComment" v-if="entry.title && entry.num_id">Save</n-button>
+
   </div>
 
 </template>
@@ -40,6 +45,9 @@
   const entry = reactive({});
   const briefRef = ref(null);
   const contentRef = ref(null);
+
+  const tags = ref([]);
+  const issues = ref([]);
 
   // const json = ref({});
   // let json = {};
