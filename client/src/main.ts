@@ -22,10 +22,11 @@ import {
   NRadioGroup,
   NRadio,
   NSelect,
+  NDropdown,
 } from 'naive-ui'
 
 const naive = create({
-  components: [NButton, NText, NInput, NSwitch, NDivider, NAvatar, NIcon, NSpace, NInputGroup,NDynamicTags, NColorPicker, NMessageProvider, NForm, NFormItem, NRadioGroup, NRadio, NSelect, ]
+  components: [NButton, NText, NInput, NSwitch, NDivider, NAvatar, NIcon, NSpace, NInputGroup,NDynamicTags, NColorPicker, NMessageProvider, NForm, NFormItem, NRadioGroup, NRadio, NSelect, NDropdown, ]
 })
 
 createApp(App)
