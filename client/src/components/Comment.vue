@@ -22,6 +22,9 @@
       <Tiptap ref="contentRef" editorclass="fulleditor"/>
       <h4>Tags</h4>
       <n-dynamic-tags v-model:value="tags" />
+      <n-dropdown trigger="hover" @select="handleSelect" :options="tagsList">
+        <n-button> Add a tag</n-button>
+      </n-dropdown>
       <h4>Issues</h4>
       <n-dynamic-tags v-model:value="issues" />
     </div>
@@ -49,11 +52,20 @@
   const tags = ref([]);
   const issues = ref([]);
 
+  const tagsList = reactive([]);
   // const json = ref({});
   // let json = {};
 
+  const handleSelect = (key) => {
+        console.log(key)
+  };
+
   onBeforeMount(async () => {
     if (id) {
+      const tagData = await store.get('tags');
+      const tagListData = tagData.map(x => ({label: x.ru, key: x.id, disabled: false}));
+      Object.assign(tagsList, tagListData);
+
       const data = await store.get(`comment/${id}`);
       console.log('data from server', data);
       if (data.length) {
