@@ -21,15 +21,22 @@
       <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;"/>
       <Tiptap ref="contentRef" editorclass="fulleditor"/>
       <h4>Tags</h4>
-      <n-dynamic-tags v-model:value="tags" />
-      <n-dropdown trigger="hover" @select="handleSelect" :options="tagsList">
-        <n-button> Add a tag</n-button>
-      </n-dropdown>
+      <n-dynamic-tags v-model:value="tags">
+        <template #input="{ submit }">
+          <n-dropdown trigger="hover" @select="handleSelect" :options="tagsList">
+            <n-button> Add a tag</n-button>
+          </n-dropdown>
+        </template>
+      </n-dynamic-tags>
+
       <h4>Issues</h4>
-      <n-dynamic-tags v-model:value="issues" />
-      <n-dropdown trigger="hover" @select="handleSelect" :options="issuesList">
-        <n-button> Add an issue</n-button>
-      </n-dropdown>
+      <n-dynamic-tags v-model:value="issues">
+          <template #input="{ submit }">
+            <n-dropdown trigger="hover" @select="handleSelect" :options="issuesList">
+              <n-button> Add an issue</n-button>
+            </n-dropdown>
+          </template>
+      </n-dynamic-tags>
 
     </div>
     <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;"/>
