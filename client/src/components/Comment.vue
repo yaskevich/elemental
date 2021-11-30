@@ -21,22 +21,24 @@
       <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;"/>
       <Tiptap ref="contentRef" editorclass="fulleditor"/>
       <h4>Tags</h4>
-      <n-dynamic-tags v-model:value="tags">
-        <template #input="{ submit }">
-          <n-dropdown trigger="hover" @select="handleSelect" :options="tagsList">
-            <n-button> Add a tag</n-button>
-          </n-dropdown>
-        </template>
-      </n-dynamic-tags>
+
+      <n-tag v-for="tag in entry.tags" :key="tag" closable @close="removeTag(tag)">
+        {{tagsList.filter(x => x.key == tag)?.shift()?.["label"]}}
+      </n-tag>
+
+      <n-dropdown trigger="hover" @select="addTag" :options="tagsList">
+        <n-button> Add a tag</n-button>
+      </n-dropdown>
+
 
       <h4>Issues</h4>
-      <n-dynamic-tags v-model:value="issues">
-          <template #input="{ submit }">
-            <n-dropdown trigger="hover" @select="handleSelect" :options="issuesList">
-              <n-button> Add an issue</n-button>
-            </n-dropdown>
-          </template>
-      </n-dynamic-tags>
+      <n-tag v-for="issue in entry.issues" :key="issue" closable @close="removeTag(issue)">
+        {{issuesList.filter(x => x.key == issue)?.shift()?.["label"]}}
+      </n-tag>
+
+      <n-dropdown trigger="hover" @select="addIssue" :options="issuesList">
+        <n-button> Add an issue</n-button>
+      </n-dropdown>
 
     </div>
     <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;"/>
@@ -60,7 +62,6 @@
   const briefRef = ref(null);
   const contentRef = ref(null);
 
-  const tags = ref([]);
   const issues = ref([]);
 
   const tagsList = reactive([]);
@@ -68,15 +69,31 @@
   // const json = ref({});
   // let json = {};
 
-  const handleSelect = (key) => {
-        console.log(key)
+  const removeTag = (id) => {
+        console.log(id);
+        entry.tags = entry.tags.filter(x => x !== id);
+  };
+
+  const addTag = (id) => {
+        console.log(id);
+        entry.tags.push(id);
+  };
+
+  const removeIssue = (id) => {
+        console.log(id);
+        entry.issues = entry.issues.filter(x => x !== id);
+  };
+
+  const addIssue = (id) => {
+        console.log(id);
+        entry.issues.push(id);
   };
 
   onBeforeMount(async () => {
     if (id) {
       const tagData = await store.get('tags');
-      const tagListData = tagData.map(x => ({label: x.ru, key: x.id, disabled: false}));
-      Object.assign(tagsList, tagListData);
+      console.log("tags", tagData);
+      Object.assign(tagsList, tagData.map(x => ({label: x.ru, key: x.id, disabled: false})));
 
       const issueData = await store.get('issues');
       const issueListData = issueData.map(x => ({label: x.ru, key: x.id, disabled: false}));
@@ -87,6 +104,7 @@
       if (data.length) {
         console.log("data", data);
         Object.assign(entry, data[0]);
+        entry.tags = [14];
 
         const editorInstance = contentRef.value?.editor;
         if (editorInstance) {
@@ -114,7 +132,7 @@
       entry.brief_json = briefInstance.getJSON();
       entry.brief_html = briefInstance.getHTML();
       entry.brief_text = briefInstance.getText();
-
+      console.log("entry", entry);
       const data = await store.post("comment", entry);
       console.log('result', data);
     }
