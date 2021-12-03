@@ -1,20 +1,33 @@
 <template>
 
-  <editor-content :editor="editor" style="display: inline-block; text-align: left;min-width:300px;" :class="editorclass" />
+  <div v-if="editor">
+    <button @click="editor.chain().focus().toggleAnnotation().run()" :class="{ 'is-active': editor.isActive('highlight') }">Toggle Annotation</button>
+
+    <button @click="editor.chain().focus().toggleAnnotation({ class: 'red' }).run()" :class="{ 'is-active': editor.isActive('highlight', { class: 'red' }) }">
+      red
+    </button>
+
+    <button @click="editor.chain().focus().unsetAnnotation().run()" :disabled="!editor.isActive('annotation')">
+      Clear Annotation
+    </button>
+
+    <editor-content :editor="editor" style="display: inline-block; text-align: left;min-width:300px;" :class="editorclass + ' annotation'" />
+  </div>
 
 </template>
 
 <script>
 
-  import { useEditor, EditorContent } from '@tiptap/vue-3';
+  import { Editor, EditorContent } from '@tiptap/vue-3';
   // import StarterKit from '@tiptap/starter-kit'
   import Document from '@tiptap/extension-document';
   import Paragraph from '@tiptap/extension-paragraph';
   import Text from '@tiptap/extension-text';
   import History from '@tiptap/extension-history';
-  import TextStyle from '@tiptap/extension-text-style';
+  // import TextStyle from '@tiptap/extension-text-style';
   import Color from '@tiptap/extension-color';
   import Placeholder from '@tiptap/extension-placeholder';
+  import Annotation from '../annotation';
 
   export default {
     components: {
@@ -25,7 +38,7 @@
     },
 
     setup() {
-      const editor = useEditor({
+      const editor = new Editor({
         content: '',
         autofocus: 'end',
         editable: true,
@@ -34,10 +47,13 @@
           Paragraph,
           Text,
           History,
-          TextStyle,
+          // TextStyle,
           Color,
           Placeholder.configure({
             placeholder: 'Start writing your comment...',
+          }),
+          Annotation.configure({
+            multicolor: true,
           }),
           // StarterKit,
         ],
@@ -63,12 +79,18 @@
     pointer-events: none;
     height: 0;
   }
+  .annotation p var.red {
+    color: white;
+    background-color: red;
+    padding: 3px;
+    font-style:normal;
+  }
 
-  .fulleditor div{
+  .fulleditor div {
     background-color: lightyellow;
   }
 
-  .briefeditor div{
+  .briefeditor div {
     background-color: #feebdd;
   }
 
