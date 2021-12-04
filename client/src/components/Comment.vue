@@ -1,7 +1,7 @@
 <template>
 
   <!-- <h1>{{entry.title}}</h1> -->
-  <div>
+  <div v-if="ready">
     <div style="max-width:300px;margin: 0 auto;">
       <div style="margin-bottom: 10px;">
         <n-tag v-for="issue in entry.issues" :key="issue" closable @close="removeIssue(issue)" :color="{ color: issuesKV[issue].color, textColor: 'white', }">
@@ -42,6 +42,10 @@
     <n-button type="primary" @click="saveComment" v-if="entry.title && entry.num_id">Save</n-button>
 
   </div>
+  <div v-else>
+    loading...
+     <!-- <n-spin size="large" /> -->
+  </div>
 
 </template>
 
@@ -60,6 +64,7 @@
   const fromDB = ref('');
   const briefRef = ref(null);
   const contentRef = ref(null);
+  const ready = ref(false);
 
   const tagsList = reactive([]);
   const issuesList = reactive([]);
@@ -140,6 +145,7 @@
           briefRef.value.editor.commands.setContent(data[0].brief_json, false);
         }
       }
+      ready.value = true;
     }
   });
 
