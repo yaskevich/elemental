@@ -6,7 +6,8 @@
 
     <button v-for="item in classes"
             @click="editor.chain().focus().toggleAnnotation({ class: item }).run()"
-            :class="{ 'is-active': editor.isActive('annotation', { class: item }) }">
+            :class="{ 'is-active': editor.isActive('annotation', { class: item }) }"
+            style="background-color: #c9c9ff;">
         {{item}}
     </button>
 
@@ -94,7 +95,7 @@
     p var {
       border-radius: 1px;
 
-      padding: 2px 5px 2px 5px;
+      padding: 2px 2px 2px 2px;
       font-style: normal;
 
       &.error {
@@ -114,6 +115,15 @@
         // background-color: #f6f8fa;
         background-color: #748393;
       }
+
+      &.book {
+        color: black;
+        background-color: orange;
+        font-size: 90%;
+        border: 1 px dashed pink;
+        font-style: italic;
+      }
+
 
     }
   }
