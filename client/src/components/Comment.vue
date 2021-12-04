@@ -1,50 +1,74 @@
 <template>
 
+  <div v-if="!ready">
+    loading...
+    <!-- <n-spin size="large" /> -->
+  </div>
   <!-- <h1>{{entry.title}}</h1> -->
-  <div v-if="ready">
+  <div :style="`visibility:${ready?'visible':'hidden'}`">
     <div style="max-width:300px;margin: 0 auto;">
-      <div style="margin-bottom: 10px;">
-        <n-tag v-for="issue in entry.issues" :key="issue" closable @close="removeIssue(issue)" :color="{ color: issuesKV[issue].color, textColor: 'white', }">
-          {{issuesKV[issue]?.["ru"]}}
+
+      <div class="box">
+        <n-space justify="center">
+          <n-tag v-for="issue in entry.issues" :key="issue" closable @close="removeIssue(issue)" :color="{ color: issuesKV[issue].color, textColor: 'white', }">
+            {{issuesKV[issue]?.["ru"]}}
+          </n-tag>
+        </n-space>
+      </div>
+
+      <div class="box">
+        <n-space justify="center">
+          <!-- <router-link :to="'/preview/'+entry.id">Preview</router-link> -->
+          <n-button secondary type="info" @click="showPreview(entry.id)">Preview</n-button>
+
+          <n-switch style="margin-top: .4rem;" v-model:value="entry.published" :round="false">
+            <template #checked>Published</template>
+            <template #unchecked>Draft</template>
+          </n-switch>
+
+          <n-button type="info" @click="saveComment" v-if="entry.title && entry.num_id">Save</n-button>
+        </n-space>
+      </div>
+
+      <div class="box">
+        <n-space justify="center">
+          <n-input v-model:value="entry.num_id" style="width:75px;" type="text" placeholder="ID" />
+          <n-dropdown trigger="hover" @select="addTag" :options="tagsList">
+            <n-button> + tag</n-button>
+          </n-dropdown>
+          <n-dropdown trigger="hover" @select="addIssue" :options="issuesList">
+            <n-button> + issue</n-button>
+          </n-dropdown>
+        </n-space>
+      </div>
+
+      <n-text type="warning" v-if="!entry.num_id">ID should not be empty!</n-text>
+
+      <div class="box">
+        <n-input v-model:value="entry.title" type="text" placeholder="Heading" class="maininput" />
+        <!-- <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" /> -->
+      </div>
+
+      <div class="box">
+        <n-tag v-for="tag in entry.tags" :key="tag" closable @close="removeTag(tag)" style="margin-right: 10px;" size="small">
+          {{tagsList.filter(x => x.key == tag)?.shift()?.["label"]}}
         </n-tag>
       </div>
-      <div style="margin-bottom:.5rem;">
-        <n-input v-model:value="entry.num_id" style="width:75px;" type="text" placeholder="ID" />
-        <n-switch style="padding-left:1rem;padding-bottom: 5px;" v-model:value="entry.published">
-          <template #checked>Published</template>
-          <template #unchecked>Draft</template>
-        </n-switch>
-        <router-link :to="'/preview/'+entry.id" style="margin-left:5px;">Preview</router-link>
-        <n-dropdown trigger="hover" @select="addTag" :options="tagsList">
-          <n-button> + tag</n-button>
-        </n-dropdown>
-        <n-dropdown trigger="hover" @select="addIssue" :options="issuesList">
-          <n-button> + issue</n-button>
-        </n-dropdown>
-
-      </div>
-      <n-text type="warning" v-if="!entry.num_id">ID should not be empty!</n-text>
-      <n-input v-model:value="entry.title" type="text" placeholder="Heading" class="maininput" />
-      <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" />
-      <n-tag v-for="tag in entry.tags" :key="tag" closable @close="removeTag(tag)" style="margin-right: 10px;" size="small">
-        {{tagsList.filter(x => x.key == tag)?.shift()?.["label"]}}
-      </n-tag>
 
       <n-text type="warning" v-if="!entry.title">Heading should not be empty!</n-text>
-      <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" />
+      <!-- <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" /> -->
       <n-input v-model:value="entry.trans" type="text" placeholder="Translation" />
       <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" />
-      <Tiptap ref="briefRef" editorclass="briefeditor" />
-      <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" />
-      <Tiptap ref="contentRef" editorclass="fulleditor" />
-    </div>
-    <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" />
-    <n-button type="primary" @click="saveComment" v-if="entry.title && entry.num_id">Save</n-button>
 
-  </div>
-  <div v-else>
-    loading...
-     <!-- <n-spin size="large" /> -->
+      <Tiptap ref="briefRef" editorclass="briefeditor" />
+
+      <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" />
+
+      <Tiptap ref="contentRef" editorclass="fulleditor" />
+
+      <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" />
+
+    </div>
   </div>
 
 </template>
@@ -55,6 +79,7 @@
   import { ref, reactive, onBeforeMount, computed, onBeforeUnmount, onMounted } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
   import Tiptap from './Tiptap.vue';
+  import router from '../router';
   import { useRoute } from 'vue-router';
   // defineProps<{ msg: string }>()
 
@@ -79,12 +104,10 @@
   };
 
   const removeIssue = id => {
-    console.log('!!');
     entry.issues = entry.issues.filter(x => x !== id);
   };
 
   const addIssue = id => {
-    console.log(id);
     entry.issues.push(id);
   };
 
@@ -94,9 +117,13 @@
     event.returnValue = '';
   };
 
+  const showPreview = id => {
+    router.push('/preview/' + id);
+  };
+
   onBeforeRouteLeave(() => {
     // https://next.router.vuejs.org/guide/advanced/composition-api.html#navigation-guards
-    if (checkIsEntryUpdated()){
+    if (checkIsEntryUpdated()) {
       const answer = window.confirm('Leave the page?\nChanges you made may not be saved');
       // cancel the navigation and stay on the same page
       if (!answer) return false;
@@ -129,7 +156,7 @@
       Object.assign(issuesList, issueListData);
 
       Object.assign(issuesKV, Object.fromEntries(issueData.map(x => [x.id, x])));
-      console.log(issuesKV);
+      // console.log(issuesKV);
 
       const data = await store.get(`comment/${id}`);
       console.log('data from server', data);
@@ -148,7 +175,6 @@
       ready.value = true;
     }
   });
-
 
   const checkIsEntryUpdated = () => {
     const editorInstance = contentRef.value?.editor;
@@ -175,7 +201,7 @@
     const data = await store.post('comment', entry);
     console.log(JSON.stringify(entry.content_json));
     console.log(entry.content_html);
-    if(data){
+    if (data) {
       fromDB.value = JSON.stringify(entry);
     }
   };
@@ -184,6 +210,9 @@
 
 <style>
 
+  .box {
+    margin-bottom: 0.5rem;
+  }
   .maininput div div input {
     font-weight: bold;
   }
