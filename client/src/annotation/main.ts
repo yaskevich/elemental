@@ -13,15 +13,15 @@ declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     annotation: {
       /**
-       * Set a annotation mark
+       * Set an annotation mark
        */
       setAnnotation: (attributes?: { class: string }) => ReturnType,
       /**
-       * Toggle a annotation mark
+       * Toggle an annotation mark
        */
       toggleAnnotation: (attributes?: { class: string }) => ReturnType,
       /**
-       * Unset a annotation mark
+       * Unset an annotation mark
        */
       unsetAnnotation: () => ReturnType,
     }
@@ -36,14 +36,16 @@ export const Annotation = Mark.create<AnnotationOptions>({
 
   addOptions() {
     return {
+      classes: [''],
       HTMLAttributes: {},
     }
   },
 
   addAttributes() {
+    // console.log("available annotation classes", this.options.classes);
     return {
       "class": {
-        default: '',
+        default: this.options.classes[0],
         parseHTML: element => element.getAttribute('class'),
         renderHTML: attributes => {
           if (!attributes.class) {
