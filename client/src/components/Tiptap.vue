@@ -15,6 +15,11 @@
         Clear Annotation
     </button>
 
+    <button @click="editor.chain().focus().toggleBlockquote().run()" :class="{ 'is-active': editor.isActive('blockquote') }">
+      toggleBlockquote
+    </button>
+
+
     <editor-content :editor="editor" :class="`${editorclass} annotation`"/>
 
   </div>
@@ -33,6 +38,7 @@
   import Color from '@tiptap/extension-color';
   import Placeholder from '@tiptap/extension-placeholder';
   import Annotation from '../annotation';
+  import Blockquote from '@tiptap/extension-blockquote';
 
   export default {
     components: {
@@ -61,6 +67,11 @@
           }),
           Annotation.configure({
             classes,
+          }),
+          Blockquote.configure({
+            HTMLAttributes: {
+              class: 'quote',
+            },
           }),
           // StarterKit,
         ],
@@ -91,6 +102,10 @@
     display: inline-block;
     text-align: left;
     min-width:300px;
+
+    blockquote.quote {
+      background-color: lightgray;
+    }
 
     p var {
       border-radius: 1px;
