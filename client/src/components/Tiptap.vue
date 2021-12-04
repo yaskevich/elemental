@@ -1,17 +1,21 @@
 <template>
 
   <div v-if="editor">
-    <button @click="editor.chain().focus().toggleAnnotation().run()" :class="{ 'is-active': editor.isActive('highlight') }">Toggle Annotation</button>
 
-    <button @click="editor.chain().focus().toggleAnnotation({ class: 'red' }).run()" :class="{ 'is-active': editor.isActive('highlight', { class: 'red' }) }">
-      red
+    <button @click="editor.chain().focus().toggleAnnotation().run()" :class="{ 'is-active': editor.isActive('annotation') }">Toggle Annotation</button>
+
+    <button v-for="item in classes"
+            @click="editor.chain().focus().toggleAnnotation({ class: item }).run()"
+            :class="{ 'is-active': editor.isActive('annotation', { class: item }) }">
+        {{item}}
     </button>
 
-    <button @click="editor.chain().focus().unsetAnnotation().run()" :disabled="!editor.isActive('annotation')">
-      Clear Annotation
+    <button @click="editor.chain().focus().unsetAnnotation().run()"  :disabled="!editor.isActive('annotation')">
+        Clear Annotation
     </button>
 
-    <editor-content :editor="editor" style="display: inline-block; text-align: left;min-width:300px;" :class="editorclass + ' annotation'" />
+    <editor-content :editor="editor" :class="`${editorclass} annotation`"/>
+
   </div>
 
 </template>
@@ -38,6 +42,8 @@
     },
 
     setup() {
+      const classes = ['error', 'name', 'example', 'book'];
+
       const editor = new Editor({
         content: '',
         autofocus: 'end',
@@ -53,19 +59,19 @@
             placeholder: 'Start writing your comment...',
           }),
           Annotation.configure({
-            multicolor: true,
+            classes,
           }),
           // StarterKit,
         ],
       });
 
-      return { editor };
+      return { editor, classes };
     },
   };
 
 </script>
 
-<style>
+<style lang="scss">
 
   .ProseMirror p {
     margin: 1em 0;
@@ -79,11 +85,37 @@
     pointer-events: none;
     height: 0;
   }
-  .annotation p var.red {
-    color: white;
-    background-color: red;
-    padding: 3px;
-    font-style:normal;
+
+  .annotation {
+    display: inline-block;
+    text-align: left;
+    min-width:300px;
+
+    p var {
+      border-radius: 1px;
+
+      padding: 2px 5px 2px 5px;
+      font-style: normal;
+
+      &.error {
+        color: black;
+        background-color: yellow;
+        font-family: monospace;
+        border: 1px solid red;
+      }
+
+      &.name {
+        color: red;
+        background-color: pink;
+      }
+
+      &.example {
+        color: white;
+        // background-color: #f6f8fa;
+        background-color: #748393;
+      }
+
+    }
   }
 
   .fulleditor div {
