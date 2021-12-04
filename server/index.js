@@ -146,7 +146,7 @@ const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
     // console.log("comment id", req.params['id']);
     // const comments = await db.getComments(req.params['id']);
     // console.log(req.body);
-    const result = db.setComment(req.body);
+    const result = await db.setComment(req.body);
     res.json(result);
   });
 
