@@ -310,9 +310,9 @@ export default {
     return data;
   },
   async setComment(params) {
-    let {id, text_id, title, published, content_json,  content_html, content_text, brief_json, brief_html, brief_text, trans, num_id, tags, issues } = params;
-    const tagsAsArray = `{${tags.join(',')}}`;
-    const issuesAsArray = `{${issues.join(',')}}`;
+    let {id, text_id, title, published, content_json,  content_html, content_text, brief_json, brief_html, brief_text, trans, num_id, tags = [], issues = [] } = params;
+    const tagsAsArray = `{${tags.length? tags.join(','): ''}}`;
+    const issuesAsArray = `{${issues.length? issues.join(','): ''}}`;
     text_id = Number(text_id);
     const values = [text_id, title, published, content_json,  content_html, content_text, brief_json, brief_html, brief_text, trans, num_id, tagsAsArray, issuesAsArray];
 
@@ -325,13 +325,14 @@ export default {
       tags = $12, issues = $13
       WHERE id = $14`;
     } else {
-      sql = `INSERT INTO comments (text_id, title, published, content_json, content_html, content_text, brief_json, brief_html, brief_text, trans, tags, issues) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13);`;
+      sql = `INSERT INTO comments (text_id, title, published, content_json, content_html, content_text, brief_json, brief_html, brief_text, trans, num_id, tags, issues) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`;
     }
+    sql += " RETURNING id";
 
-    let data = [];
+    let data = {};
     try {
       const result = await pool.query(sql, values);
-      data = result?.rows;
+      data = result?.rows?.[0];
     } catch (err) {
       console.error(err);
     }
