@@ -19,14 +19,14 @@
       <div class="box">
         <n-space justify="center">
           <!-- <router-link :to="'/preview/'+entry.id">Preview</router-link> -->
-          <n-button secondary type="info" @click="showPreview(entry.id)">Preview</n-button>
+          <n-button secondary type="info" :disabled="!id" @click="showPreview(entry.id)">Preview</n-button>
 
           <n-switch style="margin-top: .4rem;" v-model:value="entry.published" :round="false">
             <template #checked>Published</template>
             <template #unchecked>Draft</template>
           </n-switch>
 
-          <n-button type="info" @click="saveComment" v-if="entry.title && entry.num_id">Save</n-button>
+          <n-button type="info" @click="saveComment" :disabled="!(entry.title && entry.num_id)">Save</n-button>
         </n-space>
       </div>
 
@@ -173,6 +173,8 @@
         }
       }
       ready.value = true;
+    } else {
+      ready.value = true;
     }
   });
 
@@ -201,8 +203,10 @@
     const data = await store.post('comment', entry);
     console.log(JSON.stringify(entry.content_json));
     console.log(entry.content_html);
-    if (data) {
+    if (data?.data?.id) {
+      entry.id = data.data.id;
       fromDB.value = JSON.stringify(entry);
+      router.replace('/comment/'+entry.id)
     }
   };
 
