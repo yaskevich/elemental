@@ -32,6 +32,9 @@
   const vuerouter = useRoute();
   const id = vuerouter.params.id || store.state.user.text_id;
 
+  const comments = reactive([]);
+  const issues = reactive({});
+
   // defineProps<{ msg: string }>()
   const getID = row => {
     return row.id;
@@ -51,6 +54,8 @@
           {
             size: 'small',
             type: row.published ? '' : 'warning',
+            secondary: row.published ? undefined : true,
+             // <n-button strong secondary type="warning">Warning</n-button>
             onClick: () => editComment(row.id),
           },
           { default: () => row.title }
@@ -83,21 +88,30 @@
       title: 'Issues',
       key: 'issues',
       render(row) {
-        const issues = row.issues.map(tagKey => {
+        const issuesList = row.issues.map(d => {
           return h(
-            NTag,
-            {
-              style: {
-                marginRight: '6px',
-              },
-              type: 'info',
-            },
-            {
-              default: () => tagKey,
-            }
-          );
+                  'div',
+                  {
+                    class: 'square',
+                    style: `background-color:${issues?.[d]?.color||'black'}; margin: 2px;`,
+                    title: issues?.[d]?.ru
+                  },
+                  ''
+                  )
+          // return h(
+          //   NTag,
+          //   {
+          //     style: {
+          //       marginRight: '6px',
+          //     },
+          //     type: 'info',
+          //   },
+          //   {
+          //     default: () => d,
+          //   }
+          // );
         });
-        return issues;
+        return issuesList;
       },
     },
     // {
@@ -116,8 +130,12 @@
     // },
   ];
 
-  const comments = reactive([]);
   onBeforeMount(async () => {
+    const issuesData = await store.get('issues');
+    const issuesObject = Object.fromEntries(issuesData.map(x => [x.id, x]));
+    Object.assign(issues, issuesObject);
+    // console.log('issues from server', issues);
+
     if (id) {
       localStorage.setItem('text_id', id);
       const data = await store.get('comments/' + id);
@@ -134,6 +152,10 @@
 
 </script>
 
-<style scoped>
-
+<style >
+.square {
+   width: 50%;
+   height: 0;
+   padding-bottom: 50%;
+}
 </style>
