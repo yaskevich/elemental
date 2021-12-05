@@ -7,6 +7,7 @@ import {
 
 export interface AnnotationOptions {
   HTMLAttributes: Record<string, any>,
+  classes: Array<string>,
 }
 
 declare module '@tiptap/core' {

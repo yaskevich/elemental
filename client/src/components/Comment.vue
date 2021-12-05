@@ -51,7 +51,7 @@
 
       <div class="box">
         <n-tag v-for="tag in entry.tags" :key="tag" closable @close="removeTag(tag)" style="margin-right: 10px;" size="small">
-          {{tagsList.filter(x => x.key == tag)?.shift()?.["label"]}}
+          {{tagsList.filter((x:any) => x.key == tag)?.shift()?.["label"]}}
         </n-tag>
       </div>
 
@@ -85,40 +85,64 @@
 
   const vuerouter = useRoute();
   const id = vuerouter.params.id;
-  const entry = reactive({});
+
+  interface IEntry {
+    content_json: Object;
+    content_html: string;
+    content_text: string;
+    brief_json: Object;
+    brief_html: string;
+    brief_text: string;
+    text_id: number;
+    id: number;
+    issues: Array<number>;
+    tags: Array<number>;
+    num_id: string;
+    published: boolean;
+    trans: string;
+    title: string;
+  }
+
+  // const entry: IEntry = reactive<IEntry>({});
+  const entry: IEntry = reactive({}) as IEntry;
+
   const fromDB = ref('');
-  const briefRef = ref(null);
-  const contentRef = ref(null);
+  const briefRef = ref<HTMLDivElement>();
+  const contentRef = ref<HTMLDivElement>();
   const ready = ref(false);
+
+  interface keyable {
+    [key: string]: any;
+  }
 
   const tagsList = reactive([]);
   const issuesList = reactive([]);
-  const issuesKV = reactive({});
+  const issuesKV: keyable = reactive({}) as keyable;
 
-  const removeTag = id => {
+  const removeTag = (id: number) => {
     entry.tags = entry.tags.filter(x => x !== id);
   };
 
-  const addTag = id => {
+  const addTag = (id: number) => {
     entry.tags.push(id);
   };
 
-  const removeIssue = id => {
+  const removeIssue = (id: number) => {
     entry.issues = entry.issues.filter(x => x !== id);
   };
 
-  const addIssue = id => {
+  const addIssue = (id: number) => {
     entry.issues.push(id);
   };
 
-  const askToLeave = event => {
+  const askToLeave = (event: any) => {
     if (!checkIsEntryUpdated()) return;
     event.preventDefault();
     event.returnValue = '';
   };
 
-  const showPreview = id => {
-    router.push('/preview/' + id);
+  const showPreview = (id: number) => {
+    router.push(`/preview/${id}`);
   };
 
   onBeforeRouteLeave(() => {
@@ -139,25 +163,23 @@
   });
 
   onBeforeMount(async () => {
+    const tagData = await store.get('tags');
+    // console.log("tags", tagData);
+    Object.assign(
+      tagsList,
+      tagData.map((x: any) => ({ label: x.ru, key: x.id, disabled: computed(() => entry.tags?.includes(x.id)) }))
+    );
+    const issueData = await store.get('issues');
+    const issueListData = issueData.map((x: any) => ({
+      label: x.ru,
+      key: x.id,
+      disabled: computed(() => entry.issues?.includes(x.id)),
+    }));
+    Object.assign(issuesList, issueListData);
+
+    Object.assign(issuesKV, Object.fromEntries(issueData.map((x: any) => [x.id, x])));
+    // console.log(issuesKV);
     if (id) {
-      const tagData = await store.get('tags');
-      // console.log("tags", tagData);
-      Object.assign(
-        tagsList,
-        tagData.map(x => ({ label: x.ru, key: x.id, disabled: computed(() => entry.tags?.includes(x.id)) }))
-      );
-
-      const issueData = await store.get('issues');
-      const issueListData = issueData.map(x => ({
-        label: x.ru,
-        key: x.id,
-        disabled: computed(() => entry.issues?.includes(x.id)),
-      }));
-      Object.assign(issuesList, issueListData);
-
-      Object.assign(issuesKV, Object.fromEntries(issueData.map(x => [x.id, x])));
-      // console.log(issuesKV);
-
       const data = await store.get(`comment/${id}`);
       console.log('data from server', data);
       if (data.length) {
@@ -166,10 +188,11 @@
         fromDB.value = JSON.stringify(data[0]);
         Object.assign(entry, data[0]);
 
-        const editorInstance = contentRef.value?.editor;
-        if (editorInstance) {
+        if ((contentRef.value as any)?.editor) {
+          const editorInstance = (contentRef.value as any).editor;
+          const briefInstance = (briefRef.value as any).editor;
           editorInstance.commands.setContent(data[0].content_json, false);
-          briefRef.value.editor.commands.setContent(data[0].brief_json, false);
+          briefInstance.commands.setContent(data[0].brief_json, false);
         }
       }
       ready.value = true;
@@ -179,10 +202,9 @@
   });
 
   const checkIsEntryUpdated = () => {
-    const editorInstance = contentRef.value?.editor;
-    const briefInstance = briefRef.value?.editor;
-
-    if (editorInstance) {
+    if ((contentRef.value as any)?.editor) {
+      const editorInstance = (contentRef.value as any).editor;
+      const briefInstance = (briefRef.value as any).editor;
       entry.content_json = editorInstance.getJSON();
       entry.content_html = editorInstance.getHTML();
       entry.content_text = editorInstance.getText();
@@ -191,13 +213,15 @@
       entry.brief_html = briefInstance.getHTML();
       entry.brief_text = briefInstance.getText();
     }
+    // console.log("1", fromDB.value);
+    // console.log("2", JSON.stringify(entry));
     return !(fromDB.value === JSON.stringify(entry));
   };
 
   const saveComment = async () => {
     if (!entry.text_id) {
       console.log('no text_id', store.state.user.text_id);
-      entry.text_id = store.state.user.text_id;
+      entry.text_id = store.state.user.text_id as number;
     }
     checkIsEntryUpdated();
     const data = await store.post('comment', entry);
@@ -206,7 +230,7 @@
     if (data?.data?.id) {
       entry.id = data.data.id;
       fromDB.value = JSON.stringify(entry);
-      router.replace('/comment/'+entry.id)
+      router.replace('/comment/' + entry.id);
     }
   };
 

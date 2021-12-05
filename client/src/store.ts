@@ -2,18 +2,28 @@ import { reactive } from "vue";
 import axios from "axios";
 import project from '../package.json';
 
-const state = reactive({
+interface IState {
+  token?: string,
+  error?: string,
+  user: {
+    text_id: number,
+    username: string,
+    server: string,
+    commit: string,
+  },
+};
+
+const state:IState = reactive({
   token: localStorage.getItem('token') || '',
-  user: { text_id: localStorage.getItem('text_id') || null, },
+  user: { text_id: Number(localStorage.getItem('text_id')) || null, },
   error: "",
-});
+}) as IState;
 
 const get = async(route: string, id?: string): Promise<any> => {
-  // if (state.key) {
+  // if (state.token) {
     try {
-      const config = {};
-       // const config = state.key ?
-       // { headers: { Authorization: "Bearer " + state.key }, "params": {} }: {};
+       const config = state.token ?
+       { headers: { Authorization: "Bearer " + state.token }, "params": {} }: {};
 
        if(id) {
           config["params"] = { id: id };

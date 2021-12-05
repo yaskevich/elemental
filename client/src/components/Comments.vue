@@ -24,7 +24,7 @@
 <script setup lang="ts">
 
   import store from '../store';
-  import { ref, reactive, onBeforeMount, h } from 'vue';
+  import { ref, reactive, onBeforeMount, h, DefineComponent } from 'vue';
   import router from '../router';
   import { useRoute } from 'vue-router';
   import { NTag, NButton, NText } from 'naive-ui';
@@ -33,24 +33,29 @@
   const id = vuerouter.params.id || store.state.user.text_id;
 
   const comments = reactive([]);
-  const issues = reactive({});
+
+  interface keyable {
+    [key: string]: any
+  };
+  const issues: keyable = reactive({}) as keyable;
 
   // defineProps<{ msg: string }>()
-  const getID = row => {
+  const getID = (row:any) => {
     return row.id;
   };
 
-  const editComment = id => {
-    router.push('/comment/' + id);
+  const editComment = (id:number) => {
+    router.push(`/comment/${id}`);
   };
 
   const columns = [
     {
       title: 'Title',
       key: 'title',
-      render(row) {
+      render(row:any) {
         return h(
-          NButton,
+          // workaround for vue-tsc. Maybe, not good solution
+          NButton as unknown as DefineComponent,
           {
             size: 'small',
             type: row.published ? '' : 'warning',
@@ -70,7 +75,7 @@
     //   title: 'Status',
     //   key: 'published',
     //   align: 'center',
-    //   render(row) {
+    //   render(row:any) {
     //     // <span v-if="item.published" style="margin-left:10px;color:blue;">✓</span>
     //     // return row.published ? "true" : "false";
     //     return h(
@@ -87,8 +92,8 @@
     {
       title: 'Issues',
       key: 'issues',
-      render(row) {
-        const issuesList = row.issues.map(d => {
+      render(row:any) {
+        const issuesList = row.issues.map((d:string) => {
           return h(
                   'div',
                   {
@@ -132,12 +137,12 @@
 
   onBeforeMount(async () => {
     const issuesData = await store.get('issues');
-    const issuesObject = Object.fromEntries(issuesData.map(x => [x.id, x]));
+    const issuesObject = Object.fromEntries(issuesData.map((x:any) => [x.id, x]));
     Object.assign(issues, issuesObject);
     // console.log('issues from server', issues);
 
     if (id) {
-      localStorage.setItem('text_id', id);
+      localStorage.setItem('text_id', String(id));
       const data = await store.get('comments/' + id);
       Object.assign(comments, data);
       console.log('data from server', data);

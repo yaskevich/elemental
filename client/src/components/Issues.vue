@@ -40,21 +40,27 @@
 
   const getColor = () => "#" + Math.floor(Math.random() * (1 << 3 * 8)).toString(16).padStart(6, "0");
 
+  interface IIssue {
+    id?: number,
+    en: string,
+    ru: string,
+    color: string,
+  };
 
-  const newIssue = reactive({ en: '', ru: '', color: getColor() });
-  const issues = reactive([]);
+  const newIssue:IIssue = reactive({ en: '', ru: '', color: getColor() }) as IIssue;
+
+  const issues:Array<IIssue> = reactive([]) as Array<IIssue>;
+
   onBeforeMount(async () => {
     const data = await store.get('issues');
     Object.assign(issues, data);
     console.log('data from server', data);
   });
 
-  const editIssue = async issue => {
+  const editIssue = async (issue:IIssue) => {
     console.log('edit issue', issue);
     if (issue.en && issue.ru && issue.color){
-
-
-    const params = {};
+    const params: IIssue = { } as IIssue;
     if (issue?.id) {
       params.id = issue.id;
     }

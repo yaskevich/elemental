@@ -29,17 +29,26 @@
   import store from '../store';
   import { ref, reactive, onBeforeMount } from 'vue';
 
+  interface ITag {
+    id?: number,
+    en: string,
+    ru: string,
+  };
+
   const newTag = reactive({ en: '', ru: '' });
-  const tags = reactive([]);
+  const tags:Array<ITag> = reactive([] as Array<ITag>);
+
   onBeforeMount(async () => {
     const data = await store.get('tags');
     Object.assign(tags, data);
     console.log('data from server', data);
   });
 
-  const editTag = async tag => {
+
+
+  const editTag = async (tag:ITag) => {
     console.log('edit tag', tag);
-    const params = {};
+    const params: ITag = { } as ITag;
     if (tag?.id) {
       params.id = tag.id;
     }

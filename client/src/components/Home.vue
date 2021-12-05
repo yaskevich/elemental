@@ -13,9 +13,9 @@ onBeforeMount(async () => {
   data.value = await store.get('texts');
 });
 
-const goToText = (id) => {
-  console.log("go to text", id);
-  router.push('/comments/'+id);
+const goToText = (id: number) => {
+  // console.log("go to text", id);
+  router.push(`/comments/${id}`);
 }
 
 const state = store.state;
