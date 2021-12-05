@@ -38,7 +38,8 @@
   import store from '../store';
   import { ref, reactive, onBeforeMount } from 'vue';
 
-  const getColor = () => '#' + Math.floor(Math.random() * 16777215).toString(16);
+  const getColor = () => "#" + Math.floor(Math.random() * (1 << 3 * 8)).toString(16).padStart(6, "0");
+
 
   const newIssue = reactive({ en: '', ru: '', color: getColor() });
   const issues = reactive([]);
