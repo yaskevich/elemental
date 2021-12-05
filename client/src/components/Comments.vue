@@ -1,19 +1,21 @@
 <template>
 
-  <h1>Comments</h1>
-  <div v-if="!id">
-    <n-text type="error">Select specific text before (at Home screen)!</n-text>
-  </div>
-  <n-button type="info" dashed @click="addComment">Create new comment +</n-button>
-  <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" />
   <div class="center-column">
     <div class="left-column">
-      <div v-for="item in comments" :key="item.id" style="padding:.5rem;">
-        {{item.num_id}} ▪
-        <router-link :to="'/comment/'+item.id" style="text-decoration: none;">
-          {{item.title}} <span v-if="item.published" style="margin-left:10px;color:blue;">✓</span>
-        </router-link>
+      <n-space justify="center">
+        <div>
+          <h3>Comments</h3>
+        </div>
+        <div>
+          <h3 style="margin-top:.7em;margin-left: 5em;">
+            <n-button type="info" dashed @click="addComment">+ new</n-button>
+          </h3>
+        </div>
+      </n-space>
+      <div v-if="!id">
+        <n-text type="error">Select specific text before (at Home screen)!</n-text>
       </div>
+      <n-data-table remote :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" />
     </div>
   </div>
 
@@ -22,14 +24,97 @@
 <script setup lang="ts">
 
   import store from '../store';
-  import { ref, reactive, onBeforeMount } from 'vue';
+  import { ref, reactive, onBeforeMount, h } from 'vue';
   import router from '../router';
   import { useRoute } from 'vue-router';
+  import { NTag, NButton, NText } from 'naive-ui';
 
   const vuerouter = useRoute();
   const id = vuerouter.params.id || store.state.user.text_id;
 
   // defineProps<{ msg: string }>()
+  const getID = row => {
+    return row.id;
+  };
+
+  const editComment = id => {
+    router.push('/comment/' + id);
+  };
+
+  const columns = [
+    {
+      title: 'Title',
+      key: 'title',
+      render(row) {
+        return h(
+          NButton,
+          {
+            size: 'small',
+            type: row.published ? '' : 'warning',
+            onClick: () => editComment(row.id),
+          },
+          { default: () => row.title }
+        );
+      },
+    },
+    {
+      title: 'ID',
+      key: 'num_id',
+    },
+    // {
+    //   title: 'Status',
+    //   key: 'published',
+    //   align: 'center',
+    //   render(row) {
+    //     // <span v-if="item.published" style="margin-left:10px;color:blue;">✓</span>
+    //     // return row.published ? "true" : "false";
+    //     return h(
+    //       NText,
+    //       {
+    //         type: 'info',
+    //       },
+    //       {
+    //         default: () => row.published ? '✓': '',
+    //       }
+    //     );
+    //   }
+    // },
+    {
+      title: 'Issues',
+      key: 'issues',
+      render(row) {
+        const issues = row.issues.map(tagKey => {
+          return h(
+            NTag,
+            {
+              style: {
+                marginRight: '6px',
+              },
+              type: 'info',
+            },
+            {
+              default: () => tagKey,
+            }
+          );
+        });
+        return issues;
+      },
+    },
+    // {
+    //   title: 'Action',
+    //   key: 'actions',
+    //   render(row) {
+    //     return h(
+    //       NButton,
+    //       {
+    //         size: 'small',
+    //         onClick: () => sendMail(row),
+    //       },
+    //       { default: () => 'Edit' }
+    //     );
+    //   },
+    // },
+  ];
 
   const comments = reactive([]);
   onBeforeMount(async () => {
@@ -45,8 +130,7 @@
     router.push('/comment');
   };
 
-  // const count = ref(0)
-  // const fruits: string[] = ['Apple', 'Orange', 'Banana'];
+  const pagination = { pageSize: 10 };
 
 </script>
 
