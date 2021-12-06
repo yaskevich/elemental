@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@tiptap/extension-blockquote": "^2.0.0-beta.26",
+    "@tiptap/extension-bold": "^2.0.0-beta.25",
     "@tiptap/extension-color": "^2.0.0-beta.9",
     "@tiptap/extension-document": "^2.0.0-beta.15",
     "@tiptap/extension-history": "^2.0.0-beta.21",
