@@ -2,25 +2,28 @@
 
   <div v-if="editor">
 
-    <button @click="editor.chain().focus().toggleAnnotation().run()" :class="{ 'is-active': editor.isActive('annotation') }">Toggle Annotation</button>
+    <!-- <button @click="editor.chain().focus().toggleAnnotation().run()" :class="{ 'is-active': editor.isActive('annotation') }">Toggle Annotation</button> -->
 
     <button v-for="item in classes"
             @click="editor.chain().focus().toggleAnnotation({ class: item }).run()"
             :class="{ 'is-active': editor.isActive('annotation', { class: item }) }"
             style="background-color: #c9c9ff;">
-        {{item}}
-    </button>
+          {{item}}
+      </button>
 
-    <button @click="editor.chain().focus().unsetAnnotation().run()"  :disabled="!editor.isActive('annotation')">
-        Clear Annotation
-    </button>
+    <!-- <button @click="editor.chain().focus().unsetAnnotation().run()" :disabled="!editor.isActive('annotation')">
+          Clear Annotation
+      </button> -->
 
     <button @click="editor.chain().focus().toggleBlockquote().run()" :class="{ 'is-active': editor.isActive('blockquote') }">
-      toggleBlockquote
-    </button>
+        quote
+      </button>
 
+    <button @click="editor.commands.toggleBold()" :class="{ 'is-active': editor.isActive('bold') }">
+        emphasized
+      </button>
 
-    <editor-content :editor="editor" :class="`${editorclass} annotation`"/>
+    <editor-content :editor="editor" :class="`${editorclass} annotation`" />
 
   </div>
 
@@ -39,6 +42,7 @@
   import Placeholder from '@tiptap/extension-placeholder';
   import Annotation from '../annotation';
   import Blockquote from '@tiptap/extension-blockquote';
+  import Bold from '@tiptap/extension-bold';
 
   export default {
     components: {
@@ -50,7 +54,9 @@
 
     setup() {
       const classes = ['error', 'name', 'example', 'book'];
-
+      const CustomBlockquote = Blockquote.extend({
+        content: 'paragraph*',
+      });
       const editor = new Editor({
         content: '',
         autofocus: 'end',
@@ -68,9 +74,14 @@
           Annotation.configure({
             classes,
           }),
-          Blockquote.configure({
+          CustomBlockquote.configure({
             HTMLAttributes: {
               class: 'quote',
+            },
+          }),
+          Bold.configure({
+            HTMLAttributes: {
+              class: 'em',
             },
           }),
           // StarterKit,
@@ -101,7 +112,7 @@
   .annotation {
     display: inline-block;
     text-align: left;
-    min-width:300px;
+    min-width: 300px;
 
     blockquote.quote {
       background-color: lightgray;
@@ -138,8 +149,6 @@
         border: 1 px dashed pink;
         font-style: italic;
       }
-
-
     }
   }
 
