@@ -8,20 +8,22 @@
             @click="editor.chain().focus().toggleAnnotation({ class: item }).run()"
             :class="{ 'is-active': editor.isActive('annotation', { class: item }) }"
             style="background-color: #c9c9ff;">
-          {{item}}
-      </button>
+            {{item}}
+        </button>
 
     <!-- <button @click="editor.chain().focus().unsetAnnotation().run()" :disabled="!editor.isActive('annotation')">
-          Clear Annotation
-      </button> -->
+            Clear Annotation
+        </button> -->
 
     <button @click="editor.chain().focus().toggleBlockquote().run()" :class="{ 'is-active': editor.isActive('blockquote') }">
-        quote
-      </button>
+          quote
+        </button>
 
     <button @click="editor.commands.toggleBold()" :class="{ 'is-active': editor.isActive('bold') }">
-        emphasized
-      </button>
+          emphasized
+        </button>
+
+    <button @click="editor.chain().focus().clearNodes().unsetAllMarks().run()">clear formatting</button>
 
     <editor-content :editor="editor" :class="`${editorclass} annotation`" />
 
