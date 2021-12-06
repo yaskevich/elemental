@@ -201,13 +201,13 @@
     }
   });
 
-  const checkValidMarkup = (document: Object) => {
+  const checkValidMarkup = (document: any) => {
     for (let paragraph of document.content){
       // console.log(paragraph);
       if(paragraph?.content){
         for (let node of paragraph.content){
           // console.log(node.text, "type", node.type);
-          if (node.marks?.length === 1 && node.marks.filter(x => x.type === "bold")?.length === 1) {
+          if (node.marks?.length === 1 && node.marks.filter((x:any) => x.type === "bold")?.length === 1) {
             // console.log("error", node);
             console.log("fix!");
             delete node.marks;
@@ -246,16 +246,19 @@
       entry.text_id = store.state.user.text_id as number;
     }
 
-    checkIsEntryUpdated();
-    const data = await store.post('comment', entry);
-
     console.log(JSON.stringify(entry.long_json));
     console.log(entry.long_html);
 
-    if (data?.data?.id) {
-      entry.id = data.data.id;
-      fromDB.value = JSON.stringify(entry);
-      router.replace('/comment/' + entry.id);
+    if (checkIsEntryUpdated()){
+      console.log("changes → DB");
+      const data = await store.post('comment', entry);
+      if (data?.data?.id) {
+        entry.id = data.data.id;
+        fromDB.value = JSON.stringify(entry);
+        router.replace('/comment/' + entry.id);
+      }
+    } else {
+      console.log("no changes – spare traffic...");
     }
   };
 
