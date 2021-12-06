@@ -310,22 +310,22 @@ export default {
     return data;
   },
   async setComment(params) {
-    let {id, text_id, title, published, content_json,  content_html, content_text, brief_json, brief_html, brief_text, trans, num_id, tags = [], issues = [] } = params;
+    let {id, text_id, title, published, long_json,  long_html, long_text, brief_json, brief_html, brief_text, trans, num_id, tags = [], issues = [] } = params;
     const tagsAsArray = `{${tags.length? tags.join(','): ''}}`;
     const issuesAsArray = `{${issues.length? issues.join(','): ''}}`;
     text_id = Number(text_id);
-    const values = [text_id, title, published, content_json,  content_html, content_text, brief_json, brief_html, brief_text, trans, num_id, tagsAsArray, issuesAsArray];
+    const values = [text_id, title, published, long_json,  long_html, long_text, brief_json, brief_html, brief_text, trans, num_id, tagsAsArray, issuesAsArray];
 
     let sql = "";
     if (id) {
       id =  Number(id);
       values.push(id);
-      sql = `UPDATE comments SET text_id = $1, title = $2, published= $3, content_json = $4, content_html = $5, content_text = $6,
+      sql = `UPDATE comments SET text_id = $1, title = $2, published= $3, long_json = $4, long_html = $5, long_text = $6,
       brief_json = $7, brief_html = $8, brief_text = $9, trans = $10, num_id = $11,
       tags = $12, issues = $13
       WHERE id = $14`;
     } else {
-      sql = `INSERT INTO comments (text_id, title, published, content_json, content_html, content_text, brief_json, brief_html, brief_text, trans, num_id, tags, issues) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`;
+      sql = `INSERT INTO comments (text_id, title, published, long_json, long_html, long_text, brief_json, brief_html, brief_text, trans, num_id, tags, issues) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`;
     }
     sql += " RETURNING id";
 
