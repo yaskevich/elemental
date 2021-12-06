@@ -87,9 +87,9 @@
   const id = vuerouter.params.id;
 
   interface IEntry {
-    content_json: Object;
-    content_html: string;
-    content_text: string;
+    long_json: Object;
+    long_html: string;
+    long_text: string;
     brief_json: Object;
     brief_html: string;
     brief_text: string;
@@ -189,9 +189,9 @@
         Object.assign(entry, data[0]);
 
         if ((contentRef.value as any)?.editor) {
-          const editorInstance = (contentRef.value as any).editor;
+          const longInstance = (contentRef.value as any).editor;
           const briefInstance = (briefRef.value as any).editor;
-          editorInstance.commands.setContent(data[0].content_json, false);
+          longInstance.commands.setContent(data[0].long_json, false);
           briefInstance.commands.setContent(data[0].brief_json, false);
         }
       }
@@ -201,17 +201,39 @@
     }
   });
 
+  const checkValidMarkup = (document: Object) => {
+    for (let paragraph of document.content){
+      // console.log(paragraph);
+      if(paragraph?.content){
+        for (let node of paragraph.content){
+          // console.log(node.text, "type", node.type);
+          if (node.marks?.length === 1 && node.marks.filter(x => x.type === "bold")?.length === 1) {
+            // console.log("error", node);
+            console.log("fix!");
+            delete node.marks;
+          }
+        }
+      }
+    }
+  }
+
   const checkIsEntryUpdated = () => {
     if ((contentRef.value as any)?.editor) {
-      const editorInstance = (contentRef.value as any).editor;
+      const longInstance = (contentRef.value as any).editor;
       const briefInstance = (briefRef.value as any).editor;
-      entry.content_json = editorInstance.getJSON();
-      entry.content_html = editorInstance.getHTML();
-      entry.content_text = editorInstance.getText();
-      // console.log('Content', entry.content_text);
+      entry.long_json = longInstance.getJSON();
+      entry.long_html = longInstance.getHTML();
+      entry.long_text = longInstance.getText();
+      // console.log('Content', entry.long_text);
       entry.brief_json = briefInstance.getJSON();
       entry.brief_html = briefInstance.getHTML();
       entry.brief_text = briefInstance.getText();
+
+      checkValidMarkup(entry.long_json);
+      checkValidMarkup(entry.brief_json);
+
+      longInstance.commands.setContent(entry.long_json, false);
+      briefInstance.commands.setContent(entry.brief_json, false);
     }
     // console.log("1", fromDB.value);
     // console.log("2", JSON.stringify(entry));
@@ -223,10 +245,13 @@
       console.log('no text_id', store.state.user.text_id);
       entry.text_id = store.state.user.text_id as number;
     }
+
     checkIsEntryUpdated();
     const data = await store.post('comment', entry);
-    console.log(JSON.stringify(entry.content_json));
-    console.log(entry.content_html);
+
+    console.log(JSON.stringify(entry.long_json));
+    console.log(entry.long_html);
+
     if (data?.data?.id) {
       entry.id = data.data.id;
       fromDB.value = JSON.stringify(entry);
