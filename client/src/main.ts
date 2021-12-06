@@ -26,10 +26,12 @@ import {
   NDropdown,
   NSpin,
   NDataTable,
+  NDescriptions,
+  NDescriptionsItem,
 } from 'naive-ui'
 
 const naive = create({
-  components: [NButton, NText, NInput, NSwitch, NDivider, NAvatar, NIcon, NSpace, NInputGroup,NDynamicTags, NColorPicker, NMessageProvider, NForm, NFormItem, NRadioGroup, NRadio, NSelect, NDropdown, NTag, NSpin, NDataTable,]
+  components: [NButton, NText, NInput, NSwitch, NDivider, NAvatar, NIcon, NSpace, NInputGroup,NDynamicTags, NColorPicker, NMessageProvider, NForm, NFormItem, NRadioGroup, NRadio, NSelect, NDropdown, NTag, NSpin, NDataTable, NDescriptions, NDescriptionsItem,]
 })
 
 createApp(App)
