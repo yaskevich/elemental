@@ -32,13 +32,17 @@
 
       <div class="box">
         <n-space justify="center">
-          <n-input v-model:value="entry.priority" style="width:75px;" type="text" placeholder="ID" />
+
+          <n-input-number v-model:value="entry.priority" :validator="validateID" style="width:100px;" type="text" placeholder="ID" />
+
           <n-dropdown trigger="hover" @select="addTag" :options="tagsList">
             <n-button> + tag</n-button>
           </n-dropdown>
+
           <n-dropdown trigger="hover" @select="addIssue" :options="issuesList">
             <n-button> + issue</n-button>
           </n-dropdown>
+
         </n-space>
       </div>
 
@@ -144,6 +148,8 @@
   const showPreview = (id: number) => {
     router.push(`/preview/${id}`);
   };
+
+  const validateID = (x:any) => x > 0;
 
   onBeforeRouteLeave(() => {
     // https://next.router.vuejs.org/guide/advanced/composition-api.html#navigation-guards
