@@ -26,13 +26,13 @@
             <template #unchecked>Draft</template>
           </n-switch>
 
-          <n-button type="info" @click="saveComment" :disabled="!(entry.title && entry.num_id)">Save</n-button>
+          <n-button type="info" @click="saveComment" :disabled="!(entry.title && entry.priority)">Save</n-button>
         </n-space>
       </div>
 
       <div class="box">
         <n-space justify="center">
-          <n-input v-model:value="entry.num_id" style="width:75px;" type="text" placeholder="ID" />
+          <n-input v-model:value="entry.priority" style="width:75px;" type="text" placeholder="ID" />
           <n-dropdown trigger="hover" @select="addTag" :options="tagsList">
             <n-button> + tag</n-button>
           </n-dropdown>
@@ -42,7 +42,7 @@
         </n-space>
       </div>
 
-      <n-text type="warning" v-if="!entry.num_id">ID should not be empty!</n-text>
+      <n-text type="warning" v-if="!entry.priority">ID should not be empty!</n-text>
 
       <div class="box">
         <n-input v-model:value="entry.title" type="text" placeholder="Heading" class="maininput" />
@@ -97,7 +97,7 @@
     id: number;
     issues: Array<number>;
     tags: Array<number>;
-    num_id: string;
+    priority: number;
     published: boolean;
     trans: string;
     title: string;

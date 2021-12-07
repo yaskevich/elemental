@@ -69,7 +69,7 @@
     },
     {
       title: 'ID',
-      key: 'num_id',
+      key: 'priority',
     },
     // {
     //   title: 'Status',

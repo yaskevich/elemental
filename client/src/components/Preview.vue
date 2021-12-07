@@ -28,7 +28,7 @@
   const id = vuerouter.params.id;
 
   interface IEntry {
-    content_json: Object, content_html: string, content_text: string, brief_json: Object, brief_html: string, brief_text: string, text_id: number, id: number, issues: Array<number>, tags: Array<number>, num_id: string, published: boolean, trans: string, title: string,
+    content_json: Object, content_html: string, content_text: string, brief_json: Object, brief_html: string, brief_text: string, text_id: number, id: number, issues: Array<number>, tags: Array<number>, priority: number, published: boolean, trans: string, title: string,
   };
 
   const entry: IEntry  = reactive({}) as IEntry;
