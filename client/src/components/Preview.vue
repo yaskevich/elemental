@@ -1,18 +1,22 @@
 <template>
+
   <div style="max-width:300px;margin: 0 auto;text-align: left;">
 
-  <h2>{{entry.title}}</h2>
-  <div>
-    <div style="">
-      <p style="margin-top:-1rem;">Translation: <span style="font-style:italic;">{{entry.trans}}</span></p>
-      <h4>Brief comment</h4>
-      <div v-html="entry.brief_html"></div>
-      <h4>Full comment</h4>
-      <div v-html="entry.content_html"></div>
-      <n-divider style=""/>
-      № {{entry.num_id}}
+    <h2>{{entry.title}}</h2>
+    <div>
+      <div style="">
+        <p style="margin-top:-1rem;">Translation: <span style="font-style:italic;">{{entry.trans}}</span></p>
+        <div v-if="entry.brief_text">
+          <h4>Brief comment</h4>
+          <div v-html="entry.brief_html"></div>
+        </div>
+        <div v-if="entry.long_text">
+          <h4>Full comment</h4>
+          <div v-html="entry.long_html"></div>
+        </div>
+        <n-divider style="" /> № {{entry.priority}}
+      </div>
     </div>
-  </div>
   </div>
 
 </template>
@@ -28,10 +32,23 @@
   const id = vuerouter.params.id;
 
   interface IEntry {
-    content_json: Object, content_html: string, content_text: string, brief_json: Object, brief_html: string, brief_text: string, text_id: number, id: number, issues: Array<number>, tags: Array<number>, priority: number, published: boolean, trans: string, title: string,
-  };
+    long_json: Object;
+    long_html: string;
+    long_text: string;
+    brief_json: Object;
+    brief_html: string;
+    brief_text: string;
+    text_id: number;
+    id: number;
+    issues: Array<number>;
+    tags: Array<number>;
+    priority: number;
+    published: boolean;
+    trans: string;
+    title: string;
+  }
 
-  const entry: IEntry  = reactive({}) as IEntry;
+  const entry: IEntry = reactive({}) as IEntry;
 
   onBeforeMount(async () => {
     if (id) {
