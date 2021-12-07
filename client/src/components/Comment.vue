@@ -46,7 +46,7 @@
         </n-space>
       </div>
 
-      <n-text type="warning" v-if="!entry.priority">ID should not be empty!</n-text>
+      <n-text type="error" v-if="!entry.priority">ID should not be empty!</n-text>
 
       <div class="box">
         <n-input v-model:value="entry.title" type="text" placeholder="Heading" class="maininput" />
@@ -59,7 +59,7 @@
         </n-tag>
       </div>
 
-      <n-text type="warning" v-if="!entry.title">Heading should not be empty!</n-text>
+      <n-text type="error" v-if="!entry.title">Heading should not be empty!</n-text>
       <!-- <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" /> -->
       <n-input v-model:value="entry.trans" type="text" placeholder="Translation" />
       <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" />
@@ -203,6 +203,10 @@
       }
       ready.value = true;
     } else {
+      const {priority} = await store.get('priority');
+      if (priority){
+        entry.priority = priority;
+      }
       ready.value = true;
     }
   });
