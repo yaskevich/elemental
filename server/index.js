@@ -76,6 +76,8 @@ const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
       console.log(req.body['email'], '<SUCCESS>');
       const token = createToken(userData);
       userData['token'] = token;
+      userData['server'] = __package.version;
+      userData['commit'] = process.env.COMMIT;
       res.json(userData);
     } else {
       console.log(`login attempt as [${req.body['email']}]•[${req.body['password']}]►${userData.error}◄`);
