@@ -338,4 +338,15 @@ export default {
     }
     return data;
   },
+  async getNextPriority() {
+    let sql = 'select floor(max(priority)) + 1 as priority from comments;';
+    let data = [];
+    try {
+      const result = await pool.query(sql);
+      data = result?.rows[0];
+    } catch (err) {
+      console.error(err);
+    }
+    return data;
+  },
 };
