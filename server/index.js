@@ -185,6 +185,11 @@ const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
     res.json({"message": "ok"});
   });
 
+  app.get('/api/priority', async(req, res) => {
+    const result = await db.getNextPriority();
+    res.json(result);
+  });
+
   app.listen(port);
   console.log("Running at Port "+ port);
 
