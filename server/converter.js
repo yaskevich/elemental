@@ -7,13 +7,16 @@ import path from "path";
 import dotenv from "dotenv";
 dotenv.config();
 
-// import pg from 'pg';
-// const { Pool } = pg;
-// const pool = new Pool();
+import pg from 'pg';
+const { Pool } = pg;
+const pool = new Pool();
 
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const lang = "ru";
+const textId = 2;
 
 // entry point
 (async () => {
@@ -21,11 +24,32 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
   console.log(args[0]);
 
   const insert = async (pnum, snum, form, repr, type) => {
-    console.log(pnum, snum, { form: form, repr: repr, type: type });
+    const token = repr.toLowerCase();
+    let tokenId = 0;
+    const values = [token, lang];
+    let result = {};
+
+    result = await pool.query("SELECT id from tokens where token = $1 and lang = $2", values);
+
+    if (!result?.rows?.length) {
+      result = await pool.query(`INSERT INTO tokens (token, lang, meta) VALUES($1, $2, $3) RETURNING id`, [token, lang, type]);
+    }
+
+    tokenId = result.rows[0]?.["id"];
+
+    try {
+      result = await pool.query(`INSERT INTO strings (text_id, p, s, form, repr, token_id) VALUES($1, $2, $3, $4, $5, $6) RETURNING id`, [textId, pnum, snum, form, repr, tokenId]);
+
+      console.log(result);
+    } catch (error) {
+      console.error(error);
+    }
+    // process.exit();
+    // console.log(pnum, snum, { form: form, repr: repr, type: type });
   };
 
-  if (args[0]) {
-    const file = fs.readFileSync("../../../../" + args[0], "utf8");
+  if (args[0] && fs.existsSync(args[0])) {
+    const file = fs.readFileSync(args[0], "utf8");
     // const tokens = file.split(/(?<=[ .…!?»\n])/);
     // // console.log(tokens);
     // for (let i = 0; i < tokens.length; i++) {
