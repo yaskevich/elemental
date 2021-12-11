@@ -39,17 +39,23 @@ const textId = 2;
 
     try {
       result = await pool.query(`INSERT INTO strings (text_id, p, s, form, repr, token_id) VALUES($1, $2, $3, $4, $5, $6) RETURNING id`, [textId, pnum, snum, form, repr, tokenId]);
-
-      console.log(result);
+      // console.log(result);
     } catch (error) {
       console.error(error);
     }
-    // process.exit();
     // console.log(pnum, snum, { form: form, repr: repr, type: type });
   };
 
   if (args[0] && fs.existsSync(args[0])) {
     const file = fs.readFileSync(args[0], "utf8");
+
+    try {
+      await pool.query("DELETE from strings where text_id = 2");
+      await pool.query("DELETE from tokens where lang = 'ru'");
+    } catch (error) {
+      console.error(error);
+    }
+
     // const tokens = file.split(/(?<=[ .…!?»\n])/);
     // // console.log(tokens);
     // for (let i = 0; i < tokens.length; i++) {
