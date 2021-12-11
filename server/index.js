@@ -163,7 +163,13 @@ const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
   });
 
   app.get('/api/texts', async (req, res) => {
-    const strings = await db.getTexts();
+    const textInfo = await db.getTexts();
+    res.json(textInfo);
+  });
+
+  app.get('/api/text', async (req, res) => {
+    const text_id = Number(req.body.id) || 1;
+    const strings = await db.getText(text_id);
     res.json(strings);
   });
 
