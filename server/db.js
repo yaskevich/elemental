@@ -203,6 +203,17 @@ export default {
     }
     return data;
   },
+  async getText() {
+    const sql = `select strings.id, strings.p, strings.s, strings.form, strings.repr, tokens.id, tokens.meta from strings left join tokens on strings.token_id = tokens.id`;
+    let data = [];
+    try {
+      const result = await pool.query(sql);
+      data = result?.rows;
+    } catch (err) {
+      console.error(err);
+    }
+    return data;
+  },
   async getIssues() {
     const sql = `SELECT * from issues ORDER by id DESC`;
     let data = [];
