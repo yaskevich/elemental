@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-  import { ref, reactive, onBeforeMount } from 'vue';
+  import { ref, reactive, onBeforeMount, computed } from 'vue';
   import store from '../store';
   import router from '../router';
   import { useRoute } from 'vue-router';
@@ -10,7 +10,7 @@
 
   interface IToken {
     id: number;
-    comment?: string;
+    checked?: boolean;
     form: string;
     repr: string;
     meta: string;
@@ -22,14 +22,32 @@
   const token1 = ref({} as IToken);
   const token2 = ref({} as IToken);
 
+  const selectedArray = ref([] as Array<IToken>);
+  const showDrawer = computed(() => Boolean(token1.value?.id && token2.value?.id));
+
   onBeforeMount(async () => {
     const data = await store.get('text', String(id));
     Object.assign(text, data);
   });
 
+  const drawerUpdated = (show) => {
+    console.log("is drawer seen?", showDrawer.value);
+    if (showDrawer.value) {
+      const min = Math.min(token1.value.id, token2.value.id);
+      const max = Math.max(token1.value.id, token2.value.id);
+      // console.log(min, max);
+      selectedArray.value = text.filter((x:IToken) => (x.id >= min && x.id <= max));
+    }
+  };
+
+  const clearSelection = () => {
+    token1.value.checked = token2.value.checked = false;
+    token1.value = token2.value = {} as IToken;
+  };
+
   const selectToken = (token: IToken) => {
     // console.log("token", token);
-    if (token?.comment){
+    if (token?.checked){
         console.log("de-select", token);
         if (token1.value?.id === token.id){
           token1.value = token2.value;
@@ -37,31 +55,31 @@
         } else {
           token2.value = {} as IToken;
         }
-        token.comment = '';
+        token.checked = false;
     } else {
         // console.log("select", token);
       if(!token1.value?.id) {
-          token.comment = '42';
+          token.checked = true;
           token1.value = token;
       } else {
-        if (token2.value?.id){
+        if (token2.value?.id && token.s === token1.value.s && token.s === token2.value.s){
           // console.log("set!");
           const d1 = Math.abs(token.id - token1.value.id);
           const d2 = Math.abs(token.id - token2.value.id);
           if (d1 < d2) {
-            token.comment = '42';
-            token1.value.comment = '';
+            token.checked = true;
+            token1.value.checked = false;
             token1.value = token;
           } else {
-            token.comment = '42';
-            token2.value.comment = '';
+            token.checked = true;
+            token2.value.checked = '';
             token2.value = token;
           }
           // console.log("d1", d1);
           // console.log("d2", d2);
         } else if (token.s === token1.value.s){
             token2.value = token;
-            token.comment = '42';
+            token.checked = true;
             // console.log("sel", token1.value);
         } else {
           console.log("nope!");
@@ -72,8 +90,6 @@
     }
   }
 
-
-
 </script>
 
 <template>
@@ -82,11 +98,23 @@
     <div class="left-column">
       <template v-for="(token, index) in text" :key="token.id" style="padding:.5rem;">
       <div v-if="index && token.p !== text[index-1].p" style="margin-bottom:1rem;"></div>
-      <button :class="'text-button' + (token?.comment?.length?'selected-button':'')" size="small" :title="token.meta" v-if="token.meta !== 'pt'"   :disabled="token.meta === 'pt+'" @click="selectToken(token)" >
+      <button :class="'text-button' + (token?.checked ?'selected-button':'')" size="small" :title="token.meta" v-if="token.meta !== 'ip'"   :disabled="token.meta === 'ip+'" @click="selectToken(token)" >
         {{token.form}}
       </button>
       </template>
       <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" />
+      <n-drawer v-model:show="showDrawer" placement="bottom" :on-update:show="drawerUpdated()">
+        <n-drawer-content title="Bind comment">
+          <div style="border: 1px dashed pink;display: inline-block;padding-left: 5px;padding-right:5px;">
+            <template  v-for="item in selectedArray" :key="item.id"  >
+              <span v-if="item.meta !== 'ip'" class="sequence">{{item.form}}</span>
+            </template>
+          </div>
+          <div>
+            <n-button @click="clearSelection">Clear selection</n-button>
+          </div>
+        </n-drawer-content>
+      </n-drawer>
     </div>
   </div>
 
@@ -104,5 +132,10 @@
 }
 .selected-button{
   border: solid 1px red;
+}
+.sequence{
+  font-weight: bold;
+  color: darkred;
+  padding: 5px;
 }
 </style>
