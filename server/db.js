@@ -204,7 +204,7 @@ export default {
     return data;
   },
   async getText(id) {
-    const sql = `select strings.id, strings.p, strings.s, strings.form, strings.repr, tokens.id, tokens.meta from strings left join tokens on strings.token_id = tokens.id where text_id = $1`;
+    const sql = `select strings.id, strings.p, strings.s, strings.form, strings.repr, tokens.id, tokens.meta from strings left join tokens on strings.token_id = tokens.id where text_id = $1 ORDER BY strings.id`;
     let data = [];
     try {
       const result = await pool.query(sql, [id]);
