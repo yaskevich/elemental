@@ -7,6 +7,7 @@ import Issues from './components/Issues.vue';
 import Preview from './components/Preview.vue';
 import Comment from './components/Comment.vue';
 import Comments from './components/Comments.vue';
+import Text from './components/Text.vue';
 
 const routes = [
 	// {
@@ -20,6 +21,11 @@ const routes = [
 		alias: ['/home'],
 		name: 'Home',
 		component: Home,
+	},
+	{
+		path: '/text',
+		name: 'Text',
+		component: Text,
 	},
 	{
 		path: '/register',
