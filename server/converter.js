@@ -86,11 +86,11 @@ const textId = 2;
             }
 
             if (puncts.length === 1) {
-              await insert(p, sn, puncts[0], puncts[0], word ? "pt" : "pt+");
+              await insert(p, sn, puncts[0], puncts[0], word ? "ip" : "ip+");
             } else {
               const compound = puncts.join("");
               if (compound === "!.." || compound === "?..") {
-                await insert(p, sn, compound, compound, "pt");
+                await insert(p, sn, compound, compound, "ip");
               } else {
                 // print only puncts, drop word if int end, remain if in the beginning
                 // console.error("■", p, sn, puncts, token);
@@ -101,7 +101,7 @@ const textId = 2;
                     // if word
                     await insert(p, sn, token, item, "word");
                   } else {
-                    await insert(p, sn, item, item, "pt");
+                    await insert(p, sn, item, item, "ip");
                   }
                 }
               }
