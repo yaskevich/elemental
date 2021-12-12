@@ -26,6 +26,7 @@ const state = store.state;
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/comments">Comments</router-link> |
+      <router-link to="/text">Text</router-link> |
       <router-link to="/tags">Tags</router-link> |
       <router-link to="/issues">Issues</router-link> |
       {{state.user.username}}
