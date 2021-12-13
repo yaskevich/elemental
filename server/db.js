@@ -204,7 +204,7 @@ export default {
     return data;
   },
   async getText(id) {
-    const sql = `select strings.id, strings.p, strings.s, strings.form, strings.repr, tokens.id, tokens.meta from strings left join tokens on strings.token_id = tokens.id where text_id = $1 ORDER BY strings.id`;
+    const sql = `select strings.id as id, strings.p, strings.s, strings.form, strings.repr, tokens.id as tid, tokens.meta, strings.comments from strings left join tokens on strings.token_id = tokens.id where text_id = $1 ORDER BY strings.id`;
     let data = [];
     try {
       const result = await pool.query(sql, [id]);
@@ -355,6 +355,19 @@ export default {
     try {
       const result = await pool.query(sql);
       data = result?.rows[0];
+    } catch (err) {
+      console.error(err);
+    }
+    return data;
+  },
+  async getCommentsTitles(textId, chunk) {
+    const checkedChunk = chunk.replace(/[^А-Яа-яЎІЁўіёA-Za-z*-]/g, '');
+    const values = [textId, `%${checkedChunk}%`];
+    let sql = "SELECT id, title from comments where text_id = $1 and title ilike $2";
+    let data = [];
+    try {
+      const result = await pool.query(sql, values);
+      data = result?.rows;
     } catch (err) {
       console.error(err);
     }
