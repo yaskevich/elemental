@@ -26,7 +26,6 @@
   import store from '../store';
   import { ref, reactive, onBeforeMount } from 'vue';
   import { useRoute } from 'vue-router';
-  // defineProps<{ msg: string }>()
 
   const vuerouter = useRoute();
   const id = vuerouter.params.id;
@@ -63,6 +62,8 @@
 
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+::v-deep var.error {
+  display:none;
+}
 </style>
