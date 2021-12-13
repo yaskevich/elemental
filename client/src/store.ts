@@ -19,7 +19,7 @@ const state:IState = reactive({
   error: "",
 }) as IState;
 
-const get = async(route: string, id?: string): Promise<any> => {
+const get = async(route: string, id?: string, data?: Object): Promise<any> => {
   // if (state.token) {
     try {
        const config = state.token ?
@@ -27,6 +27,10 @@ const get = async(route: string, id?: string): Promise<any> => {
 
        if(id) {
           config["params"] = { id: id };
+       }
+
+       if (data && Object.keys(data)?.length){
+         Object.assign(config.params, data);
        }
 
        const response = await axios.get("/api/" + route, config);
