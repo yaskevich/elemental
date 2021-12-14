@@ -16,6 +16,7 @@
     meta: string;
     p: number;
     s: number;
+    comments: Array<number>;
   }
 
   const text = reactive([] as Array<IToken>);
@@ -53,8 +54,17 @@
     token1.value = token2.value = {} as IToken;
   };
 
-  const bindTokensToComment = () => {
-    console.log("binding is not implemented yet!");
+  const bindTokensToComment = async() => {
+    const ids = selectedArray.value.map((x:IToken)=>x.id);
+    const {data} = await store.post('strings', {tokens: ids, id: selectedCommentId.value });
+    if (ids.length === data?.length) {
+      for (let item of selectedArray.value){
+        item.comments.push(selectedCommentId.value);
+      }
+      clearSelection();
+    } else {
+      console.error("bind", ids, data);
+    }
   };
 
   const selectOption = (id:number) => {
@@ -123,8 +133,8 @@
     <div class="left-column">
       <template v-for="(token, index) in text" :key="token.id" style="padding:.5rem;">
         <div v-if="index && token.p !== text[index-1].p" style="margin-bottom:1rem;"></div>
-        <button :class="'text-button' + (token?.checked ?'selected-button':'')" size="small" :title="token.meta" v-if="token.meta !== 'ip'"   :disabled="token.meta === 'ip+'" @click="selectToken(token)" >
-          {{token.form}}
+        <button :class="`text-button ${token?.checked ?'selected-button':''}  ${token?.comments?.length? 'commented': ''}`" size="small" :title="token.comments.join(' ')" v-if="token.meta !== 'ip'"   :disabled="token.meta === 'ip+'" @click="selectToken(token)" >
+          {{token.form}}<sup v-if="token?.comments?.length">{{token.comments.length}}</sup>
         </button>
         </template>
       <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" />
@@ -175,6 +185,10 @@
     padding: 5px;
     margin-right: 5px;
     border-radius: 5px;
+  }
+  .commented {
+    color: darkred;
+    background-color: pink;
   }
 
 </style>
