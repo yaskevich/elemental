@@ -179,6 +179,11 @@ const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
     res.json(titles);
   });
 
+  app.post('/api/strings', async (req, res) => {
+    res.json(await db.setCommentForString(req.body));
+  });
+
+
   app.get('/api/issues', async (req, res) => {
     const tags = await db.getIssues();
     res.json(tags);
