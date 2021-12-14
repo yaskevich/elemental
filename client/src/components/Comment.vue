@@ -128,7 +128,7 @@
   };
 
   const addTag = (id: number) => {
-    entry.tags.push(id);
+    entry?.tags ? entry.tags.push(id) : entry.tags = [id];
   };
 
   const removeIssue = (id: number) => {
@@ -136,7 +136,7 @@
   };
 
   const addIssue = (id: number) => {
-    entry.issues.push(id);
+    entry?.issues ? entry.issues.push(id) : entry.issues = [id];
   };
 
   const askToLeave = (event: any) => {
@@ -149,7 +149,7 @@
     router.push(`/preview/${id}`);
   };
 
-  const validateID = (x:any) => x > 0;
+  const validateID = (x: number) => x > 0;
 
   onBeforeRouteLeave(() => {
     // https://next.router.vuejs.org/guide/advanced/composition-api.html#navigation-guards
@@ -228,6 +228,7 @@
   }
 
   const checkIsEntryUpdated = () => {
+    let result:boolean = false;
     if ((contentRef.value as any)?.editor) {
       const longInstance = (contentRef.value as any).editor;
       const briefInstance = (briefRef.value as any).editor;
@@ -245,9 +246,15 @@
       longInstance.commands.setContent(entry.long_json, false);
       briefInstance.commands.setContent(entry.brief_json, false);
     }
-    // console.log("1", fromDB.value);
-    // console.log("2", JSON.stringify(entry));
-    return !(fromDB.value === JSON.stringify(entry));
+    console.log("1", fromDB.value);
+    console.log("2", JSON.stringify(entry));
+
+    if (id) {
+      result  = !(fromDB.value === JSON.stringify(entry));
+    } else {
+      result  = Boolean(entry?.title || entry?.trans || entry?.long_text || entry?.brief_text);
+    }
+    return result;
   };
 
   const saveComment = async () => {
