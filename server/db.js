@@ -373,4 +373,22 @@ export default {
     }
     return data;
   },
+  async setCommentForString(params) {
+    const comment_id = params?.id;
+    const stringTokenIds = params.tokens;
+    let data = {};
+    if (comment_id && stringTokenIds?.length) {
+      // console.log("comment", comment_id, "tokens", stringTokenIds);
+      try {
+        const sql1 = "UPDATE strings SET comments = array_remove(comments, $1) WHERE id = ANY($2::int[]) RETURNING id"; // to avoid duplicates
+        await pool.query(sql1, [comment_id, stringTokenIds]);
+        const sql2 = "UPDATE strings SET comments = array_append(comments, $1) WHERE id = ANY($2::int[]) RETURNING id";
+        const result = await pool.query(sql2, [comment_id, stringTokenIds]);
+        data = result?.rows;
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    return data;
+  },
 };
