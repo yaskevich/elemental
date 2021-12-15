@@ -17,8 +17,10 @@
     p: number;
     s: number;
     comments: Array<number>;
-  }
+  };
 
+  const isLoaded = ref(false);
+  const commentsObject = reactive({});
   const text = reactive([] as Array<IToken>);
   const token1 = ref({} as IToken);
   const token2 = ref({} as IToken);
@@ -36,6 +38,9 @@
   onBeforeMount(async () => {
       const data = await store.get('text', String(id));
       Object.assign(text, data);
+      const textComments = await store.get('textcomments', String(id));
+      Object.assign(commentsObject, ...textComments.map((item:any) => ({ [item.id]: item })));
+      isLoaded.value = true;
   });
 
   // const drawerUpdated = (show:boolean) => {
@@ -61,6 +66,8 @@
       for (let item of selectedArray.value){
         item.comments.push(selectedCommentId.value);
       }
+      commentsObject[String(selectedCommentId.value)] = { id: selectedCommentId.value, title: selectedCommentTitle.value };
+
       clearSelection();
     } else {
       console.error("bind", ids, data);
@@ -71,7 +78,6 @@
     // console.log("sel comment id", id);
     selectedCommentId.value = id;
     selectedCommentTitle.value = options.value.filter((x:IOption) => x.value === id)[0]["label"];
-
   };
 
   const queryDatabase = async (chunk:string) => {
@@ -125,15 +131,20 @@
     }
   };
 
+  interface IRailStyle {
+    focused: boolean;
+    checked: boolean;
+  };
+
 </script>
 
 <template>
 
-  <div class="center-column">
+  <div class="center-column" v-if="isLoaded">
     <div class="left-column">
       <template v-for="(token, index) in text" :key="token.id" style="padding:.5rem;">
         <div v-if="index && token.p !== text[index-1].p" style="margin-bottom:1rem;"></div>
-        <button :class="`text-button ${token?.checked ?'selected-button':''}  ${token?.comments?.length? 'commented': ''}`" size="small" :title="token.comments.join(' ')" v-if="token.meta !== 'ip'"   :disabled="token.meta === 'ip+'" @click="selectToken(token)" >
+        <button :class="`text-button ${token?.checked ?'selected-button':''}  ${token?.comments?.length? 'commented': ''}`" size="small" :title="token.comments.map(x=>commentsObject[String(x)]['title']).join('•')" v-if="token.meta !== 'ip'"   :disabled="token.meta === 'ip+'" @click="selectToken(token)" >
           {{token.form}}<sup v-if="token?.comments?.length">{{token.comments.length}}</sup>
         </button>
         </template>
