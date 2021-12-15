@@ -391,4 +391,15 @@ export default {
     }
     return data;
   },
+  async getTextComments(textId) {
+    let sql = "SELECT id, title FROM comments WHERE id IN (SELECT unnest(comments) AS coms FROM strings WHERE comments::text <> '{}' GROUP BY coms) AND text_id = $1";
+    let data = [];
+    try {
+      const result = await pool.query(sql, [textId]);
+      data = result?.rows;
+    } catch (err) {
+      console.error(err);
+    }
+    return data;
+  },
 };
