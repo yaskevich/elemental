@@ -29,11 +29,14 @@
     checked: boolean;
   }
 
+  const commentsToStore = ref([] as Array<number>);
+  const showModal = ref(false);
   const singleMode = ref(false);
   const inspectMode = ref(false);
   const isLoaded = ref(false);
   const commentsObject = reactive({});
   const text = reactive([] as Array<IToken>);
+  const selectedToken = ref({} as IToken);
   const token1 = ref({} as IToken);
   const token2 = ref({} as IToken);
   const options = ref([]);
@@ -106,7 +109,14 @@
 
   const selectToken = (token: IToken) => {
     if (inspectMode.value) {
-      console.log('inspect');
+      if (token?.comments?.length){
+        console.log('inspect', token);
+        selectedToken.value = token;
+        commentsToStore.value = token.comments;
+        showModal.value = true;
+      } else {
+        console.log("no bound comments");
+      }
     } else {
       // console.log("token", token);
       if (token?.checked) {
@@ -168,6 +178,16 @@
     return style;
   };
 
+  const submitModal = async() => {
+    showModal.value = false;
+    const { data } = await store.post('tokencomments', { id: selectedToken.value.id, comments: commentsToStore.value });
+    if (data?.id === selectedToken.value.id){
+      selectedToken.value.comments = commentsToStore.value;
+    } else {
+      console.error(selectedToken.value.id, selectedToken.value.comments, '→', commentsToStore.value, "data", data)
+    }
+  };
+
 </script>
 
 <template>
@@ -182,13 +202,26 @@
         </n-switch>
       </n-space>
       <n-divider style="text-align: center; margin:auto;padding:1rem;" />
+      <n-modal v-model:show="showModal"
+               preset="dialog"
+               :title="'Bound comments for “' + selectedToken.form + '”'"
+               positive-text="Submit"
+               negative-text="Cancel"
+               @positive-click="submitModal">
+        <n-checkbox-group v-model:value="commentsToStore">
+          <n-checkbox v-for="(commentId, index) in selectedToken.comments"
+                      :key="index"
+                      :value="commentId"
+                      :label="commentsObject[String(commentId)]['title']" />
+        </n-checkbox-group>
+      </n-modal>
       <div>
         <template v-for="(token, index) in text" :key="token.id" style="padding:.5rem;">
-            <div v-if="index && token.p !== text[index-1].p" style="margin-bottom:1rem;"></div>
-            <button :class="`text-button ${token?.checked ?'selected-button':''}  ${token?.comments?.length? 'commented': ''}`" size="small" :title="token.comments.map(x=>commentsObject[String(x)]['title']).join('•')" v-if="token.meta !== 'ip'"   :disabled="token.meta === 'ip+'" @click="selectToken(token)" >
-            {{token.form}}<sup v-if="token?.comments?.length">{{token.comments.length}}</sup>
-            </button>
-          </template>
+                    <div v-if="index && token.p !== text[index-1].p" style="margin-bottom:1rem;"></div>
+                    <button :class="`text-button ${token?.checked ?'selected-button':''}  ${token?.comments?.length? 'commented': ''}`" size="small" :title="token.comments.map(x=>commentsObject[String(x)]['title']).join('•')" v-if="token.meta !== 'ip'"   :disabled="token.meta === 'ip+'" @click="selectToken(token)" >
+                    {{token.form}}<sup v-if="token?.comments?.length">{{token.comments.length}}</sup>
+                    </button>
+                  </template>
       </div>
       <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" />
 
@@ -197,8 +230,8 @@
           <n-space vertical>
             <div style="margin: 5px;">
               <template v-for="item in selectedArray" :key="item.id">
-                  <span v-if="item.meta !== 'ip'" class="sequence selected-button text-button">{{item.form}}</span>
-                </template>
+                          <span v-if="item.meta !== 'ip'" class="sequence selected-button text-button">{{item.form}}</span>
+                        </template>
             </div>
             <n-auto-complete clearable
                              :options="options"
