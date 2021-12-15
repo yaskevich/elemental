@@ -29,12 +29,16 @@
     checked: boolean;
   }
 
+  interface keyable {
+    [key: string]: any;
+  }
+
   const commentsToStore = ref([] as Array<number>);
   const showModal = ref(false);
   const singleMode = ref(false);
   const inspectMode = ref(false);
   const isLoaded = ref(false);
-  const commentsObject = reactive({});
+  const commentsObject = reactive({} as keyable);
   const text = reactive([] as Array<IToken>);
   const selectedToken = ref({} as IToken);
   const token1 = ref({} as IToken);
@@ -107,10 +111,10 @@
     }
   };
 
-  const selectToken = (token: IToken) => {
-    if (inspectMode.value) {
+  const selectToken = (token: IToken, e: MouseEvent) => {
+    if (inspectMode.value || e.shiftKey) {
       if (token?.comments?.length){
-        console.log('inspect', token);
+        // console.log('inspect', token);
         selectedToken.value = token;
         commentsToStore.value = token.comments;
         showModal.value = true;
@@ -218,7 +222,7 @@
       <div>
         <template v-for="(token, index) in text" :key="token.id" style="padding:.5rem;">
                     <div v-if="index && token.p !== text[index-1].p" style="margin-bottom:1rem;"></div>
-                    <button :class="`text-button ${token?.checked ?'selected-button':''}  ${token?.comments?.length? 'commented': ''}`" size="small" :title="token.comments.map(x=>commentsObject[String(x)]['title']).join('•')" v-if="token.meta !== 'ip'"   :disabled="token.meta === 'ip+'" @click="selectToken(token)" >
+                    <button :class="`text-button ${token?.checked ?'selected-button':''}  ${token?.comments?.length? 'commented': ''}`" size="small" :title="token.comments.map(x=>commentsObject[String(x)]['title']).join('•')" v-if="token.meta !== 'ip'"   :disabled="token.meta === 'ip+'" @click="selectToken(token, $event)" >
                     {{token.form}}<sup v-if="token?.comments?.length">{{token.comments.length}}</sup>
                     </button>
                   </template>
