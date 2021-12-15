@@ -183,6 +183,10 @@ const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
     res.json(await db.setCommentForString(req.body));
   });
 
+  app.post('/api/tokencomments', async (req, res) => {
+    res.json(await db.setCommentsForToken(req.body));
+  });
+
   app.get('/api/textcomments', async (req, res) => {
     const textId = Number(req.query.id) || 1;
     res.json(await db.getTextComments(textId));
