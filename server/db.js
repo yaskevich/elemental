@@ -402,4 +402,22 @@ export default {
     }
     return data;
   },
+  async setCommentsForToken(params) {
+    const token_id = params?.id;
+    const commentIds = params?.comments.map(x => Number(x)).join(',');
+    const commentIdsAsArray = `{${commentIds}}`;
+    console.log(commentIdsAsArray);
+    let data = {};
+    if (token_id) {
+      // console.log("comment", comment_id, "tokens", stringTokenIds);
+      try {
+        const sql = "UPDATE strings SET comments = $2 WHERE id = $1 RETURNING id";
+        const result = await pool.query(sql, [token_id, commentIdsAsArray]);
+        data = result?.rows?.[0];
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    return data;
+  },
 };
