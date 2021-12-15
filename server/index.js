@@ -167,15 +167,15 @@ const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
   });
 
   app.get('/api/text', async (req, res) => {
-    const text_id = Number(req.query.id) || 1;
-    const strings = await db.getText(text_id);
+    const textId = Number(req.query.id) || 1;
+    const strings = await db.getText(textId);
     res.json(strings);
   });
 
   app.get('/api/titles', async (req, res) => {
-    const text_id = Number(req.query.id) || 1;
+    const textId = Number(req.query.id) || 1;
     const chunk = String(req.query.chunk);
-    const titles = await db.getCommentsTitles(text_id, chunk);
+    const titles = await db.getCommentsTitles(textId, chunk);
     res.json(titles);
   });
 
@@ -183,6 +183,10 @@ const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
     res.json(await db.setCommentForString(req.body));
   });
 
+  app.get('/api/textcomments', async (req, res) => {
+    const textId = Number(req.query.id) || 1;
+    res.json(await db.getTextComments(textId));
+  });
 
   app.get('/api/issues', async (req, res) => {
     const tags = await db.getIssues();
