@@ -90,11 +90,19 @@ export const Annotation = Mark.create<AnnotationOptions>({
     }
   },
 
-  // addKeyboardShortcuts() {
-  //   return {
-  //     'Mod-Shift-h': () => this.editor.commands.toggleAnnotation(),
-  //   }
-  // },
+  addKeyboardShortcuts() {
+    const letters = ['q', 'i', 'y', 'm', 'l'];
+    const mapping  = [];
+
+    for (let i = 0; i < this.options.classes.length; i++) {
+      if (i === letters.length){
+        break;
+      }
+      mapping.push( ['Mod-'+letters[i], () => this.editor.commands.toggleAnnotation({ class:  this.options.classes[i] })])
+    }
+
+    return Object.fromEntries(mapping);
+  },
 
   // addInputRules() {
   //   return [
