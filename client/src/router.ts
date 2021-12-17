@@ -56,6 +56,7 @@ const routes = [
 		path: '/comment/:id?',
 		component: Comment,
 		name: 'Comment',
+		props: true
 	},
 	{
 		path: '/preview/:id?',
