@@ -26,6 +26,7 @@ const routes = [
 		path: '/text',
 		name: 'Text',
 		component: Text,
+		props: true,
 	},
 	{
 		path: '/register',
