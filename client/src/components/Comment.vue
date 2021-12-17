@@ -33,8 +33,11 @@
       <div class="box">
         <n-space justify="center">
 
-          <n-input-number v-model:value="entry.priority" :validator="validateID" style="width:100px;" type="text" placeholder="ID"
-          />
+          <n-input-number v-model:value="entry.priority"
+                          :validator="validateID"
+                          style="width:100px;"
+                          type="text"
+                          placeholder="ID" />
 
           <n-dropdown trigger="hover" @select="addTag" :options="tagsList">
             <n-button> + tag</n-button>
@@ -52,6 +55,16 @@
       <div class="box">
         <n-input v-model:value="entry.title" type="text" placeholder="Heading" class="maininput" />
         <!-- <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" /> -->
+      </div>
+
+      <div class="box" v-if="boundStrings.length">
+        <div v-for="(stack, index) in boundStrings" :key="index" style="color:magenta;font-weight:bold;font-size:.75rem;">
+          <template v-for="item in stack" :key="item.id" style="margin-right: 5px;">
+              <span v-if="item.meta !== 'ip'">
+                {{item.form}}&nbsp;
+              </span>
+            </template>
+        </div>
       </div>
 
       <div class="box">
@@ -108,7 +121,7 @@
     tokens: '[]',
   });
 
-  console.log("props", props);
+  console.log('props', props);
   let tokensToBind = JSON.parse(props.tokens) as Array<IToken>;
   // console.log('in tokens', tokensToBind);
   // const vuerouter = useRoute();
@@ -139,6 +152,8 @@
   const briefRef = ref<HTMLDivElement>();
   const contentRef = ref<HTMLDivElement>();
   const ready = ref(false);
+
+  const boundStrings = reactive([] as Array<Array<IToken>>);
 
   interface keyable {
     [key: string]: any;
@@ -210,6 +225,7 @@
 
     Object.assign(issuesKV, Object.fromEntries(issueData.map((x: any) => [x.id, x])));
     // console.log(issuesKV);
+
     if (id) {
       const data = await store.get(`comment/${id}`);
       // console.log('data from server', data);
@@ -226,17 +242,47 @@
           briefInstance.commands.setContent(data[0].brief_json, false);
         }
       }
-      ready.value = true;
     } else {
       const { priority } = await store.get('priority');
-      if (tokensToBind.length){
-        entry.title = tokensToBind.map((x:IToken) => x.form).join(' ');
+      if (tokensToBind.length) {
+        entry.title = tokensToBind
+          .filter((x: IToken) => x.meta !== 'ip')
+          .map((x: IToken) => x.form)
+          .join(' ');
+        boundStrings.push(tokensToBind);
       }
       if (priority) {
         entry.priority = priority;
       }
-      ready.value = true;
     }
+
+    if (!entry.text_id) {
+      console.log('no text_id', store.state.user.text_id);
+      entry.text_id = store.state.user.text_id as number;
+    }
+
+    if (entry?.id) {
+      const stringsList = await store.get('commentstrings', String(entry.text_id), { comment: entry.id });
+      // console.log("strings list", stringsList);
+      if (stringsList.length) {
+        let key = '';
+        let stack = [] as Array<IToken>;
+        for (let item of stringsList) {
+          if (item.s !== key) {
+            if (stack.length) {
+              boundStrings.push(stack);
+              stack = [];
+            }
+            key = item.s;
+          }
+          stack.push(item);
+        }
+        boundStrings.push(stack);
+      }
+      // console.log("boundStrings", boundStrings);
+    }
+
+    ready.value = true;
   });
 
   const checkValidMarkup = (document: any) => {
@@ -287,11 +333,6 @@
   };
 
   const saveComment = async () => {
-    if (!entry.text_id) {
-      console.log('no text_id', store.state.user.text_id);
-      entry.text_id = store.state.user.text_id as number;
-    }
-
     // console.log(JSON.stringify(entry.long_json));
     // console.log(entry.long_html);
 
@@ -303,14 +344,14 @@
         fromDB.value = JSON.stringify(entry);
         router.replace('/comment/' + entry.id);
         const boundTokensNumber = tokensToBind.length;
-        if (boundTokensNumber){
-          const result = await store.post('strings', { tokens: tokensToBind.map((x:IToken)=> x.id), id:  data.data.id });
+        if (boundTokensNumber) {
+          const result = await store.post('strings', { tokens: tokensToBind.map((x: IToken) => x.id), id: data.data.id });
           // console.log("bind tokens", result);
           if (boundTokensNumber === result.data?.length) {
             console.log(`${boundTokensNumber} tokens were bound!`);
-            tokensToBind  = [] as Array<IToken>;
+            tokensToBind = [] as Array<IToken>;
           } else {
-            console.error("tokens were not bound!");
+            console.error('tokens were not bound!');
           }
         }
       }
