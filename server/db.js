@@ -406,7 +406,7 @@ export default {
     const token_id = params?.id;
     const commentIds = params?.comments.map(x => Number(x)).join(',');
     const commentIdsAsArray = `{${commentIds}}`;
-    console.log(commentIdsAsArray);
+    // console.log(commentIdsAsArray);
     let data = {};
     if (token_id) {
       // console.log("comment", comment_id, "tokens", stringTokenIds);
@@ -417,6 +417,18 @@ export default {
       } catch (err) {
         console.error(err);
       }
+    }
+    return data;
+  },
+  async getBoundStringsForComment(params) {
+    const { id: textId, comment: commentId } = params;
+    let sql = "SELECT * FROM strings WHERE text_id = $1 AND $2 = ANY (comments::int[]) ORDER BY id";
+    let data = [];
+    try {
+      const result = await pool.query(sql, [textId, commentId]);
+      data = result?.rows;
+    } catch (err) {
+      console.error(err);
     }
     return data;
   },
