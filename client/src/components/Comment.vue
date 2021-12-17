@@ -33,7 +33,8 @@
       <div class="box">
         <n-space justify="center">
 
-          <n-input-number v-model:value="entry.priority" :validator="validateID" style="width:100px;" type="text" placeholder="ID" />
+          <n-input-number v-model:value="entry.priority" :validator="validateID" style="width:100px;" type="text" placeholder="ID"
+          />
 
           <n-dropdown trigger="hover" @select="addTag" :options="tagsList">
             <n-button> + tag</n-button>
@@ -84,11 +85,35 @@
   import { onBeforeRouteLeave } from 'vue-router';
   import Tiptap from './Tiptap.vue';
   import router from '../router';
-  import { useRoute } from 'vue-router';
-  // defineProps<{ msg: string }>()
+  // import { useRoute } from 'vue-router';
 
-  const vuerouter = useRoute();
-  const id = vuerouter.params.id;
+  interface IToken {
+    id: number;
+    checked?: boolean;
+    form: string;
+    repr: string;
+    meta: string;
+    p: number;
+    s: number;
+    comments: Array<number>;
+  }
+
+  interface Props {
+    id?: string;
+    tokens?: string;
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    id: '',
+    tokens: '[]',
+  });
+
+  console.log("props", props);
+  let tokensToBind = JSON.parse(props.tokens) as Array<IToken>;
+  // console.log('in tokens', tokensToBind);
+  // const vuerouter = useRoute();
+  // const id = vuerouter.params.id;
+  let id = props.id;
 
   interface IEntry {
     long_json: Object;
@@ -128,7 +153,7 @@
   };
 
   const addTag = (id: number) => {
-    entry?.tags ? entry.tags.push(id) : entry.tags = [id];
+    entry?.tags ? entry.tags.push(id) : (entry.tags = [id]);
   };
 
   const removeIssue = (id: number) => {
@@ -136,7 +161,7 @@
   };
 
   const addIssue = (id: number) => {
-    entry?.issues ? entry.issues.push(id) : entry.issues = [id];
+    entry?.issues ? entry.issues.push(id) : (entry.issues = [id]);
   };
 
   const askToLeave = (event: any) => {
@@ -187,7 +212,7 @@
     // console.log(issuesKV);
     if (id) {
       const data = await store.get(`comment/${id}`);
-      console.log('data from server', data);
+      // console.log('data from server', data);
       if (data.length) {
         // console.log("data", data);
         // entryCopy = JSON.parse(JSON.stringify(data[0])) ;
@@ -203,8 +228,11 @@
       }
       ready.value = true;
     } else {
-      const {priority} = await store.get('priority');
-      if (priority){
+      const { priority } = await store.get('priority');
+      if (tokensToBind.length){
+        entry.title = tokensToBind.map((x:IToken) => x.form).join(' ');
+      }
+      if (priority) {
         entry.priority = priority;
       }
       ready.value = true;
@@ -212,23 +240,23 @@
   });
 
   const checkValidMarkup = (document: any) => {
-    for (let paragraph of document.content){
+    for (let paragraph of document.content) {
       // console.log(paragraph);
-      if(paragraph?.content){
-        for (let node of paragraph.content){
+      if (paragraph?.content) {
+        for (let node of paragraph.content) {
           // console.log(node.text, "type", node.type);
-          if (node.marks?.length === 1 && node.marks.filter((x:any) => x.type === "bold")?.length === 1) {
+          if (node.marks?.length === 1 && node.marks.filter((x: any) => x.type === 'bold')?.length === 1) {
             // console.log("error", node);
-            console.log("fix!");
+            console.log('fix!');
             delete node.marks;
           }
         }
       }
     }
-  }
+  };
 
   const checkIsEntryUpdated = () => {
-    let result:boolean = false;
+    let result: boolean = false;
     if ((contentRef.value as any)?.editor) {
       const longInstance = (contentRef.value as any).editor;
       const briefInstance = (briefRef.value as any).editor;
@@ -246,14 +274,15 @@
       longInstance.commands.setContent(entry.long_json, false);
       briefInstance.commands.setContent(entry.brief_json, false);
     }
-    console.log("1", fromDB.value);
-    console.log("2", JSON.stringify(entry));
+    // console.log("1", fromDB.value);
+    // console.log("2", JSON.stringify(entry));
 
-    if (id) {
-      result  = !(fromDB.value === JSON.stringify(entry));
+    if (entry.id) {
+      result = !(fromDB.value === JSON.stringify(entry));
     } else {
-      result  = Boolean(entry?.title || entry?.trans || entry?.long_text || entry?.brief_text);
+      result = Boolean(entry?.title || entry?.trans || entry?.long_text || entry?.brief_text);
     }
+    // console.log("update check result", result);
     return result;
   };
 
@@ -263,19 +292,30 @@
       entry.text_id = store.state.user.text_id as number;
     }
 
-    console.log(JSON.stringify(entry.long_json));
-    console.log(entry.long_html);
+    // console.log(JSON.stringify(entry.long_json));
+    // console.log(entry.long_html);
 
-    if (checkIsEntryUpdated()){
-      console.log("changes → DB");
+    if (checkIsEntryUpdated()) {
+      console.log('changes → DB');
       const data = await store.post('comment', entry);
       if (data?.data?.id) {
         entry.id = data.data.id;
         fromDB.value = JSON.stringify(entry);
         router.replace('/comment/' + entry.id);
+        const boundTokensNumber = tokensToBind.length;
+        if (boundTokensNumber){
+          const result = await store.post('strings', { tokens: tokensToBind.map((x:IToken)=> x.id), id:  data.data.id });
+          // console.log("bind tokens", result);
+          if (boundTokensNumber === result.data?.length) {
+            console.log(`${boundTokensNumber} tokens were bound!`);
+            tokensToBind  = [] as Array<IToken>;
+          } else {
+            console.error("tokens were not bound!");
+          }
+        }
       }
     } else {
-      console.log("no changes – spare traffic...");
+      console.log('no changes – spare traffic...');
     }
   };
 
