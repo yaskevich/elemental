@@ -58,13 +58,15 @@
       </div>
 
       <div class="box" v-if="boundStrings.length">
-        <div v-for="(stack, index) in boundStrings" :key="index" style="color:magenta;font-weight:bold;font-size:.75rem;">
-          <template v-for="item in stack" :key="item.id" style="margin-right: 5px;">
-              <span v-if="item.meta !== 'ip'">
-                {{item.form}}&nbsp;
-              </span>
-            </template>
-        </div>
+        <n-space justify="center">
+          <n-button type="info" dashed v-for="(stack, index) in boundStrings" :key="index" size="small" @click="goToText(stack)">
+            <template v-for="item in stack" :key="item.id" style="margin-right: 5px;">
+                  <span v-if="item.meta !== 'ip'">
+                    {{item.form}}&nbsp;
+                  </span>
+                </template>
+          </n-button>
+        </n-space>
       </div>
 
       <div class="box">
@@ -121,7 +123,7 @@
     tokens: '[]',
   });
 
-  console.log('props', props);
+  // console.log('props', props);
   let tokensToBind = JSON.parse(props.tokens) as Array<IToken>;
   // console.log('in tokens', tokensToBind);
   // const vuerouter = useRoute();
@@ -358,6 +360,9 @@
     } else {
       console.log('no changes – spare traffic...');
     }
+  };
+  const goToText = (stringTokens: Array<IToken>) => {
+    router.push({ name: 'Text', params: { tokens: JSON.stringify(stringTokens) } });
   };
 
 </script>
