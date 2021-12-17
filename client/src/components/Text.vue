@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-  import { ref, reactive, onBeforeMount, computed } from 'vue';
+  import { ref, reactive, onBeforeMount, onUpdated, nextTick, computed } from 'vue';
   import store from '../store';
   import router from '../router';
   import { useRoute } from 'vue-router';
@@ -33,6 +33,18 @@
     [key: string]: any;
   }
 
+  interface Props {
+    tokens?: string;
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    tokens: '[]',
+  });
+
+  // console.log('text props', props);
+
+  let highlightedTokens: Array<number> = JSON.parse(props.tokens).map((x: IToken) => x.id);
+
   const commentsToStore = ref([] as Array<number>);
   const showModal = ref(false);
   const singleMode = ref(false);
@@ -51,7 +63,26 @@
     singleMode.value ? Boolean(token1.value?.id) : Boolean(token1.value?.id && token2.value?.id)
   );
 
+  const scrollTo = (id: number) => {
+    let element = document.querySelector(`#id${id}`);
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }
+  };
+
+  onUpdated(async () => {
+    if (highlightedTokens.length) {
+      nextTick(() => {
+        scrollTo(highlightedTokens[0]);
+      });
+    }
+  });
+
   onBeforeMount(async () => {
+    // console.log('before mount');
     const data = await store.get('text', String(id));
     Object.assign(text, data);
     const textComments = await store.get('textcomments', String(id));
@@ -75,7 +106,7 @@
   };
 
   const createComment = () => {
-    router.push({name: "Comment", params: {tokens: JSON.stringify(selectedArray.value)}});
+    router.push({ name: 'Comment', params: { tokens: JSON.stringify(selectedArray.value) } });
   };
 
   const clearSelection = () => {
@@ -117,13 +148,13 @@
 
   const selectToken = (token: IToken, e: MouseEvent) => {
     if (inspectMode.value || e.shiftKey) {
-      if (token?.comments?.length){
+      if (token?.comments?.length) {
         // console.log('inspect', token);
         selectedToken.value = token;
         commentsToStore.value = token.comments;
         showModal.value = true;
       } else {
-        console.log("no bound comments");
+        console.log('no bound comments');
       }
     } else {
       // console.log("token", token);
@@ -186,13 +217,13 @@
     return style;
   };
 
-  const submitModal = async() => {
+  const submitModal = async () => {
     showModal.value = false;
     const { data } = await store.post('tokencomments', { id: selectedToken.value.id, comments: commentsToStore.value });
-    if (data?.id === selectedToken.value.id){
+    if (data?.id === selectedToken.value.id) {
       selectedToken.value.comments = commentsToStore.value;
     } else {
-      console.error(selectedToken.value.id, selectedToken.value.comments, '→', commentsToStore.value, "data", data)
+      console.error(selectedToken.value.id, selectedToken.value.comments, '→', commentsToStore.value, 'data', data);
     }
   };
 
@@ -225,11 +256,11 @@
       </n-modal>
       <div>
         <template v-for="(token, index) in text" :key="token.id" style="padding:.5rem;">
-                    <div v-if="index && token.p !== text[index-1].p" style="margin-bottom:1rem;"></div>
-                    <button :class="`text-button ${token?.checked ?'selected-button':''}  ${token?.comments?.length? 'commented': ''}`" size="small" :title="token.comments.map(x=>commentsObject[String(x)]['title']).join('•')" v-if="token.meta !== 'ip'"   :disabled="token.meta === 'ip+'" @click="selectToken(token, $event)" >
-                    {{token.form}}<sup v-if="token?.comments?.length">{{token.comments.length}}</sup>
-                    </button>
-                  </template>
+                        <div v-if="index && token.p !== text[index-1].p" style="margin-bottom:1rem;"></div>
+                        <button :id="`id${token.id}`" :class="`text-button ${token?.checked ?'selected-button':''}  ${token?.comments?.length? 'commented': ''} ${highlightedTokens.length && highlightedTokens.includes(token.id) ? 'highlighted': ''}`" size="small" :title="token.comments.map(x=>commentsObject[String(x)]['title']).join('•')" v-if="token.meta !== 'ip'"   :disabled="token.meta === 'ip+'" @click="selectToken(token, $event)" >
+                        {{token.form}}<sup v-if="token?.comments?.length">{{token.comments.length}}</sup>
+                        </button>
+                      </template>
       </div>
       <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" />
 
@@ -238,8 +269,8 @@
           <n-space vertical>
             <div style="margin: 5px;">
               <template v-for="item in selectedArray" :key="item.id">
-                          <span v-if="item.meta !== 'ip'" class="sequence selected-button text-button">{{item.form}}</span>
-                        </template>
+                              <span v-if="item.meta !== 'ip'" class="sequence selected-button text-button">{{item.form}}</span>
+                            </template>
             </div>
             <n-auto-complete clearable
                              :options="options"
@@ -288,6 +319,17 @@
   .commented {
     color: darkred;
     background-color: pink;
+  }
+
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  .highlighted {
+    animation: blink 1s linear 1;
+    background-color: yellow;
   }
 
 </style>
