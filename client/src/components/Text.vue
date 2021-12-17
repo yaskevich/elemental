@@ -74,6 +74,10 @@
     }
   };
 
+  const createComment = () => {
+    router.push({name: "Comment", params: {tokens: JSON.stringify(selectedArray.value)}});
+  };
+
   const clearSelection = () => {
     token1.value.checked = token2.value.checked = false;
     token1.value = token2.value = {} as IToken;
@@ -247,6 +251,8 @@
             </div>
             <div>
               <n-button @click="clearSelection">Clear tokens selection</n-button>
+              &nbsp;
+              <n-button @click="createComment" type="warning">Bind tokens to new comment</n-button>
               &nbsp;
               <n-button @click="bindTokensToComment" v-if="selectedCommentId" type="success">Bind</n-button>
             </div>
