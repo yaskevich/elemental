@@ -227,6 +227,11 @@
     }
   };
 
+  const goToComment = (comment:number) => {
+    // console.log("click", comment);
+    router.push({ name: 'Comment', params: { id: comment } });
+  }
+
 </script>
 
 <template>
@@ -248,11 +253,12 @@
                negative-text="Cancel"
                @positive-click="submitModal">
         <n-checkbox-group v-model:value="commentsToStore">
-          <n-checkbox v-for="(commentId, index) in selectedToken.comments"
-                      :key="index"
-                      :value="commentId"
-                      :label="commentsObject[String(commentId)]['title']" />
+          <template  v-for="(commentId, index) in selectedToken.comments" :key="index">
+            <n-checkbox :value="commentId" :label="commentsObject[String(commentId)]['title']" />
+            <n-button ghost type="primary" size="tiny" @click="goToComment(commentId)">Comment</n-button>
+          </template>
         </n-checkbox-group>
+
       </n-modal>
       <div>
         <template v-for="(token, index) in text" :key="token.id" style="padding:.5rem;">
