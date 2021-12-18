@@ -15,6 +15,7 @@
       <div v-if="!id">
         <n-text type="error">Select specific text before (at Home screen)!</n-text>
       </div>
+      <!-- <n-data-table remote :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-class-name="rowClassName" /> -->
       <n-data-table remote :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" />
     </div>
   </div>
@@ -58,8 +59,8 @@
           NButton as unknown as DefineComponent,
           {
             size: 'small',
-            type: row.published ? '' : 'warning',
-            secondary: row.published ? undefined : true,
+            type: row.published ? 'primary' : '',
+            //secondary: row.published ? undefined : true,
              // <n-button strong secondary type="warning">Warning</n-button>
             onClick: () => editComment(row.id),
           },
@@ -70,6 +71,19 @@
     {
       title: 'ID',
       key: 'priority',
+      render(row:any) {
+        // <span v-if="item.published" style="margin-left:10px;color:blue;">✓</span>
+        // return row.published ? "true" : "false";
+        return h(
+          row.bound ? NTag : NText,
+          {
+            type: row.bound ? 'info': 'error',
+          },
+          {
+            default: () => row.priority,
+          }
+        );
+      }
     },
     // {
     //   title: 'Status',
@@ -98,7 +112,7 @@
                   'div',
                   {
                     class: 'square',
-                    style: `background-color:${issues?.[d]?.color||'black'}; margin: 2px;`,
+                    style: `background-color:${issues?.[d]?.color||'black'};`,
                     title: issues?.[d]?.ru
                   },
                   ''
@@ -135,6 +149,14 @@
     // },
   ];
 
+
+  // const rowClassName = (row, index) => {
+  //   if (row.bound) {
+  //     return 'bound'
+  //   }
+  //   return null
+  // };
+
   onBeforeMount(async () => {
     const issuesData = await store.get('issues');
     const issuesObject = Object.fromEntries(issuesData.map((x:any) => [x.id, x]));
@@ -145,7 +167,7 @@
       localStorage.setItem('text_id', String(id));
       const data = await store.get('comments/' + id);
       Object.assign(comments, data);
-      console.log('data from server', data);
+      // console.log('data from server', data);
     }
   });
 
@@ -157,10 +179,17 @@
 
 </script>
 
-<style >
-.square {
+<style scoped lang="scss">
+:deep(td .square) {
    width: 50%;
    height: 0;
    padding-bottom: 50%;
+   margin: 2px;
 }
+
+/*
+:deep(.bound td:nth-of-type(2)) {
+  background-color: lightblue !important;
+}
+*/
 </style>
