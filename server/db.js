@@ -284,7 +284,11 @@ export default {
   },
   async getComments(id) {
     const values = [id];
-    let sql = 'SELECT * from comments WHERE text_id = $1 ORDER BY id DESC';
+    // let sql = 'SELECT * from comments WHERE text_id = $1 ORDER BY id DESC';
+    const sql = `SELECT id, priority, issues, title, published,
+     CASE WHEN id IN (SELECT unnest(comments) AS coms FROM strings WHERE comments::text <> '{}' group by coms)
+     THEN '1'::boolean else '0'::boolean END as bound
+     FROM comments WHERE text_id = $1 ORDER by priority DESC, id DESC`;
     // if (id) {
     //    sql += ' WHERE id = $1';
     //    values.push(id);
