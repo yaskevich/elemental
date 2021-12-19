@@ -1,6 +1,10 @@
 <template>
 
-  <div class="center-column">
+  <div v-if="!ready">
+    loading...
+  </div>
+
+  <div class="center-column" :style="`visibility:${ready?'visible':'hidden'}`">
     <div class="left-column">
       <n-space justify="center">
         <div>
@@ -28,17 +32,19 @@
   import { ref, reactive, onBeforeMount, h, DefineComponent } from 'vue';
   import router from '../router';
   import { useRoute } from 'vue-router';
-  import { NTag, NButton, NText } from 'naive-ui';
+  import { NTag, NButton, NText, NTooltip } from 'naive-ui';
 
   const vuerouter = useRoute();
   const id = vuerouter.params.id || store.state.user.text_id;
 
+  const ready = ref(false);
   const comments = reactive([]);
 
   interface keyable {
     [key: string]: any
   };
   const issues: keyable = reactive({}) as keyable;
+  const users: keyable = reactive({}) as keyable;
 
   // defineProps<{ msg: string }>()
   const getID = (row:any) => {
@@ -75,7 +81,7 @@
         // <span v-if="item.published" style="margin-left:10px;color:blue;">✓</span>
         // return row.published ? "true" : "false";
         return h(
-          row.bound ? NTag : NText,
+          row.bound ? NTag as unknown as DefineComponent : NText as unknown as DefineComponent,
           {
             type: row.bound ? 'info': 'error',
           },
@@ -109,14 +115,19 @@
       render(row:any) {
         const issuesList = row.issues.map((d:string) => {
           return h(
-                  'div',
-                  {
-                    class: 'square',
-                    style: `background-color:${issues?.[d]?.color||'black'};`,
-                    title: issues?.[d]?.ru
-                  },
-                  ''
-                  )
+                NTooltip,
+                {
+                  placement: "left",
+                  trigger: "hover",
+                },
+                {
+                  default: () => `${issues?.[d[0]]?.ru}\n@${users?.[d[1]].username}`,
+                  trigger: () => h('div',   {
+                      class: 'square',
+                      style: `background-color:${issues?.[d[0]]?.color||'black'};`,
+                    }),
+                },
+              )
           // return h(
           //   NTag,
           //   {
@@ -161,6 +172,9 @@
     const issuesData = await store.get('issues');
     const issuesObject = Object.fromEntries(issuesData.map((x:any) => [x.id, x]));
     Object.assign(issues, issuesObject);
+
+    const usersData = await store.get('users');
+    Object.assign(users, Object.fromEntries(usersData.map((x: any) => [x.id, x])));
     // console.log('issues from server', issues);
 
     if (id) {
@@ -169,6 +183,7 @@
       Object.assign(comments, data);
       // console.log('data from server', data);
     }
+    ready.value = true;
   });
 
   const addComment = () => {
