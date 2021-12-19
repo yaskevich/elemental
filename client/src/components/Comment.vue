@@ -10,15 +10,14 @@
 
       <div class="box">
         <n-space justify="center">
-          <div v-for="issue in entry.issues" :key="issue">
-          <n-tooltip trigger="hover" placement="bottom">
-            <template #trigger>
-              <n-tag  closable @close="removeIssue(issue)" :color="{ color: issuesKV[issue[0]].color, textColor: 'white', }">
-            {{issuesKV[issue[0]]?.["ru"]}}
-          </n-tag>
-          </template>
-          Assigned to {{usersKV[issue[1]].firstname + ' ' +usersKV[issue[1]].lastname}}
-          </n-tooltip>
+          <div v-for="(issue, index) in entry.issues" :key="index">
+            <n-tooltip trigger="hover" placement="bottom">
+              <template #trigger>
+                <n-tag  closable @close="removeIssue(issue)" :color="{ color: issuesKV[issue[0]].color, textColor: 'white', }">
+              {{issuesKV[issue[0]]?.["ru"]}}
+            </n-tag>
+            </template> Assigned to {{usersKV[issue[1]].firstname + ' ' +usersKV[issue[1]].lastname}}
+            </n-tooltip>
           </div>
         </n-space>
       </div>
@@ -68,10 +67,10 @@
         <n-space justify="center">
           <n-button type="info" dashed v-for="(stack, index) in boundStrings" :key="index" size="small" @click="goToText(stack)">
             <template v-for="item in stack" :key="item.id" style="margin-right: 5px;">
-                  <span v-if="item.meta !== 'ip'">
-                    {{item.form}}&nbsp;
-                  </span>
-                </template>
+                    <span v-if="item.meta !== 'ip'">
+                      {{item.form}}&nbsp;
+                    </span>
+                  </template>
           </n-button>
         </n-space>
       </div>
@@ -94,6 +93,17 @@
       <Tiptap ref="contentRef" editorclass="fulleditor" />
 
       <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" />
+      <div v-if="Boolean(entry.id)">
+        <n-popconfirm @positive-click="deleteComment">
+          <template #trigger>
+              <n-button type="error" :disabled="Boolean(boundStrings?.length)">Delete</n-button>
+            </template> You are about to delete the comment. This action is permanent. Please confirm, if you are sure
+        </n-popconfirm>
+      </div>
+
+      <p v-if="Boolean(boundStrings?.length)" style="font-size: 0.75rem;">
+        <n-text type="error">It is not allowed to delete a comment, if it has bound tokens. One should unbind tokens before.</n-text>
+      </p>
 
     </div>
   </div>
@@ -146,7 +156,7 @@
     brief_text: string;
     text_id: number;
     id: number;
-    issues: Array<number>;
+    issues: Array<[number, number]>;
     tags: Array<number>;
     priority: number;
     published: boolean;
@@ -168,10 +178,11 @@
     [key: string]: any;
   }
 
-  const usersKV = reactive({});
+  const usersKV: keyable = reactive({}) as keyable;
+  const issuesKV: keyable = reactive({}) as keyable;
+
   const tagsList = reactive([]);
   const issuesList = reactive([]);
-  const issuesKV: keyable = reactive({}) as keyable;
 
   const removeTag = (id: number) => {
     entry.tags = entry.tags.filter(x => x !== id);
@@ -181,12 +192,12 @@
     entry?.tags ? entry.tags.push(id) : (entry.tags = [id]);
   };
 
-  const removeIssue = (id: number) => {
-    entry.issues = entry.issues.filter(x => x !== id);
+  const removeIssue = (item: [number, number]) => {
+    entry.issues = entry.issues.filter(x => x[0] !== item[0] || x[0] !== item[0]);
   };
 
-  const addIssue = (id: number) => {
-    entry?.issues ? entry.issues.push(id) : (entry.issues = [id]);
+  const addIssue = (item: [number, number]) => {
+    entry?.issues ? entry.issues.push(item) : (entry.issues = [item]);
   };
 
   const askToLeave = (event: any) => {
@@ -220,10 +231,8 @@
 
   onBeforeMount(async () => {
     const usersData = await store.get('users');
-    //
     Object.assign(usersKV, Object.fromEntries(usersData.map((x: any) => [x.id, x])));
-
-
+    // console.log("users k/v", usersKV);
     const tagData = await store.get('tags');
 
     Object.assign(
@@ -234,8 +243,12 @@
     const issueListData = issueData.map((x: any) => ({
       label: x.ru,
       key: x.id,
-      disabled: computed(() => entry.issues?.map(d=>d[0]).includes(x.id)),
-      children: usersData.map((y:any) => ({ label: `${y.firstname} ${y.lastname}`, key: [x.id, y.id], disabled: false }))
+      disabled: computed(() => entry.issues?.map((d: any) => d[0]).includes(x.id)),
+      children: usersData.map((y: any) => ({
+        label: `${y.firstname} ${y.lastname}`,
+        key: [x.id, y.id],
+        disabled: false,
+      })),
     }));
     Object.assign(issuesList, issueListData);
 
@@ -377,6 +390,17 @@
   };
   const goToText = (stringTokens: Array<IToken>) => {
     router.push({ name: 'Text', params: { tokens: JSON.stringify(stringTokens) } });
+  };
+
+  const deleteComment = async () => {
+    if (entry?.id) {
+      const { data } = await store.deleteById('comments', String(entry.id));
+      if (data && data.length === 1 && data[0]?.id === entry.id) {
+        router.push({ name: 'Comments' });
+      } else {
+        console.error('delete error for', entry.id);
+      }
+    }
   };
 
 </script>
