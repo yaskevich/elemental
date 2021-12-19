@@ -226,6 +226,15 @@ const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
     res.json(result);
   });
 
+  app.delete('/api/:table/:id', auth, async(req,res) => {
+    // console.log('DELETE params', req.params, 'query', req.query);
+    let result = {};
+    if (['comments'].includes(req.params['table'])){
+      result = await db.deleteById(req.params['table'], req.params['id'], req.user);
+    }
+    res.json(result);
+  });
+
   app.listen(port);
   console.log("Running at Port "+ port);
 
