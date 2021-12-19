@@ -20,7 +20,7 @@ const state:IState = reactive({
 }) as IState;
 
 const get = async(route: string, id?: string, data?: Object): Promise<any> => {
-  // if (state.token) {
+  if (state.token) {
     try {
        const config = state.token ?
        { headers: { Authorization: "Bearer " + state.token }, "params": {} }: {};
@@ -40,12 +40,12 @@ const get = async(route: string, id?: string, data?: Object): Promise<any> => {
        console.log("Cannot get", error);
        return error;
    }
- // }
- // console.log("No key. Fail.");
+ }
+ console.log("No key. Fail.");
 };
 
 const post = async(table: string, data: Object): Promise<any> => {
-  // if (state.token) {
+  if (state.token) {
     try {
       // const config = { headers: { Authorization: "Bearer " + state.token } };
       const config = {};
@@ -57,7 +57,7 @@ const post = async(table: string, data: Object): Promise<any> => {
      console.log("Cannot get", error);
      return error;
    }
- // }
+ }
  console.log("No token. Fail.");
 };
 
@@ -74,10 +74,28 @@ const getUser = async() => {
   }
 };
 
+const deleteById = async(table: string, id: string): Promise<any> => {
+  if (state.token) {
+    try {
+    const config = { headers: { Authorization: "Bearer " + state.token }, "params": {} };
+     // if(id) { config["params"] = { id: id }; }
+     // console.log("delete query", table, id);
+     const response = await axios.delete("/api/" + table + "/" + id, config);
+     // console.log(response.data);
+     return response;
+   } catch (error) {
+     console.log("Cannot delete", error);
+     return error;
+   }
+ }
+ console.log("No token. Fail.");
+};
+
 export default {
   state,
   get,
   post,
   getUser,
+  deleteById,
   version: project.version,
 };
