@@ -201,6 +201,11 @@ const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
     res.json(tags);
   });
 
+  app.get('/api/users', async (req, res) => {
+    const users = await db.getUsers();
+    res.json(users);
+  });
+
   app.get('/api/tags', async (req, res) => {
     const tags = await db.getTags();
     res.json(tags);
