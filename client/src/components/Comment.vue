@@ -10,9 +10,16 @@
 
       <div class="box">
         <n-space justify="center">
-          <n-tag v-for="issue in entry.issues" :key="issue" closable @close="removeIssue(issue)" :color="{ color: issuesKV[issue].color, textColor: 'white', }">
-            {{issuesKV[issue]?.["ru"]}}
+          <div v-for="issue in entry.issues" :key="issue">
+          <n-tooltip trigger="hover" placement="bottom">
+            <template #trigger>
+              <n-tag  closable @close="removeIssue(issue)" :color="{ color: issuesKV[issue[0]].color, textColor: 'white', }">
+            {{issuesKV[issue[0]]?.["ru"]}}
           </n-tag>
+          </template>
+          Assigned to {{usersKV[issue[1]].firstname + ' ' +usersKV[issue[1]].lastname}}
+          </n-tooltip>
+          </div>
         </n-space>
       </div>
 
@@ -161,6 +168,7 @@
     [key: string]: any;
   }
 
+  const usersKV = reactive({});
   const tagsList = reactive([]);
   const issuesList = reactive([]);
   const issuesKV: keyable = reactive({}) as keyable;
@@ -211,8 +219,13 @@
   });
 
   onBeforeMount(async () => {
+    const usersData = await store.get('users');
+    //
+    Object.assign(usersKV, Object.fromEntries(usersData.map((x: any) => [x.id, x])));
+
+
     const tagData = await store.get('tags');
-    // console.log("tags", tagData);
+
     Object.assign(
       tagsList,
       tagData.map((x: any) => ({ label: x.ru, key: x.id, disabled: computed(() => entry.tags?.includes(x.id)) }))
@@ -221,7 +234,8 @@
     const issueListData = issueData.map((x: any) => ({
       label: x.ru,
       key: x.id,
-      disabled: computed(() => entry.issues?.includes(x.id)),
+      disabled: computed(() => entry.issues?.map(d=>d[0]).includes(x.id)),
+      children: usersData.map((y:any) => ({ label: `${y.firstname} ${y.lastname}`, key: [x.id, y.id], disabled: false }))
     }));
     Object.assign(issuesList, issueListData);
 
