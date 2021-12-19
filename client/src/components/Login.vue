@@ -47,7 +47,7 @@
           e.preventDefault();
           if (formValue.email  && formValue.password) {
               console.log(formValue);
-              const result = await store.post('user/login', formValue);
+              const result = await store.postUnauthorized('user/login', formValue);
               console.log(result);
               store.state.token = result.data.token;
               localStorage.setItem('token', result.data.token);

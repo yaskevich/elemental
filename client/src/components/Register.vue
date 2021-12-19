@@ -121,7 +121,7 @@
             if (!errors) {
               // message.success('Valid');
               console.log(formValue.value.user);
-              const result = await store.post('user/reg', formValue.value.user);
+              const result = await store.postUnauthorized('user/reg', formValue.value.user);
               const pwd = result?.data?.message;
               console.log(pwd);
               note.value = pwd;
