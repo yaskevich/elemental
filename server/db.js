@@ -271,7 +271,7 @@ export default {
     }
 
     sql += " RETURNING id";
-    console.log(sql);
+    // console.log(sql);
 
     let data = [];
     try {
@@ -328,8 +328,7 @@ export default {
     let {id, text_id, title, published, long_json,  long_html, long_text, brief_json, brief_html, brief_text, trans, priority, tags = [], issues = [] } = params;
     const tagsAsArray = `{${tags.length? tags.join(','): ''}}`;
     const issuesAsArray = `{${issues.length? issues.map(x => `{${x.join(',')}}`).join(','): ''}}`;
-    console.log("issues", issuesAsArray);
-
+    // console.log("issues", issuesAsArray);
     text_id = Number(text_id);
     const values = [text_id, title, published, long_json,  long_html, long_text, brief_json, brief_html, brief_text, trans, priority, tagsAsArray, issuesAsArray];
 
@@ -440,10 +439,20 @@ export default {
   },
   async getUsers() {
     const sql = 'SELECT id, username, firstname, lastname from users WHERE activated = True';
-
     let data = [];
     try {
       const result = await pool.query(sql);
+      data = result?.rows;
+    } catch (err) {
+      console.error(err);
+    }
+    return data;
+  },
+  async deleteById(table, id, user) {
+    // console.log(`DELETE from ${table} with ${id} by ${user.username}`);
+    let data = [];
+    try {
+      const result = await pool.query(`DELETE FROM ${table} WHERE id=${id} RETURNING id`);
       data = result?.rows;
     } catch (err) {
       console.error(err);
