@@ -47,8 +47,8 @@ const get = async(route: string, id?: string, data?: Object): Promise<any> => {
 const post = async(table: string, data: Object): Promise<any> => {
   if (state.token) {
     try {
-      // const config = { headers: { Authorization: "Bearer " + state.token } };
-      const config = {};
+      const config = { headers: { Authorization: "Bearer " + state.token } };
+      // const config = {};
       // console.log(`POST ${table}`);
       const response = await axios.post('/api/'+ table, data, config);
       // console.log("store:response", response.data);
@@ -59,6 +59,18 @@ const post = async(table: string, data: Object): Promise<any> => {
    }
  }
  console.log("No token. Fail.");
+};
+
+const postUnauthorized = async(table: string, data: Object): Promise<any> => {
+  try {
+    // console.log(`POST ${table}`);
+    const response = await axios.post('/api/'+ table, data);
+    console.log("postUnauthorized", table, response.data);
+    return response;
+ } catch (error) {
+   console.log("Cannot get", error);
+   return error;
+ }
 };
 
 const getUser = async() => {
@@ -95,6 +107,7 @@ export default {
   state,
   get,
   post,
+  postUnauthorized,
   getUser,
   deleteById,
   version: project.version,
