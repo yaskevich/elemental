@@ -14,11 +14,12 @@
     data.value = await store.get('texts');
   });
 
-  const goToText = (id: number) => {
+  const goToText = (id: number, title: string) => {
     // console.log("go to text", id);
     localStorage.setItem('text_id', String(id));
     router.push(`/comments/${id}`);
     store.state.user.text_id = id;
+    document.title = title;
   };
 
   const state = store.state;
@@ -34,7 +35,7 @@
       <!-- <p>See <code>README.md</code> for more information.</p> -->
       <div v-for="(value, key) in data" :key="key" style="padding:.5rem;" :title="value.meta">
         <!-- <n-button type="info">Info</n-button> -->
-        <n-button @click="goToText(value.id)" :type="value.id === store.state.user.text_id ? 'info': ''">
+        <n-button @click="goToText(value.id, value.title)" :type="value.id === store.state.user.text_id ? 'info': ''">
           {{value.author}}.&nbsp;{{value.title}}
           <!-- <n-text type="info">{{value.author}}</n-text>.&nbsp;
         «<n-text strong>{{value.title}}</n-text>» -->
@@ -54,6 +55,10 @@
           </n-button>
         </n-descriptions-item>
       </n-descriptions>
+
+    </div>
+    <div style="margin: 2rem;">
+    <n-button text tag="a" href="https://icons8.com/icon/93125/quote" target="_blank" type="primary">Quote icon by Icons8</n-button>
     </div>
   </div>
 

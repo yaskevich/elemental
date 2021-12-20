@@ -7,16 +7,15 @@ import store from './store'
 import Login from './components/Login.vue'
 import Register from './components/Register.vue'
 
+const loggedIn = computed(() => store?.state?.token?.length);
+const state = store.state;
 
 onBeforeMount(async () => {
   await store.getUser();
+  const texts = await store.get('texts');
+  const title = texts.filter((x:any) => x.id === state.user.text_id)?.[0]?.title || 'App';
+  document.title = title;
 });
-
-const loggedIn = computed(() => store?.state?.token?.length);
-
-const state = store.state;
-
-
 
 </script>
 
