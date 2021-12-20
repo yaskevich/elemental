@@ -8,6 +8,7 @@ import Preview from './components/Preview.vue';
 import Comment from './components/Comment.vue';
 import Comments from './components/Comments.vue';
 import Text from './components/Text.vue';
+import Logs from './components/Logs.vue';
 
 const routes = [
 	// {
@@ -63,6 +64,11 @@ const routes = [
 		path: '/preview/:id?',
 		component: Preview,
 		name: 'Preview',
+	},
+	{
+		path: '/logs/:id?',
+		component: Logs,
+		name: 'Logs',
 	},
 ];
 
