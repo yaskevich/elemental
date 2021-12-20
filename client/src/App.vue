@@ -28,6 +28,7 @@ onBeforeMount(async () => {
       <router-link to="/text">Text</router-link> |
       <router-link to="/tags">Tags</router-link> |
       <router-link to="/issues">Issues</router-link> |
+      <router-link to="/logs">Logs</router-link> |
       {{state.user.username}}
       <!-- <span v-if="loggedIn">
         <router-link to="/profile">Моё</router-link> |
