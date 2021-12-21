@@ -121,7 +121,7 @@
                   trigger: "hover",
                 },
                 {
-                  default: () => `${issues?.[d[0]]?.ru}\n@${users?.[d[1]].username}`,
+                  default: () => `${issues?.[d[0]]?.ru}${users?.[d[1]]?.username? ' @'+users?.[d[1]]?.username: ''}`,
                   trigger: () => h('div',   {
                       class: 'square',
                       style: `background-color:${issues?.[d[0]]?.color||'black'};`,
