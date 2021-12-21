@@ -336,6 +336,7 @@ export default {
     if (id) {
       id =  Number(id);
       values.push(id);
+
       sql = `UPDATE comments SET text_id = $1, title = $2, published= $3, long_json = $4, long_html = $5, long_text = $6,
       brief_json = $7, brief_html = $8, brief_text = $9, trans = $10, priority = $11,
       tags = $12, issues = $13
@@ -366,9 +367,14 @@ export default {
     return data;
   },
   async getCommentsTitles(textId, chunk) {
-    const checkedChunk = chunk.replace(/[^А-Яа-яЎІЁўіёA-Za-z*-]/g, '');
-    const values = [textId, `%${checkedChunk}%`];
-    let sql = "SELECT id, title from comments where text_id = $1 and title ilike $2";
+    const checkedChunk = chunk.replace(/[^0-9А-Яа-яЎІЁўіёA-Za-z*-]/g, '');
+    // console.log(`${chunk}|${checkedChunk}|`);
+    if (!checkedChunk) {
+      return [];
+    }
+    // console.log(`|${checkedChunk}|`);
+    const values = [textId, `%${checkedChunk}%`, `${checkedChunk}%`];
+    let sql = "SELECT id, priority, title from comments where text_id = $1 and (title ilike $2 OR priority::text like $3) LIMIT 10";
     let data = [];
     try {
       const result = await pool.query(sql, values);
