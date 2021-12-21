@@ -139,10 +139,12 @@
   };
 
   const queryDatabase = async (chunk: string) => {
-    if (chunk && chunk.length > 1) {
-      const matches = await store.get('titles', String(2), { chunk: chunk });
-      // console.log("matches", matches, "vs", chunk);
-      options.value = matches.map((x: any) => ({ label: x.title, value: x.id } as IOption));
+    const cleanChunk = chunk.replace(/ /g,'');
+    
+    if (chunk && cleanChunk.length > 1) {
+      const matches = await store.get('titles', String(store.state.user.text_id), { chunk: chunk });
+      console.log("matches", matches, "vs", chunk);
+      options.value = matches.map((x: any) => ({ label: `${x.priority}. ${x.title}`, value: x.id } as IOption));
     }
   };
 
