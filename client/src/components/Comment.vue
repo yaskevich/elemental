@@ -16,7 +16,7 @@
                 <n-tag  closable @close="removeIssue(issue)" :color="{ color: issuesKV[issue[0]].color, textColor: 'white', }">
               {{issuesKV[issue[0]]?.["ru"]}}
             </n-tag>
-            </template> Assigned to {{usersKV[issue[1]].firstname + ' ' +usersKV[issue[1]].lastname}}
+          </template> {{issue[1]? ('Assigned to ' + usersKV[issue[1]].firstname + ' ' +usersKV[issue[1]].lastname) : 'Not assigned'}}
             </n-tooltip>
           </div>
         </n-space>
@@ -244,11 +244,15 @@
       label: x.ru,
       key: x.id,
       disabled: computed(() => entry.issues?.map((d: any) => d[0]).includes(x.id)),
-      children: usersData.map((y: any) => ({
+      children: [{
+        label: '(Nobody)',
+        key: [x.id, 0],
+        disabled: false,
+      }].concat (usersData.map((y: any) => ({
         label: `${y.firstname} ${y.lastname}`,
         key: [x.id, y.id],
         disabled: false,
-      })),
+      }))),
     }));
     Object.assign(issuesList, issueListData);
 
