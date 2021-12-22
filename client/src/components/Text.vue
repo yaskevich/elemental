@@ -139,11 +139,9 @@
   };
 
   const queryDatabase = async (chunk: string) => {
-    const cleanChunk = chunk.replace(/ /g,'');
-    
-    if (chunk && cleanChunk.length > 1) {
+    if (chunk && chunk.replace(/ /g, '').length > 1) {
       const matches = await store.get('titles', String(store.state.user.text_id), { chunk: chunk });
-      console.log("matches", matches, "vs", chunk);
+      // console.log("matches", matches, "vs", chunk);
       options.value = matches.map((x: any) => ({ label: `${x.priority}. ${x.title}`, value: x.id } as IOption));
     }
   };
@@ -161,7 +159,7 @@
     } else {
       // console.log("token", token);
       if (token?.checked) {
-        console.log('de-select', token);
+        // console.log('de-select', token);
         if (token1.value?.id === token.id) {
           token1.value = token2.value;
           token2.value = {} as IToken;
@@ -282,7 +280,7 @@
             </div>
             <n-auto-complete clearable
                              :options="options"
-                             placeholder="Comment title"
+                             placeholder="Comment title or ID"
                              :on-update:value="(userInput: string) => queryDatabase(userInput)"
                              :on-select="(selectedValue: number) => selectOption(selectedValue)" />
             <div v-if="selectedCommentId" style="margin: 5px;">
