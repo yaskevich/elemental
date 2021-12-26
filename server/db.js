@@ -19,6 +19,11 @@ import pg from 'pg';
 const { Pool } = pg;
 const pool = new Pool();
 
+const cleanCommentObject = (obj) => {
+    const { long_html, brief_html, long_text, brief_text, id, ...rest } = obj;
+    return rest;
+};
+
 export default {
   async getUserDataByID(id){
     const res = await pool.query("SELECT * from users WHERE id = $1 AND activated = TRUE", [id]);
@@ -324,7 +329,7 @@ export default {
     }
     return data;
   },
-  async setComment(params) {
+  async setComment(params, userObject) {
     let {id, text_id, title, published, long_json,  long_html, long_text, brief_json, brief_html, brief_text, trans, priority, tags = [], issues = [] } = params;
     const tagsAsArray = `{${tags.length? tags.join(','): ''}}`;
     const issuesAsArray = `{${issues.length? issues.map(x => `{${x.join(',')}}`).join(','): ''}}`;
@@ -348,8 +353,40 @@ export default {
 
     let data = {};
     try {
-      const result = await pool.query(sql, values);
-      data = result?.rows?.[0];
+      let previousCommentObject = {};
+      if (id){
+        const selection = await pool.query(`SELECT * FROM comments WHERE id = $1`, [id]);
+        const commentObject = selection.rows[0];
+        previousCommentObject = cleanCommentObject(commentObject);
+      }
+
+      console.log("pre", JSON.stringify(previousCommentObject));
+      const newCommentObject = cleanCommentObject(params);
+      console.log("now", JSON.stringify(newCommentObject));
+
+      try {
+         await pool.query('BEGIN');
+         try {
+           const result = await pool.query(sql, values);
+           data = result?.rows?.[0];
+           const resultId = data["id"];
+
+
+           const logQuery = `INSERT INTO logs (user_id, table_name, record_id, data0, data1) VALUES($1, $2, $3, $4, $5) RETURNING id`;
+           const table = 'comments';
+           // enum types! - alter table logs
+           const logResult  = await pool.query(logQuery, [userObject.id, table, resultId, previousCommentObject, newCommentObject]);
+           // console.log(logQuery, logResult);
+           // return resultId;
+           await pool.query('COMMIT');
+
+         } catch (error) {
+           await pool.query('ROLLBACK');
+           return {"error": error};
+         }
+       } catch(error){
+          return {"error": error};
+       }
     } catch (err) {
       console.error(err);
     }
