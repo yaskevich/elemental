@@ -143,11 +143,11 @@ const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
     res.json(comments);
   });
 
-  app.post('/api/comment', async (req, res) => {
+  app.post('/api/comment', auth, async (req, res) => {
     // console.log("comment id", req.params['id']);
     // const comments = await db.getComments(req.params['id']);
     // console.log(req.body);
-    const result = await db.setComment(req.body);
+    const result = await db.setComment(req.body, req.user);
     res.json(result);
   });
 
