@@ -161,6 +161,11 @@ const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
     res.json(result);
   });
 
+  app.get('/api/grammar', async (req, res) => {
+    const categories = await db.getGrammar();
+    res.json(categories);
+  });
+
   app.get('/api/texts', async (req, res) => {
     const textInfo = await db.getTexts();
     res.json(textInfo);
