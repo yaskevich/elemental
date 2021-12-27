@@ -502,4 +502,96 @@ export default {
     }
     return data;
   },
+  async getGrammar() {
+    // stub till UI will be implemented
+    return {
+        ip: {
+          color: 'lightgray',
+        },
+        vb: {
+          color: '#32b643',
+          font: '#FFFFFF',
+        },
+        aj: {
+          color: '#e85600',
+          font: '#FFFFFF',
+        },
+        pp: {
+          color: '#85144b',
+          font: '#FFFFFF',
+        },
+        av: {
+          color: '#f801ff',
+          font: '#FFFFFF',
+        },
+        nm: {
+          color: 'lightblue',
+          font: 'black',
+        },
+        nb: {
+          color: '#b66935',
+          font: 'black',
+        },
+        nn: {
+          color: '#5f4bb5',
+          font: '#FFFFFF',
+        },
+        np: {
+          color: '#6948f6',
+          font: 'orange',
+        },
+        va: {
+          color: '#ffb700',
+          font: '#FFFFFF',
+        },
+        pn: {
+          color: 'navy',
+          font: '#FFFFFF',
+        },
+        nw: {
+          color: 'black',
+          font: 'yellow',
+        },
+        vi: {
+          color: '#afe31b',
+          font: 'red',
+        },
+        vg: {
+          color: '#0da6ca',
+          font: 'lightyellow',
+        },
+        part: {
+          color: 'pink',
+          font: 'red',
+        },
+        det: {
+          color: '#00ff00',
+          font: 'navy',
+        },
+        aux: {
+          color: 'silver',
+          font: 'navy',
+        },
+        prad: {
+          color: '#d61f1f',
+          font: 'white',
+        },
+        dm: {
+          color: 'cyan',
+          font: 'gray',
+        },
+        mod: {
+          color: 'cyan',
+          font: 'red',
+        },
+        cj: {
+          color: 'yellow',
+          font: 'gray',
+        },
+        intj: {
+          color: '#065535',
+          font: 'white',
+        },
+      };
+  },
 };
