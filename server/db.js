@@ -208,11 +208,12 @@ export default {
     }
     return data;
   },
-  async getText(id) {
+  async getText(id, withGrammar = false) {
+    const sqlWithGrammar = `select strings.id as id, strings.p, strings.s, strings.form, strings.repr, tokens.id as tid, tokens.meta, units.id as uid, units.pos, strings.comments from strings left join tokens on strings.token_id = tokens.id left join units on strings.unit_id = units.id where text_id = $1 ORDER BY strings.id`;
     const sql = `select strings.id as id, strings.p, strings.s, strings.form, strings.repr, tokens.id as tid, tokens.meta, strings.comments from strings left join tokens on strings.token_id = tokens.id where text_id = $1 ORDER BY strings.id`;
     let data = [];
     try {
-      const result = await pool.query(sql, [id]);
+      const result = await pool.query(withGrammar? sqlWithGrammar : sql, [id]);
       data = result?.rows;
     } catch (err) {
       console.error(err);
