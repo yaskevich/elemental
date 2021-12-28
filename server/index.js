@@ -173,7 +173,7 @@ const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 
   app.get('/api/text', async (req, res) => {
     const textId = Number(req.query.id) || 1;
-    const strings = await db.getText(textId);
+    const strings = await db.getText(textId, Boolean(req.query.grammar));
     res.json(strings);
   });
 
