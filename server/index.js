@@ -95,7 +95,8 @@ const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
     // const settings = await db.getData("settings", 1);
     // const stats = await db.getStats();
     // res.json(Object.assign(req.user, {"settings": settings?.[0], "stats": stats, "commit": process.env.COMMIT, "server": __package.version, }));
-    res.json({...req.user, "server": __package.version, "commit": process.env.COMMIT, });
+    const text = await db.getUserText(req.user.id);
+    res.json({...req.user, text, "server": __package.version, "commit": process.env.COMMIT, });
    });
 
   app.post('/api/user/reg', async(req,res) => {
@@ -173,7 +174,7 @@ const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 
   app.get('/api/text', async (req, res) => {
     const textId = Number(req.query.id) || 1;
-    const strings = await db.getText(textId, Boolean(req.query.grammar));
+    const strings = await db.getText(textId, req.query.grammar === 'true');
     res.json(strings);
   });
 
