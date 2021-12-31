@@ -2,20 +2,37 @@ import { reactive } from "vue";
 import axios from "axios";
 import project from '../package.json';
 
+interface ITextObject {
+  author: string,
+  comments: boolean,
+  grammar: boolean,
+  id: number,
+  meta: string,
+  title: string,
+};
+
+interface IUserObject {
+  id: number,
+  username: string,
+  firstname: string,
+  lastname: string,
+  email: string,
+  sex: number,
+  server: string,
+  commit: string,
+  text_id: number,
+  text?: ITextObject,
+};
+
 interface IState {
   token?: string,
   error?: string,
-  user: {
-    text_id: number,
-    username: string,
-    server: string,
-    commit: string,
-  },
+  user?: IUserObject,
 };
 
 const state:IState = reactive({
   token: localStorage.getItem('token') || '',
-  user: { text_id: Number(localStorage.getItem('text_id')) || null, },
+  user: {},
   error: "",
 }) as IState;
 
@@ -78,7 +95,7 @@ const getUser = async() => {
       try {
         const config = { headers: { Authorization: "Bearer " + state.token }, };
         const response = await axios.get("/api/user/info", config);
-        state.user = {...state.user, ...response.data};
+        state.user = response.data;
       } catch (error) {
         console.log("Cannot get user", error)
         return error;
