@@ -10,11 +10,12 @@ import Register from './components/Register.vue'
 const loggedIn = computed(() => store?.state?.token?.length);
 const state = store.state;
 
+const dataReady = ref(false);
+
 onBeforeMount(async () => {
   await store.getUser();
-  const texts = await store.get('texts');
-  const title = texts.filter((x:any) => x.id === state.user.text_id)?.[0]?.title || 'App';
-  document.title = title;
+  dataReady.value = true;
+  document.title = store?.state?.user?.text_id ? store.state.user.text.title : 'App';
 });
 
 </script>
@@ -22,6 +23,7 @@ onBeforeMount(async () => {
 <template>
   <!-- <div id="main" v-if="dataReady"> -->
   <div id="main" v-if="loggedIn">
+    <div v-if="dataReady">
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/comments">Comments</router-link> |
@@ -41,7 +43,7 @@ onBeforeMount(async () => {
     <n-message-provider>
       <router-view/>
     </n-message-provider>
-
+    </div>
 </div>
 <div v-else>
   <h3>Login</h3>
