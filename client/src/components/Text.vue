@@ -82,9 +82,13 @@
   });
 
   onBeforeMount(async () => {
-    // console.log('before mount');
-    const data = await store.get('text', String(id));
+    const userInfo = store.state.user;
+    const textInfo = store.state.user.text;
+    console.log("text info",  userInfo, textInfo);
+
+    const data = await store.get('text', String(id), {grammar: store.state.user?.text?.grammar});
     Object.assign(text, data);
+    console.log("content", Boolean(data[0]?.pos), data[0]);
     const textComments = await store.get('textcomments', String(id));
     Object.assign(commentsObject, ...textComments.map((item: any) => ({ [item.id]: item })));
     isLoaded.value = true;
