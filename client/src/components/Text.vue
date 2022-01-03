@@ -45,6 +45,7 @@
 
   let highlightedTokens: Array<number> = JSON.parse(props.tokens).map((x: IToken) => x.id);
 
+  const grammarScheme = reactive({});
   const commentsToStore = ref([] as Array<number>);
   const showModal = ref(false);
   const singleMode = ref(false);
@@ -84,11 +85,18 @@
   onBeforeMount(async () => {
     const userInfo = store.state.user;
     const textInfo = store.state.user.text;
-    console.log("text info",  userInfo, textInfo);
+    // console.log("text info",  userInfo, textInfo);
 
     const data = await store.get('text', String(id), {grammar: store.state.user?.text?.grammar});
     Object.assign(text, data);
     console.log("content", Boolean(data[0]?.pos), data[0]);
+    if (store.state.user?.text?.grammar) {
+        const grammar = await store.get('grammar');
+        console.log("grammar", grammar);
+        Object.assign(grammarScheme, grammar);
+    }
+
+
     const textComments = await store.get('textcomments', String(id));
     Object.assign(commentsObject, ...textComments.map((item: any) => ({ [item.id]: item })));
     isLoaded.value = true;
@@ -267,7 +275,9 @@
       <div>
         <template v-for="(token, index) in text" :key="token.id" style="padding:.5rem;">
                         <div v-if="index && token.p !== text[index-1].p" style="margin-bottom:1rem;"></div>
-                        <button :id="`id${token.id}`" :class="`text-button ${token?.checked ?'selected-button':''}  ${token?.comments?.length? 'commented': ''} ${highlightedTokens.length && highlightedTokens.includes(token.id) ? 'highlighted': ''}`" size="small" :title="token.comments.map(x=>commentsObject[String(x)]['title']).join('•')" v-if="token.meta !== 'ip'"   :disabled="token.meta === 'ip+'" @click="selectToken(token, $event)" >
+                        <button :id="`id${token.id}`" :class="`text-button ${token?.checked ?'selected-button':''}  ${token?.comments?.length? 'commented': ''} ${highlightedTokens.length && highlightedTokens.includes(token.id) ? 'highlighted': ''}`" size="small" :title="store.state.user?.text?.grammar ? token.pos : token.comments.map(x=>commentsObject[String(x)]['title']).join('•')" v-if="token.meta !== 'ip'"   :disabled="token.meta === 'ip+'" @click="selectToken(token, $event)"
+                        :style ="store.state.user?.text?.grammar? {'background-color': grammarScheme?.[token.pos]?.['color'] || 'gray', 'color': grammarScheme?.[token.pos]?.['font'] || 'black'}: ''"
+                        >
                         {{token.form}}<sup v-if="token?.comments?.length">{{token.comments.length}}</sup>
                         </button>
                       </template>
