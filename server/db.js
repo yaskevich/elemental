@@ -379,9 +379,9 @@ export default {
         previousCommentObject = cleanCommentObject(commentObject);
       }
 
-      console.log("pre", JSON.stringify(previousCommentObject));
+      // console.log("pre", JSON.stringify(previousCommentObject));
       const newCommentObject = cleanCommentObject(params);
-      console.log("now", JSON.stringify(newCommentObject));
+      // console.log("now", JSON.stringify(newCommentObject));
 
       try {
          await pool.query('BEGIN');
@@ -612,5 +612,21 @@ export default {
           font: 'white',
         },
       };
+  },
+  async selectText(user, text) {
+    const userId = Number(user);
+    const textId = Number(text);
+    let data = {};
+    if (userId && textId) {
+      // console.log(`select text ${textId} for user ${userId}`);
+      try {
+        const sql = "UPDATE users SET text_id = $1 WHERE id = $2 RETURNING id";
+        const result = await pool.query(sql, [textId, userId]);
+        data = result?.rows?.[0];
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    return data;
   },
 };
