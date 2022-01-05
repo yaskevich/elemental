@@ -111,6 +111,11 @@ const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
     res.json(result);
   });
 
+  app.post('/api/user/text', auth, async(req,res) => {
+    const result = await db.selectText(req.user.id, req.body.id);
+    res.json(result);
+  });
+
   app.post('/api/tokens', async(req, res) => {
     const tid = req.body.id;
     const cls = req.body.cls;
