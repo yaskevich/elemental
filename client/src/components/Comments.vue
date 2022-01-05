@@ -16,7 +16,7 @@
           </h3>
         </div>
       </n-space>
-      <div v-if="!id">
+      <div v-if="!store?.state?.user?.text_id">
         <n-text type="error">Select specific text before (at Home screen)!</n-text>
       </div>
       <!-- <n-data-table remote :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-class-name="rowClassName" /> -->
@@ -35,7 +35,6 @@
   import { NTag, NButton, NText, NTooltip } from 'naive-ui';
 
   const vuerouter = useRoute();
-  const id = vuerouter.params.id || store.state.user.text_id;
 
   const ready = ref(false);
   const comments = reactive([]);
@@ -169,6 +168,13 @@
   // };
 
   onBeforeMount(async () => {
+    const pathId = Number(vuerouter.params?.id);
+    if (pathId && store?.state?.user && pathId !== store.state.user?.text_id){
+      store.state.user.text_id = pathId;
+      const { data } = await store.post('user/text', { id: vuerouter.params.id });
+      console.log("change text id to prop", data);
+    }
+
     const issuesData = await store.get('issues');
     const issuesObject = Object.fromEntries(issuesData.map((x:any) => [x.id, x]));
     Object.assign(issues, issuesObject);
@@ -177,9 +183,9 @@
     Object.assign(users, Object.fromEntries(usersData.map((x: any) => [x.id, x])));
     // console.log('issues from server', issues);
 
-    if (id) {
-      localStorage.setItem('text_id', String(id));
-      const data = await store.get('comments/' + id);
+    if (store?.state?.user?.text_id) {
+      // localStorage.setItem('text_id', String(id));
+      const data = await store.get('comments/' + store.state.user.text_id);
       Object.assign(comments, data);
       // console.log('data from server', data);
     }
