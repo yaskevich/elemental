@@ -63,7 +63,7 @@
 </script>
 
 <style scoped lang="scss">
-::v-deep var.error {
+:deep(var.error) {
   display:none;
 }
 </style>
