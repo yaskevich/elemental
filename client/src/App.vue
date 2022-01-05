@@ -15,7 +15,7 @@ const dataReady = ref(false);
 onBeforeMount(async () => {
   await store.getUser();
   dataReady.value = true;
-  document.title = store?.state?.user?.text_id ? store.state.user.text.title : 'App';
+  document.title = store?.state?.user?.text?.title || 'App';
 });
 
 </script>
@@ -31,7 +31,7 @@ onBeforeMount(async () => {
       <router-link to="/tags">Tags</router-link> |
       <router-link to="/issues">Issues</router-link> |
       <router-link to="/logs">Logs</router-link> |
-      {{state.user.username}}
+      {{state?.user?.username}}
       <!-- <span v-if="loggedIn">
         <router-link to="/profile">Моё</router-link> |
         <a href ="#" @click="doLogOut">Выйти</a>

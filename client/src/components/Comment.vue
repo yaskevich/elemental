@@ -290,8 +290,8 @@
     }
 
     if (!entry.text_id) {
-      console.log('no text_id', store.state.user.text_id);
-      entry.text_id = store.state.user.text_id as number;
+      // console.log('no text_id', store.state.user.text_id);
+      entry.text_id = store?.state?.user?.text_id as number || 1;
     }
 
     if (entry?.id) {
