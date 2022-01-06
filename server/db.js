@@ -758,4 +758,30 @@ export default {
     }
     return data;
   },
+  async setText(params) {
+    // author: "", title: "", meta: "", grammar: true, comments: true
+    const values = [params.author, params.title, params.meta, params.grammar, params.comments];
+    let sql = "";
+    // console.log(params);
+
+    if (params.id) {
+      const id =  Number(params.id);
+      values.push(id);
+      sql = 'UPDATE texts SET author = $1, title = $2, meta = $3, grammar = $4, comments = $5 WHERE id = $6';
+    } else {
+      sql = `INSERT INTO texts (author, title, meta, grammar, comments) VALUES ($1, $2, $3, $4, $5)`;
+    }
+
+    sql += " RETURNING id";
+    // console.log(sql);
+
+    let data = [];
+    try {
+      const result = await pool.query(sql, values);
+      data = result?.rows?.[0];
+    } catch (err) {
+      console.error(err);
+    }
+    return data;
+  },
 };
