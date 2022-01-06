@@ -15,13 +15,18 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const lang = "ru";
-const textId = 2;
-
 // entry point
 (async () => {
+  console.log("ARGUMENTS: <path> <2-character language code> <text ID>");
   const args = process.argv.slice(2);
-  console.log(args[0]);
+  const lang = args[1] && args[1].length === 2 ? args[1] : "en";
+  const textId = Number(args[2])||'';
+  console.log(`• Path: '${args[0]}'\n• Language: '${lang}'\n• ID: ${textId}`);
+
+  if (!textId){
+    console.error("Text ID is not set! Exiting...");
+    process.exit();
+  }
 
   const insert = async (pnum, snum, form, repr, type) => {
     const token = repr.toLowerCase();
@@ -49,12 +54,15 @@ const textId = 2;
   if (args[0] && fs.existsSync(args[0])) {
     const file = fs.readFileSync(args[0], "utf8");
 
-    try {
-      await pool.query("DELETE from strings where text_id = 2");
-      await pool.query("DELETE from tokens where lang = 'ru'");
-    } catch (error) {
-      console.error(error);
+    if(textId) {
+      try {
+        await pool.query("DELETE from strings where text_id = $1", [textId]);
+        await pool.query("DELETE from tokens where lang = $1", [lang]);
+      } catch (error) {
+        console.error(error);
+      }
     }
+
 
     // const tokens = file.split(/(?<=[ .…!?»\n])/);
     // // console.log(tokens);
@@ -74,7 +82,9 @@ const textId = 2;
       const sentencesLength = sentences.length;
       // console.log(sentences);
       for (let s = 0; s < sentencesLength; s++) {
-        console.log("•", sentences[s]);
+        // enable print to debug
+        // console.log("•", sentences[s]);
+        process.stdout.write(sn+"\r");
         const sent = sentences[s].split(" ");
         for (let token of sent.filter(x => x)) {
           const withPuncts = token.split(/([^А-Яа-яA-Za-z\*\-])/);
@@ -115,5 +125,7 @@ const textId = 2;
     }
   }
 
-  // await pool.end();
+  await pool.query("UPDATE texts SET loaded = True WHERE id = $1", [textId]);
+  await pool.end();
+  console.log("\nDone!");
 })();
