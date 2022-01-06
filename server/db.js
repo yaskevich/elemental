@@ -53,7 +53,7 @@ const databaseScheme = {
     privs integer NOT NULL,
     prefs json,
     _passhash TEXT NOT NULL,
-    activated BOOLEAN NOT NULL DEFAULT FALSE
+    activated BOOLEAN NOT NULL DEFAULT FALSE,
     text_id integer,
     CONSTRAINT fk_users_texts FOREIGN KEY(text_id) REFERENCES texts(id)`,
 
