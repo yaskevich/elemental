@@ -4,15 +4,35 @@
   import store from '../store';
   import router from '../router';
 
-  // defineProps<{ msg: string }>()
+  interface IText {
+    id: number,
+    author: string,
+    title: string,
+    meta: string,
+    grammar: boolean,
+    comments: boolean,
+    loaded: boolean
+  };
 
-  // const msg = "Smart Annotation Tool"
-
-  const data = ref();
+  const texts = reactive([] as Array<IText>);
+  const showForm = ref(false);
+  const form = reactive({author:'', title: '', meta: '', grammar: false, comments: false, loaded: false});
 
   onBeforeMount(async () => {
-    data.value = await store.get('texts');
+    const data = await store.get('texts');
+    Object.assign(texts, data);
+    // console.log("data", data);
   });
+
+  const saveText = async() => {
+    console.log("form", form);
+    const { data } = await store.post('text', form);
+    console.log("change text props", data);
+    if (data?.id){
+      showForm.value = false;
+      texts.push({...form, id: data.id});
+    }
+  };
 
   const goToText = async(id: number, title: string) => {
     // console.log("go to text", id);
@@ -36,12 +56,30 @@
 
 <template>
 
-  <!-- <h1>{{ msg }}</h1> -->
-  <h3>Projects</h3>
   <div class="center-column">
     <div class="left-column">
-      <!-- <p>See <code>README.md</code> for more information.</p> -->
-      <div v-for="(value, key) in data" :key="key" style="padding:.5rem;" :title="value.meta">
+    <n-space justify="center">
+      <div>
+        <h3>Projects</h3>
+      </div>
+      <div>
+        <h3 style="margin-top:.7em;margin-left: 2em;">
+          <n-button type="info" dashed @click="showForm = true" v-if="!showForm">+ new</n-button>
+        </h3>
+      </div>
+    </n-space>
+
+    <div style="max-width:300px;margin: 0 auto;" v-if="showForm">
+      <n-input v-model:value="form.title" type="text" placeholder="Text title" />
+      <n-input v-model:value="form.author" type="text" placeholder="Author name" />
+      <n-input v-model:value="form.meta" type="text" placeholder="Description" />
+      <n-checkbox v-model:checked="form.grammar">Grammar tagging</n-checkbox>
+      <n-checkbox v-model:checked="form.comments">Comments handling</n-checkbox>
+      <n-button type="info" @click="saveText">Submit</n-button>
+      <n-button type="warning" @click="showForm = false">Cancel</n-button>
+    </div>
+
+      <div v-for="(value, key) in texts" :key="key" style="padding:.5rem;" :title="value.meta">
         <!-- <n-button type="info">Info</n-button> -->
         <n-button @click="goToText(value.id, value.title)" :type="value.id === store?.state?.user?.text_id ? 'info': ''">
           {{value.author}}.&nbsp;{{value.title}}
