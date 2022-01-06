@@ -19,6 +19,135 @@ import pg from 'pg';
 const { Pool } = pg;
 const pool = new Pool();
 
+const databaseQuery = `SELECT table_name FROM information_schema.columns
+ WHERE table_schema = 'public' group by table_name`;
+
+const databaseScheme = {
+  texts: `
+    id SERIAL PRIMARY KEY,
+    author text,
+    title text,
+    meta text,
+    loaded boolean DEFAULT false NOT NULL,
+    grammar boolean DEFAULT false NOT NULL,
+    comments boolean DEFAULT false NOT NULL`,
+
+  tags: `
+    id SERIAL PRIMARY KEY,
+    en TEXT,
+    ru TEXT`,
+
+  issues: `
+    id SERIAL PRIMARY KEY,
+    color TEXT NOT NULL DEFAULT '#000000',
+    en TEXT,
+    ru TEXT`,
+
+  users: `
+    id SERIAL PRIMARY KEY,
+    username TEXT NOT NULL,
+    firstname TEXT NOT NULL,
+    lastname TEXT NOT NULL,
+    email text NOT NULL,
+    sex integer NOT NULL,
+    privs integer NOT NULL,
+    prefs json,
+    _passhash TEXT NOT NULL,
+    activated BOOLEAN NOT NULL DEFAULT FALSE
+    text_id integer,
+    CONSTRAINT fk_users_texts FOREIGN KEY(text_id) REFERENCES texts(id)`,
+
+  tokens: `
+    id SERIAL PRIMARY KEY,
+    token text NOT NULL,
+    meta text,
+    lang text`,
+
+  units: `
+    id SERIAL PRIMARY KEY,
+    token_id integer,
+    pos text,
+    CONSTRAINT fk_units_tokens FOREIGN KEY(token_id) REFERENCES tokens(id)`,
+
+  comments:  `
+    id SERIAL PRIMARY KEY,
+    text_id integer,
+    title text NOT NULL,
+    long_json json,
+    long_html text,
+    long_text text,
+    published boolean DEFAULT false,
+    brief_json json,
+    brief_html text,
+    brief_text text,
+    trans text DEFAULT '',
+    priority real,
+    tags integer[] DEFAULT '{}',
+    issues integer[] DEFAULT '{}',
+    CONSTRAINT fk_comments_texts FOREIGN KEY(text_id) REFERENCES texts(id)`,
+
+  strings: `
+    id SERIAL PRIMARY KEY,
+    text_id integer,
+    p integer,
+    s integer,
+    form text,
+    repr text,
+    token_id integer,
+    unit_id integer,
+    comments integer[] DEFAULT '{}',
+    CONSTRAINT fk_strings_texts FOREIGN KEY(text_id) REFERENCES texts(id),
+    CONSTRAINT fk_strings_tokens FOREIGN KEY(token_id) REFERENCES tokens(id),
+    CONSTRAINT fk_strings_units FOREIGN KEY(unit_id) REFERENCES units(id)`,
+
+  logs: `
+    id SERIAL PRIMARY KEY,
+    created timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    user_id integer NOT NULL,
+    data0 json,
+    data1 json,
+    table_name text NOT NULL,
+    record_id integer NOT NULL,
+    CONSTRAINT fk_logs_users FOREIGN KEY(user_id) REFERENCES users(id)`,
+};
+
+
+let tablesResult = await pool.query(databaseQuery);
+const tables = tablesResult.rows.map(x => x.table_name);
+// console.log(tables);
+
+if(tables.length !== Object.keys(databaseScheme).length) {
+  console.log("initializing database: started");
+  try {
+    await pool.query('BEGIN')
+    try {
+      for (let [key, value] of Object.entries(databaseScheme)) {
+        if (!tables.includes(key)){
+          console.log(`init table '${key}'`);
+          try {
+          const createResult = await pool.query(`CREATE TABLE IF NOT EXISTS ${key} (${value})`);
+        } catch (createError) {
+          console.error(createError);
+          console.error(`Issue with table '${key}'!`)
+          throw createError;
+        }
+          // console.log("create", createResult);
+          const ownerResult = await pool.query(`ALTER TABLE ${key} OWNER TO ${process.env.PGUSER}`);
+          // console.log("owner", ownerResult);
+        }
+      }
+      await pool.query('COMMIT');
+      tablesResult = await pool.query(databaseQuery);
+      console.log("initializing database: done");
+   } catch (error) {
+     console.log("Rolling back...");
+     await pool.query('ROLLBACK');
+   }
+ } catch(error) {
+    console.log("initializing database: error\n", error);
+ }
+}
+
 const cleanCommentObject = (obj) => {
     const { long_html, brief_html, long_text, brief_text, id, ...rest } = obj;
     return rest;
