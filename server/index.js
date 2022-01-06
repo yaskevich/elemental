@@ -116,6 +116,11 @@ const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
     res.json(result);
   });
 
+  app.post('/api/text', auth, async(req,res) => {
+    const result = await db.setText(req.body);
+    res.json(result);
+  });
+
   app.post('/api/tokens', async(req, res) => {
     const tid = req.body.id;
     const cls = req.body.cls;
