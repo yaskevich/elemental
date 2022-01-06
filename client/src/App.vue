@@ -16,6 +16,7 @@ onBeforeMount(async () => {
   await store.getUser();
   dataReady.value = true;
   document.title = store?.state?.user?.text?.title || 'App';
+  // console.log("state", store.state.user);
 });
 
 </script>
@@ -26,8 +27,8 @@ onBeforeMount(async () => {
     <div v-if="dataReady">
     <div id="nav">
       <router-link to="/">Home</router-link> |
-      <router-link to="/comments">Comments</router-link> |
-      <router-link to="/text">Text</router-link> |
+      <router-link to="/comments" v-if="store?.state?.user?.text_id && store?.state?.user?.text?.comments">Comments</router-link> |
+      <router-link to="/text" v-if="store?.state?.user?.text_id && store?.state?.user?.text?.loaded">Text</router-link> |
       <router-link to="/tags">Tags</router-link> |
       <router-link to="/issues">Issues</router-link> |
       <router-link to="/logs">Logs</router-link> |
