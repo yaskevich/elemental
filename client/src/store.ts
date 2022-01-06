@@ -9,6 +9,7 @@ interface ITextObject {
   id: number,
   meta: string,
   title: string,
+  loaded: boolean,
 };
 
 interface IUserObject {
