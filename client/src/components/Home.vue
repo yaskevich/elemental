@@ -42,6 +42,7 @@
       console.log("change text", data);
       if (data?.id){
         store.state.user.text_id = id;
+        store.state.user.text = data;
         document.title = title;
         router.push(`/comments/${id}`);
       } else {
