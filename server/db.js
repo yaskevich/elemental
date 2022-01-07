@@ -750,7 +750,8 @@ export default {
       // console.log(`select text ${textId} for user ${userId}`);
       try {
         const sql = "UPDATE users SET text_id = $1 WHERE id = $2 RETURNING id";
-        const result = await pool.query(sql, [textId, userId]);
+        await pool.query(sql, [textId, userId]);
+        const result = await pool.query("select * from texts where id = $1", [textId]);
         data = result?.rows?.[0];
       } catch (err) {
         console.error(err);
