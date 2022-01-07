@@ -1,29 +1,58 @@
 # Corpus Annotation Tool
 
-**Work in progress**
+Current Status: **Work In Progress **[Jan 2022]
 
-The idea behind the project is to provide user-friendly and productive UI for rich text annotation.
-It started as a PoS manual tagging tool written in JQuery (data loader in Python 3), but as for now (Dec 2021) is is being rewritten in JavaScript – both client (Vue3) and server (NodeJS).
+The idea behind the project is to **provide a user-friendly and productive UI for rich text annotation**.
+It started in 2018 as a manual Part-of-Speech tagging tool written in JQuery (data loader in Python 3 backed with SQLite).
 
-The project architecture changes. Current tasks include migrating from SQLite to PostgreSQL and extending the toolset with the interface for adding comments for text tokens. Rewriting the old client for PoS from JQuery to Vue3 is in the backlog as well.
+As for now it is being rewritten in modern JavaScript – both client (Vue3) and server (NodeJS).
 
-However, the project is still far away from release-ready status, particularly, since it lacks project setup functions. File `server/converter.js` is able to import raw text file into the database, but the database is to be initiated via loading SQL dump, not automatically.
+The project architecture changes. Current tasks include migrating from SQLite to PostgreSQL (completed) and extending the toolset with the interface for adding comments for text tokens. Rewriting the old client for PoS from JQuery to Vue3 is in the backlog as well.
 
-If either you like the idea and would like to use the app as soon as possible, or you are ready to  commit, or, maybe, you know the application that already exists and has all the functions like this, please, contact me via Github or mail me.
+So, the project does not have release-ready status yet. However, it is already in use for the projects of the [Center for Digital Humanities at HSE University](https://hum.hse.ru/en/digital/about/). 
 
-### Preprocessing
-For early alpha:
-- Create SQLite database file with the structure as it is in `text2db.py`
-- Run `python text2db.py file.txt`
-
-Now: execute `node server/converter.js`
+If either you like the idea and would be happy to use the app as soon as possible, or you are ready to  contribute, or, maybe, you know the application that already exists and has all the functions like this, please, contact me via Github or mail me (@yaskevich).
 
 #### Requirements
 
 NodeJS v14+, PostgreSQL v9.6+
 
-#### Running the application
+#### Setup and deployment
 
-The example setup script is in the file `deploy-elemental.sh`
+Technically, the platform consists of two applications: client and server. One has to install client packages, compile it and copy to server `public` directory, then install server packages, create a file with environmental variables (`.env`) and run the server application. 
 
-Obviously, in production one should not use bare NodeJS instance, but a process manager, such as PM2.
+This example of content of `.env` file:
+
+```
+PGUSER=database_user
+PGHOST=127.0.0.1
+PGPASSWORD=...................
+PGDATABASE=annotation_database
+PGPORT=5432
+PORT=8080
+JWT_SECRET=...................
+```
+
+The example setup script is in the file [deploy-elemental.sh](/deploy-elemental.sh)
+
+Obviously, in production one should not use bare NodeJS instance, but a process manager.
+
+I recommend [PM2](https://pm2.keymetrics.io) (there is a [config file](/server/ecosystem.config.cjs) for it).
+
+#### Putting text into database
+
+Unfortunately, there is still no UI for text uploading. 
+
+At first, add text information (title, author, description, types of annotation) on Home screen.
+
+Then, get *text ID* from `texts` table and execute:
+
+`node server/converter.js <path> <2-character language code> <text ID>`
+
+> *Path* is a path to text file. *Language code* is a two-character abbreviation (e.g. *en*, *ru*, *es*).
+
+It is worth to mention that comments can be created without having a text in a database. Text is needed to attach comments to spans.
+
+
+
+:space_invader:
