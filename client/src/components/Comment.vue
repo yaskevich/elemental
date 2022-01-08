@@ -25,7 +25,7 @@
       <div class="box">
         <n-space justify="center">
           <!-- <router-link :to="'/preview/'+entry.id">Preview</router-link> -->
-          <n-button secondary type="info" :disabled="!id" @click="showPreview(entry.id)">Preview</n-button>
+          <n-button secondary type="info" :disabled="!entry.id" @click="showPreview(entry.id)">Preview</n-button>
 
           <n-switch style="margin-top: .4rem;" v-model:value="entry.published" :round="false">
             <template #checked>Published</template>
