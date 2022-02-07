@@ -618,7 +618,7 @@ export default {
   },
   async getBoundStringsForComment(params) {
     const { id: textId, comment: commentId } = params;
-    let sql = "SELECT * FROM strings WHERE text_id = $1 AND $2 = ANY (comments::int[]) ORDER BY id";
+    let sql = "SELECT strings.*, tokens.meta FROM strings LEFT JOIN tokens ON strings.token_id = tokens.id WHERE text_id = $1 AND $2 = ANY (comments::int[]) ORDER BY id";
     let data = [];
     try {
       const result = await pool.query(sql, [textId, commentId]);
