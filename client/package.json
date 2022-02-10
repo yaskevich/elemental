@@ -8,27 +8,27 @@
   },
   "dependencies": {
     "@tiptap/extension-blockquote": "^2.0.0-beta.26",
-    "@tiptap/extension-bold": "^2.0.0-beta.25",
+    "@tiptap/extension-bold": "^2.0.0-beta.26",
     "@tiptap/extension-color": "^2.0.0-beta.9",
     "@tiptap/extension-document": "^2.0.0-beta.15",
     "@tiptap/extension-history": "^2.0.0-beta.21",
     "@tiptap/extension-paragraph": "^2.0.0-beta.23",
-    "@tiptap/extension-placeholder": "^2.0.0-beta.46",
+    "@tiptap/extension-placeholder": "^2.0.0-beta.48",
     "@tiptap/extension-text": "^2.0.0-beta.15",
     "@tiptap/extension-text-style": "^2.0.0-beta.23",
-    "@tiptap/vue-3": "^2.0.0-beta.87",
-    "axios": "^0.24.0",
-    "vue": "^3.2.16",
+    "@tiptap/vue-3": "^2.0.0-beta.90",
+    "axios": "^0.25.0",
+    "vue": "^3.2.30",
     "vue-router": "^4.0.12"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^2.0.1",
-    "naive-ui": "^2.23.2",
-    "sass": "^1.45.2",
-    "typescript": "^4.5.4",
+    "@vitejs/plugin-vue": "^2.1.0",
+    "naive-ui": "^2.25.1",
+    "sass": "^1.49.7",
+    "typescript": "^4.5.5",
     "vfonts": "^0.1.0",
-    "vite": "^2.7.10",
+    "vite": "^2.7.13",
     "vite-plugin-checker": "^0.3.4",
-    "vue-tsc": "^0.30.2"
+    "vue-tsc": "^0.31.2"
   }
 }
