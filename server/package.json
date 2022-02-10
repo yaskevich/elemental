@@ -20,24 +20,24 @@
   "dependencies": {
     "@simonwep/selection-js": "^2.1.2",
     "bcrypt": "^5.0.1",
-    "body-parser": "^1.19.0",
+    "body-parser": "^1.19.1",
     "bulma": "^0.9.3",
     "compression": "^1.7.4",
     "connect-history-api-fallback": "^1.6.0",
-    "dotenv": "^10.0.0",
-    "express": "^4.17.1",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.2",
     "file-saver": "^2.0.5",
     "generate-password": "^1.7.0",
     "izimodal": "^1.5.1",
     "jquery": "^3.6.0",
     "jsonwebtoken": "^8.5.1",
-    "passport": "^0.5.0",
+    "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
-    "pg": "^8.7.1",
+    "pg": "^8.7.3",
     "spectre.css": "^0.5.9",
     "webui-popover": "^1.2.18"
   },
   "devDependencies": {
-    "eslint": "^8.4.1"
+    "eslint": "^8.8.0"
   }
 }
