@@ -28,6 +28,7 @@
     "express": "^4.17.3",
     "file-saver": "^2.0.5",
     "generate-password": "^1.7.0",
+    "gzipme": "^1.0.0",
     "izimodal": "^1.5.1",
     "jquery": "^3.6.0",
     "jsonwebtoken": "^8.5.1",
