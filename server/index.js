@@ -7,6 +7,8 @@ import bodyParser from 'body-parser';
 import compression from 'compression';
 import express from 'express';
 import fs from 'fs';
+import { exec } from 'child_process';
+import compress from 'gzipme';
 import history from 'connect-history-api-fallback';
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
@@ -17,7 +19,6 @@ import db from './db.js';
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 
 (async () => {
@@ -249,6 +250,33 @@ const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
       result = await db.deleteById(req.params['table'], req.params['id'], req.user);
     }
     res.json(result);
+  });
+
+  app.get('/api/backup', auth, async(req, res) => {
+    const backupDir = path.join(__dirname, 'backup');
+    fs.mkdirSync(backupDir, { recursive: true });
+    const today = new Date();
+    const backupFile = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}.tar`;
+    const filename = path.join(backupDir, backupFile);
+
+    const cmd = `pg_dump -U ${process.env.PGUSER} -h ${process.env.PGHOST} -p ${process.env.PGPORT || 5432} -f ${filename} -F t -d ${process.env.PGDATABASE}`;
+
+    let message  = '';
+
+    exec(cmd, async(error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            message = error;
+        }
+        if (stderr) {
+            console.log(`stderr: ${stderr}`);
+            message = stderr;
+        }
+        await compress(filename);
+        fs.unlinkSync(filename);
+        // console.log(`stdout: ${stdout}`);
+    });
+    res.json({"file": backupFile, "error": message});
   });
 
   app.listen(port);
