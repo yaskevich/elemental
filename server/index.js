@@ -66,7 +66,7 @@ fs.mkdirSync(backupDir, { recursive: true });
   app.use(express.static(path.join(__dirname, 'node_modules', '@simonwep', 'selection-js', 'lib')));
   app.use(express.static(path.join(__dirname, 'node_modules', 'bulma', 'css')));
   app.use(history());
-  app.use(express.static('public'));
+  app.use(express.static(path.join(__dirname, 'public')));
 
   app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -276,12 +276,27 @@ fs.mkdirSync(backupDir, { recursive: true });
         fs.unlinkSync(filename);
         // console.log(`stdout: ${stdout}`);
     });
-    res.json({"file": backupFile, "error": message});
+    // https://www.npmjs.com/package/filesize
+    res.json({"file": backupFile + '.gz', "error": message});
   });
 
   app.get('/api/backups', async(req, res) => {
     const fls = fs.readdirSync( backupDir );
     res.json(fls);
+  });
+
+  app.get('/api/backupfile', async(req, res) => {
+    const filePath = path.join(backupDir, req.query.id);
+    // console.log(filePath);
+    if (fs.existsSync(filePath)) {
+      res.download(filePath, (err) => {
+        if (err) {
+          res.status(400).end();
+        }
+      });
+    } else {
+      res.status(400).end();
+    }
   });
 
   app.listen(port);
