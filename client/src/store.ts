@@ -1,5 +1,5 @@
 import { reactive } from "vue";
-import axios from "axios";
+import axios, {AxiosRequestConfig} from "axios";
 import project from '../package.json';
 
 interface ITextObject {
@@ -36,6 +36,29 @@ const state:IState = reactive({
   user: {},
   error: "",
 }) as IState;
+
+const getFile = async(route: string, id: string) : Promise<any> => {
+  if (state.token && id) {
+    try {
+       const config = {
+         headers: { Authorization: "Bearer " + state.token },
+         responseType: "blob",
+         params: { id: id }
+       } as AxiosRequestConfig;
+
+       const response = await axios.get("/api/" + route, config);
+       const blob = new Blob([response.data], { type: 'application/gzip' })
+       const link = document.createElement('a')
+       link.href = URL.createObjectURL(blob);
+       link.download = id;
+       link.click();
+       URL.revokeObjectURL(link.href);
+   } catch (error) {
+       return error;
+   }
+ }
+
+}
 
 const get = async(route: string, id?: string, data?: Object): Promise<any> => {
   if (state.token) {
@@ -123,6 +146,7 @@ const deleteById = async(table: string, id: string): Promise<any> => {
 
 export default {
   state,
+  getFile,
   get,
   post,
   postUnauthorized,
