@@ -14,8 +14,8 @@
         </div>
       </n-space>
 
-      <div v-for="(filename, index) in backups" :key="index" style="padding:.5rem;">
-        <n-button secondary type="primary" @click="downloadBackup(filename)">{{filename.split('.').shift()}}</n-button>
+      <div v-for="(item, index) in backups" :key="index" style="padding:.5rem;">
+        <n-button secondary type="primary" :loading="item.state" @click="downloadBackup(index)">{{item.filename.split('.').shift()}}</n-button>
       </div>
 
     </div>
@@ -29,8 +29,13 @@
   import { useMessage } from 'naive-ui';
   import store from '../store';
 
+  interface IBackup {
+     filename: string;
+     state: boolean;
+   };
+
   const message = useMessage();
-  const backups = reactive([] as Array<string>);
+  const backups = reactive([] as Array<IBackup>);
 
   const makeBackup = async () => {
     const data = await store.get('backup');
@@ -39,15 +44,17 @@
       message.error(`Database backup error: ${data.error}`, { duration: 5000 });
     } else {
       message.info(`Database snapshot was succsesfully created! File ${data.file}`, { closable: true });
-      if (!backups.includes(data.file)){
-        backups.unshift(data.file);
+      if (!backups.filter(x => x.filename === data.file)){
+        backups.unshift({filename: data.file, state: false});
       }
     }
   };
 
-  const downloadBackup = async(filename) => {
-    // console.log(filename);
-    const result = await store.getFile('backupfile', filename);
+  const downloadBackup = async(index: number) => {
+    const backupInfo = backups[index];
+    backupInfo.state = true;
+    const result = await store.getFile('backupfile', backupInfo.filename);
+    backupInfo.state = false;
     if (result) {
       message.error("Download error!", { duration: 5000 });
     }
@@ -55,7 +62,7 @@
 
   onBeforeMount(async () => {
     const data = await store.get('backups');
-    Object.assign(backups, data.reverse());
+    Object.assign(backups, data.reverse().map((fn:any) => ({ filename: fn, state: false })));
   });
 
 </script>
