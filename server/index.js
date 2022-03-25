@@ -20,6 +20,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
+const backupDir = path.join(__dirname, 'backup');
+fs.mkdirSync(backupDir, { recursive: true });
 
 (async () => {
   const app = express();
@@ -253,8 +255,6 @@ const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
   });
 
   app.get('/api/backup', auth, async(req, res) => {
-    const backupDir = path.join(__dirname, 'backup');
-    fs.mkdirSync(backupDir, { recursive: true });
     const today = new Date();
     const backupFile = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}.tar`;
     const filename = path.join(backupDir, backupFile);
@@ -277,6 +277,11 @@ const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
         // console.log(`stdout: ${stdout}`);
     });
     res.json({"file": backupFile, "error": message});
+  });
+
+  app.get('/api/backups', async(req, res) => {
+    const fls = fs.readdirSync( backupDir );
+    res.json(fls);
   });
 
   app.listen(port);
