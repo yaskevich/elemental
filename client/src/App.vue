@@ -31,6 +31,7 @@ onBeforeMount(async () => {
       <router-link to="/text" v-if="store?.state?.user?.text_id && store?.state?.user?.text?.loaded">Text</router-link> |
       <router-link to="/tags">Tags</router-link> |
       <router-link to="/issues">Issues</router-link> |
+      <router-link to="/backups">Backups</router-link> |
       <router-link to="/logs">Logs</router-link> |
       {{state?.user?.username}}
       <!-- <span v-if="loggedIn">
