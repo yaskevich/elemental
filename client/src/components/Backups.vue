@@ -1,7 +1,7 @@
 <template>
 
   <div class="center-column">
-    <div class="left-column">
+    <div class="left-column" v-if="isLoaded">
 
       <n-space justify="center">
         <div>
@@ -13,6 +13,13 @@
           </h3>
         </div>
       </n-space>
+
+      <div style="max-width:300px;">
+        <n-alert title="No backups!" type="warning" v-if=!backups.length>
+          There are no backup snapshots of the database on the server. <br/>
+          It is recommended for data safety to make backups regularly and save them somewhere else.
+        </n-alert>
+      </div>
 
       <div v-for="(item, index) in backups" :key="index" style="padding:.5rem;">
         <n-button secondary type="primary" :loading="item.state" @click="downloadBackup(index)">{{item.filename.split('.').shift()}}</n-button>
@@ -36,6 +43,7 @@
 
   const message = useMessage();
   const backups = reactive([] as Array<IBackup>);
+  const isLoaded = ref(false);
 
   const makeBackup = async () => {
     const data = await store.get('backup');
@@ -43,9 +51,11 @@
     if (data?.error) {
       message.error(`Database backup error: ${data.error}`, { duration: 5000 });
     } else {
-      message.info(`Database snapshot was succsesfully created! File ${data.file}`, { closable: true });
-      if (!backups.filter(x => x.filename === data.file)){
+      if (backups.filter(x => x.filename === data.file).length){
+        message.warning(`Database snapshot was succsesfully updated! File ${data.file}`, { closable: true });
+      } else {
         backups.unshift({filename: data.file, state: false});
+        message.info(`Database snapshot was succsesfully created! File ${data.file}`, { closable: true });
       }
     }
   };
@@ -63,6 +73,7 @@
   onBeforeMount(async () => {
     const data = await store.get('backups');
     Object.assign(backups, data.reverse().map((fn:any) => ({ filename: fn, state: false })));
+    isLoaded.value = true;
   });
 
 </script>
