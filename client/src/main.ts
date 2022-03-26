@@ -36,10 +36,11 @@ import {
   NCheckboxGroup,
   NTooltip,
   NPopconfirm,
+  NAlert,
 } from 'naive-ui'
 
 const naive = create({
-  components: [NButton, NText, NInput, NSwitch, NDivider, NAvatar, NIcon, NSpace, NInputGroup, NColorPicker, NMessageProvider, NForm, NFormItem, NRadioGroup, NRadio, NSelect, NDropdown, NTag, NSpin, NDataTable, NDescriptions, NDescriptionsItem, NInputNumber, NDrawer, NDrawerContent, NAutoComplete, NModal, NCheckbox, NCheckboxGroup, NTooltip, NPopconfirm,]
+  components: [NButton, NText, NInput, NSwitch, NDivider, NAvatar, NIcon, NSpace, NInputGroup, NColorPicker, NMessageProvider, NForm, NFormItem, NRadioGroup, NRadio, NSelect, NDropdown, NTag, NSpin, NDataTable, NDescriptions, NDescriptionsItem, NInputNumber, NDrawer, NDrawerContent, NAutoComplete, NModal, NCheckbox, NCheckboxGroup, NTooltip, NPopconfirm, NAlert,]
 })
 
 createApp(App)
