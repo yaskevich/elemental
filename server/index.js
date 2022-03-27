@@ -9,6 +9,7 @@ import express from 'express';
 import fs from 'fs';
 import { exec } from 'child_process';
 import compress from 'gzipme';
+import zip from "zip-local";
 import mustache from 'mustache';
 import history from 'connect-history-api-fallback';
 import jwt from 'jsonwebtoken';
@@ -305,21 +306,32 @@ fs.mkdirSync(backupDir, { recursive: true });
 
   app.post('/api/publish', async(req, res) => {
     const textId = Number(req.body.id) || 1;
+    let result = {};
     try {
       const pubDir = path.join(publicDir, String(textId));
+      const zipPath = path.join(pubDir, 'site.zip');
+
+      fs.rmSync(pubDir, { recursive: true, force: true });
       fs.mkdirSync(pubDir, { recursive: true });
-      console.log("request to publish", textId, pubDir);
+
+      // console.log("request to publish", textId, pubDir);
+
       const content = await db.getText(textId);
       const template = fs.readFileSync(path.join(__dirname, 'reader.html'), 'utf8');
+
       const output = mustache.render(template, { title: "Hello!", text: content });
+
       fs.writeFileSync(path.join(pubDir, 'index.html'), output);
       fs.copyFileSync(path.join(__dirname, 'node_modules', 'mini.css' , 'dist', 'mini-default.min.css'), path.join(pubDir, 'mini.css'));
-      console.log();
+
+      zip.sync.zip(pubDir).compress().save(zipPath);
+      const stats = fs.statSync(zipPath);
+      result = { bytes: stats.size, path: pubDir };
     } catch (genError) {
       console.error(genError);
       console.error(`HTML generation error! Text ${textId}`);
     }
-    res.json({});
+    res.json(result);
   });
 
   app.listen(port);
