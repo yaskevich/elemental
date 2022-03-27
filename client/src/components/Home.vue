@@ -3,20 +3,21 @@
   import { ref, reactive, onBeforeMount } from 'vue';
   import store from '../store';
   import router from '../router';
+  import { SettingsOutlined as SettingsIcon } from '@vicons/material';
 
   interface IText {
-    id: number,
-    author: string,
-    title: string,
-    meta: string,
-    grammar: boolean,
-    comments: boolean,
-    loaded: boolean
-  };
+    id: number;
+    author: string;
+    title: string;
+    meta: string;
+    grammar: boolean;
+    comments: boolean;
+    loaded: boolean;
+  }
 
   const texts = reactive([] as Array<IText>);
   const showForm = ref(false);
-  const form = reactive({author:'', title: '', meta: '', grammar: false, comments: false, loaded: false});
+  const form = reactive({ author: '', title: '', meta: '', grammar: false, comments: false, loaded: false });
 
   onBeforeMount(async () => {
     const data = await store.get('texts');
@@ -24,29 +25,33 @@
     // console.log("data", data);
   });
 
-  const saveText = async() => {
-    console.log("form", form);
+  const openTextProps = async(id:number) => {
+    router.push(`/project/${id}`);
+  };
+
+  const saveText = async () => {
+    console.log('form', form);
     const { data } = await store.post('text', form);
-    console.log("change text props", data);
-    if (data?.id){
+    console.log('change text props', data);
+    if (data?.id) {
       showForm.value = false;
-      texts.push({...form, id: data.id});
+      texts.push({ ...form, id: data.id });
     }
   };
 
-  const goToText = async(id: number, title: string) => {
+  const goToText = async (id: number, title: string) => {
     // console.log("go to text", id);
     // localStorage.setItem('text_id', String(id));
-    if (id && store?.state?.user){
+    if (id && store?.state?.user) {
       const { data } = await store.post('user/text', { id: id });
-      console.log("change text", data);
-      if (data?.id){
+      console.log('change text', data);
+      if (data?.id) {
         store.state.user.text_id = id;
         store.state.user.text = data;
         document.title = title;
         router.push(`/comments/${id}`);
       } else {
-        console.error("error", data);
+        console.error('error', data);
       }
     }
   };
@@ -59,36 +64,42 @@
 
   <div class="center-column">
     <div class="left-column">
-    <n-space justify="center">
-      <div>
-        <h3>Projects</h3>
-      </div>
-      <div>
-        <h3 style="margin-top:.7em;margin-left: 2em;">
-          <n-button type="info" dashed @click="showForm = true" v-if="!showForm">+ new</n-button>
-        </h3>
-      </div>
-    </n-space>
+      <n-space justify="center">
+        <div>
+          <h3>Projects</h3>
+        </div>
+        <div>
+          <h3 style="margin-top:.7em;margin-left: 2em;">
+            <n-button type="info" dashed @click="showForm = true" v-if="!showForm">+ new</n-button>
+          </h3>
+        </div>
+      </n-space>
 
-    <div style="max-width:300px;margin: 0 auto;" v-if="showForm">
-      <n-input v-model:value="form.title" type="text" placeholder="Text title" />
-      <n-input v-model:value="form.author" type="text" placeholder="Author name" />
-      <n-input v-model:value="form.meta" type="text" placeholder="Description" />
-      <n-checkbox v-model:checked="form.grammar">Grammar tagging</n-checkbox>
-      <n-checkbox v-model:checked="form.comments">Comments handling</n-checkbox>
-      <n-button type="info" @click="saveText">Submit</n-button>
-      <n-button type="warning" @click="showForm = false">Cancel</n-button>
-    </div>
-
-      <div v-for="(value, key) in texts" :key="key" style="padding:.5rem;" :title="value.meta">
-        <!-- <n-button type="info">Info</n-button> -->
-        <n-button @click="goToText(value.id, value.title)" :type="value.id === store?.state?.user?.text_id ? 'info': ''">
-          {{value.author}}.&nbsp;{{value.title}}
-          <!-- <n-text type="info">{{value.author}}</n-text>.&nbsp;
-        «<n-text strong>{{value.title}}</n-text>» -->
-        </n-button>
+      <div style="max-width:300px;margin: 0 auto;" v-if="showForm">
+        <n-input v-model:value="form.title" type="text" placeholder="Text title" />
+        <n-input v-model:value="form.author" type="text" placeholder="Author name" />
+        <n-input v-model:value="form.meta" type="text" placeholder="Description" />
+        <n-checkbox v-model:checked="form.grammar">Grammar tagging</n-checkbox>
+        <n-checkbox v-model:checked="form.comments">Comments handling</n-checkbox>
+        <n-button type="info" @click="saveText">Submit</n-button>
+        <n-button type="warning" @click="showForm = false">Cancel</n-button>
       </div>
-      <!-- <button type="button" @click="count++">count is: {{ count }}</button> -->
+
+      <div v-for="(value, key) in texts" :key="key" style="padding:.5rem;" >
+        <n-space>
+          <n-button @click="goToText(value.id, value.title)" :type="value.id === store?.state?.user?.text_id ? 'info': ''" :title="value.meta">
+            {{value.author}}.&nbsp;{{value.title}}
+          </n-button>
+          <n-button title="Text properties" @click="openTextProps(value.id)">
+            <template #icon>
+           <n-icon color="gray">
+            <settings-icon />
+           </n-icon>
+         </template>
+          </n-button>
+        </n-space>
+      </div>
+
       <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" />
       <n-descriptions label-placement="top" bordered :column="3" size="small">
         <n-descriptions-item label="Client">{{store?.version}}</n-descriptions-item>
@@ -105,7 +116,7 @@
 
     </div>
     <div style="margin: 2rem;">
-    <n-button text tag="a" href="https://icons8.com/icon/93125/quote" target="_blank" type="primary">Quote icon by Icons8</n-button>
+      <n-button text tag="a" href="https://icons8.com/icon/93125/quote" target="_blank" type="primary">Quote icon by Icons8</n-button>
     </div>
   </div>
 
