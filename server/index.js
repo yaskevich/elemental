@@ -181,7 +181,9 @@ fs.mkdirSync(backupDir, { recursive: true });
   });
 
   app.get('/api/texts', async (req, res) => {
-    const textInfo = await db.getTexts();
+    const textId = Number(req.query.id);
+    // console.log("texts", textId);
+    const textInfo = await db.getTexts(textId);
     res.json(textInfo);
   });
 
