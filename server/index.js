@@ -9,6 +9,7 @@ import express from 'express';
 import fs from 'fs';
 import { exec } from 'child_process';
 import compress from 'gzipme';
+import mustache from 'mustache';
 import history from 'connect-history-api-fallback';
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
@@ -21,6 +22,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 const backupDir = path.join(__dirname, 'backup');
+const publicDir =  path.join(__dirname, 'public');
 fs.mkdirSync(backupDir, { recursive: true });
 
 (async () => {
@@ -66,10 +68,10 @@ fs.mkdirSync(backupDir, { recursive: true });
   app.use(express.static(path.join(__dirname, 'node_modules', '@simonwep', 'selection-js', 'lib')));
   app.use(express.static(path.join(__dirname, 'node_modules', 'bulma', 'css')));
   app.use(history());
-  app.use(express.static(path.join(__dirname, 'public')));
+  app.use(express.static(publicDir));
 
   app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(publicDir, 'index.html'));
   });
 
   app.post('/api/user/login', async(req, res) => {
@@ -299,6 +301,25 @@ fs.mkdirSync(backupDir, { recursive: true });
     } else {
       res.status(400).end();
     }
+  });
+
+  app.post('/api/publish', async(req, res) => {
+    const textId = Number(req.body.id) || 1;
+    try {
+      const pubDir = path.join(publicDir, String(textId));
+      fs.mkdirSync(pubDir, { recursive: true });
+      console.log("request to publish", textId, pubDir);
+      const content = await db.getText(textId);
+      const template = fs.readFileSync(path.join(__dirname, 'reader.html'), 'utf8');
+      const output = mustache.render(template, { title: "Hello!", text: content });
+      fs.writeFileSync(path.join(pubDir, 'index.html'), output);
+      fs.copyFileSync(path.join(__dirname, 'node_modules', 'mini.css' , 'dist', 'mini-default.min.css'), path.join(pubDir, 'mini.css'));
+      console.log();
+    } catch (genError) {
+      console.error(genError);
+      console.error(`HTML generation error! Text ${textId}`);
+    }
+    res.json({});
   });
 
   app.listen(port);
