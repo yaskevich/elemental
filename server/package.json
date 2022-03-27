@@ -32,6 +32,7 @@
     "izimodal": "^1.5.1",
     "jquery": "^3.6.0",
     "jsonwebtoken": "^8.5.1",
+    "mini.css": "^3.0.1",
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
     "pg": "^8.7.3",
@@ -39,6 +40,6 @@
     "webui-popover": "^1.2.18"
   },
   "devDependencies": {
-    "eslint": "^8.11.0"
+    "eslint": "^8.12.0"
   }
 }
