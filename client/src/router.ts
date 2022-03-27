@@ -10,6 +10,7 @@ import Comments from './components/Comments.vue';
 import Text from './components/Text.vue';
 import Logs from './components/Logs.vue';
 import Backups from './components/Backups.vue';
+import Project from './components/Project.vue';
 
 const routes = [
   // {
@@ -75,6 +76,11 @@ const routes = [
     path: '/logs/:id?',
     component: Logs,
     name: 'Logs',
+  },
+  {
+    path: '/project/:id?',
+    component: Project,
+    name: 'Project',
   },
 ];
 
