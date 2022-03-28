@@ -310,16 +310,32 @@ fs.mkdirSync(backupDir, { recursive: true });
     try {
       const pubDir = path.join(publicDir, String(textId));
       const zipPath = path.join(pubDir, 'site.zip');
+      const template = fs.readFileSync(path.join(__dirname, 'reader.html'), 'utf8');
 
       fs.rmSync(pubDir, { recursive: true, force: true });
       fs.mkdirSync(pubDir, { recursive: true });
 
       // console.log("request to publish", textId, pubDir);
+      const textInfo = await db.getTexts(textId);
+      // console.log("textInfo", textInfo);
+      const tokens = await db.getText(textId);
 
-      const content = await db.getText(textId);
-      const template = fs.readFileSync(path.join(__dirname, 'reader.html'), 'utf8');
+      let content = '';
+      let paragraph = '';
+      let p = 0;
+      for (let token of tokens) {
+        if (token.p !== p) {
+          content += `<div class="row">${paragraph}</div>\n\n`;
+          paragraph = '';
+          p = token.p;
+        }
+        if (token.meta !== 'ip'){
+            paragraph += (token.comments.length ? `<mark class="tooltip token" aria-label="${token.comments.join()}">${token.form}</mark>` : `<span class="token">${token.form}</span>`);
+        }
+      }
+      content += `<div class="row"> ${paragraph} </div>\n\n`;
 
-      const output = mustache.render(template, { title: "Hello!", text: content });
+      const output = mustache.render(template, {...textInfo.shift(), content: content });
 
       fs.writeFileSync(path.join(pubDir, 'index.html'), output);
       fs.copyFileSync(path.join(__dirname, 'node_modules', 'mini.css' , 'dist', 'mini-default.min.css'), path.join(pubDir, 'mini.css'));
@@ -328,8 +344,8 @@ fs.mkdirSync(backupDir, { recursive: true });
       const stats = fs.statSync(zipPath);
       result = { bytes: stats.size, path: pubDir };
     } catch (genError) {
-      console.error(genError);
-      console.error(`HTML generation error! Text ${textId}`);
+      console.error(`HTML generation error for text ${textId}`, genError);
+      result = { "error": genError.message };
     }
     res.json(result);
   });
