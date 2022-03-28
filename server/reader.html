@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="keywords" content="annotation, comments">
     <meta name="description" content="">
-    <title>{{title}}</title>
+    <title>{{site}}</title>
     <link rel="stylesheet" href="mini.css" media="screen">
     <!-- <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js" defer=""></script> -->
     <meta name="generator" content="Elemental">
@@ -15,14 +15,27 @@
     "name": "",
     "url": "https://example.com/index.html"
     }</script>
-    <meta property="og:title" content="{{title}}">
+    <meta property="og:title" content="{{site}}">
     <meta property="og:type" content="website">
     <link rel="canonical" href="https://example.com/index.html">
+    <style>
+      .token {
+        margin: 0 5px 0 5px;
+      }
+    </style>
   </head>
   <body>
-    <h1>{{title}}</h1>
-    {{#text}}
-    <span>{{form}}</span>
-    {{/text}}
+    <div class="container responsive-margin">
+
+      <div class="row">
+        <h2>{{site}}</h2>
+      </div>
+
+      {{{content}}}
+
+    <footer>
+      <p>{{credits}}</p>
+    </footer>
+    </div>
   </body>
 </html>
