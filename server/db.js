@@ -785,4 +785,15 @@ export default {
     }
     return data;
   },
+  async updatePubInfo(id, dir, zipsize, published) {
+    let data = {};
+    try {
+      const sql = "UPDATE texts SET dir = $2, zipsize = $3, published = to_timestamp($4 / 1000.0) WHERE id = $1 RETURNING id";
+      const result = await pool.query(sql, [id, dir, zipsize, published]);
+      data = result?.rows?.[0];
+    } catch (err) {
+      console.error(err);
+    }
+    return data;
+  },
 };
