@@ -340,9 +340,13 @@ fs.mkdirSync(backupDir, { recursive: true });
       fs.writeFileSync(path.join(pubDir, 'index.html'), output);
       fs.copyFileSync(path.join(__dirname, 'node_modules', 'mini.css' , 'dist', 'mini-default.min.css'), path.join(pubDir, 'mini.css'));
 
+      const now = Date.now();
       zip.sync.zip(pubDir).compress().save(zipPath);
       const stats = fs.statSync(zipPath);
-      result = { bytes: stats.size, path: pubDir };
+
+      await db.updatePubInfo(textId, pubDir, stats.size, now);
+      result = { bytes: stats.size, dir: pubDir, published: now };
+      
     } catch (genError) {
       console.error(`HTML generation error for text ${textId}`, genError);
       result = { "error": genError.message };
