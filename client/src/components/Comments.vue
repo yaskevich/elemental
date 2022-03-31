@@ -33,7 +33,7 @@
   import { useRoute } from 'vue-router';
   import { NTag, NButton, NText, NTooltip, NIcon } from 'naive-ui';
   import { CheckBoxFilled as CheckIcon } from '@vicons/material';
-
+  import { HelpOutlineFilled as HelpIcon } from '@vicons/material';
 
   const vuerouter = useRoute();
 
@@ -55,7 +55,7 @@
     router.push(`/comment/${id}`);
   };
 
-  const rowProps = row => ({
+  const rowProps = (row:any) => ({
     style: 'cursor: pointer;',
     onClick: () => {
       editComment(row.id);
@@ -100,7 +100,7 @@
       },
     },
     {
-      title: 'Status',
+      title: h(NIcon, {"color": "gray", "size": 24, "title": 'Status'}, { default: () => h(CheckIcon) }),
       key: 'published',
       align: 'center',
       render(row:any) {
@@ -115,11 +115,11 @@
         //     default: () => row.published ? '✓': '',
         //   }
         // );
-        return row.published? h(NIcon, {"color": "green"}, { default: () => h(CheckIcon) }) : null;
+        return row.published? h(NIcon, {"color": "green", size: 16}, { default: () => h(CheckIcon) }) : null;
       }
     },
     {
-      title: 'Issues',
+      title: h(NIcon, {"color": "gray", "size": 24, "title": "Issues"}, { default: () => h(HelpIcon) }),
       key: 'issues',
       render(row: any) {
         const issuesList = row.issues.map((d: string) => {
