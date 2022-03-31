@@ -1,5 +1,6 @@
 <template>
-  <n-page-header subtitle="Review logs" @back="handleBack" style="max-width:600px;margin: 0 auto;padding-left: 1rem;">
+  <!-- <n-page-header subtitle="Review logs" @back="handleBack" style="max-width:600px;margin: 0 auto;padding-left: 1rem;"> -->
+  <n-page-header subtitle="Review logs" style="max-width:600px;margin: 0 auto;padding-left: 1rem;">
     <n-grid :cols="3">
       <n-gi>
 User
