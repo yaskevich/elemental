@@ -31,7 +31,9 @@
   import { ref, reactive, onBeforeMount, h, DefineComponent } from 'vue';
   import router from '../router';
   import { useRoute } from 'vue-router';
-  import { NTag, NButton, NText, NTooltip } from 'naive-ui';
+  import { NTag, NButton, NText, NTooltip, NIcon } from 'naive-ui';
+  import { CheckBoxFilled as CheckIcon } from '@vicons/material';
+
 
   const vuerouter = useRoute();
 
@@ -97,24 +99,25 @@
         );
       },
     },
-    // {
-    //   title: 'Status',
-    //   key: 'published',
-    //   align: 'center',
-    //   render(row:any) {
-    //     // <span v-if="item.published" style="margin-left:10px;color:blue;">✓</span>
-    //     // return row.published ? "true" : "false";
-    //     return h(
-    //       NText,
-    //       {
-    //         type: 'info',
-    //       },
-    //       {
-    //         default: () => row.published ? '✓': '',
-    //       }
-    //     );
-    //   }
-    // },
+    {
+      title: 'Status',
+      key: 'published',
+      align: 'center',
+      render(row:any) {
+        // <span v-if="item.published" style="margin-left:10px;color:blue;">✓</span>
+        // return row.published ? "true" : "false";
+        // return h(
+        //   NText,
+        //   {
+        //     type: 'info',
+        //   },
+        //   {
+        //     default: () => row.published ? '✓': '',
+        //   }
+        // );
+        return row.published? h(NIcon, {"color": "green"}, { default: () => h(CheckIcon) }) : null;
+      }
+    },
     {
       title: 'Issues',
       key: 'issues',
