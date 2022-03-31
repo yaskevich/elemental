@@ -1,6 +1,6 @@
 <template>
 
-  <n-card title="Backups" :bordered="false" v-if="isLoaded">
+  <n-card title="Backups" :bordered="false" v-if="isLoaded" style="text-align:center">
 
     <template #header-extra>
       <n-button type="primary" @click="makeBackup">+ make</n-button>
@@ -12,7 +12,7 @@
       </n-alert>
     </div>
 
-    <n-grid :x-gap="12" :y-gap="8" :cols="3">
+    <n-grid :x-gap="12" :y-gap="8" :cols="backups > 9 ? 3: 1">
       <n-gi v-for="(item, index) in backups" :key="index">
         <n-button secondary type="primary" :loading="item.state" @click="downloadBackup(index)">{{item.filename.split('.').shift()}}</n-button>
       </n-gi>
