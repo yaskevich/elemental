@@ -1,6 +1,6 @@
 <template>
 
-  <h1>Issues</h1>
+  <h3>Issues</h3>
 
   <n-space vertical>
     <n-input style="min-width:250px;" autosize v-model:value="newIssue.en" type="text" placeholder="English title" />
@@ -18,16 +18,23 @@
   </div>
   <div class="center-column">
     <div class="left-column">
-      <div v-for="item in issues" :key="item.id" style="padding:.5rem;margin:0 auto;display:block;">
-        <n-input-group>
-          <n-color-picker style="width:70px;" v-model:value="item.color"
-                          :show-alpha="false"
-                          :swatches="['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf']" />
-          <n-input autosize v-model:value="item.en" placeholder="English title" />
-          <n-input autosize v-model:value="item.ru" placeholder="Russian title" />
-          <n-button type="primary" ghost @click="editIssue(item)">Save</n-button>
+
+      <n-space vertical>
+        <n-input-group v-for="item in issues" :key="item.id" style="display:block;">
+          <n-space justify="space-between">
+
+            <n-color-picker style="width:70px;" v-model:value="item.color"
+                            :show-alpha="false"
+                            :swatches="['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf']" />
+            <div>
+              <n-input autosize v-model:value="item.en" placeholder="English title" />
+              <n-input autosize v-model:value="item.ru" placeholder="Russian title" />
+            </div>
+            <n-button type="primary" ghost @click="editIssue(item)">Save</n-button>
+          </n-space>
         </n-input-group>
-      </div>
+      </n-space>
+
     </div>
   </div>
 
