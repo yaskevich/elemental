@@ -86,7 +86,7 @@
       </div>
 
       <div v-for="(value, key) in texts" :key="key" style="padding:.5rem;" >
-        <n-space>
+        <n-space justify="space-between">
           <n-button @click="goToText(value.id, value.title)" :type="value.id === store?.state?.user?.text_id ? 'info': ''" :title="value.meta">
             {{value.author}}.&nbsp;{{value.title}}
           </n-button>
