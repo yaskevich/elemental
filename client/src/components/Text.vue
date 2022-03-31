@@ -261,6 +261,7 @@
 
   <div class="center-column" v-if="isLoaded">
     <div class="left-column">
+
       <n-space justify="space-between" style="margin-right: 2rem;margin-left: 2rem;">
         <n-button :color="inspectMode?'#ff69b4':'#8a2be2'" size="tiny" @click="inspectMode = !inspectMode">{{inspectMode?'Inspect':'Select'}}</n-button>
         <n-switch :round="false" :rail-style="railStyle" v-model:value="singleMode" :style="`visibility: ${!inspectMode? 'visible': 'hidden'}`">
@@ -268,7 +269,9 @@
           <template #unchecked>Sequence</template>
         </n-switch>
       </n-space>
-      <n-divider style="text-align: center; margin:auto;padding:1rem;" />
+
+      <n-divider />
+
       <n-modal v-model:show="showModal"
                preset="dialog"
                :title="'Bound comments for “' + selectedToken.form + '”'"
@@ -281,19 +284,16 @@
             <n-button ghost type="primary" size="tiny" @click="goToComment(commentId)">Comment</n-button>
           </template>
         </n-checkbox-group>
-
       </n-modal>
+
       <div>
         <template v-for="(token, index) in text" :key="token.id" style="padding:.5rem;">
-                        <div v-if="index && token.p !== text[index-1].p" style="margin-bottom:1rem;"></div>
-                        <button :id="`id${token.id}`" :class="`text-button ${token?.checked ?'selected-button':''}  ${token?.comments?.length? 'commented': ''} ${highlightedTokens.length && highlightedTokens.includes(token.id) ? 'highlighted': ''}`" size="small" :title="store.state.user?.text?.grammar ? token?.pos : token.comments.map(x=>commentsObject[String(x)]['title']).join('•')" v-if="token.meta !== 'ip'"   :disabled="token.meta === 'ip+'" @click="selectToken(token, $event)"
-                        :style ="store.state.user?.text?.grammar && token?.pos? {'background-color': grammarScheme?.[token.pos]?.['color'] || 'gray', 'color': grammarScheme?.[token.pos]?.['font'] || 'black'}: ''"
-                        >
-                        {{token.form}}<sup v-if="token?.comments?.length">{{token.comments.length}}</sup>
-                        </button>
-                      </template>
+          <div v-if="index && token.p !== text[index-1].p" style="margin-bottom:1rem;"></div>
+            <button :id="`id${token.id}`" :class="`text-button ${token?.checked ?'selected-button':''}  ${token?.comments?.length? 'commented': ''} ${highlightedTokens.length && highlightedTokens.includes(token.id) ? 'highlighted': ''}`" size="small" :title="store.state.user?.text?.grammar ? token?.pos : token.comments.map(x=>commentsObject[String(x)]['title']).join('•')" v-if="token.meta !== 'ip'"   :disabled="token.meta === 'ip+'" @click="selectToken(token, $event)"  :style ="store.state.user?.text?.grammar && token?.pos? {'background-color': grammarScheme?.[token.pos]?.['color'] || 'gray', 'color': grammarScheme?.[token.pos]?.['font'] || 'black'}: ''">
+              {{token.form}}<sup v-if="token?.comments?.length">{{token.comments.length}}</sup>
+            </button>
+        </template>
       </div>
-      <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" />
 
       <n-drawer v-model:show="showDrawer" placement="bottom" :on-update:show="drawerUpdated()">
         <n-drawer-content>
@@ -321,6 +321,7 @@
           </n-space>
         </n-drawer-content>
       </n-drawer>
+
     </div>
   </div>
 
