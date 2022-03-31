@@ -66,6 +66,8 @@ onBeforeMount(async () => {
   text-align: center;
   color: #2c3e50;
   // margin-top: 60px;
+  max-width: 900px;
+  margin: 0 auto;
 }
 #nav {
   padding: 1rem;
@@ -82,9 +84,9 @@ onBeforeMount(async () => {
 
 .center-column {
   text-align: center;
-  padding-left:3rem;
 
   .left-column {
+    padding:0 1rem 0 1rem;
     display: inline-table; text-align: left;
   }
 }
