@@ -4,25 +4,24 @@
     loading...
   </div>
 
-  <div class="center-column" :style="`visibility:${ready?'visible':'hidden'}`">
-    <div class="left-column">
-      <n-space justify="center">
-        <div>
-          <h3>Comments</h3>
-        </div>
-        <div>
-          <h3 style="margin-top:.7em;margin-left: 5em;">
-            <n-button type="info" dashed @click="addComment">+ new</n-button>
-          </h3>
-        </div>
-      </n-space>
-      <div v-if="!store?.state?.user?.text_id">
-        <n-text type="error">Select specific text before (at Home screen)!</n-text>
-      </div>
-      <!-- <n-data-table remote :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-class-name="rowClassName" /> -->
-      <n-data-table remote :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" />
+  <n-card title="Comments" :bordered="false" :style="`visibility:${ready?'visible':'hidden'}`">
+    <template #header-extra>
+    <n-button type="primary"  @click="addComment">+ new</n-button>
+  </template>
+    <div v-if="!store?.state?.user?.text_id">
+      <n-text type="error">Select specific text before (at Home screen)!</n-text>
     </div>
-  </div>
+    <!-- <n-data-table remote :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-class-name="rowClassName" /> -->
+    <n-data-table remote :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-props="rowProps"
+    />
+    <template #footer>
+    <!-- #footer -->
+  </template>
+    <template #action>
+    <!-- #action -->
+  </template>
+  </n-card>
+
 
 </template>
 
@@ -40,55 +39,63 @@
   const comments = reactive([]);
 
   interface keyable {
-    [key: string]: any
-  };
+    [key: string]: any;
+  }
   const issues: keyable = reactive({}) as keyable;
   const users: keyable = reactive({}) as keyable;
 
   // defineProps<{ msg: string }>()
-  const getID = (row:any) => {
+  const getID = (row: any) => {
     return row.id;
   };
 
-  const editComment = (id:number) => {
+  const editComment = (id: number) => {
     router.push(`/comment/${id}`);
   };
+
+  const rowProps = row => ({
+    style: 'cursor: pointer;',
+    onClick: () => {
+      editComment(row.id);
+    },
+  });
 
   const columns = [
     {
       title: 'Title',
       key: 'title',
-      render(row:any) {
-        return h(
-          // workaround for vue-tsc. Maybe, not good solution
-          NButton as unknown as DefineComponent,
-          {
-            size: 'small',
-            type: row.published ? 'primary' : '',
-            //secondary: row.published ? undefined : true,
-             // <n-button strong secondary type="warning">Warning</n-button>
-            onClick: () => editComment(row.id),
-          },
-          { default: () => row.title }
-        );
-      },
+      // ellipsis: { tooltip: true},
+      // render(row:any) {
+      //   return h(
+      //     // workaround for vue-tsc. Maybe, not good solution
+      //     NButton as unknown as DefineComponent,
+      //     {
+      //       size: 'small',
+      //       type: row.published ? 'primary' : '',
+      //       //secondary: row.published ? undefined : true,
+      //        // <n-button strong secondary type="warning">Warning</n-button>
+      //       onClick: () => editComment(row.id),
+      //     },
+      //     { default: () => row.title }
+      //   );
+      // },
     },
     {
       title: 'ID',
       key: 'priority',
-      render(row:any) {
+      render(row: any) {
         // <span v-if="item.published" style="margin-left:10px;color:blue;">✓</span>
         // return row.published ? "true" : "false";
         return h(
-          row.bound ? NTag as unknown as DefineComponent : NText as unknown as DefineComponent,
+          row.bound ? ((NTag as unknown) as DefineComponent) : ((NText as unknown) as DefineComponent),
           {
-            type: row.bound ? 'info': 'error',
+            type: row.bound ? 'info' : 'error',
           },
           {
             default: () => row.priority,
           }
         );
-      }
+      },
     },
     // {
     //   title: 'Status',
@@ -111,22 +118,23 @@
     {
       title: 'Issues',
       key: 'issues',
-      render(row:any) {
-        const issuesList = row.issues.map((d:string) => {
+      render(row: any) {
+        const issuesList = row.issues.map((d: string) => {
           return h(
-                NTooltip,
-                {
-                  placement: "left",
-                  trigger: "hover",
-                },
-                {
-                  default: () => `${issues?.[d[0]]?.ru}${users?.[d[1]]?.username? ' @'+users?.[d[1]]?.username: ''}`,
-                  trigger: () => h('div',   {
-                      class: 'square',
-                      style: `background-color:${issues?.[d[0]]?.color||'black'};`,
-                    }),
-                },
-              )
+            NTooltip,
+            {
+              placement: 'left',
+              trigger: 'hover',
+            },
+            {
+              default: () => `${issues?.[d[0]]?.ru}${users?.[d[1]]?.username ? ' @' + users?.[d[1]]?.username : ''}`,
+              trigger: () =>
+                h('div', {
+                  class: 'square',
+                  style: `background-color:${issues?.[d[0]]?.color || 'black'};`,
+                }),
+            }
+          );
           // return h(
           //   NTag,
           //   {
@@ -159,7 +167,6 @@
     // },
   ];
 
-
   // const rowClassName = (row, index) => {
   //   if (row.bound) {
   //     return 'bound'
@@ -169,14 +176,14 @@
 
   onBeforeMount(async () => {
     const pathId = Number(vuerouter.params?.id);
-    if (pathId && store?.state?.user && pathId !== store.state.user?.text_id){
+    if (pathId && store?.state?.user && pathId !== store.state.user?.text_id) {
       store.state.user.text_id = pathId;
       const { data } = await store.post('user/text', { id: vuerouter.params.id });
-      console.log("change text id to prop", data);
+      console.log('change text id to prop', data);
     }
 
     const issuesData = await store.get('issues');
-    const issuesObject = Object.fromEntries(issuesData.map((x:any) => [x.id, x]));
+    const issuesObject = Object.fromEntries(issuesData.map((x: any) => [x.id, x]));
     Object.assign(issues, issuesObject);
 
     const usersData = await store.get('users');
@@ -201,16 +208,18 @@
 </script>
 
 <style scoped lang="scss">
-:deep(td .square) {
-   width: 50%;
-   height: 0;
-   padding-bottom: 50%;
-   margin: 2px;
-}
 
-/*
-:deep(.bound td:nth-of-type(2)) {
-  background-color: lightblue !important;
-}
-*/
+  :deep(td .square) {
+    width: 50%;
+    height: 0;
+    padding-bottom: 50%;
+    margin: 2px;
+  }
+
+  /*
+  :deep(.bound td:nth-of-type(2)) {
+    background-color: lightblue !important;
+  }
+  */
+
 </style>
