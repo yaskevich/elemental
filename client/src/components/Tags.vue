@@ -1,6 +1,6 @@
 <template>
 
-  <h1>Tags</h1>
+  <h3>Tags</h3>
   <n-space vertical>
     <n-input style="min-width:250px;" autosize v-model:value="newTag.en" type="text" placeholder="English title" />
     <n-input autosize style="min-width:250px;" v-model:value="newTag.ru" type="text" placeholder="Russian title" />
@@ -12,13 +12,17 @@
   </div>
   <div class="center-column">
     <div class="left-column">
-      <div v-for="item in tags" :key="item.id" style="padding:.5rem;margin:0 auto;display:block;">
-        <n-input-group>
-          <n-input autosize v-model:value="item.en" placeholder="English title" />
-          <n-input autosize v-model:value="item.ru" placeholder="Russian title" />
-          <n-button type="primary" ghost @click="editTag(item)">Save</n-button>
+      <n-space vertical>
+        <n-input-group v-for="item in tags" :key="item.id" style="display:block;">
+          <n-space justify="space-between">
+            <div>
+            <n-input autosize v-model:value="item.en" placeholder="English title" />
+            <n-input autosize v-model:value="item.ru" placeholder="Russian title" />
+            </div>
+            <n-button type="primary" ghost @click="editTag(item)">Save</n-button>
+          </n-space>
         </n-input-group>
-      </div>
+      </n-space>
     </div>
   </div>
 
@@ -43,8 +47,6 @@
     Object.assign(tags, data);
     console.log('data from server', data);
   });
-
-
 
   const editTag = async (tag:ITag) => {
     console.log('edit tag', tag);
