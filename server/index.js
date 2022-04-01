@@ -127,7 +127,7 @@ fs.mkdirSync(backupDir, { recursive: true });
     res.json(result);
   });
 
-  app.post('/api/tokens', async(req, res) => {
+  app.post('/api/tokens', auth, async(req, res) => {
     const tid = req.body.id;
     const cls = req.body.cls;
     const mode = Number(req.body.mode);
@@ -138,23 +138,23 @@ fs.mkdirSync(backupDir, { recursive: true });
     res.json(data);
   });
 
-  app.get('/api/data', async(req, res) => {
+  app.get('/api/data', auth, async(req, res) => {
     const strings = await db.getUntagged();
     res.json(strings);
   });
 
-  app.get('/api/strings', async (req, res) => {
+  app.get('/api/strings', auth, async (req, res) => {
     const strings = await db.getStrings();
     res.json(strings);
   });
 
-  app.get('/api/comments/:id', async (req, res) => {
+  app.get('/api/comments/:id', auth, async (req, res) => {
     // console.log("comment id", req.params['id']);
     const comments = await db.getComments(req.params['id']);
     res.json(comments);
   });
 
-  app.get('/api/comment/:id', async (req, res) => {
+  app.get('/api/comment/:id', auth, async (req, res) => {
     // console.log("comment id", req.params['id']);
     const comments = await db.getComment(req.params['id']);
     res.json(comments);
@@ -168,74 +168,74 @@ fs.mkdirSync(backupDir, { recursive: true });
     res.json(result);
   });
 
-  app.post('/api/tag', async (req, res) => {
+  app.post('/api/tag', auth, async (req, res) => {
     const result = await db.setTag(req.body.id, req.body.en, req.body.ru);
     res.json(result);
   });
 
-  app.post('/api/issue', async (req, res) => {
+  app.post('/api/issue', auth, async (req, res) => {
     const result = await db.setIssue(req.body.id, req.body.color, req.body.en, req.body.ru);
     res.json(result);
   });
 
-  app.get('/api/grammar', async (req, res) => {
+  app.get('/api/grammar', auth, async (req, res) => {
     const categories = await db.getGrammar();
     res.json(categories);
   });
 
-  app.get('/api/texts', async (req, res) => {
+  app.get('/api/texts', auth, async (req, res) => {
     const textId = Number(req.query.id);
     // console.log("texts", textId);
     const textInfo = await db.getTexts(textId);
     res.json(textInfo);
   });
 
-  app.get('/api/text', async (req, res) => {
+  app.get('/api/text', auth, async (req, res) => {
     const textId = Number(req.query.id) || 1;
     const strings = await db.getText(textId, req.query.grammar === 'true');
     res.json(strings);
   });
 
-  app.get('/api/titles', async (req, res) => {
+  app.get('/api/titles', auth, async (req, res) => {
     const textId = Number(req.query.id) || 1;
     const chunk = String(req.query.chunk);
     const titles = await db.getCommentsTitles(textId, chunk);
     res.json(titles);
   });
 
-  app.post('/api/strings', async (req, res) => {
+  app.post('/api/strings', auth, async (req, res) => {
     res.json(await db.setCommentForString(req.body));
   });
 
-  app.post('/api/tokencomments', async (req, res) => {
+  app.post('/api/tokencomments', auth, async (req, res) => {
     res.json(await db.setCommentsForToken(req.body));
   });
 
-  app.get('/api/commentstrings', async (req, res) => {
+  app.get('/api/commentstrings', auth, async (req, res) => {
     res.json(await db.getBoundStringsForComment(req.query));
   });
 
-  app.get('/api/textcomments', async (req, res) => {
+  app.get('/api/textcomments', auth, async (req, res) => {
     const textId = Number(req.query.id) || 1;
     res.json(await db.getTextComments(textId));
   });
 
-  app.get('/api/issues', async (req, res) => {
+  app.get('/api/issues', auth, async (req, res) => {
     const tags = await db.getIssues();
     res.json(tags);
   });
 
-  app.get('/api/users', async (req, res) => {
+  app.get('/api/users', auth, async (req, res) => {
     const users = await db.getUsers();
     res.json(users);
   });
 
-  app.get('/api/tags', async (req, res) => {
+  app.get('/api/tags', auth, async (req, res) => {
     const tags = await db.getTags();
     res.json(tags);
   });
 
-  app.get('/api/conll', async(req, res) => {
+  app.get('/api/conll', auth, async(req, res) => {
     const corpus = await db.getCorpusAsConll();
     const conll = nlp.convertToConll(corpus);
     res.send(conll);
@@ -245,7 +245,7 @@ fs.mkdirSync(backupDir, { recursive: true });
     res.json({"message": "ok"});
   });
 
-  app.get('/api/priority', async(req, res) => {
+  app.get('/api/priority', auth, async(req, res) => {
     const result = await db.getNextPriority();
     res.json(result);
   });
@@ -285,12 +285,12 @@ fs.mkdirSync(backupDir, { recursive: true });
     res.json({"file": backupFile + '.gz', "error": message});
   });
 
-  app.get('/api/backups', async(req, res) => {
+  app.get('/api/backups', auth, async(req, res) => {
     const fls = fs.readdirSync( backupDir );
     res.json(fls);
   });
 
-  app.get('/api/backupfile', async(req, res) => {
+  app.get('/api/backupfile', auth, async(req, res) => {
     const filePath = path.join(backupDir, req.query.id);
     // console.log(filePath);
     if (fs.existsSync(filePath)) {
@@ -304,7 +304,7 @@ fs.mkdirSync(backupDir, { recursive: true });
     }
   });
 
-  app.post('/api/publish', async(req, res) => {
+  app.post('/api/publish', auth, async(req, res) => {
     const textId = Number(req.body.id) || 1;
     let result = {};
     try {
@@ -346,7 +346,7 @@ fs.mkdirSync(backupDir, { recursive: true });
 
       await db.updatePubInfo(textId, pubDir, stats.size, now);
       result = { bytes: stats.size, dir: pubDir, published: now };
-      
+
     } catch (genError) {
       console.error(`HTML generation error for text ${textId}`, genError);
       result = { "error": genError.message };
