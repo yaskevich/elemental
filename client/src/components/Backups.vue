@@ -1,6 +1,6 @@
 <template>
 
-  <n-card title="Backups" :bordered="false" v-if="isLoaded" style="text-align:center">
+  <n-card title="Backups" v-if="isLoaded" :bordered="false" class="minimal left">
 
     <template #header-extra>
       <n-button type="primary" @click="makeBackup">+ make</n-button>
