@@ -26,11 +26,9 @@
         </n-form-item>
 
         <n-form-item label="Grammatical gender" path="user.sex">
-          <n-select
-          placeholder="Choose gender"
-          :options="generalOptions"
-          v-model:value="formValue.user.sex"
-        />
+          <n-select placeholder="Choose gender"
+                    :options="generalOptions"
+                    v-model:value="formValue.user.sex" />
         </n-form-item>
 
         <n-form-item>
@@ -40,10 +38,11 @@
       </n-form>
       <div v-if="note" style="padding-bottom: 2rem;">
         <pre>
-          {{note}}
-        </pre>
+              {{note}}
+            </pre>
         <div>
-          Copy password and go to <router-link to="/login">login page</router-link>.
+          Copy password and go to
+          <router-link to="/login">login page</router-link>.
         </div>
       </div>
     </div>
@@ -51,88 +50,79 @@
 
 </template>
 
-<script>
+<script setup lang="ts">
 
-  import { defineComponent, ref } from 'vue';
-  // import { useMessage } from 'naive-ui';
   import store from '../store';
+  import { ref, reactive, onBeforeMount } from 'vue';
+  import { FormInst } from 'naive-ui';
 
-  export default defineComponent({
-    setup() {
-      const formRef = ref(null);
-      // const message = useMessage();
-      const note = ref('');
-      const formValue = ref({
-        user: {
-          username: '',
-          firstname: '',
-          lastname: '',
-          email: '',
-          sex: undefined,
-        },
-      });
-
-      return {
-        note,
-        generalOptions: ['female', 'male'].map(
-          (v, i) => ({
-            label: v,
-            value: ++i
-          })
-        ),
-        formRef,
-        size: ref('medium'),
-        formValue,
-        rules: {
-          user: {
-            username: {
-              required: true,
-              message: 'Please input your username',
-              trigger: 'blur',
-            },
-            firstname: {
-              required: true,
-              message: 'Please input your firstname',
-              trigger: 'blur',
-            },
-            lastname: {
-              required: true,
-              message: 'Please input your lastname',
-              trigger: 'blur',
-            },
-            sex: {
-              type: 'number',
-              required: true,
-              message: 'Please input your gender',
-              trigger: ['blur', 'change'],
-            },
-            email: {
-              type: 'email',
-              required: true,
-              message: 'Please input your e-mail',
-              trigger: 'blur',
-            },
-          },
-        },
-        handleValidateClick(e) {
-          e.preventDefault();
-          formValue.value.user.username = formValue.value.user.username.replace(/[^\x41-\x7F]/g, "");
-          formRef.value.validate(async(errors) => {
-            if (!errors) {
-              // message.success('Valid');
-              console.log(formValue.value.user);
-              const result = await store.postUnauthorized('user/reg', formValue.value.user);
-              const pwd = result?.data?.message;
-              console.log(pwd);
-              note.value = pwd;
-            } else {
-              console.log(errors);
-              // message.error('Invalid');
-            }
-          });
-        },
-      };
+  const formRef = ref<FormInst | null>(null);
+  const note = ref('');
+  const formValue = ref({
+    user: {
+      username: '',
+      firstname: '',
+      lastname: '',
+      email: '',
+      sex: undefined,
     },
   });
+
+  const generalOptions = ['female', 'male'].map((v, i) => ({
+    label: v,
+    value: ++i,
+  }));
+
+  const size = ref('medium');
+
+  const rules = {
+    user: {
+      username: {
+        required: true,
+        message: 'Please input your username',
+        trigger: 'blur',
+      },
+      firstname: {
+        required: true,
+        message: 'Please input your firstname',
+        trigger: 'blur',
+      },
+      lastname: {
+        required: true,
+        message: 'Please input your lastname',
+        trigger: 'blur',
+      },
+      sex: {
+        type: 'number',
+        required: true,
+        message: 'Please input your gender',
+        trigger: ['blur', 'change'],
+      },
+      email: {
+        type: 'email',
+        required: true,
+        message: 'Please input your e-mail',
+        trigger: 'blur',
+      },
+    },
+  };
+
+  const handleValidateClick = (e: MouseEvent) => {
+    e.preventDefault();
+    formValue.value.user.username = formValue.value.user.username.replace(/[^\x41-\x7F]/g, '');
+    if (formRef!.value) {
+      formRef.value.validate(async (errors: any) => {
+        if (!errors) {
+          // console.log(formValue.value);
+          const result = await store.postUnauthorized('user/reg', formValue.value.user);
+          const pwd = result?.data?.message;
+          console.log(pwd);
+          note.value = pwd;
+        } else {
+          console.log(errors);
+        }
+      });
+    }
+  };
 
 </script>

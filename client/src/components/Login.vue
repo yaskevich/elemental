@@ -28,38 +28,28 @@
 
 </template>
 
-<script>
+<script setup lang="ts">
 
-  import { defineComponent, ref, reactive } from 'vue';
-  // import { useMessage } from 'naive-ui';
+  import { ref, reactive } from 'vue';
   import store from '../store';
 
-  export default defineComponent({
-    setup() {
-      const formRef = ref(null);
-      // const message = useMessage();
-      const formValue = reactive({email: '', password: '', });
+  const formRef = ref(null);
+  const formValue = reactive({ email: '', password: '' });
 
-      return {
-        formRef,
-        formValue,
-        async handleValidateClick(e) {
-          e.preventDefault();
-          if (formValue.email  && formValue.password) {
-              console.log(formValue);
-              const result = await store.postUnauthorized('user/login', formValue);
-              console.log(result);
-              store.state.token = result.data.token;
-              localStorage.setItem('token', result.data.token);
-              store.state.user = {...store.state.user, ...result.data};
-          }
+  const handleValidateClick = async(e: MouseEvent) => {
+    e.preventDefault();
+    if (formValue.email && formValue.password) {
+      console.log(formValue);
+      const result = await store.postUnauthorized('user/login', formValue);
+      console.log(result);
+      store.state.token = result.data.token;
+      localStorage.setItem('token', result.data.token);
+      store.state.user = { ...store.state.user, ...result.data };
+    }
 
-          // const result = await store.post('user/login', formValue.value.user);
-              // message.success('Valid');
-              // message.error('Invalid');
-        },
-      };
-    },
-  });
+    // const result = await store.post('user/login', formValue.value.user);
+    // message.success('Valid');
+    // message.error('Invalid');
+  };
 
 </script>

@@ -8,20 +8,20 @@
             @click="editor.chain().focus().toggleAnnotation({ class: item }).run()"
             :class="{ 'is-active': editor.isActive('annotation', { class: item }) }"
             style="background-color: #c9c9ff;">
-            {{item}}
-        </button>
+              {{item}}
+          </button>
 
     <!-- <button @click="editor.chain().focus().unsetAnnotation().run()" :disabled="!editor.isActive('annotation')">
-            Clear Annotation
-        </button> -->
+              Clear Annotation
+          </button> -->
 
     <button @click="editor.chain().focus().toggleBlockquote().run()" :class="{ 'is-active': editor.isActive('blockquote') }">
-          quote
-        </button>
+            quote
+          </button>
 
     <button @click="editor.commands.toggleBold()" :class="{ 'is-active': editor.isActive('bold') }">
-          emphasized
-        </button>
+            emphasized
+          </button>
 
     <button @click="editor.chain().focus().clearNodes().unsetAllMarks().run()">clear formatting</button>
 
@@ -31,7 +31,7 @@
 
 </template>
 
-<script>
+<script setup lang="ts">
 
   import { Editor, EditorContent } from '@tiptap/vue-3';
   // import StarterKit from '@tiptap/starter-kit'
@@ -46,53 +46,43 @@
   import Blockquote from '@tiptap/extension-blockquote';
   import Bold from '@tiptap/extension-bold';
 
-  export default {
-    components: {
-      EditorContent,
-    },
-    props: {
-      editorclass: String,
-    },
+  defineProps<{ editorclass: string }>();
 
-    setup() {
-      const classes = ['error', 'name', 'example', 'book'];
-      const CustomBlockquote = Blockquote.extend({
-        content: 'paragraph*',
-      });
-      const editor = new Editor({
-        content: '',
-        autofocus: 'end',
-        editable: true,
-        extensions: [
-          Document,
-          Paragraph,
-          Text,
-          History,
-          // TextStyle,
-          Color,
-          Placeholder.configure({
-            placeholder: 'Start writing your comment...',
-          }),
-          Annotation.configure({
-            classes,
-          }),
-          CustomBlockquote.configure({
-            HTMLAttributes: {
-              class: 'quote',
-            },
-          }),
-          Bold.configure({
-            HTMLAttributes: {
-              class: 'em',
-            },
-          }),
-          // StarterKit,
-        ],
-      });
+  const classes = ['error', 'name', 'example', 'book'];
+  const CustomBlockquote = Blockquote.extend({
+    content: 'paragraph*',
+  });
 
-      return { editor, classes };
-    },
-  };
+  const editor = new Editor({
+    content: '',
+    autofocus: 'end',
+    editable: true,
+    extensions: [
+      Document,
+      Paragraph,
+      Text,
+      History,
+      // TextStyle,
+      Color,
+      Placeholder.configure({
+        placeholder: 'Start writing your comment...',
+      }),
+      Annotation.configure({
+        classes,
+      }),
+      CustomBlockquote.configure({
+        HTMLAttributes: {
+          class: 'quote',
+        },
+      }),
+      Bold.configure({
+        HTMLAttributes: {
+          class: 'em',
+        },
+      }),
+      // StarterKit,
+    ],
+  });
 
 </script>
 
