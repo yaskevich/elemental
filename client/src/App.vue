@@ -82,6 +82,15 @@ onBeforeMount(async () => {
   }
 }
 
+.left {
+  text-align:left
+}
+
+.minimal {
+  max-width:400px;
+  margin:auto;
+}
+
 .center-column {
   text-align: center;
 
