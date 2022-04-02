@@ -1,31 +1,31 @@
 <template>
 
-  <div v-if="editor">
+  <div v-if="customEditor">
 
-    <!-- <button @click="editor.chain().focus().toggleAnnotation().run()" :class="{ 'is-active': editor.isActive('annotation') }">Toggle Annotation</button> -->
+    <!-- <button @click="customEditor.chain().focus().toggleAnnotation().run()" :class="{ 'is-active': customEditor.isActive('annotation') }">Toggle Annotation</button> -->
 
     <button v-for="item in classes"
-            @click="editor.chain().focus().toggleAnnotation({ class: item }).run()"
-            :class="{ 'is-active': editor.isActive('annotation', { class: item }) }"
+            @click="customEditor.chain().focus().toggleAnnotation({ class: item }).run()"
+            :class="{ 'is-active': customEditor.isActive('annotation', { class: item }) }"
             style="background-color: #c9c9ff;">
               {{item}}
           </button>
 
-    <!-- <button @click="editor.chain().focus().unsetAnnotation().run()" :disabled="!editor.isActive('annotation')">
+    <!-- <button @click="customEditor.chain().focus().unsetAnnotation().run()" :disabled="!customEditor.isActive('annotation')">
               Clear Annotation
           </button> -->
 
-    <button @click="editor.chain().focus().toggleBlockquote().run()" :class="{ 'is-active': editor.isActive('blockquote') }">
+    <button @click="customEditor.chain().focus().toggleBlockquote().run()" :class="{ 'is-active': customEditor.isActive('blockquote') }">
             quote
           </button>
 
-    <button @click="editor.commands.toggleBold()" :class="{ 'is-active': editor.isActive('bold') }">
+    <button @click="customEditor.commands.toggleBold()" :class="{ 'is-active': customEditor.isActive('bold') }">
             emphasized
           </button>
 
-    <button @click="editor.chain().focus().clearNodes().unsetAllMarks().run()">clear formatting</button>
+    <button @click="customEditor.chain().focus().clearNodes().unsetAllMarks().run()">clear formatting</button>
 
-    <editor-content :editor="editor" :class="`${editorclass} annotation`" />
+    <editor-content :editor="customEditor" :class="`${editorclass} annotation`" />
 
   </div>
 
@@ -53,7 +53,7 @@
     content: 'paragraph*',
   });
 
-  const editor = new Editor({
+  const customEditor = new Editor({
     content: '',
     autofocus: 'end',
     editable: true,
@@ -83,6 +83,8 @@
       // StarterKit,
     ],
   });
+
+  defineExpose({handle: customEditor });
 
 </script>
 
