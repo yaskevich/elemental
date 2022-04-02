@@ -12,7 +12,7 @@
       </n-alert>
     </div>
 
-    <n-grid :x-gap="12" :y-gap="8" :cols="backups > 9 ? 3: 1">
+    <n-grid :x-gap="12" :y-gap="8" :cols="backups.length > 9 ? 3: 1">
       <n-gi v-for="(item, index) in backups" :key="index">
         <n-button secondary type="primary" :loading="item.state" @click="downloadBackup(index)">{{item.filename.split('.').shift()}}</n-button>
       </n-gi>
