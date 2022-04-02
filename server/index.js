@@ -261,7 +261,7 @@ fs.mkdirSync(backupDir, { recursive: true });
 
   app.get('/api/backup', auth, async(req, res) => {
     const today = new Date();
-    const backupFile = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}.tar`;
+    const backupFile = today.toISOString().split('T')[0] + '.tar';
     const filename = path.join(backupDir, backupFile);
 
     const cmd = `pg_dump -U ${process.env.PGUSER} -h ${process.env.PGHOST} -p ${process.env.PGPORT || 5432} -f ${filename} -F t -d ${process.env.PGDATABASE}`;
