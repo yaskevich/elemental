@@ -86,11 +86,11 @@
       <n-input v-model:value="entry.trans" type="text" placeholder="Translation" />
       <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" />
 
-      <Tiptap ref="briefRef" editorclass="briefeditor" />
+      <Tiptap ref="editor1Ref" editorclass="briefeditor" />
 
       <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" />
 
-      <Tiptap ref="contentRef" editorclass="fulleditor" />
+      <Tiptap ref="editor2Ref" editorclass="fulleditor" />
 
       <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" />
       <div v-if="Boolean(entry.id)">
@@ -113,7 +113,7 @@
 <script setup lang="ts">
 
   import store from '../store';
-  import { ref, reactive, onBeforeMount, computed, onBeforeUnmount, onMounted } from 'vue';
+  import { ref, reactive, onBeforeMount, computed, onBeforeUnmount, onMounted, ComponentPublicInstance } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
   import Tiptap from './Tiptap.vue';
   import router from '../router';
@@ -166,13 +166,13 @@
 
   // const entry: IEntry = reactive<IEntry>({});
   const entry: IEntry = reactive({}) as IEntry;
-
-  const fromDB = ref('');
-  const briefRef = ref<HTMLDivElement>();
-  const contentRef = ref<HTMLDivElement>();
-  const ready = ref(false);
-
+  // ref<HTMLDivElement>();
+  const editor1Ref = ref<ComponentPublicInstance>();
+  const editor2Ref = ref<ComponentPublicInstance>();
   const boundStrings = reactive([] as Array<Array<IToken>>);
+  const ready = ref(false);
+  const fromDB = ref('');
+  const kekRef = ref(null);
 
   interface keyable {
     [key: string]: any;
@@ -261,19 +261,20 @@
 
     if (id) {
       const data = await store.get(`comment/${id}`);
-      // console.log('data from server', data);
       if (data.length) {
-        // console.log("data", data);
-        // entryCopy = JSON.parse(JSON.stringify(data[0])) ;
         fromDB.value = JSON.stringify(data[0]);
         Object.assign(entry, data[0]);
 
-        if ((contentRef.value as any)?.editor) {
-          const longInstance = (contentRef.value as any).editor;
-          const briefInstance = (briefRef.value as any).editor;
-          longInstance.commands.setContent(data[0].long_json, false);
-          briefInstance.commands.setContent(data[0].brief_json, false);
+        const editor1:any = editor1Ref?.value;
+        const editor2:any = editor2Ref?.value;
+
+        if (editor1?.handle && editor2?.handle) {
+          editor1.handle.commands.setContent(data?.[0].brief_json, false);
+          editor2.handle.commands.setContent(data?.[0].long_json, false);
+        } else {
+          console.log("Cannot get Editor instance!");
         }
+
       }
     } else {
       const { priority } = await store.get('priority');
@@ -336,22 +337,23 @@
 
   const checkIsEntryUpdated = () => {
     let result: boolean = false;
-    if ((contentRef.value as any)?.editor) {
-      const longInstance = (contentRef.value as any).editor;
-      const briefInstance = (briefRef.value as any).editor;
-      entry.long_json = longInstance.getJSON();
-      entry.long_html = longInstance.getHTML();
-      entry.long_text = longInstance.getText();
-      // console.log('Content', entry.long_text);
-      entry.brief_json = briefInstance.getJSON();
-      entry.brief_html = briefInstance.getHTML();
-      entry.brief_text = briefInstance.getText();
+    const editor1:any = editor1Ref?.value;
+    const editor2:any = editor2Ref?.value;
 
-      checkValidMarkup(entry.long_json);
+    if (editor1?.handle && editor2?.handle) {
+      entry.brief_json = editor1.handle.getJSON();
+      entry.brief_html = editor1.handle.getHTML();
+      entry.brief_text = editor1.handle.getText();
+
+      entry.long_json = editor2.handle.getJSON();
+      entry.long_html = editor2.handle.getHTML();
+      entry.long_text = editor2.handle.getText();
+
       checkValidMarkup(entry.brief_json);
+      checkValidMarkup(entry.long_json);
 
-      longInstance.commands.setContent(entry.long_json, false);
-      briefInstance.commands.setContent(entry.brief_json, false);
+      editor1.handle.commands.setContent(entry.brief_json, false);
+      editor2.handle.commands.setContent(entry.long_json, false);
     }
     // console.log("1", fromDB.value);
     // console.log("2", JSON.stringify(entry));
