@@ -4,6 +4,7 @@
   import store from '../store';
   import router from '../router';
   import { useRoute } from 'vue-router';
+  import { FormInst, FormItemRule, FormValidationError, } from 'naive-ui'
 
   interface IText {
     id: number;
@@ -22,16 +23,42 @@
 
   const vuerouter = useRoute();
   const id = String(vuerouter.params.id);
-  const textInfo = reactive({} as IText);
+  const data = reactive({} as IText);
+  const formRef = ref<FormInst | null>(null);
+
+  const rules = {
+    author: {
+      required: true,
+      message: "Author's name cannot be empty",
+      trigger: 'blur',
+    },
+    title: {
+      required: true,
+      message: 'Text title cannot be empty',
+      trigger: 'blur',
+    },
+  };
+
+  const handleValidateClick = async (e: MouseEvent) => {
+    e.preventDefault();
+
+    try {
+      await formRef.value?.validate();
+      console.log("data to save", data);
+    } catch (errors:any) {
+      console.log("errors", errors);
+    }
+
+  };
 
   onBeforeMount(async () => {
-    const data = await store.get('texts', id);
-    Object.assign(textInfo, data.shift());
-    // console.log(textInfo);
+    const datum = await store.get('texts', id);
+    Object.assign(data, datum.shift());
+    // console.log(data);
 
-    const pubDate = new Date(textInfo.published);
+    const pubDate = new Date(data.published);
     // console.log(pubDate);
-    textInfo.date = pubDate.toLocaleString('en-GB', {
+    data.date = pubDate.toLocaleString('en-GB', {
       hour12: false,
       month: 'long',
       day: 'numeric',
@@ -39,17 +66,13 @@
       minute: 'numeric',
       year: 'numeric',
     });
-    // console.log(textInfo.date);
+    // console.log(data.date);
   });
 
   const publishText = async () => {
     console.log('publish text', id);
     const { data } = await store.post('publish', { id });
     console.log('data', data);
-  };
-
-  const saveTextInfo = async () => {
-    console.log('save props', textInfo);
   };
 
   const downloadZipped = async () => {
@@ -69,42 +92,59 @@
   <n-card title="Project" :bordered="false" class="minimal left">
 
     <template #header-extra>
-      <n-button type="primary" @click="saveTextInfo">Save</n-button>
+      <n-button type="primary" @click="handleValidateClick">Save</n-button>
     </template>
 
-    <n-space vertical>
-      <n-space justify="space-between">
-        <n-tag>Author</n-tag>
+    <n-form ref="formRef" :label-width="80" :model="data" :rules="rules">
 
-      </n-space>
-      <n-input v-model:value="textInfo.author" type="text" placeholder="Author" />
-      <n-tag>Title</n-tag>
-      <n-input v-model:value="textInfo.title" type="text" placeholder="Title" />
-      <n-tag>Subtitle</n-tag>
-      <n-input v-model:value="textInfo.meta" type="textarea" :autosize="true" placeholder="Subtitle" />
-      <n-tag>Site title</n-tag>
-      <n-input v-model:value="textInfo.site" type="textarea" :autosize="true" placeholder="Site title" />
-      <n-tag>Credits</n-tag>
-      <n-input v-model:value="textInfo.credits" type="textarea" :autosize="true" placeholder="Credits" />
-      <n-tag :type="textInfo.loaded? 'success': 'error'">
-        The text is <span v-if="!textInfo.loaded">NOT</span> loaded into the database.
+      <n-form-item label="Author" path="author">
+        <n-input v-model:value="data.author" placeholder="Author's name" />
+      </n-form-item>
+
+      <n-form-item label="Title" path="title">
+        <n-input v-model:value="data.title" placeholder="Title" />
+      </n-form-item>
+
+      <n-form-item label="Subtitle">
+        <n-input v-model:value="data.meta" type="textarea" :autosize="true" placeholder="Subtitle or description" />
+      </n-form-item>
+
+      <n-form-item label="Site title">
+        <n-input v-model:value="data.site" type="textarea" :autosize="true" placeholder="Site title" />
+      </n-form-item>
+
+      <n-form-item label="Credits">
+        <n-input v-model:value="data.credits" type="textarea" :autosize="true" placeholder="Credits" />
+      </n-form-item>
+
+      <n-form-item label="Grammar Tagging UI">
+        <n-checkbox v-model:checked="data.grammar" :label="`${data.grammar? '': 'NOT'} enabled`" />
+      </n-form-item>
+
+      <n-form-item label="Commenting UI">
+        <n-checkbox v-model:checked="data.comments" :label="`${data.comments? '': 'NOT'} enabled`" />
+      </n-form-item>
+
+    </n-form>
+
+    <n-space vertical>
+
+      <n-tag :type="data.loaded? 'success': 'error'">
+        The text is <span v-if="!data.loaded">NOT</span> loaded into the database
       </n-tag>
-      <div>
-        <n-checkbox v-model:checked="textInfo.grammar" /> The grammar tagging UI is <span v-if="!textInfo.grammar">NOT</span> enabled.</div>
-      <div>
-        <n-checkbox v-model:checked="textInfo.comments" /> The commenting UI is <span v-if="!textInfo.comments">NOT</span> enabled.</div>
-      <n-space justify="space-between">
-        <n-tag type="info" v-if="textInfo.zipsize">Published: {{textInfo.date}}</n-tag>
+
+      <n-space justify="space-between" v-if="data.loaded">
+        <n-tag type="info" v-if="data.zipsize">Published: {{data.date}}</n-tag>
         <n-button type="info" @click="publishText" size="small">Publish</n-button>
       </n-space>
-
-      <!-- <n-button type="warning" @click="downloadZipped" v-if="textInfo.zipsize">Download zipped site ({{humanFileSize(textInfo.zipsize)}})</n-button> -->
+      <!-- <n-button type="warning" @click="downloadZipped" v-if="data.zipsize">Download zipped site ({{humanFileSize(data.zipsize)}})</n-button> -->
 
     </n-space>
-    <n-divider/>
+
 
     <template #footer>
       <!-- #footer -->
+      &nbsp;
     </template>
     <template #action>
       <!-- #action -->
