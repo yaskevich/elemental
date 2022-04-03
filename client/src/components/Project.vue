@@ -44,7 +44,12 @@
 
     try {
       await formRef.value?.validate();
-      console.log("data to save", data);
+      // console.log("data to save", data);
+      const result = await store.post('text', data);
+      console.log("result", result);
+      if (!result?.data?.id)  {
+        console.log("database error");
+      }
     } catch (errors:any) {
       console.log("errors", errors);
     }
