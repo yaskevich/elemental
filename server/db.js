@@ -760,17 +760,16 @@ export default {
     return data;
   },
   async setText(params) {
-    // author: "", title: "", meta: "", grammar: true, comments: true
-    const values = [params.author, params.title, params.meta, params.grammar, params.comments];
+      const values = [params.author, params.title, params.meta, params.grammar, params.comments,  params.site, params.credits];
     let sql = "";
     // console.log(params);
 
     if (params.id) {
       const id =  Number(params.id);
       values.push(id);
-      sql = 'UPDATE texts SET author = $1, title = $2, meta = $3, grammar = $4, comments = $5 WHERE id = $6';
+      sql = 'UPDATE texts SET author = $1, title = $2, meta = $3, grammar = $4, comments = $5, site = $6, credits = $7 WHERE id = $8';
     } else {
-      sql = `INSERT INTO texts (author, title, meta, grammar, comments) VALUES ($1, $2, $3, $4, $5)`;
+      sql = `INSERT INTO texts (author, title, meta, grammar, comments, site, credits) VALUES ($1, $2, $3, $4, $5, $6)`;
     }
 
     sql += " RETURNING id";
