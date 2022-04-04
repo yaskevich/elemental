@@ -320,6 +320,10 @@ fs.mkdirSync(backupDir, { recursive: true });
       // console.log("textInfo", textInfo);
       const tokens = await db.getText(textId);
 
+      const comments = await db.getFullComments(textId);
+      const commentsDict = Object.assign({}, ...(comments.map(x => ({ [x.id]: x }) )));
+      // console.log(commentsDict);
+
       let content = '';
       let paragraph = '';
       let p = 0;
@@ -330,7 +334,9 @@ fs.mkdirSync(backupDir, { recursive: true });
           p = token.p;
         }
         if (token.meta !== 'ip'){
-            paragraph += (token.comments.length ? `<mark class="tooltip token" aria-label="${token.comments.join()}">${token.form}</mark>` : `<span class="token">${token.form}</span>`);
+            const commentId = token.comments?.[0];
+            const trans = commentsDict[commentId]?.trans || '';
+            paragraph += (token.comments.length ? `<span class="tooltip token mark" aria-label="${trans} ${token.comments.length}">${token.form}</span>` : `<span class="token">${token.form}</span>`);
         }
       }
       content += `<div class="row"> ${paragraph} </div>\n\n`;
