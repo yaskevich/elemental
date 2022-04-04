@@ -23,7 +23,7 @@
 
   const vuerouter = useRoute();
   const id = String(vuerouter.params.id);
-  const data = reactive({} as IText);
+  const txt = reactive({} as IText);
   const formRef = ref<FormInst | null>(null);
 
   const rules = {
@@ -44,10 +44,10 @@
 
     try {
       await formRef.value?.validate();
-      // console.log("data to save", data);
-      const result = await store.post('text', data);
-      console.log("result", result);
-      if (!result?.data?.id)  {
+      // console.log("data to save", txt);
+      const {data} = await store.post('text', txt);
+      console.log("result", data);
+      if (!data?.id)  {
         console.log("database error");
       }
     } catch (errors:any) {
@@ -56,14 +56,10 @@
 
   };
 
-  onBeforeMount(async () => {
-    const datum = await store.get('texts', id);
-    Object.assign(data, datum.shift());
-    // console.log(data);
-
-    const pubDate = new Date(data.published);
+  const formatDate = () => {
+    const pubDate = new Date(txt.published);
     // console.log(pubDate);
-    data.date = pubDate.toLocaleString('en-GB', {
+    txt.date = pubDate.toLocaleString('en-GB', {
       hour12: false,
       month: 'long',
       day: 'numeric',
@@ -71,13 +67,21 @@
       minute: 'numeric',
       year: 'numeric',
     });
-    // console.log(data.date);
+  };
+
+  onBeforeMount(async () => {
+    const data = await store.get('texts', id);
+    Object.assign(txt, data.shift());
+    formatDate();
   });
 
   const publishText = async () => {
     console.log('publish text', id);
     const { data } = await store.post('publish', { id });
     console.log('data', data);
+    txt.zipsize = data.bytes;
+    txt.published = data.published;
+    formatDate();
   };
 
   const downloadZipped = async () => {
@@ -100,49 +104,49 @@
       <n-button type="primary" @click="handleValidateClick">Save</n-button>
     </template>
 
-    <n-form ref="formRef" :label-width="80" :model="data" :rules="rules">
+    <n-form ref="formRef" :label-width="80" :model="txt" :rules="rules">
 
       <n-form-item label="Author" path="author">
-        <n-input v-model:value="data.author" placeholder="Author's name" />
+        <n-input v-model:value="txt.author" placeholder="Author's name" />
       </n-form-item>
 
       <n-form-item label="Title" path="title">
-        <n-input v-model:value="data.title" placeholder="Title" />
+        <n-input v-model:value="txt.title" placeholder="Title" />
       </n-form-item>
 
       <n-form-item label="Subtitle">
-        <n-input v-model:value="data.meta" type="textarea" :autosize="true" placeholder="Subtitle or description" />
+        <n-input v-model:value="txt.meta" type="textarea" :autosize="true" placeholder="Subtitle or description" />
       </n-form-item>
 
       <n-form-item label="Site title">
-        <n-input v-model:value="data.site" type="textarea" :autosize="true" placeholder="Site title" />
+        <n-input v-model:value="txt.site" type="textarea" :autosize="true" placeholder="Site title" />
       </n-form-item>
 
       <n-form-item label="Credits">
-        <n-input v-model:value="data.credits" type="textarea" :autosize="true" placeholder="Credits" />
+        <n-input v-model:value="txt.credits" type="textarea" :autosize="true" placeholder="Credits" />
       </n-form-item>
 
       <n-form-item label="Grammar Tagging UI">
-        <n-checkbox v-model:checked="data.grammar" :label="`${data.grammar? '': 'NOT'} enabled`" />
+        <n-checkbox v-model:checked="txt.grammar" :label="`${txt.grammar? '': 'NOT'} enabled`" />
       </n-form-item>
 
       <n-form-item label="Commenting UI">
-        <n-checkbox v-model:checked="data.comments" :label="`${data.comments? '': 'NOT'} enabled`" />
+        <n-checkbox v-model:checked="txt.comments" :label="`${txt.comments? '': 'NOT'} enabled`" />
       </n-form-item>
 
     </n-form>
 
     <n-space vertical>
 
-      <n-tag :type="data.loaded? 'success': 'error'">
-        The text is <span v-if="!data.loaded">NOT</span> loaded into the database
+      <n-tag :type="txt.loaded? 'success': 'error'">
+        The text is <span v-if="!txt.loaded">NOT</span> loaded into the database
       </n-tag>
 
-      <n-space justify="space-between" v-if="data.loaded">
-        <n-tag type="info" v-if="data.zipsize">Published: {{data.date}}</n-tag>
+      <n-space justify="space-between" v-if="txt.loaded">
+        <n-tag type="info" v-if="txt.zipsize">Published: {{txt.date}}</n-tag>
         <n-button type="info" @click="publishText" size="small">Publish</n-button>
       </n-space>
-      <!-- <n-button type="warning" @click="downloadZipped" v-if="data.zipsize">Download zipped site ({{humanFileSize(data.zipsize)}})</n-button> -->
+      <!-- <n-button type="warning" @click="downloadZipped" v-if="txt.zipsize">Download zipped site ({{humanFileSize(txt.zipsize)}})</n-button> -->
 
     </n-space>
 
