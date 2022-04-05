@@ -336,21 +336,20 @@ fs.mkdirSync(backupDir, { recursive: true });
         if (token.meta !== 'ip'){
             const commentId = token.comments?.[0];
             const trans = commentsDict[commentId]?.trans || '';
-            paragraph += (token.comments.length ? `<span class="tooltip token mark btn" aria-label="${trans} ${token.comments.length}" data-id="${commentId}">${token.form}</span>` : `<span class="token">${token.form}</span>`);
+             // && commentsDict[commentId].published
+            const tooltipInfo = trans? ['tooltip', 'aria-label="'+trans + '"'] : ['', ''];
+            paragraph += (token.comments.length ? `<span class="${tooltipInfo[0]} token mark btn" ${tooltipInfo[1]} ${token.comments.length}" data-id="${commentId}">${token.form}</span>` : `<span class="token">${token.form}</span>`);
         }
       }
       content += `<div class="row"> ${paragraph} </div>\n\n`;
 
-      const output = mustache.render(template, {...textInfo.shift(), content: content });
+      const output = mustache.render(template, {...textInfo.shift(), content: content, comments: comments });
 
       fs.writeFileSync(path.join(pubDir, 'index.html'), output);
       fs.copyFileSync(path.join(__dirname, 'node_modules', 'mini.css' , 'dist', 'mini-default.min.css'), path.join(pubDir, 'mini.css'));
       fs.copyFileSync(path.join(__dirname, 'node_modules', 'jquery' , 'dist', 'jquery.min.js'), path.join(pubDir, 'jquery.js'));
       fs.copyFileSync(path.join(__dirname, 'node_modules', 'izimodal' , 'js', 'iziModal.min.js'), path.join(pubDir, 'izi.js'));
       fs.copyFileSync(path.join(__dirname, 'node_modules', 'izimodal' , 'css', 'iziModal.min.css'), path.join(pubDir, 'izi.css'));
-      fs.copyFileSync(path.join(__dirname, 'public', 'reader.js'), path.join(pubDir, 'reader.js'));
-
-
 
       const now = Date.now();
       zip.sync.zip(pubDir).compress().save(zipPath);
