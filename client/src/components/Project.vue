@@ -138,18 +138,25 @@
 
     <n-space vertical>
 
-      <n-tag :type="txt.loaded? 'success': 'error'">
-        The text is <span v-if="!txt.loaded">NOT</span> loaded into the database
-      </n-tag>
 
-      <n-space justify="space-between" v-if="txt.loaded">
-        <n-tag type="info" v-if="txt.zipsize">Published: {{txt.date}}</n-tag>
+
+      <n-space justify="space-between">
+        <n-tag :type="txt.loaded? 'success': 'error'">
+          The text is <span v-if="!txt.loaded">NOT</span> loaded into the database
+        </n-tag>
         <n-button type="info" @click="publishText" size="small">Publish</n-button>
       </n-space>
-      <!-- <n-button type="warning" @click="downloadZipped" v-if="txt.zipsize">Download zipped site ({{humanFileSize(txt.zipsize)}})</n-button> -->
+
+      <n-text type="info" v-if="txt.zipsize">Published: {{txt.date}}</n-text>
+
+      <div style="width:100%">
+        <n-button ghost type="info" @click="downloadZipped" v-if="txt.zipsize" tag="a" :href="`/api/files/${id}/site.zip`" target="_blank">
+          Download zipped site ({{humanFileSize(txt.zipsize)}})
+        </n-button>
+      </div>
+
 
     </n-space>
-
 
     <template #footer>
       <!-- #footer -->
