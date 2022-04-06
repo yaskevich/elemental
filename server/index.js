@@ -53,6 +53,7 @@ fs.mkdirSync(backupDir, { recursive: true });
 
   passport.use(strategy);
   const auth = passport.authenticate('jwt', {session: false});
+  app.use('/api/files', express.static(publicDir));
 
   app.use(compression());
   app.set('trust proxy', 1);
