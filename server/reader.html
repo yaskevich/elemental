@@ -7,7 +7,10 @@
     <meta name="description" content="">
     <title>{{site}}</title>
     <link rel="stylesheet" href="mini.css" media="screen">
-    <!-- <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js" defer=""></script> -->
+    <!-- <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css"> -->
+    <script type="text/javascript" src="jquery.js"></script>
+    <script type="text/javascript" src="izi.js"></script>
+    <link rel="stylesheet" href="izi.css" media="screen">
     <meta name="generator" content="Elemental">
     <script type="application/ld+json">{
     "@context": "http://schema.org",
@@ -25,7 +28,23 @@
       .mark {
         background: yellow;
       }
+      .btn {
+        cursor:pointer;
+      }
+      * {
+        font-family: Georgia !important;
+      }
     </style>
+    <script type="text/javascript">
+    $(function() {   // Handler for .ready() called.
+      $(".modals").iziModal();
+      $(document).on('click', '.btn', function (event) {
+          event.preventDefault();
+          console.log("click!", $(this).data("id") );
+          $('#ms'+$(this).data("id")).iziModal('open');
+      });
+    });
+    </script>
   </head>
   <body>
     <div class="container responsive-margin">
@@ -36,9 +55,14 @@
 
       {{{content}}}
 
-    <footer>
-      <p>{{credits}}</p>
-    </footer>
+      <footer>
+        <p>{{credits}}</p>
+      </footer>
     </div>
+    {{#comments}}
+      <div id="ms{{id}}"  class="modals" data-iziModal-title="{{title}}"  data-iziModal-subtitle="{{trans}}"  data-iziModal-icon="icon-home" data-iziModal-fullscreen="true">
+        {{{brief_html}}}
+      </div>
+    {{/comments}}
   </body>
 </html>
