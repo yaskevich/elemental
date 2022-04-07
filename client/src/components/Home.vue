@@ -25,19 +25,19 @@
     // console.log("data", data);
   });
 
-  const openTextProps = async(id:number) => {
-    router.push(`/project/${id}`);
+  const openTextProps = async(id?:number) => {
+    router.push(`/project/${id||''}`);
   };
 
-  const saveText = async () => {
-    console.log('form', form);
-    const { data } = await store.post('text', form);
-    console.log('change text props', data);
-    if (data?.id) {
-      showForm.value = false;
-      texts.push({ ...form, id: data.id });
-    }
-  };
+  // const saveText = async () => {
+  //   console.log('form', form);
+  //   const { data } = await store.post('text', form);
+  //   console.log('change text props', data);
+  //   if (data?.id) {
+  //     showForm.value = false;
+  //     texts.push({ ...form, id: data.id });
+  //   }
+  // };
 
   const goToText = async (id: number, title: string) => {
     // console.log("go to text", id);
@@ -70,12 +70,12 @@
         </div>
         <div>
           <h3 style="margin-top:.7em;margin-left: 2em;">
-            <n-button type="info" dashed @click="showForm = true" v-if="!showForm">+ new</n-button>
+            <n-button type="info" dashed @click="openTextProps()">+ new</n-button>
           </h3>
         </div>
       </n-space>
 
-      <div style="max-width:300px;margin: 0 auto;" v-if="showForm">
+      <!-- <div style="max-width:300px;margin: 0 auto;" v-if="showForm">
         <n-input v-model:value="form.title" type="text" placeholder="Text title" />
         <n-input v-model:value="form.author" type="text" placeholder="Author name" />
         <n-input v-model:value="form.meta" type="text" placeholder="Description" />
@@ -83,7 +83,7 @@
         <n-checkbox v-model:checked="form.comments">Comments handling</n-checkbox>
         <n-button type="info" @click="saveText">Submit</n-button>
         <n-button type="warning" @click="showForm = false">Cancel</n-button>
-      </div>
+      </div> -->
 
       <div v-for="(value, key) in texts" :key="key" style="padding:.5rem;" >
         <n-space justify="space-between">
