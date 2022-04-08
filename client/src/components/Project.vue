@@ -70,9 +70,13 @@
   };
 
   onBeforeMount(async () => {
-    const data = await store.get('texts', id);
-    Object.assign(txt, data.shift());
-    formatDate();
+    if (id) {
+      const data = await store.get('texts', id);
+      Object.assign(txt, data.shift());
+      formatDate();
+    } else {
+      console.log("add new");
+    }
   });
 
   const publishText = async () => {
@@ -144,7 +148,7 @@
         <n-tag :type="txt.loaded? 'success': 'error'">
           The text is <span v-if="!txt.loaded">NOT</span> loaded into the database
         </n-tag>
-        <n-button type="info" @click="publishText" size="small">Publish</n-button>
+        <n-button type="info" @click="publishText" size="small" v-if="txt.loaded">Publish</n-button>
       </n-space>
 
       <n-text type="info" v-if="txt.zipsize">Published: {{txt.date}}</n-text>
