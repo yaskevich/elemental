@@ -760,27 +760,29 @@ export default {
     return data;
   },
   async setText(params) {
-      const values = [params.author, params.title, params.meta, params.grammar, params.comments,  params.site, params.credits];
-    let sql = "";
-    // console.log(params);
-
-    if (params.id) {
-      const id =  Number(params.id);
-      values.push(id);
-      sql = 'UPDATE texts SET author = $1, title = $2, meta = $3, grammar = $4, comments = $5, site = $6, credits = $7 WHERE id = $8';
-    } else {
-      sql = `INSERT INTO texts (author, title, meta, grammar, comments, site, credits) VALUES ($1, $2, $3, $4, $5, $6)`;
-    }
-
-    sql += " RETURNING id";
-    // console.log(sql);
-
     let data = [];
-    try {
-      const result = await pool.query(sql, values);
-      data = result?.rows?.[0];
-    } catch (err) {
-      console.error(err);
+    if (params.author && params.title) {
+      const values = [params.author, params.title, params?.meta || '', params?.grammar || false, params?.comments || false,  params?.site || '', params?.credits || ''];
+      let sql = "";
+
+      if (params.id) {
+        const id =  Number(params.id);
+        values.push(id);
+        sql = 'UPDATE texts SET author = $1, title = $2, meta = $3, grammar = $4, comments = $5, site = $6, credits = $7 WHERE id = $8';
+      } else {
+        sql = `INSERT INTO texts (author, title, meta, grammar, comments, site, credits) VALUES ($1, $2, $3, $4, $5, $6, $7)`;
+      }
+
+      sql += " RETURNING id";
+
+      try {
+        const result = await pool.query(sql, values);
+        data = result?.rows?.[0];
+      } catch (err) {
+        console.error(err);
+      }
+    } else {
+      console.error("Title and author fields are not set!")
     }
     return data;
   },
