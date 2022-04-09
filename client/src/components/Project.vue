@@ -88,10 +88,6 @@
     formatDate();
   };
 
-  const downloadZipped = async () => {
-    console.log('save zip');
-  };
-
   const humanFileSize = (size: number) => {
     // https://stackoverflow.com/questions/10420352/converting-file-size-in-bytes-to-human-readable-string
     const i: number = Math.floor(Math.log(size) / Math.log(1024));
@@ -142,8 +138,6 @@
 
     <n-space vertical>
 
-
-
       <n-space justify="space-between">
         <n-tag :type="txt.loaded? 'success': 'error'">
           The text is <span v-if="!txt.loaded">NOT</span> loaded into the database
@@ -151,14 +145,19 @@
         <n-button type="info" @click="publishText" size="small" v-if="txt.loaded">Publish</n-button>
       </n-space>
 
-      <n-text type="info" v-if="txt.zipsize">Published: {{txt.date}}</n-text>
-
-      <div style="width:100%">
-        <n-button ghost type="info" @click="downloadZipped" v-if="txt.zipsize" tag="a" :href="`/api/files/${id}/site.zip`" target="_blank">
-          Download zipped site ({{humanFileSize(txt.zipsize)}})
-        </n-button>
-      </div>
-
+      <n-card v-if="txt.zipsize">
+        <n-space vertical>
+          <n-text type="info">Published: {{txt.date}}</n-text>
+          <n-space justify="space-between">
+            <n-button ghost type="info" tag="a" :href="`/api/files/${id}/site.zip`" target="_blank">
+            Download ({{humanFileSize(txt.zipsize)}})
+            </n-button>
+            <n-button ghost type="info" tag="a" :href="`/api/files/${id}/`" target="_blank">
+            View
+            </n-button>
+          </n-space>
+      </n-space>
+     </n-card>
 
     </n-space>
 
