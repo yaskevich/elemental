@@ -6,6 +6,7 @@
 import bodyParser from 'body-parser';
 import compression from 'compression';
 import express from 'express';
+import fileUpload from 'express-fileupload';
 import fs from 'fs';
 import { exec } from 'child_process';
 import compress from 'gzipme';
@@ -54,7 +55,7 @@ fs.mkdirSync(backupDir, { recursive: true });
   passport.use(strategy);
   const auth = passport.authenticate('jwt', {session: false});
   app.use('/api/files', express.static(publicDir));
-
+  app.use(fileUpload());
   app.use(compression());
   app.set('trust proxy', 1);
   app.use(passport.initialize());
@@ -364,6 +365,24 @@ fs.mkdirSync(backupDir, { recursive: true });
       result = { "error": genError.message };
     }
     res.json(result);
+  });
+
+  app.post('/api/upload', async(req, res) => {
+    if (!req.files || Object.keys(req.files).length === 0) {
+      return res.status(400).send('No files were uploaded.');
+    }
+    console.log(Object.keys(req.files));
+    // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+    // let sampleFile = req.files.sampleFile;
+
+    // Use the mv() method to place the file somewhere on your server
+    // sampleFile.mv('/pub filename.jpg', function(err) {
+    //   if (err) {
+    //     return res.status(500).send(err);
+    //   }
+    //   res.send('File uploaded!');
+    // });
+    res.send('File uploaded!');
   });
 
   app.listen(port);
