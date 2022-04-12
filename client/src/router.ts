@@ -11,6 +11,7 @@ import Text from './components/Text.vue';
 import Logs from './components/Logs.vue';
 import Backups from './components/Backups.vue';
 import Project from './components/Project.vue';
+import Media from './components/Media.vue';
 
 const routes = [
   // {
@@ -81,6 +82,11 @@ const routes = [
     path: '/project/:id?',
     component: Project,
     name: 'Project',
+  },
+  {
+    path: '/media',
+    component: Media,
+    name: 'Media',
   },
 ];
 
