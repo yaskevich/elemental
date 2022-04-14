@@ -65,13 +65,16 @@
 
       <div class="box" v-if="boundStrings.length">
         <n-space justify="center">
-          <n-button type="info" dashed v-for="(stack, index) in boundStrings" :key="index" size="small" @click="goToText(stack)">
-            <template v-for="item in stack" :key="item.id" style="margin-right: 5px;">
-                    <span v-if="item.meta !== 'ip'">
-                      {{item.form}}&nbsp;
-                    </span>
-                  </template>
-          </n-button>
+          <n-dropdown trigger="hover" :options="[{label: 'Go to text', key: 'go', stack: stack as Array<IToken> },{ label: 'Unbind span', key: 'unbind', stack: stack as Array<IToken>}]" @select="handleSelect"  v-for="(stack, index) in boundStrings" :key="index">
+            <n-button type="info" dashed size="small">
+              <template v-for="item in stack" :key="item.id" style="margin-right: 5px;">
+                <span v-if="item.meta !== 'ip'">
+                  {{item.form}}&nbsp;
+                </span>
+              </template>
+            </n-button>
+          </n-dropdown>
+
         </n-space>
       </div>
 
@@ -118,6 +121,7 @@
   import Tiptap from './Tiptap.vue';
   import router from '../router';
   // import { useRoute } from 'vue-router';
+  import type { DropdownOption } from 'naive-ui';
 
   interface IToken {
     id: number;
@@ -408,6 +412,14 @@
       }
     }
   };
+
+  const handleSelect = (key: string | number, option: DropdownOption) => {
+    if(option.key === 'go'){
+      goToText(option.stack as Array<IToken>);
+    } else {
+      console.log('unbind', option)
+    }
+  }
 
 </script>
 
