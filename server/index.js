@@ -213,6 +213,10 @@ fs.mkdirSync(backupDir, { recursive: true });
     res.json(await db.setCommentsForToken(req.body));
   });
 
+  app.post('/api/commentstrings', auth, async (req, res) => {
+    res.json(await db.removeCommentFromString(req.body));
+  });
+  
   app.get('/api/commentstrings', auth, async (req, res) => {
     res.json(await db.getBoundStringsForComment(req.query));
   });
