@@ -587,6 +587,21 @@ export default {
     }
     return data;
   },
+  async removeCommentFromString(params) {
+    const comment_id = params?.id;
+    const stringTokenIds = params?.tokens;
+    let data = {};
+    if (comment_id && stringTokenIds?.length) {
+      try {
+        const sql = "UPDATE strings SET comments = array_remove(comments, $1) WHERE id = ANY($2::int[]) RETURNING id";
+        const result = await pool.query(sql, [comment_id, stringTokenIds]);
+        data = result?.rows;
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    return data;
+  },
   async getTextComments(textId) {
     let sql = "SELECT id, title FROM comments WHERE id IN (SELECT unnest(comments) AS coms FROM strings WHERE comments::text <> '{}' GROUP BY coms) AND text_id = $1";
     let data = [];
