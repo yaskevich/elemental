@@ -413,11 +413,20 @@
     }
   };
 
-  const handleSelect = (key: string | number, option: DropdownOption) => {
+  const handleSelect = async(key: string | number, option: DropdownOption) => {
     if(option.key === 'go'){
       goToText(option.stack as Array<IToken>);
     } else {
-      console.log('unbind', option)
+      console.log('unbind', option);
+      const tokens = option.stack.map(x=>x.id);
+      const { data } = await store.post('commentstrings', {id: entry.id, tokens });
+      const tokensCleared = data.map(x=> x.id);
+      console.log("unbind result", tokensCleared);
+      if (data && tokensCleared.sort().join() === tokens.sort().join()) {
+        console.log("span binding removed");
+      } else {
+        console.error('delete error for', entry.id);
+      }
     }
   }
 
