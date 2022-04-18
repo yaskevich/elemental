@@ -417,12 +417,18 @@
     if(option.key === 'go'){
       goToText(option.stack as Array<IToken>);
     } else {
-      console.log('unbind', option);
-      const tokens = option.stack.map(x=>x.id);
+      const tokens = (option.stack as Array<IToken>).map(x=>x.id);
       const { data } = await store.post('commentstrings', {id: entry.id, tokens });
-      const tokensCleared = data.map(x=> x.id);
-      console.log("unbind result", tokensCleared);
-      if (data && tokensCleared.sort().join() === tokens.sort().join()) {
+      const tokensCleared:Array<number> = (data as Array<IToken>).map(x => x.id);
+      const tokenStr = tokensCleared.sort().join();
+
+      if (data &&  tokenStr === tokens.sort().join()) {
+        for (let i = 0; i < boundStrings.length; i++) {
+          const boundStringsStr = boundStrings[i].map(y => y.id).sort().join();
+          if (boundStringsStr === tokenStr){
+            boundStrings.splice(i, 1);
+          }
+        }
         console.log("span binding removed");
       } else {
         console.error('delete error for', entry.id);
