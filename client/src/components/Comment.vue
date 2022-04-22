@@ -65,7 +65,7 @@
 
       <div class="box" v-if="boundStrings.length">
         <n-space justify="center">
-          <n-dropdown trigger="hover" :options="[{label: 'Go to text', key: 'go', stack: stack as Array<IToken> },{ label: 'Unbind span', key: 'unbind', stack: stack as Array<IToken>}]" @select="handleSelect"  v-for="(stack, index) in boundStrings" :key="index">
+          <n-dropdown trigger="hover" :options="[{ label: 'Go to text', key: 'go', stack: stack as Array<IToken>, icon: renderIcon(BackIcon) },{ label: 'Unbind span', key: 'unbind', stack: stack as Array<IToken>, icon: renderIcon(UnbindLink)}]" @select="handleSelect"  v-for="(stack, index) in boundStrings" :key="index">
             <n-button type="info" dashed size="small">
               <template v-for="item in stack" :key="item.id" style="margin-right: 5px;">
                 <span v-if="item.meta !== 'ip'">
@@ -116,12 +116,14 @@
 <script setup lang="ts">
 
   import store from '../store';
-  import { ref, reactive, onBeforeMount, computed, onBeforeUnmount, onMounted, ComponentPublicInstance } from 'vue';
+  import { ref, reactive, onBeforeMount, computed, onBeforeUnmount, onMounted, ComponentPublicInstance, h } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
   import Tiptap from './Tiptap.vue';
   import router from '../router';
   // import { useRoute } from 'vue-router';
   import type { DropdownOption } from 'naive-ui';
+  import type { Component } from 'vue';
+  import { ArrowBackFilled as BackIcon, LinkOffFilled as UnbindLink } from '@vicons/material';
 
   interface IToken {
     id: number;
@@ -435,6 +437,14 @@
       }
     }
   }
+
+  const renderIcon = (icon: Component) => {
+    return () => {
+      return h(NIcon, null, {
+        default: () => h(icon)
+      })
+    }
+  };
 
 </script>
 
