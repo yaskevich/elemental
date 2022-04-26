@@ -25,7 +25,9 @@ const __dirname = path.dirname(__filename);
 const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 const backupDir = path.join(__dirname, 'backup');
 const publicDir =  path.join(__dirname, 'public');
+const imgDir =  path.join(__dirname, 'img');
 fs.mkdirSync(backupDir, { recursive: true });
+fs.mkdirSync(imgDir, { recursive: true });
 
 (async () => {
   const app = express();
@@ -216,7 +218,7 @@ fs.mkdirSync(backupDir, { recursive: true });
   app.post('/api/commentstrings', auth, async (req, res) => {
     res.json(await db.removeCommentFromString(req.body));
   });
-  
+
   app.get('/api/commentstrings', auth, async (req, res) => {
     res.json(await db.getBoundStringsForComment(req.query));
   });
@@ -376,16 +378,14 @@ fs.mkdirSync(backupDir, { recursive: true });
       return res.status(400).send('No files were uploaded.');
     }
     console.log(Object.keys(req.files));
-    // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-    // let sampleFile = req.files.sampleFile;
 
-    // Use the mv() method to place the file somewhere on your server
-    // sampleFile.mv('/pub filename.jpg', function(err) {
-    //   if (err) {
-    //     return res.status(500).send(err);
-    //   }
-    //   res.send('File uploaded!');
-    // });
+    req.files.file.mv(path.join(imgDir, 'temp.jpeg'), function(err) {
+      if (err) {
+        return res.status(500).send(err);
+      }
+      // res.send('File uploaded!');
+      return true;
+    });
     res.send('File uploaded!');
   });
 
