@@ -123,6 +123,7 @@
   // import { useRoute } from 'vue-router';
   import type { DropdownOption } from 'naive-ui';
   import type { Component } from 'vue';
+  import { NIcon } from 'naive-ui';
   import { ArrowBackFilled as BackIcon, LinkOffFilled as UnbindLink } from '@vicons/material';
 
   interface IToken {
