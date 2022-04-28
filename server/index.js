@@ -378,8 +378,10 @@ fs.mkdirSync(imgDir, { recursive: true });
       return res.status(400).send('No files were uploaded.');
     }
     console.log(Object.keys(req.files));
-
-    req.files.file.mv(path.join(imgDir, 'temp.jpeg'), function(err) {
+    const img = req.files.file;
+    const ext = img.mimetype.split('/').pop();
+    console.log("img:", img.md5, img.name, ext);
+    img.mv(path.join(imgDir, `${img.md5}.${ext}`), function(err) {
       if (err) {
         return res.status(500).send(err);
       }
