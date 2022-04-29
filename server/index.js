@@ -57,6 +57,7 @@ fs.mkdirSync(imgDir, { recursive: true });
   passport.use(strategy);
   const auth = passport.authenticate('jwt', {session: false});
   app.use('/api/files', express.static(publicDir));
+  app.use('/api/img', express.static(imgDir));
   app.use(fileUpload());
   app.use(compression());
   app.set('trust proxy', 1);
