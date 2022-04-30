@@ -15,6 +15,21 @@
         </n-p>
       </n-upload-dragger>
     </n-upload>
+    <n-divider />
+    <n-upload
+      action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
+      :default-file-list="previewFileList"
+      list-type="image-card"
+      @preview="handlePreview"
+    />
+    <n-modal
+      v-model:show="showModal"
+      preset="card"
+      style="width: 600px"
+      title="A Cool Picture"
+    >
+      <img :src="previewImageUrl" style="width: 100%">
+    </n-modal>
   </n-card>
 </template>
 
@@ -23,6 +38,30 @@
   import { ref, reactive, onBeforeMount } from 'vue';
   import store from '../store';
   import { ArchiveFilled as ArchiveIcon } from '@vicons/material';
+  import type { UploadFileInfo } from 'naive-ui';
   const isLoaded = ref(true);
+  const showModal = ref(false);
+  const previewImageUrl = ref('');
+
+  const previewFileList = ref<UploadFileInfo[]>([
+        {
+          id: 'react',
+          name: '123.png',
+          status: 'finished',
+          url: 'api/img/temp.jpeg'
+        },
+        {
+          id: 'vue',
+          name: '345.png',
+          status: 'finished',
+          url: 'api/img/temp.jpeg'
+        }
+      ]);
+
+  const handlePreview = (file: UploadFileInfo) => {
+      const { url } = file;
+      previewImageUrl.value = url as string;
+      showModal.value = true;
+  };
 
 </script>
