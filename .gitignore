@@ -2,6 +2,8 @@
 .ftpconfig
 data/
 node_modules
+server/public/*/*
+server/img
 .DS_Store
 dist
 dist-ssr
