@@ -4,6 +4,7 @@ data/
 node_modules
 server/public/*/*
 server/img
+server/backup
 .DS_Store
 dist
 dist-ssr
