@@ -24,8 +24,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 const backupDir = path.join(__dirname, 'backup');
-const publicDir =  path.join(__dirname, 'public');
-const imgDir =  path.join(__dirname, 'img');
+const publicDir = path.join(__dirname, 'public');
+const imgDir = path.join(__dirname, 'images');
 fs.mkdirSync(backupDir, { recursive: true });
 fs.mkdirSync(imgDir, { recursive: true });
 
@@ -57,7 +57,7 @@ fs.mkdirSync(imgDir, { recursive: true });
   passport.use(strategy);
   const auth = passport.authenticate('jwt', {session: false});
   app.use('/api/files', express.static(publicDir));
-  app.use('/api/img', express.static(imgDir));
+  app.use('/api/images', express.static(imgDir));
   app.use(fileUpload());
   app.use(compression());
   app.set('trust proxy', 1);
@@ -374,15 +374,17 @@ fs.mkdirSync(imgDir, { recursive: true });
     res.json(result);
   });
 
-  app.post('/api/upload', async(req, res) => {
+  app.post('/api/upload/:id', async(req, res) => {
     if (!req.files || Object.keys(req.files).length === 0) {
       return res.status(400).send('No files were uploaded.');
     }
-    console.log(Object.keys(req.files));
+    // console.log(Object.keys(req.files));
     const img = req.files.file;
     const ext = img.mimetype.split('/').pop();
-    console.log("img:", img.md5, img.name, ext);
-    img.mv(path.join(imgDir, `${img.md5}.${ext}`), function(err) {
+    // console.log("img:", img.md5, img.name, ext);
+    const currentDir = path.join(imgDir, req.params.id || 1);
+    fs.mkdirSync(currentDir, { recursive: true });
+    img.mv(path.join(currentDir, `${img.md5}.${ext}`), function(err) {
       if (err) {
         return res.status(500).send(err);
       }
@@ -392,9 +394,11 @@ fs.mkdirSync(imgDir, { recursive: true });
     res.send('File uploaded!');
   });
 
-  app.get('/api/img', auth, async(req, res) => {
-    const fls = fs.readdirSync( imgDir ).map(file => ({ id: file, name: file, status: 'finished', url: `/api/img/${file}`, stats: fs.statSync(path.join(imgDir, file)) }));
-    res.json(fls);
+  app.get('/api/img/:id', auth, async(req, res) => {
+    const id = req.params.id || 1;
+    const currentDir = path.join(imgDir, id);
+    const files = fs.existsSync(currentDir) ? fs.readdirSync( currentDir ).map(file => ({ id: file, name: file, status: 'finished', url: `/api/images/${id}/${file}`, stats: fs.statSync(path.join(currentDir, file)) })): [];
+    res.json(files);
   });
 
   app.listen(port);
