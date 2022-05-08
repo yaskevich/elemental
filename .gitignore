@@ -3,7 +3,7 @@
 data/
 node_modules
 server/public/*/*
-server/img
+server/images
 server/backup
 .DS_Store
 dist
