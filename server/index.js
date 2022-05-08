@@ -392,6 +392,11 @@ fs.mkdirSync(imgDir, { recursive: true });
     res.send('File uploaded!');
   });
 
+  app.get('/api/img', auth, async(req, res) => {
+    const fls = fs.readdirSync( imgDir ).map(file => ({ id: file, name: file, status: 'finished', url: `/api/img/${file}`, stats: fs.statSync(path.join(imgDir, file)) }));
+    res.json(fls);
+  });
+
   app.listen(port);
   console.log("Running at Port "+ port);
 
