@@ -20,6 +20,7 @@ import path from 'path';
 import nlp from './nlp.js';
 import db from './db.js';
 import { fileURLToPath } from 'url';
+import { log } from 'console';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
@@ -380,18 +381,21 @@ fs.mkdirSync(imgDir, { recursive: true });
     }
     // console.log(Object.keys(req.files));
     const img = req.files.file;
+    console.log(img.id);
     const ext = img.mimetype.split('/').pop();
     // console.log("img:", img.md5, img.name, ext);
     const currentDir = path.join(imgDir, req.params.id || 1);
     fs.mkdirSync(currentDir, { recursive: true });
-    img.mv(path.join(currentDir, `${img.md5}.${ext}`), function(err) {
+    const fileName = path.join(currentDir, `${img.md5}.${ext}`);
+    img.mv(fileName, function(err) {
       if (err) {
         return res.status(500).send(err);
       }
       // res.send('File uploaded!');
-      return true;
+      // return true;
     });
-    res.send('File uploaded!');
+    // res.send('File uploaded!');
+    res.send(fileName);
   });
 
   app.get('/api/img/:id', auth, async(req, res) => {
