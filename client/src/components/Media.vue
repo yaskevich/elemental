@@ -1,6 +1,6 @@
 <template>
   <n-card title="Media management" v-if="isLoaded" :bordered="false" class="minimal left">
-    <n-upload action="/api/upload">
+    <!-- <n-upload action="/api/upload" @preview="handlePreview">
       <n-upload-dragger>
         <div style="margin-bottom: 12px">
           <n-icon size="48" :depth="3">
@@ -15,12 +15,12 @@
         </n-p>
       </n-upload-dragger>
     </n-upload>
-    <n-divider />
+    <n-divider /> -->
     <n-upload
-      action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
+      :action="`/api/upload/${id}`"
       :default-file-list="previewFileList"
       list-type="image-card"
-      @preview="handlePreview"
+      @remove="handleRemoval"
     />
     <n-modal
       v-model:show="showModal"
@@ -39,29 +39,31 @@
   import store from '../store';
   import { ArchiveFilled as ArchiveIcon } from '@vicons/material';
   import type { UploadFileInfo } from 'naive-ui';
+  // import { useRoute } from 'vue-router';
+  // const vuerouter = useRoute();
+  // const id = vuerouter.params.id || 1;
+  const id = store?.state?.user?.text_id;
   const isLoaded = ref(true);
   const showModal = ref(false);
   const previewImageUrl = ref('');
 
-  const previewFileList = ref<UploadFileInfo[]>([
-        {
-          id: 'react',
-          name: '123.png',
-          status: 'finished',
-          url: 'api/img/temp.jpeg'
-        },
-        {
-          id: 'vue',
-          name: '345.png',
-          status: 'finished',
-          url: 'api/img/temp.jpeg'
-        }
-      ]);
+  const previewFileList = reactive<UploadFileInfo[]>([]);
 
-  const handlePreview = (file: UploadFileInfo) => {
-      const { url } = file;
-      previewImageUrl.value = url as string;
-      showModal.value = true;
+  // const handlePreview = (file: UploadFileInfo, x) => {
+  //     const { url } = file;
+  //     console.log("file", file);
+  //     previewImageUrl.value = url as string;
+  //     showModal.value = true;
+  // };
+
+  const handleRemoval = (file: UploadFileInfo, fileList: Array<UploadFileInfo>) => {
+    console.log(file)
+    return false;
   };
 
+  onBeforeMount(async () => {
+    const data = await store.get(`img/${id}`);
+    Object.assign(previewFileList, data.sort((a,b) => (new Date(a.stats.mtime)).getTime() - (new Date(b.stats.mtime)).getTime() ));
+  });
+  
 </script>
