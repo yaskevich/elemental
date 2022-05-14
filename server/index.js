@@ -8,7 +8,7 @@ import compression from 'compression';
 import express from 'express';
 import fileUpload from 'express-fileupload';
 import fs from 'fs';
-import { exec } from 'child_process';
+import { execSync } from 'child_process';
 import compress from 'gzipme';
 import zip from "zip-local";
 import mustache from 'mustache';
@@ -270,28 +270,23 @@ fs.mkdirSync(imgDir, { recursive: true });
   });
 
   app.get('/api/backup', auth, async(req, res) => {
+    // https://www.npmjs.com/package/filesize
     const today = new Date();
     const backupFile = today.toISOString().split('T')[0] + '.tar';
     const filename = path.join(backupDir, backupFile);
-
     const cmd = `pg_dump -U ${process.env.PGUSER} -h ${process.env.PGHOST} -p ${process.env.PGPORT || 5432} -f ${filename} -F t -d ${process.env.PGDATABASE}`;
+    let message = '';
 
-    let message  = '';
+    try {
+      const result = execSync(cmd);
+      // console.log("backup result", result.toString("utf8"));
+      await compress(filename);
+      fs.unlinkSync(filename);
+    } catch (error) {
+      message = error.output[2].toString("utf8");
+      // console.log(message);
+    }
 
-    exec(cmd, async(error, stdout, stderr) => {
-        if (error) {
-            console.log(`error: ${error.message}`);
-            message = error;
-        }
-        if (stderr) {
-            console.log(`stderr: ${stderr}`);
-            message = stderr;
-        }
-        await compress(filename);
-        fs.unlinkSync(filename);
-        // console.log(`stdout: ${stdout}`);
-    });
-    // https://www.npmjs.com/package/filesize
     res.json({"file": backupFile + '.gz', "error": message});
   });
 
@@ -302,14 +297,15 @@ fs.mkdirSync(imgDir, { recursive: true });
 
   app.get('/api/backupfile', auth, async(req, res) => {
     const filePath = path.join(backupDir, req.query.id);
-    // console.log(filePath);
     if (fs.existsSync(filePath)) {
       res.download(filePath, (err) => {
         if (err) {
+          console.log(err);
           res.status(400).end();
         }
       });
     } else {
+      console.log("Backup file does not exist!");
       res.status(400).end();
     }
   });
