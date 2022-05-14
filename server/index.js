@@ -377,20 +377,20 @@ fs.mkdirSync(imgDir, { recursive: true });
     }
     // console.log(Object.keys(req.files));
     const img = req.files.file;
-    console.log(img.id);
+    // console.log(img.id);
     const ext = img.mimetype.split('/').pop();
     // console.log("img:", img.md5, img.name, ext);
     const currentDir = path.join(imgDir, req.params.id || 1);
     fs.mkdirSync(currentDir, { recursive: true });
-    const fileName = path.join(currentDir, `${img.md5}.${ext}`);
-    img.mv(fileName, function(err) {
+    const fileName = `${img.md5}.${ext}`;
+    const filePath = path.join(currentDir, fileName);
+    img.mv(filePath, function(err) {
       if (err) {
         return res.status(500).send(err);
       }
       // res.send('File uploaded!');
       // return true;
     });
-    // res.send('File uploaded!');
     res.send(fileName);
   });
 
@@ -399,6 +399,21 @@ fs.mkdirSync(imgDir, { recursive: true });
     const currentDir = path.join(imgDir, id);
     const files = fs.existsSync(currentDir) ? fs.readdirSync( currentDir ).map(file => ({ id: file, name: file, status: 'finished', url: `/api/images/${id}/${file}`, stats: fs.statSync(path.join(currentDir, file)) })): [];
     res.json(files);
+  });
+
+  app.post('/api/unload', async(req, res) => {
+    const textId = String(Number(req.body.id) || 1);
+    const file = path.join(imgDir, textId, req.body?.file);
+    let result = {};
+
+    try {
+      fs.unlinkSync(file);
+    } catch (error) {
+      result = error;
+      console.log(error);
+    }
+
+    res.json(result);
   });
 
   app.listen(port);
