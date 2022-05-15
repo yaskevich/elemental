@@ -21,6 +21,7 @@
       :default-file-list="previewFileList"
       list-type="image-card"
       @remove="handleRemoval"
+      @finish="imageLoaded"
     />
     <n-modal
       v-model:show="showModal"
@@ -46,6 +47,7 @@
   const isLoaded = ref(true);
   const showModal = ref(false);
   const previewImageUrl = ref('');
+  const loadedFiles = reactive({} as {[key: string]: string});
 
   const previewFileList = reactive<UploadFileInfo[]>([]);
 
@@ -56,14 +58,21 @@
   //     showModal.value = true;
   // };
 
-  const handleRemoval = (file: UploadFileInfo, fileList: Array<UploadFileInfo>) => {
-    console.log(file)
-    return false;
+  const imageLoaded = (options: { file: UploadFileInfo, fileList: Array<UploadFileInfo>, event?: ProgressEvent }) => {
+    loadedFiles[options.file.id] = (options?.event?.target as XMLHttpRequest)?.responseText || '';
+  };
+
+  const handleRemoval = async (upInfo: { file: UploadFileInfo, fileList: Array<UploadFileInfo> }) => {
+    const filename = upInfo.file.fullPath ? loadedFiles[upInfo.file.id] : upInfo.file.name;
+    // console.log(upInfo);
+    const { data } = await store.post('unload', { id: id, file: filename });
+    console.log("result", data);
+    return !Boolean(data?.errno);
   };
 
   onBeforeMount(async () => {
     const data = await store.get(`img/${id}`);
-    Object.assign(previewFileList, data.sort((a,b) => (new Date(a.stats.mtime)).getTime() - (new Date(b.stats.mtime)).getTime() ));
+    Object.assign(previewFileList, data.sort((a:any,b:any) => (new Date(a.stats.mtime)).getTime() - (new Date(b.stats.mtime)).getTime() ));
   });
   
 </script>
