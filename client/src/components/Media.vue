@@ -22,6 +22,8 @@
       list-type="image-card"
       @remove="handleRemoval"
       @finish="imageLoaded"
+      show-download-button
+      @download="handleDownload"
     />
     <n-modal
       v-model:show="showModal"
@@ -68,6 +70,11 @@
     const { data } = await store.post('unload', { id: id, file: filename });
     console.log("result", data);
     return !Boolean(data?.errno);
+  };
+
+  const handleDownload = async(file: UploadFileInfo) => {
+    const filename = file.fullPath ? loadedFiles[file.id] : file.name;
+    console.log("file", filename);
   };
 
   onBeforeMount(async () => {
