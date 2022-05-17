@@ -25,6 +25,8 @@
           </button>
 
     <button @click="customEditor.chain().focus().clearNodes().unsetAllMarks().run()">clear formatting</button>
+
+    <button @click="customEditor.chain().focus().deleteSelection().run()" style="background-color: #da1d1d;color:white">del</button>
    
     <editor-content :editor="customEditor" :class="`${editorclass} annotation`" />
 
