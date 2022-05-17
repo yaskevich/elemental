@@ -14,6 +14,7 @@
     <!-- <button @click="customEditor.chain().focus().unsetAnnotation().run()" :disabled="!customEditor.isActive('annotation')">
               Clear Annotation
           </button> -->
+    <button @click="addImage">+image</button>
 
     <button @click="customEditor.chain().focus().toggleBlockquote().run()" :class="{ 'is-active': customEditor.isActive('blockquote') }">
             quote
@@ -24,7 +25,7 @@
           </button>
 
     <button @click="customEditor.chain().focus().clearNodes().unsetAllMarks().run()">clear formatting</button>
-
+   
     <editor-content :editor="customEditor" :class="`${editorclass} annotation`" />
 
   </div>
@@ -32,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-
+  import { onBeforeUnmount } from 'vue';
   import { Editor, EditorContent } from '@tiptap/vue-3';
   // import StarterKit from '@tiptap/starter-kit'
   import Document from '@tiptap/extension-document';
@@ -45,6 +46,8 @@
   import Annotation from '../annotation';
   import Blockquote from '@tiptap/extension-blockquote';
   import Bold from '@tiptap/extension-bold';
+  import Image from '@tiptap/extension-image';
+  import Dropcursor from '@tiptap/extension-dropcursor';
 
   defineProps<{ editorclass: string }>();
 
@@ -80,15 +83,43 @@
           class: 'em',
         },
       }),
+      Image,
+      Dropcursor,
       // StarterKit,
     ],
   });
+
+  onBeforeUnmount(() => {
+    customEditor.destroy();
+  });
+
+  const addImage = () => {
+    const url = window.prompt('URL')
+
+    if (url) {
+      customEditor.chain().focus().setImage({ src: url }).run()
+    }
+  };
 
   defineExpose({handle: customEditor });
 
 </script>
 
 <style lang="scss">
+  .ProseMirror {
+    > * + * {
+      margin-top: 0.75em;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+
+      &.ProseMirror-selectednode {
+        outline: 3px solid #68CEF8;
+      }
+    }
+  }
 
   .ProseMirror p {
     margin: 1em 0;
