@@ -14,7 +14,9 @@
     <!-- <button @click="customEditor.chain().focus().unsetAnnotation().run()" :disabled="!customEditor.isActive('annotation')">
               Clear Annotation
           </button> -->
-    <button @click="addImage">+image</button>
+    <!-- <button @click="addImage">+image</button> -->
+    <button @click="showModal = true">+image</button>
+    
 
     <button @click="customEditor.chain().focus().toggleBlockquote().run()" :class="{ 'is-active': customEditor.isActive('blockquote') }">
             quote
@@ -28,6 +30,35 @@
 
     <button @click="customEditor.chain().focus().deleteSelection().run()" style="background-color: #da1d1d;color:white">del</button>
    
+
+    <n-modal
+      v-model:show="showModal"
+      :style="{'max-width': '600px'}"
+      class="custom-card"
+      preset="card"
+      title="Select an image"
+      :bordered="false"
+      size="huge"
+      :segmented="{content: 'soft', footer: 'soft'}"
+      >
+      <!-- <template #header-extra>
+        Oops!
+      </template> -->
+      <!-- Content -->
+      <n-image-group>
+        <n-space>
+          <n-image v-for="(item, index) in previewFileList" :key="index"
+            width="100"
+            class="selectable"
+            :preview-disabled="true"
+            :src="item.url"
+            @click="selectImage(item.url as string)"/>
+         </n-space>
+      </n-image-group>
+      <!-- <template #footer>
+        Footer
+      </template> -->
+    </n-modal>
     <editor-content :editor="customEditor" :class="`${editorclass} annotation`" />
 
   </div>
@@ -35,7 +66,9 @@
 </template>
 
 <script setup lang="ts">
-  import { onBeforeUnmount } from 'vue';
+  import { onBeforeUnmount, onBeforeMount, ref, reactive } from 'vue';
+  import type { UploadFileInfo } from 'naive-ui';
+  import store from '../store';
   import { Editor, EditorContent } from '@tiptap/vue-3';
   // import StarterKit from '@tiptap/starter-kit'
   import Document from '@tiptap/extension-document';
@@ -57,6 +90,11 @@
   const CustomBlockquote = Blockquote.extend({
     content: 'paragraph*',
   });
+
+  const showModal = ref(false);
+  const id = store?.state?.user?.text_id;
+  const previewFileList = reactive<UploadFileInfo[]>([]);
+
 
   const customEditor = new Editor({
     content: '',
@@ -95,12 +133,22 @@
     customEditor.destroy();
   });
 
+  onBeforeMount(async() => {
+    const data = await store.get(`img/${id}`);
+    Object.assign(previewFileList, data.sort((a:any,b:any) => (new Date(a.stats.mtime)).getTime() - (new Date(b.stats.mtime)).getTime() ));
+  });
+
   const addImage = () => {
     const url = window.prompt('URL')
-
     if (url) {
       customEditor.chain().focus().setImage({ src: url }).run()
     }
+  };
+
+  const selectImage = (url:string) => {
+    // console.log("image", url);
+    customEditor.chain().focus().setImage({ src: url }).run();
+    showModal.value = false;
   };
 
   defineExpose({handle: customEditor });
@@ -187,4 +235,15 @@
     background-color: #feebdd;
   }
 
+  .selectable{
+    border: 3px solid gray;
+    cursor: grab;
+    transition: all .2s ease-in-out;
+  }
+
+  .selectable:hover {
+    transform: scale(1.2);
+    position: relative;
+    z-index: 1000;
+  }
 </style>
