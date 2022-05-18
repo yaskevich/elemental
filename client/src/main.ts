@@ -44,10 +44,12 @@ import {
   NUpload,
   NUploadDragger,
   NP,
+  NImage,
+  NImageGroup,
 } from 'naive-ui'
 
 const naive = create({
-  components: [NButton, NText, NInput, NSwitch, NDivider, NAvatar, NIcon, NSpace, NInputGroup, NColorPicker, NMessageProvider, NForm, NFormItem, NRadioGroup, NRadio, NSelect, NDropdown, NTag, NSpin, NDataTable, NDescriptions, NDescriptionsItem, NInputNumber, NDrawer, NDrawerContent, NAutoComplete, NModal, NCheckbox, NCheckboxGroup, NTooltip, NPopconfirm, NAlert, NPageHeader, NGrid, NGi, NCard, NUpload, NUploadDragger, NP,]
+  components: [NButton, NText, NInput, NSwitch, NDivider, NAvatar, NIcon, NSpace, NInputGroup, NColorPicker, NMessageProvider, NForm, NFormItem, NRadioGroup, NRadio, NSelect, NDropdown, NTag, NSpin, NDataTable, NDescriptions, NDescriptionsItem, NInputNumber, NDrawer, NDrawerContent, NAutoComplete, NModal, NCheckbox, NCheckboxGroup, NTooltip, NPopconfirm, NAlert, NPageHeader, NGrid, NGi, NCard, NUpload, NUploadDragger, NP, NImage, NImageGroup,]
 })
 
 createApp(App)
