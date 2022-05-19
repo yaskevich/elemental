@@ -11,8 +11,9 @@
     <div v-if="!store?.state?.user?.text_id">
       <n-text type="error">Select specific text before (at Home screen)!</n-text>
     </div>
+<n-button @click="clearSorter">Clear Sorter</n-button>
     <!-- <n-data-table remote :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-class-name="rowClassName" /> -->
-    <n-data-table remote :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-props="rowProps"
+    <n-data-table ref="tableRef" :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-props="rowProps"
     />
     <template #footer>
     <!-- #footer -->
@@ -36,7 +37,7 @@
   import { HelpOutlineFilled as HelpIcon } from '@vicons/material';
 
   const vuerouter = useRoute();
-
+  const tableRef = ref(null);
   const ready = ref(false);
   const comments = reactive([]);
 
@@ -62,6 +63,8 @@
     },
   });
 
+  const clearSorter = () => tableRef?.value?.sort(null);
+
   const columns = [
     {
       title: 'Title',
@@ -81,10 +84,13 @@
       //     { default: () => row.title }
       //   );
       // },
+      // defaultSortOrder: 'ascend',
+      sorter: 'default',
     },
     {
       title: 'ID',
       key: 'priority',
+      sorter: (row1:any, row2:any) => row1.priority - row2.priority,
       render(row: any) {
         // <span v-if="item.published" style="margin-left:10px;color:blue;">✓</span>
         // return row.published ? "true" : "false";
@@ -206,7 +212,7 @@
     router.push('/comment');
   };
 
-  const pagination = { pageSize: 10 };
+  const pagination = { pageSize: 100 };
 
 </script>
 
