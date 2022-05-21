@@ -11,7 +11,7 @@
     <div v-if="!store?.state?.user?.text_id">
       <n-text type="error">Select specific text before (at Home screen)!</n-text>
     </div>
-<n-button @click="clearSorter">Clear Sorter</n-button>
+<n-button @click="clearSorter">Reset sorting</n-button>
     <!-- <n-data-table remote :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-class-name="rowClassName" /> -->
     <n-data-table ref="tableRef" :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-props="rowProps"
     />
@@ -63,7 +63,7 @@
     },
   });
 
-  const clearSorter = () => tableRef?.value?.sort(null);
+  const clearSorter = () => (tableRef?.value as any).sort(null);
 
   const columns = [
     {
@@ -108,6 +108,7 @@
     {
       title: h(NIcon, {"color": "gray", "size": 24, "title": 'Status'}, { default: () => h(CheckIcon) }),
       key: 'published',
+      sorter: (a:any, b:any) => Number(a.published) - Number(b.published),
       align: 'center',
       render(row:any) {
         // <span v-if="item.published" style="margin-left:10px;color:blue;">✓</span>
@@ -121,7 +122,7 @@
         //     default: () => row.published ? '✓': '',
         //   }
         // );
-        return row.published? h(NIcon, {"color": "green", size: 16}, { default: () => h(CheckIcon) }) : null;
+        return row.published ? h(NIcon, {"color": "green", size: 16}, { default: () => h(CheckIcon) }) : h('small', {"style": "color:#d0d3d4"}, 'draft');
       }
     },
     {
