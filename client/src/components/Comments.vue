@@ -11,7 +11,7 @@
     <div v-if="!store?.state?.user?.text_id">
       <n-text type="error">Select specific text before (at Home screen)!</n-text>
     </div>
-<n-button @click="clearSorter">Reset sorting</n-button>
+      <n-button @click="clearSorter">Reset sorting</n-button>
     <!-- <n-data-table remote :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-class-name="rowClassName" /> -->
     <n-data-table ref="tableRef" :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-props="rowProps"
     />
@@ -45,6 +45,8 @@
     [key: string]: any;
   }
   const issues: keyable = reactive({}) as keyable;
+  const issuesArray = reactive([{value:0, label: "(no label)"}] as Array<{label:string, value:number}>);
+  const issuesValues = reactive([] as Array<number>);
   const users: keyable = reactive({}) as keyable;
 
   // defineProps<{ msg: string }>()
@@ -128,6 +130,13 @@
     {
       title: h(NIcon, {"color": "gray", "size": 24, "title": "Issues"}, { default: () => h(HelpIcon) }),
       key: 'issues',
+      // defaultFilterOptionValues: issuesValues,
+      filterOptions: issuesArray,
+      filter (optionValue: string | number, row: any) {
+        // const state = row.issues.map((x:Array<number>)=> x[0]).includes(optionValue);
+        // console.log("in", optionValue, JSON.stringify(row.issues.map((x:Array<number>)=> x[0])), state);
+        return optionValue ? row.issues.map((x:Array<number>)=> x[0]).includes(optionValue) : !row.issues.length;
+      },
       render(row: any) {
         const issuesList = row.issues.map((d: string) => {
           return h(
@@ -195,6 +204,10 @@
     const issuesData = await store.get('issues');
     const issuesObject = Object.fromEntries(issuesData.map((x: any) => [x.id, x]));
     Object.assign(issues, issuesObject);
+
+    issuesArray.push(...issuesData.map((x:any) => ({value: x.id, label: x.ru})));
+    issuesValues.push(...issuesArray.map((x:any) => x.value));
+
 
     const usersData = await store.get('users');
     Object.assign(users, Object.fromEntries(usersData.map((x: any) => [x.id, x])));
