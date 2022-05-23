@@ -13,8 +13,7 @@
     </div>
       <n-button @click="clearSorter">Reset sorting</n-button>
     <!-- <n-data-table remote :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-class-name="rowClassName" /> -->
-    <n-data-table ref="tableRef" :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-props="rowProps"
-    />
+    <n-data-table ref="tableRef" :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-props="rowProps" />
     <template #footer>
     <!-- #footer -->
   </template>
@@ -41,6 +40,15 @@
   const ready = ref(false);
   const comments = reactive([]);
 
+  interface IRow {
+    bound: boolean;
+    id: number;
+    issues: Array<Array<number>>;
+    priority: number;
+    published: null | boolean;
+    title: string;
+  };
+
   interface keyable {
     [key: string]: any;
   }
@@ -50,7 +58,7 @@
   const users: keyable = reactive({}) as keyable;
 
   // defineProps<{ msg: string }>()
-  const getID = (row: any) => {
+  const getID = (row: IRow) => {
     return row.id;
   };
 
@@ -58,7 +66,7 @@
     router.push(`/comment/${id}`);
   };
 
-  const rowProps = (row:any) => ({
+  const rowProps = (row:IRow) => ({
     style: 'cursor: pointer;',
     onClick: () => {
       editComment(row.id);
@@ -72,7 +80,7 @@
       title: 'Title',
       key: 'title',
       // ellipsis: { tooltip: true},
-      // render(row:any) {
+      // render(row:IRow {
       //   return h(
       //     // workaround for vue-tsc. Maybe, not good solution
       //     NButton as unknown as DefineComponent,
@@ -92,8 +100,8 @@
     {
       title: 'ID',
       key: 'priority',
-      sorter: (row1:any, row2:any) => row1.priority - row2.priority,
-      render(row: any) {
+      sorter: (row1:IRow, row2:IRow) => row1.priority - row2.priority,
+      render(row: IRow) {
         // <span v-if="item.published" style="margin-left:10px;color:blue;">✓</span>
         // return row.published ? "true" : "false";
         return h(
@@ -110,9 +118,9 @@
     {
       title: h(NIcon, {"color": "gray", "size": 24, "title": 'Status'}, { default: () => h(CheckIcon) }),
       key: 'published',
-      sorter: (a:any, b:any) => Number(a.published) - Number(b.published),
+      sorter: (row1:IRow, row2:IRow) => Number(row1.published) - Number(row2.published),
       align: 'center',
-      render(row:any) {
+      render(row:IRow) {
         // <span v-if="item.published" style="margin-left:10px;color:blue;">✓</span>
         // return row.published ? "true" : "false";
         // return h(
@@ -132,13 +140,13 @@
       key: 'issues',
       // defaultFilterOptionValues: issuesValues,
       filterOptions: issuesArray,
-      filter (optionValue: string | number, row: any) {
+      filter (optionValue: number, row: IRow) {
         // const state = row.issues.map((x:Array<number>)=> x[0]).includes(optionValue);
         // console.log("in", optionValue, JSON.stringify(row.issues.map((x:Array<number>)=> x[0])), state);
         return optionValue ? row.issues.map((x:Array<number>)=> x[0]).includes(optionValue) : !row.issues.length;
       },
-      render(row: any) {
-        const issuesList = row.issues.map((d: string) => {
+      render(row: IRow) {
+        const issuesList = row.issues.map((d:Array<number>) => {
           return h(
             NTooltip,
             {
@@ -173,7 +181,7 @@
     // {
     //   title: 'Action',
     //   key: 'actions',
-    //   render(row) {
+    //   render(row:IRow) {
     //     return h(
     //       NButton,
     //       {
@@ -186,7 +194,7 @@
     // },
   ];
 
-  // const rowClassName = (row, index) => {
+  // const rowClassName = ((row;IRow), (index:number)) => {
   //   if (row.bound) {
   //     return 'bound'
   //   }
