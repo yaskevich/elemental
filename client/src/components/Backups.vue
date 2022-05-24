@@ -3,7 +3,7 @@
   <n-card title="Backups" v-if="isLoaded" :bordered="false" class="minimal left">
 
     <template #header-extra>
-      <n-button type="primary" @click="makeBackup">+ make</n-button>
+      <n-button :loading="processing" icon-placement="left" type="primary" @click="makeBackup">+ make</n-button>
     </template>
 
     <div style="margin: 0 auto;">
@@ -42,9 +42,12 @@
   const message = useMessage();
   const backups = reactive([] as Array<IBackup>);
   const isLoaded = ref(false);
+  const processing = ref(false);
 
   const makeBackup = async () => {
+    processing.value = true;
     const data = await store.get('backup');
+    processing.value = false;
     // console.log(data);
     if (data?.error) {
       message.error(`Database backup error: ${data.error}`, { duration: 5000 });
