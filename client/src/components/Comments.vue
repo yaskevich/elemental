@@ -13,7 +13,7 @@
     </div>
       <n-button @click="clearSorter">Reset sorting</n-button>
     <!-- <n-data-table remote :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-class-name="rowClassName" /> -->
-    <n-data-table ref="tableRef" :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-props="rowProps" />
+    <n-data-table ref="tableRef" :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-props="rowProps" :summary="summary" />
     <template #footer>
     <!-- #footer -->
   </template>
@@ -235,6 +235,23 @@
   };
 
   const pagination = { pageSize: 100 };
+
+  const summary = (pageData:Array<IRow>) => { 
+  // console.log("pagedata", pageData);
+  return ({
+    priority: {},
+    published: {},
+    issues: {},
+    title: {
+      value: h(
+        'span',
+        { style: { color: 'gray', 'font-weight': 'bold' } },
+        // pageData.reduce((prevValue, row) => prevValue + row.priority, 0)
+        pageData.length
+      ),
+      colSpan: 3,
+    }
+  })};
 
 </script>
 
