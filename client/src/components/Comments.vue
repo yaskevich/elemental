@@ -34,6 +34,8 @@
   import { NTag, NButton, NText, NTooltip, NIcon } from 'naive-ui';
   import { CheckBoxFilled as CheckIcon } from '@vicons/material';
   import { HelpOutlineFilled as HelpIcon } from '@vicons/material';
+  import { SquareRound as SquareIcon } from '@vicons/material';
+  
 
   const vuerouter = useRoute();
   const tableRef = ref(null);
@@ -156,10 +158,16 @@
             {
               default: () => `${issues?.[d[0]]?.ru}${users?.[d[1]]?.username ? ' @' + users?.[d[1]]?.username : ''}`,
               trigger: () =>
-                h('div', {
-                  class: 'square',
-                  style: `background-color:${issues?.[d[0]]?.color || 'black'};`,
-                }),
+                h(
+                  NIcon,
+                  {
+                    "color": issues?.[d[0]]?.color || 'black',
+                    "size": 18,
+                    // class: 'square',
+                    // style: `background-color:${issues?.[d[0]]?.color || 'black'};`,
+                  },
+                  { default: () => h(SquareIcon) }
+                ),
             }
           );
           // return h(
@@ -256,18 +264,17 @@
 </script>
 
 <style scoped lang="scss">
-
+  /*
   :deep(td .square) {
     width: 50%;
     height: 0;
     padding-bottom: 50%;
     margin: 2px;
   }
-
+  */
   /*
   :deep(.bound td:nth-of-type(2)) {
     background-color: lightblue !important;
   }
   */
-
 </style>
