@@ -6,14 +6,19 @@
 
   <n-card title="Comments" :bordered="false" :style="`visibility:${ready?'visible':'hidden'}`">
     <template #header-extra>
-    <n-button type="primary"  @click="addComment">+ new</n-button>
-  </template>
+      <n-button type="primary"  @click="addComment">+ new</n-button>
+    </template>
     <div v-if="!store?.state?.user?.text_id">
       <n-text type="error">Select specific text before (at Home screen)!</n-text>
     </div>
-      <n-button @click="clearSorter">Reset sorting</n-button>
-    <!-- <n-data-table remote :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-class-name="rowClassName" /> -->
-    <n-data-table ref="tableRef" :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-props="rowProps" :summary="summary" />
+     <n-space vertical :size="12">
+      <n-space>
+        <n-button @click="clearSorter">Reset sorting</n-button>
+        <n-button @click="clearFilters">Reset filter</n-button>
+      </n-space>
+      <!-- <n-data-table remote :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-class-name="rowClassName" /> -->
+      <n-data-table ref="tableRef" :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-props="rowProps" :summary="summary" :paginate-single-page="false" />
+    </n-space>
     <template #footer>
     <!-- #footer -->
   </template>
@@ -76,6 +81,8 @@
   });
 
   const clearSorter = () => (tableRef?.value as any).sort(null);
+
+  const clearFilters = () => (tableRef?.value as any).filter(null);
 
   const columns = [
     {
