@@ -14,7 +14,14 @@
      <n-space vertical :size="12">
       <n-space>
         <n-button @click="clearSorter">Reset sorting</n-button>
-        <n-button @click="clearFilters">Reset filter</n-button>
+        <n-button @click="clearFilters">Reset filters</n-button>
+        <n-select
+          v-model:value="selectedUser"
+          filterable
+          placeholder="Filter by user"
+          :options="userList"
+          @update:value="selectUser"
+        />
       </n-space>
       <!-- <n-data-table remote :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-class-name="rowClassName" /> -->
       <n-data-table ref="tableRef" :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-props="rowProps" :summary="summary" :paginate-single-page="false" />
@@ -58,11 +65,14 @@
 
   interface keyable {
     [key: string]: any;
-  }
+  };
+
   const issues: keyable = reactive({}) as keyable;
   const issuesArray = reactive([{value:0, label: "(no label)"}] as Array<{label:string, value:number}>);
   const issuesValues = reactive([] as Array<number>);
   const users: keyable = reactive({}) as keyable;
+  const userList = reactive([]);
+  const selectedUser = ref(null);
 
   // defineProps<{ msg: string }>()
   const getID = (row: IRow) => {
@@ -80,9 +90,11 @@
     },
   });
 
+  const selectUser = (x:number) => (tableRef?.value as any).filter({ issues: -x });
+
   const clearSorter = () => (tableRef?.value as any).sort(null);
 
-  const clearFilters = () => (tableRef?.value as any).filter(null);
+  const clearFilters = () => { (tableRef?.value as any).filter(null); selectedUser.value = null; }
 
   const columns = [
     {
@@ -150,9 +162,10 @@
       // defaultFilterOptionValues: issuesValues,
       filterOptions: issuesArray,
       filter (optionValue: number, row: IRow) {
-        // const state = row.issues.map((x:Array<number>)=> x[0]).includes(optionValue);
-        // console.log("in", optionValue, JSON.stringify(row.issues.map((x:Array<number>)=> x[0])), state);
-        return optionValue ? row.issues.map((x:Array<number>)=> x[0]).includes(optionValue) : !row.issues.length;
+        if (optionValue > 0) {
+          selectedUser.value = null;
+        }
+        return optionValue ? row.issues.map((x:Array<number>)=> x[Number(optionValue < 0)]).includes(Math.abs(optionValue)) : !row.issues.length;
       },
       render(row: IRow) {
         const issuesList = row.issues.map((d:Array<number>) => {
@@ -231,10 +244,10 @@
     issuesArray.push(...issuesData.map((x:any) => ({value: x.id, label: x.ru})));
     issuesValues.push(...issuesArray.map((x:any) => x.value));
 
-
     const usersData = await store.get('users');
     Object.assign(users, Object.fromEntries(usersData.map((x: any) => [x.id, x])));
     // console.log('issues from server', issues);
+    Object.assign(userList, usersData.map((x:any) => ({value: x.id, label: `${x.firstname} ${x.lastname}`})));
 
     if (store?.state?.user?.text_id) {
       // localStorage.setItem('text_id', String(id));
