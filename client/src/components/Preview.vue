@@ -1,21 +1,25 @@
 <template>
 
-  <div style="max-width:300px;margin: 0 auto;text-align: left;">
-
-    <h2>{{entry.title}}</h2>
+  <div style="max-width:600px;margin: 0 auto;text-align: left; padding: 0 15px 10px 15px">
+    <h2><span style="color:lightgray;">({{entry.priority}})</span> {{entry.title}}</h2>
     <div>
-      <div style="">
-        <p style="margin-top:-1rem;">Translation: <span style="font-style:italic;">{{entry.trans}}</span></p>
-        <div v-if="entry.brief_text">
-          <h4>Brief comment</h4>
-          <div v-html="entry.brief_html"></div>
-        </div>
-        <div v-if="entry.long_text">
-          <h4>Full comment</h4>
-          <div v-html="entry.long_html"></div>
-        </div>
-        <n-divider style="" /> № {{entry.priority}}
+      <n-divider title-placement="left">
+        <span class="zone">translation</span>
+      </n-divider>
+      <p style="margin-top:-1rem;font-style:italic;">{{entry.trans}}</p>
+      <n-divider title-placement="left">
+        <span class="zone">brief comment</span>
+      </n-divider>
+      <div v-if="entry.brief_text">
+        <div v-html="entry.brief_html"></div>
       </div>
+      <n-divider title-placement="left">
+        <span class="zone">full comment</span>
+      </n-divider>
+      <div v-if="entry.long_text">
+        <div v-html="entry.long_html"></div>
+      </div>
+      <n-divider />
     </div>
   </div>
 
@@ -65,5 +69,21 @@
 <style scoped lang="scss">
 :deep(var.error) {
   display:none;
+}
+
+:deep(img){
+  max-width:370px;
+  max-height: 300px;
+}
+
+.zone {
+  border: 1px solid lightgray;padding: 0px 5px 0px 5px;font-size: smaller; border-radius: 10% / 50%;
+  font-variant: small-caps;
+}
+
+:deep(img + p) {
+  color: gray;
+  font-weight: bold;
+  margin-top: -5px;
 }
 </style>
