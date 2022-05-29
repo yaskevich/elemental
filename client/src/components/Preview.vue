@@ -81,7 +81,7 @@
   font-variant: small-caps;
 }
 
-:deep(img + p) {
+:deep(img + p.caption) {
   color: gray;
   font-weight: bold;
   margin-top: -5px;
