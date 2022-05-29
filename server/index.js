@@ -371,7 +371,7 @@ fs.mkdirSync(imgDir, { recursive: true });
     res.json(result);
   });
 
-  app.post('/api/upload/:id', async(req, res) => {
+  app.post('/api/upload/:id', auth, async(req, res) => {
     if (!req.files || Object.keys(req.files).length === 0) {
       return res.status(400).send('No files were uploaded.');
     }
@@ -401,16 +401,30 @@ fs.mkdirSync(imgDir, { recursive: true });
     res.json(files);
   });
 
-  app.post('/api/unload', async(req, res) => {
+  app.post('/api/unload', auth, async(req, res) => {
     const textId = String(Number(req.body.id) || 1);
-    const file = path.join(imgDir, textId, req.body?.file);
     let result = {};
+    
+    if (req.body?.file) {
+      const file = path.join(imgDir, textId, req.body.file);
+      const url = `/api/images/${textId}/${req.body.file}`;
+      // console.log("file", file, url);
+      const comments = await db.checkCommentsForImage(url);
 
-    try {
-      fs.unlinkSync(file);
-    } catch (error) {
-      result = error;
-      console.log(error);
+      if (comments.length) {
+        // console.log("check", comments);
+        result = {"error": "comments", "comments": comments};
+      } else {
+        try {
+          fs.unlinkSync(file);
+        } catch (error) {
+          result = error;
+          console.log(error);
+        }
+      }
+
+    } else {
+      result = {"error": "id"};
     }
 
     res.json(result);
