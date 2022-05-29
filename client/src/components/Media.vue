@@ -18,6 +18,7 @@
     <n-divider /> -->
     <n-upload
       :action="`/api/upload/${id}`"
+      :headers="headers"
       :default-file-list="previewFileList"
       list-type="image-card"
       @remove="handleRemoval"
@@ -50,7 +51,7 @@
   const showModal = ref(false);
   const previewImageUrl = ref('');
   const loadedFiles = reactive({} as {[key: string]: string});
-
+  const headers = reactive({}); 
   const previewFileList = reactive<UploadFileInfo[]>([]);
 
   // const handlePreview = (file: UploadFileInfo, x) => {
@@ -69,7 +70,7 @@
     // console.log(upInfo);
     const { data } = await store.post('unload', { id: id, file: filename });
     console.log("result", data);
-    return !Boolean(data?.errno);
+    return !Boolean(data?.errno || data?.error);
   };
 
   const handleDownload = async(file: UploadFileInfo) => {
@@ -78,6 +79,8 @@
   };
 
   onBeforeMount(async () => {
+    // console.log("token", store.state.token);
+    Object.assign(headers, { Authorization: "Bearer " + store.state.token });
     const data = await store.get(`img/${id}`);
     Object.assign(previewFileList, data.sort((a:any,b:any) => (new Date(a.stats.mtime)).getTime() - (new Date(b.stats.mtime)).getTime() ));
   });
