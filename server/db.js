@@ -826,4 +826,20 @@ export default {
     }
     return data;
   },
+  async checkCommentsForImage(url) {
+    let data = [];
+    if (url) {
+        const sql = `SELECT id, priority, title FROM comments WHERE 
+            jsonb_path_exists(brief_json::jsonb, '$.** ? (@.src == "${url}")')
+            OR
+            jsonb_path_exists(long_json::jsonb, '$.** ? (@.src == "${url}")')`;
+        try {
+          const result = await pool.query(sql);
+          data = result?.rows;
+        } catch (err) {
+          console.error(err);
+        }
+    }
+    return data;
+  },
 };
