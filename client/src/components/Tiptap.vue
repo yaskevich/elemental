@@ -17,6 +17,7 @@
     <!-- <button @click="addImage">+image</button> -->
     <button @click="showModal = true">+image</button>
     
+    <button @click="customEditor.chain().focus().setBlock({ class: 'caption' }).run()">caption</button>
 
     <button @click="customEditor.chain().focus().toggleBlockquote().run()" :class="{ 'is-active': customEditor.isActive('blockquote') }">
             quote
@@ -25,8 +26,8 @@
     <button @click="customEditor.commands.toggleBold()" :class="{ 'is-active': customEditor.isActive('bold') }">
             emphasized
           </button>
-
-    <button @click="customEditor.chain().focus().clearNodes().unsetAllMarks().run()">clear formatting</button>
+    <!-- clear formatting -->
+    <button @click="customEditor.chain().focus().clearNodes().unsetAllMarks().run()" style="font-weight:bold;">clear</button>
 
     <button @click="customEditor.chain().focus().deleteSelection().run()" style="background-color: #da1d1d;color:white">del</button>
    
@@ -83,6 +84,8 @@
   import Bold from '@tiptap/extension-bold';
   import Image from '@tiptap/extension-image';
   import Dropcursor from '@tiptap/extension-dropcursor';
+  import Nodeblock from '../nodeblock';
+
 
   defineProps<{ editorclass: string }>();
 
@@ -125,6 +128,9 @@
       }),
       Image,
       Dropcursor,
+      Nodeblock.configure({
+          classes: ['caption', 'error'],
+      }),
       // StarterKit,
     ],
   });
@@ -155,12 +161,11 @@
 
 </script>
 
-<style lang="scss">
-  .ProseMirror {
+<style scoped lang="scss">
+  :deep(.ProseMirror) {
     > * + * {
       margin-top: 0.75em;
     }
-
     img {
       max-width: 100%;
       height: auto;
@@ -169,33 +174,32 @@
         outline: 3px solid #68CEF8;
       }
     }
-  }
-
-  .ProseMirror p {
-    margin: 1em 0;
-    padding: 15px;
-  }
-
-  .ProseMirror p.is-editor-empty:first-child::before {
-    content: attr(data-placeholder);
-    float: left;
-    color: #adb5bd;
-    pointer-events: none;
-    height: 0;
-  }
-
-  .annotation {
-    display: inline-block;
-    text-align: left;
-    min-width: 300px;
 
     blockquote.quote {
       background-color: lightgray;
     }
 
+    p {
+      margin: 1em 0;
+      padding: 15px;
+    }
+    
+    p.is-editor-empty:first-child::before {
+      content: attr(data-placeholder);
+      float: left;
+      color: #adb5bd;
+      pointer-events: none;
+      height: 0;
+    }
+
+    p.caption {
+      color:white;
+      background-color: orange;
+      font-weight:bold;
+    }
+
     p var {
       border-radius: 1px;
-
       padding: 2px 2px 2px 2px;
       font-style: normal;
 
@@ -227,23 +231,27 @@
     }
   }
 
-  .fulleditor div {
-    background-color: lightyellow;
-  }
-
-  .briefeditor div {
-    background-color: #feebdd;
+  :deep(.annotation) {
+    display: inline-block;
+    text-align: left;
+    min-width: 300px;
+    &.fulleditor div {
+      background-color: lightyellow;
+    }
+    &.briefeditor div {
+      background-color: #feebdd;
+    }
   }
 
   .selectable{
     border: 3px solid gray;
     cursor: grab;
     transition: all .2s ease-in-out;
-  }
 
-  .selectable:hover {
-    transform: scale(1.2);
-    position: relative;
-    z-index: 1000;
+    &:hover {
+      transform: scale(1.2);
+      position: relative;
+      z-index: 1000;
+    }
   }
 </style>
