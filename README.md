@@ -7,15 +7,17 @@ It started in 2018 as a manual Part-of-Speech tagging tool written in JQuery (da
 
 As for now it is being rewritten in modern JavaScript – both client (Vue3) and server (NodeJS).
 
-The project architecture changes. Current tasks include migrating from SQLite to PostgreSQL (completed) and extending the toolset with the interface for adding comments for text tokens. Rewriting the old client for PoS from JQuery to Vue3 is in the backlog as well. However, development of the UI for commenting has high priority, while implementation of PoS ones is postponed.
+The project architecture changes. Current tasks include migrating from SQLite to PostgreSQL (completed) and extending the toolset with the interface for adding comments for text tokens. Rewriting the old client for PoS from JQuery to Vue3 is in the backlog as well. However, development of the UI for commenting has high priority, while implementation of PoS toolset is postponed.
 
-So, the project does not have release-ready status yet, but it is already in use for the projects of the [Center for Digital Humanities at the HSE University](https://hum.hse.ru/en/digital/about/). 
+So, the project does not have release-ready status yet, but it is already in use for the projects of the [Center for Digital Humanities at the HSE University](https://hum.hse.ru/en/digital/about/).
 
 If either you like the concept and would be happy to use the app as soon as possible, or you are ready to contribute, or, maybe, you know the application that already exists and has all the functions like this, please, contact me via Github or mail me ([@yaskevich](https://github.com/yaskevich)).
 
 #### Requirements
 
-NodeJS v14+, PostgreSQL v9.6+
+NodeJS v14+, PostgreSQL v12+
+
+Development setup: Linux, NodeJS v16, PostgreSQL v12
 
 #### Setup and deployment
 
