@@ -60,23 +60,19 @@ const getFile = async(route: string, id: string) : Promise<any> => {
 
 }
 
-const get = async(route: string, id?: string, data?: Object): Promise<any> => {
+const get = async(route: string, id: string = "", data: Object = {}): Promise<any> => {
   if (state.token) {
     try {
-       const config = state.token ?
-       { headers: { Authorization: "Bearer " + state.token }, "params": {} }: {};
+      // console.log("data", data);
+      const config = state.token ?
+      { headers: { Authorization: "Bearer " + state.token }, "params": {} }: {};
 
-       if(id) {
-          config["params"] = { id: id };
-       }
+      let params = id ? { id }: {};
+      config.params = {...params, ...data};
 
-       if (data && Object.keys(data)?.length){
-         Object.assign(config.params, data);
-       }
-
-       const response = await axios.get("/api/" + route, config);
-       // console.log(response.data);
-       return response.data;
+      const response = await axios.get("/api/" + route, config);
+      // console.log(response.data);
+      return response.data;
    } catch (error) {
        console.log("Cannot get", error);
        return error;
