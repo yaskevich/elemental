@@ -258,9 +258,7 @@
 </script>
 
 <template>
-
-  <div class="center-column" v-if="isLoaded">
-    <div class="left-column">
+  <div v-if="isLoaded" class="left">
 
       <n-space justify="space-between" style="margin-right: 2rem;margin-left: 2rem;">
         <n-button :color="inspectMode?'#ff69b4':'#8a2be2'" size="tiny" @click="inspectMode = !inspectMode">{{inspectMode?'Inspect':'Select'}}</n-button>
@@ -321,10 +319,8 @@
           </n-space>
         </n-drawer-content>
       </n-drawer>
-
-    </div>
+ 
   </div>
-
 </template>
 
 <style scoped>
