@@ -1,6 +1,4 @@
 <script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
 import router from './router'
 import { ref, reactive, onBeforeMount, computed, } from 'vue'
 import store from './store'
@@ -25,38 +23,44 @@ onBeforeMount(async () => {
   <!-- <div id="main" v-if="dataReady"> -->
   <div id="main" v-if="loggedIn">
     <div v-if="dataReady">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/comments" v-if="store?.state?.user?.text_id && store?.state?.user?.text?.comments">Comments</router-link> |
-      <router-link to="/text" v-if="store?.state?.user?.text_id && store?.state?.user?.text?.loaded">Text</router-link> |
-      <router-link to="/media">Media</router-link> |
-      <router-link to="/tags">Tags</router-link> |
-      <router-link to="/issues">Issues</router-link> |
-      <router-link to="/backups">Backups</router-link> |
-      <router-link to="/logs">Logs</router-link> |
-      {{state?.user?.username}}
-      <!-- <span v-if="loggedIn">
+      <div id="nav">
+        <router-link to="/">Home</router-link>|
+        <router-link
+          to="/comments"
+          v-if="store?.state?.user?.text_id && store?.state?.user?.text?.comments"
+        >Comments</router-link>|
+        <router-link
+          to="/text"
+          v-if="store?.state?.user?.text_id && store?.state?.user?.text?.loaded"
+        >Text</router-link>|
+        <router-link to="/media">Media</router-link>|
+        <router-link to="/tags">Tags</router-link>|
+        <router-link to="/issues">Issues</router-link>|
+        <router-link to="/backups">Backups</router-link>|
+        <router-link to="/logs">Logs</router-link>
+        |
+        {{ state?.user?.username }}
+        <!-- <span v-if="loggedIn">
         <router-link to="/profile">Моё</router-link> |
         <a href ="#" @click="doLogOut">Выйти</a>
-      </span> -->
-      <!-- <span v-else>
+        </span>-->
+        <!-- <span v-else>
         <router-link to="/login">Войти</router-link>
-      </span> -->
+        </span>-->
+      </div>
+      <n-message-provider>
+        <router-view />
+      </n-message-provider>
     </div>
-    <n-message-provider>
-      <router-view/>
-    </n-message-provider>
-    </div>
-</div>
-<div v-else>
-  <h3>Login</h3>
-   <Login/>
-   If you do not have an account, please, register
-   <Register/>
-</div>
-<!-- <div v-else>
+  </div>
+  <div v-else>
+    <h3>Login</h3>
+    <Login />If you do not have an account, please, register
+    <Register />
+  </div>
+  <!-- <div v-else>
     загрузка...
-</div> -->
+  </div>-->
 </template>
 
 <style lang="scss">
@@ -84,20 +88,29 @@ onBeforeMount(async () => {
 }
 
 .left {
-  text-align:left
+  text-align: left;
 }
 
 .minimal {
-  max-width:400px;
-  margin:auto;
+  max-width: 600px;
+  margin: auto;
 }
 
 .center-column {
   text-align: center;
 
   .left-column {
-    padding:0 1rem 0 1rem;
-    display: inline-table; text-align: left;
+    padding: 0 1rem 0 1rem;
+    display: inline-table;
+    text-align: left;
   }
+}
+
+.zone {
+  border: 1px solid lightgray;
+  padding: 0px 5px 0px 5px;
+  font-size: smaller;
+  border-radius: 10% / 50%;
+  font-variant: small-caps;
 }
 </style>
