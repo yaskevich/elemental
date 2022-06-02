@@ -272,11 +272,42 @@ const goToComment = (comment: number) => {
   router.push({ name: 'Comment', params: { id: comment } });
 }
 
+const annotationMode = ref('comment');
+const items = [
+  {
+    value: "comment",
+    label: "Comment",
+    disabled: false,
+  },
+  {
+    value: 'format',
+    label: 'Format',
+    disabled: true,
+  },
+  {
+    value: 'grammar',
+    label: 'Grammar',
+    disabled: true,
+  },
+];
+
 </script>
 
 <template>
   <div v-if="isLoaded" class="left" style="padding: 0 10px 0 10px;">
     <n-space justify="left" size="large">
+      <n-radio-group v-model:value="annotationMode" name="radiogroup">
+        <n-space>
+          <n-radio
+            v-for="item in items"
+            :key="item.value"
+            :value="item.value"
+            :label="item.label"
+            :disabled="item.disabled"
+          />
+        </n-space>
+      </n-radio-group>
+
       <n-switch :round="false" :rail-style="actStyle" v-model:value="inspectMode">
         <template #checked>Inspect</template>
         <template #unchecked>Select</template>
