@@ -4,9 +4,9 @@
     loading...
   </div>
 
-  <n-card title="Comments" :bordered="false" :style="`visibility:${ready?'visible':'hidden'}`">
+  <n-card title="Comments" :bordered="false" v-else class="minimal left">
     <template #header-extra>
-      <n-button type="primary"  @click="addComment">+ new</n-button>
+      <n-button type="primary" @click="addComment">+ new</n-button>
     </template>
     <div v-if="!store?.state?.user?.text_id">
       <n-text type="error">Select specific text before (at Home screen)!</n-text>
@@ -33,7 +33,6 @@
     <!-- #action -->
   </template>
   </n-card>
-
 
 </template>
 
