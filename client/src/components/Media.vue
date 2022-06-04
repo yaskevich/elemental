@@ -24,11 +24,14 @@
       list-type="image-card"
       @remove="handleRemoval"
       @finish="imageLoaded"
-      @error="handleError"
-      show-download-button
       @download="handleDownload"
       @before-upload="beforeUpload"
+      :is-error-state="checkError"
     />
+    <!-- 
+       :show-download-button="true"
+        @error="handleError"
+       -->
     <n-modal v-model:show="showModal" preset="card" style="width: 600px" title="A Cool Picture">
       <img :src="previewImageUrl" style="width: 100%" />
     </n-modal>
@@ -39,19 +42,19 @@
 
 import { ref, reactive, onBeforeMount } from 'vue';
 import store from '../store';
-import { ArchiveFilled as ArchiveIcon } from '@vicons/material';
+// import { ArchiveFilled as ArchiveIcon } from '@vicons/material';
 import type { UploadInst, UploadFileInfo } from 'naive-ui';
 import { useMessage } from 'naive-ui';
 // import { useRoute } from 'vue-router';
 // const vuerouter = useRoute();
 // const id = vuerouter.params.id || 1;
 const id = store?.state?.user?.text_id;
-const isLoaded = ref(true);
+const isLoaded = ref(false);
 const showModal = ref(false);
 const uploadRef = ref<UploadInst | null>(null);
 const previewImageUrl = ref('');
 const loadedFiles = reactive({} as { [key: string]: string });
-const headers = reactive({});
+const headers = { Authorization: "Bearer " + store.state.token };
 const previewFileList = reactive<UploadFileInfo[]>([]);
 const message = useMessage();
 
@@ -62,8 +65,10 @@ const message = useMessage();
 //     showModal.value = true;
 // };
 
-const imageLoaded = (options: { file: UploadFileInfo, fileList: Array<UploadFileInfo>, event?: ProgressEvent }) => {
+const imageLoaded = (options: { file: UploadFileInfo, event?: Event }) => {
+  // console.log("options", options, previewFileList);
   loadedFiles[options.file.id] = (options?.event?.target as XMLHttpRequest)?.responseText || '';
+  return;
 };
 
 const handleRemoval = async (upInfo: { file: UploadFileInfo, fileList: Array<UploadFileInfo> }) => {
@@ -71,18 +76,35 @@ const handleRemoval = async (upInfo: { file: UploadFileInfo, fileList: Array<Upl
   // console.log(upInfo);
   const { data } = await store.post('unload', { id: id, file: filename });
   console.log("result", data);
+  message.warning("Image is bound to comment!")
   return !Boolean(data?.errno || data?.error);
 };
 
 const handleDownload = async (file: UploadFileInfo) => {
   const filename = file.fullPath ? loadedFiles[file.id] : file.name;
   console.log("file", filename);
+  console.log(previewFileList);
+  
 };
 
 const handleError = async (upInfo: { file: UploadFileInfo, event?: ProgressEvent }) => {
-  console.log("file", upInfo.file, upInfo.event);
-  console.log(loadedFiles, previewFileList);
+  console.log("error: file", upInfo.file, upInfo.event);
+  console.log("error", loadedFiles, previewFileList);
   return false;
+};
+
+const checkError = (xhr: XMLHttpRequest) => {
+  // console.log("XHR result", xhr, xhr.status);
+  if (xhr.status === 200) {
+    return false;
+  } else if (xhr.status === 409) {
+    message.error("File already exists!");
+  } else if (xhr.status === 413) {
+    message.error("File size exceeds limit!");
+  } else {
+    message.error(`Unknown error! ${xhr.status} ${xhr.statusText}`);
+  }
+  return true;
 };
 
 const beforeUpload = (data: { file: UploadFileInfo, fileList: UploadFileInfo[] }) => {
@@ -91,13 +113,14 @@ const beforeUpload = (data: { file: UploadFileInfo, fileList: UploadFileInfo[] }
     return false
   }
   return true
-}
+};
 
 onBeforeMount(async () => {
   // console.log("token", store.state.token);
-  Object.assign(headers, { Authorization: "Bearer " + store.state.token });
+  // Object.assign(headers, { Authorization: "Bearer " + store.state.token });
   const data = await store.get(`img/${id}`);
   Object.assign(previewFileList, data.sort((a: any, b: any) => (new Date(a.stats.mtime)).getTime() - (new Date(b.stats.mtime)).getTime()));
+  isLoaded.value = true;
 });
 
 </script>
