@@ -33,7 +33,8 @@ fs.mkdirSync(imgDir, { recursive: true });
 (async () => {
   const app = express();
   const port = process.env.PORT || 8080;
-  const JWTStrategy   = passportJWT.Strategy;
+  const imageFileLimit = Number(process.env.IMGLIMIT) || 1024 * 1024;
+  const JWTStrategy = passportJWT.Strategy;
   const ExtractJWT = passportJWT.ExtractJwt;
 
   const createToken = user =>
@@ -44,7 +45,7 @@ fs.mkdirSync(imgDir, { recursive: true });
       exp: new Date().setDate(new Date().getDate() + 1)
     }, process.env.JWT_SECRET);
 
-  const strategy  = new JWTStrategy(
+  const strategy = new JWTStrategy(
   {
     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
     secretOrKey   : process.env.JWT_SECRET
@@ -59,7 +60,7 @@ fs.mkdirSync(imgDir, { recursive: true });
   const auth = passport.authenticate('jwt', {session: false});
   app.use('/api/files', express.static(publicDir));
   app.use('/api/images', express.static(imgDir));
-  app.use(fileUpload());
+  app.use(fileUpload({ limits: { fileSize: imageFileLimit }, abortOnLimit: true, }));
   app.use(compression());
   app.set('trust proxy', 1);
   app.use(passport.initialize());
