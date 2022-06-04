@@ -375,23 +375,29 @@ fs.mkdirSync(imgDir, { recursive: true });
     if (!req.files || Object.keys(req.files).length === 0) {
       return res.status(400).send('No files were uploaded.');
     }
-    // console.log(Object.keys(req.files));
+    // console.log(Object.keys(req.files.file));
     const img = req.files.file;
-    // console.log(img.id);
     const ext = img.mimetype.split('/').pop();
     // console.log("img:", img.md5, img.name, ext);
     const currentDir = path.join(imgDir, req.params.id || 1);
     fs.mkdirSync(currentDir, { recursive: true });
     const fileName = `${img.md5}.${ext}`;
     const filePath = path.join(currentDir, fileName);
-    img.mv(filePath, function(err) {
-      if (err) {
-        return res.status(500).send(err);
-      }
-      // res.send('File uploaded!');
-      // return true;
-    });
-    res.send(fileName);
+
+    if (fs.existsSync(filePath)){
+      // console.log("Uploaded file already exists!");
+      return res.status(409).send(fileName);
+    } else {
+      img.mv(filePath, function(err) {
+        if (err) {
+          return res.status(500).send(err);
+        }
+        // res.send('File uploaded!');
+        // return true;
+      });
+    }
+    //
+    return res.send(fileName);
   });
 
   app.get('/api/img/:id', auth, async(req, res) => {
