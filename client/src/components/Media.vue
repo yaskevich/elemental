@@ -76,20 +76,26 @@ const handleRemoval = async (upInfo: { file: UploadFileInfo, fileList: Array<Upl
   // console.log(upInfo);
   const { data } = await store.post('unload', { id: id, file: filename });
   console.log("result", data);
-  message.warning("Image is bound to comment!")
-  return !Boolean(data?.errno || data?.error);
+  if (Boolean(data?.errno || data?.error)) {
+    if (data?.comments?.length) {
+      message.warning(`Image is bound to comments! Total: ${data.comments.length}`)
+    } else {
+      message.warning("Image removal failed!")
+    }
+    return false;
+  }
+  return true;
 };
 
 const handleDownload = async (file: UploadFileInfo) => {
   const filename = file.fullPath ? loadedFiles[file.id] : file.name;
-  console.log("file", filename);
-  console.log(previewFileList);
-  
+  // console.log("file", filename);
+  // console.log(previewFileList);
 };
 
 const handleError = async (upInfo: { file: UploadFileInfo, event?: ProgressEvent }) => {
-  console.log("error: file", upInfo.file, upInfo.event);
-  console.log("error", loadedFiles, previewFileList);
+  // console.log("error: file", upInfo.file, upInfo.event);
+  // console.log("error", loadedFiles, previewFileList);
   return false;
 };
 
