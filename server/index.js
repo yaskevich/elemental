@@ -20,7 +20,6 @@ import path from 'path';
 import nlp from './nlp.js';
 import db from './db.js';
 import { fileURLToPath } from 'url';
-import { log } from 'console';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
@@ -33,13 +32,14 @@ fs.mkdirSync(imgDir, { recursive: true });
 (async () => {
   const app = express();
   const port = process.env.PORT || 8080;
-  const imageFileLimit = Number(process.env.IMGLIMIT) || 1024 * 1024;
+  const appName = __package?.name || String(port);
+  const imageFileLimit = Number(process.env.IMGLIMIT) || 1024 * 1024; // 1 MB
   const JWTStrategy = passportJWT.Strategy;
   const ExtractJWT = passportJWT.ExtractJwt;
 
   const createToken = user =>
     jwt.sign({
-      iss: 'elemental',
+      iss: appName,
       sub: user.id,
       iat: new Date().getTime(),
       exp: new Date().setDate(new Date().getDate() + 1)
@@ -373,32 +373,36 @@ fs.mkdirSync(imgDir, { recursive: true });
   });
 
   app.post('/api/upload/:id', auth, async(req, res) => {
-    if (!req.files || Object.keys(req.files).length === 0) {
-      return res.status(400).send('No files were uploaded.');
-    }
-    // console.log(Object.keys(req.files.file));
-    const img = req.files.file;
-    const ext = img.mimetype.split('/').pop();
-    // console.log("img:", img.md5, img.name, ext);
-    const currentDir = path.join(imgDir, req.params.id || 1);
-    fs.mkdirSync(currentDir, { recursive: true });
-    const fileName = `${img.md5}.${ext}`;
-    const filePath = path.join(currentDir, fileName);
+    let status = 200;
+    let fileName = '';
 
-    if (fs.existsSync(filePath)){
-      // console.log("Uploaded file already exists!");
-      return res.status(409).send(fileName);
-    } else {
-      img.mv(filePath, function(err) {
-        if (err) {
-          return res.status(500).send(err);
+    if (Object.keys(req.files).length) {
+      // console.log(Object.keys(req.files.file));
+      const img = req.files.file;
+      const ext = img.mimetype.split('/').pop();
+      // console.log("img:", img.md5, img.name, ext);
+      const currentDir = path.join(imgDir, req.params.id || 1);
+      fs.mkdirSync(currentDir, { recursive: true });
+      fileName = `${img.md5}.${ext}`;
+      const filePath = path.join(currentDir, fileName);
+
+      if (fs.existsSync(filePath)) {
+        // console.log("Uploaded file already exists!");
+        status = 409;
+      } else {
+        try {
+          await img.mv(filePath);
+        } catch (error) {
+          console.log(error);
+          status = 500;
         }
-        // res.send('File uploaded!');
-        // return true;
-      });
+      }
+    } else {
+      console.log('No files were uploaded');
+      status = 400;
     }
-    //
-    return res.send(fileName);
+
+    res.status(status).send(fileName);
   });
 
   app.get('/api/img/:id', auth, async(req, res) => {
