@@ -21,18 +21,29 @@ Development setup: Linux, NodeJS v16, PostgreSQL v12
 
 #### Setup and deployment
 
-Technically, the platform consists of two applications: client and server. One has to install client packages, compile it and copy to server `public` directory, then install server packages, create a file with environmental variables (`.env`) and run the server application. 
+Technically, the platform consists of two applications: client and server. One has to install client packages, compile client application and copy it to server `public` directory, then install server packages, create a file with environmental variables (`.env`) and run the server application. 
 
 This example of content of `.env` file:
 
 ```
+# PostgreSQL user
 PGUSER=database_user
+# PostgreSQL host (IP or hostname)
 PGHOST=127.0.0.1
+# PostgreSQL password
 PGPASSWORD=...................
+# PostgreSQL database
 PGDATABASE=annotation_database
+# PostgreSQL port
 PGPORT=5432
+# Application port
+# If not set, default value is used (8080)
 PORT=8080
+# JSON Web token secret key (must be random)
 JWT_SECRET=...................
+# Size limit for image files (in bytes)
+# If not set, default value is used (1 Mb)
+IMGLIMIT=1024000
 ```
 
 The example setup script is in the file [deploy-elemental.sh](/deploy-elemental.sh)
