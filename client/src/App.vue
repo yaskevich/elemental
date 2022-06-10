@@ -1,19 +1,82 @@
 <script setup lang="ts">
-import router from './router'
+// import router from './router'
 import { ref, reactive, onBeforeMount, computed, } from 'vue'
 import store from './store'
 import Login from './components/Login.vue'
 import Register from './components/Register.vue'
 
+import { h, Component } from 'vue'
+import { MenuOption, NIcon } from 'naive-ui'
+import { RouterLink, useRoute } from 'vue-router'
+import {
+  HomeFilled,
+  CommentFilled,
+  TextSnippetFilled,
+  SettingsFilled,
+  PersonFilled,
+  PermMediaFilled,
+  AssignmentFilled,
+  LabelFilled,
+  BackupFilled,
+  HistoryFilled,
+} from '@vicons/material'
+
+const vuerouter = useRoute();
+const activeKey = ref<string | null>(null); // vuerouter?.name||'Home'
+const dataReady = ref(false);
 const loggedIn = computed(() => store?.state?.token?.length);
 const state = store.state;
 
-const dataReady = ref(false);
+const renderIcon = (icon: Component) => {
+  return () => h(NIcon, null, { default: () => h(icon) })
+};
+const user = computed(() => state?.user?.username);
+
+const makeItem = (name: string, title: string, icon: Component, disabled: boolean = false) => ({
+  label: () => h(RouterLink, { to: { name: name, params: { lang: 'en-US' } } },
+    { default: () => title }),
+  key: name,
+  disabled: disabled,
+  icon: renderIcon(icon)
+});
+
+const menuOptions: MenuOption[] = reactive([
+  makeItem('Home', 'Home', HomeFilled),
+  makeItem('Comments', 'Comments', CommentFilled),
+  makeItem('Text', 'Text', TextSnippetFilled),
+  {
+    label: 'Management',
+    key: 'management',
+    icon: renderIcon(SettingsFilled),
+    children: [
+      {
+        type: 'group',
+        label: 'Project',
+        key: 'project-management',
+        children: [
+          makeItem('Media', 'Media', PermMediaFilled),
+          makeItem('Tags', 'Tags', AssignmentFilled),
+          makeItem('Issues', 'Issues', LabelFilled),
+          makeItem('Backups', 'Backups', BackupFilled),
+          makeItem('Logs', 'Logs', HistoryFilled, true),
+          // makeItem('', '', ),
+        ]
+      },
+    ]
+  },
+  {
+    label: user,
+    key: 'username',
+    disabled: true,
+    icon: renderIcon(PersonFilled)
+  },
+]);
 
 onBeforeMount(async () => {
   await store.getUser();
   dataReady.value = true;
   document.title = store?.state?.user?.text?.title || 'App';
+  activeKey.value = String(vuerouter.name);
   // console.log("state", store.state.user);
 });
 
@@ -23,7 +86,9 @@ onBeforeMount(async () => {
   <!-- <div id="main" v-if="dataReady"> -->
   <div id="main" v-if="loggedIn">
     <div v-if="dataReady">
-      <div id="nav">
+      <n-menu v-model:value="activeKey" mode="horizontal" :options="menuOptions" />
+      <!-- 
+        <div id="nav">
         <router-link to="/">Home</router-link>|
         <router-link
           to="/comments"
@@ -40,14 +105,7 @@ onBeforeMount(async () => {
         <router-link to="/logs">Logs</router-link>
         |
         {{ state?.user?.username }}
-        <!-- <span v-if="loggedIn">
-        <router-link to="/profile">Моё</router-link> |
-        <a href ="#" @click="doLogOut">Выйти</a>
-        </span>-->
-        <!-- <span v-else>
-        <router-link to="/login">Войти</router-link>
-        </span>-->
-      </div>
+      </div>-->
       <n-message-provider>
         <router-view />
       </n-message-provider>
@@ -69,11 +127,14 @@ onBeforeMount(async () => {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
+  /* 
   color: #2c3e50;
-  // margin-top: 60px;
+  margin-top: 60px;
+  */
   max-width: 900px;
   margin: 0 auto;
 }
+/*
 #nav {
   padding: 1rem;
 
@@ -86,7 +147,7 @@ onBeforeMount(async () => {
     }
   }
 }
-
+*/
 .left {
   text-align: left;
 }
