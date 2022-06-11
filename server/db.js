@@ -111,8 +111,15 @@ const databaseScheme = {
     CONSTRAINT fk_logs_users FOREIGN KEY(user_id) REFERENCES users(id)`,
 };
 
+let tablesResult;
+try {
+  tablesResult = await pool.query(databaseQuery);
+} catch (error) {
+  console.error(error);
+  pool.end();
+  process.exit(1);
+}
 
-let tablesResult = await pool.query(databaseQuery);
 const tables = tablesResult.rows.map(x => x.table_name);
 // console.log(tables);
 
