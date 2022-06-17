@@ -1,7 +1,7 @@
 module.exports = {
   apps : [
       {
-        name: "elemental",
+        name: "flowercat",
         script: "./index.js",
         watch: false,
         instance_var: 'INSTANCE_ID',
