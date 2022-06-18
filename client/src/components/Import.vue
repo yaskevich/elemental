@@ -11,17 +11,17 @@ const text = ref('');
 const link = ref('');
 
 const sourceMode = ref('text');
-const importMode = ref('rich');
+const importMode = ref('plain');
 
 const items = [
     {
-        value: "rich",
-        label: "Rich Text / HTML",
+        value: 'plain',
+        label: 'Plain Text',
         disabled: false,
     },
     {
-        value: 'plain',
-        label: 'Plain Text',
+        value: "rich",
+        label: "Rich Text / HTML",
         disabled: false,
     },
     {
@@ -66,6 +66,26 @@ const startProcessing = async () => {
 
 };
 
+const getFile = (e: Event) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    // console.log(e, file);
+    if (file && file.type === 'text/plain') {
+        const reader = new FileReader();
+        reader.readAsText(file, "UTF-8");
+
+        reader.onload = evt => {
+            const buf = evt?.target?.result;
+            if (buf) {
+                text.value = (typeof buf === 'string' ? buf : Buffer.from(buf).toString());
+            }
+        }
+
+        reader.onerror = evt => { console.error(evt) }
+    } else {
+        console.log("file format issue");
+    }
+};
+
 onBeforeMount(async () => {
     //   const data = await store.get('texts');
     //   Object.assign(texts, data);
@@ -104,6 +124,8 @@ onBeforeMount(async () => {
                     />
                 </n-space>
             </n-radio-group>
+            <input type="file" @change="getFile" />
+
             <n-input
                 v-model:value="link"
                 clearable
