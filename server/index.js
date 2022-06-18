@@ -60,7 +60,7 @@ fs.mkdirSync(imgDir, { recursive: true });
   const auth = passport.authenticate('jwt', {session: false});
   app.use('/api/files', express.static(publicDir));
   app.use('/api/images', express.static(imgDir));
-  app.use(fileUpload({ limits: { fileSize: imageFileLimit }, abortOnLimit: true, }));
+  app.use(fileUpload({ limits: { fileSize: imageFileLimit }, abortOnLimit: true, defParamCharset: 'utf8', }));
   app.use(compression());
   app.set('trust proxy', 1);
   app.use(passport.initialize());
@@ -380,14 +380,16 @@ fs.mkdirSync(imgDir, { recursive: true });
       // console.log(Object.keys(req.files.file));
       const img = req.files.file;
       const ext = img.mimetype.split('/').pop();
-      // console.log("img:", img.md5, img.name, ext);
+      const fileTitle = path.parse(img.name).name;
+      const fileSize = img.size;
+      // console.log("img:", img.md5, title, ext);
       const currentDir = path.join(imgDir, req.params.id || 1);
       fs.mkdirSync(currentDir, { recursive: true });
-      fileName = `${img.md5}.${ext}`;
+      fileName = img.md5 + '.' + ext;
       const filePath = path.join(currentDir, fileName);
 
       if (fs.existsSync(filePath)) {
-        // console.log("Uploaded file already exists!");
+        console.log("Uploaded file already exists");
         status = 409;
       } else {
         try {
@@ -395,6 +397,11 @@ fs.mkdirSync(imgDir, { recursive: true });
         } catch (error) {
           console.log(error);
           status = 500;
+        }
+        const result = await db.addImage(fileName, fileSize, req.user.id, fileTitle);
+        // console.log(result); 
+        if (result?.filename !== fileName) {
+          status = 406;
         }
       }
     } else {
