@@ -112,6 +112,7 @@ const databaseScheme = {
 
   images: `
     filename TEXT PRIMARY KEY,
+    filesize integer NOT NULL,
     user_id integer NOT NULL,
     created timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     title text NOT NULL DEFAULT 'unnamed ' || to_char(CURRENT_TIMESTAMP, 'yyyy-mm-dd HH:mm'),
@@ -857,4 +858,24 @@ export default {
     }
     return data;
   },
+  async addImage(filename, filesize, userId, title) {
+    let sqlPart = '(filename, filesize, user_id) VALUES ($1, $2, $3)';
+    const values = [filename, filesize, userId];
+
+    if (title) {
+      values.push(title);
+      sqlPart = '(filename, filesize, user_id, title) VALUES ($1, $2, $3, $4)';
+    }
+
+    let data = [];
+    try {
+      const sql = `INSERT INTO images ${sqlPart} RETURNING filename`;
+      const result = await pool.query(sql, values);
+      data = result?.rows?.[0];
+    } catch (err) {
+      console.error(err);
+    }
+    return data;
+  },
+
 };
