@@ -109,6 +109,14 @@ const databaseScheme = {
     table_name text NOT NULL,
     record_id integer NOT NULL,
     CONSTRAINT fk_logs_users FOREIGN KEY(user_id) REFERENCES users(id)`,
+
+  images: `
+    filename TEXT PRIMARY KEY,
+    user_id integer NOT NULL,
+    created timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    title text NOT NULL DEFAULT 'unnamed ' || to_char(CURRENT_TIMESTAMP, 'yyyy-mm-dd HH:mm'),
+    CONSTRAINT fk_images_users FOREIGN KEY(user_id) REFERENCES users(id)`,
+
 };
 
 let tablesResult;
