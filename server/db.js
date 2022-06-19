@@ -111,11 +111,13 @@ const databaseScheme = {
     CONSTRAINT fk_logs_users FOREIGN KEY(user_id) REFERENCES users(id)`,
 
   images: `
-    filename TEXT PRIMARY KEY,
+    id TEXT NOT NULL,
     filesize integer NOT NULL,
     user_id integer NOT NULL,
+    text_id integer NOT NULL,
     created timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     title text NOT NULL DEFAULT 'unnamed ' || to_char(CURRENT_TIMESTAMP, 'yyyy-mm-dd HH:mm'),
+    CONSTRAINT fk_images_texts FOREIGN KEY(text_id) REFERENCES texts(id),
     CONSTRAINT fk_images_users FOREIGN KEY(user_id) REFERENCES users(id)`,
 
 };
@@ -503,7 +505,7 @@ export default {
 
     let sql = "";
     if (id) {
-      id =  Number(id);
+      id = Number(id);
       values.push(id);
 
       sql = `UPDATE comments SET text_id = $1, title = $2, published= $3, long_json = $4, long_html = $5, long_text = $6,
@@ -670,11 +672,17 @@ export default {
     }
     return data;
   },
-  async deleteById(table, id, user) {
+  async deleteById(table, id, limits = {}) {
     // console.log(`DELETE from ${table} with ${id} by ${user.username}`);
     let data = [];
     try {
-      const result = await pool.query(`DELETE FROM ${table} WHERE id=${id} RETURNING id`);
+      let sqlExtension = '';
+      for (const [key, value] of Object.entries(limits)) {
+        sqlExtension += ` AND ${key} = ${value}` 
+      }
+      const sql = `DELETE FROM ${table} WHERE id = $1 ${sqlExtension} RETURNING id`;
+      // console.log(sql);
+      const result = await pool.query(sql, [id]);
       data = result?.rows;
     } catch (err) {
       console.error(err);
@@ -858,18 +866,18 @@ export default {
     }
     return data;
   },
-  async addImage(filename, filesize, userId, title) {
-    let sqlPart = '(filename, filesize, user_id) VALUES ($1, $2, $3)';
-    const values = [filename, filesize, userId];
+  async addImage(filename, filesize, textId, userId, title) {
+    let sqlPart = '(id, filesize, text_id, user_id) VALUES ($1, $2, $3, $4)';
+    const values = [filename, filesize, textId, userId];
 
     if (title) {
       values.push(title);
-      sqlPart = '(filename, filesize, user_id, title) VALUES ($1, $2, $3, $4)';
+      sqlPart = '(id, filesize, text_id, user_id, title) VALUES ($1, $2, $3, $4, $5)';
     }
 
     let data = [];
     try {
-      const sql = `INSERT INTO images ${sqlPart} RETURNING filename`;
+      const sql = `INSERT INTO images ${sqlPart} RETURNING id`;
       const result = await pool.query(sql, values);
       data = result?.rows?.[0];
     } catch (err) {
@@ -877,5 +885,25 @@ export default {
     }
     return data;
   },
+  async getImages(textId, fileName) {
+    let data = [textId];
+    const values = [textId];
 
+    try {
+      let sql = 'SELECT * FROM images WHERE text_id = $1 ';
+      
+      if (fileName) {
+        sql += 'AND id = $2';
+        values.push(fileName);
+      } else {
+        sql += 'ORDER BY created DESC';
+      }
+
+      const result = await pool.query(sql, values);
+      data = result?.rows;
+    } catch (err) {
+      console.error(err);
+    }
+    return data;
+  },
 };
