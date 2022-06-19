@@ -382,8 +382,9 @@ fs.mkdirSync(imgDir, { recursive: true });
       const ext = img.mimetype.split('/').pop();
       const fileTitle = path.parse(img.name).name;
       const fileSize = img.size;
+      const textId = req.params.id || 1;
       // console.log("img:", img.md5, title, ext);
-      const currentDir = path.join(imgDir, req.params.id || 1);
+      const currentDir = path.join(imgDir, textId);
       fs.mkdirSync(currentDir, { recursive: true });
       fileName = img.md5 + '.' + ext;
       const filePath = path.join(currentDir, fileName);
@@ -398,9 +399,9 @@ fs.mkdirSync(imgDir, { recursive: true });
           console.log(error);
           status = 500;
         }
-        const result = await db.addImage(fileName, fileSize, req.user.id, fileTitle);
+        const result = await db.addImage(fileName, fileSize, textId, req.user.id, fileTitle);
         // console.log(result); 
-        if (result?.filename !== fileName) {
+        if (result?.id !== fileName) {
           status = 406;
         }
       }
@@ -414,8 +415,11 @@ fs.mkdirSync(imgDir, { recursive: true });
 
   app.get('/api/img/:id', auth, async(req, res) => {
     const id = req.params.id || 1;
-    const currentDir = path.join(imgDir, id);
-    const files = fs.existsSync(currentDir) ? fs.readdirSync( currentDir ).map(file => ({ id: file, name: file, status: 'finished', url: `/api/images/${id}/${file}`, stats: fs.statSync(path.join(currentDir, file)) })): [];
+    const result = await db.getImages(id);
+    const files = result.map(x=> ({...x, status: 'finished', name: x.id, url: `/api/images/${id}/${x.id}`, }) );
+    // console.log("images", files);
+    // const currentDir = path.join(imgDir, id);
+    // const files = fs.existsSync(currentDir) ? fs.readdirSync( currentDir ).map(file => ({ id: file, name: file, status: 'finished', url: `/api/images/${id}/${file}`, stats: fs.statSync(path.join(currentDir, file)) })): [];
     res.json(files);
   });
 
@@ -424,8 +428,9 @@ fs.mkdirSync(imgDir, { recursive: true });
     let result = {};
     
     if (req.body?.file) {
-      const file = path.join(imgDir, textId, req.body.file);
-      const url = `/api/images/${textId}/${req.body.file}`;
+      const fileName = req.body.file;
+      const filePath = path.join(imgDir, textId, fileName);
+      const url = `/api/images/${textId}/${fileName}`;
       // console.log("file", file, url);
       const comments = await db.checkCommentsForImage(url);
 
@@ -434,7 +439,13 @@ fs.mkdirSync(imgDir, { recursive: true });
         result = {"error": "comments", "comments": comments};
       } else {
         try {
-          fs.unlinkSync(file);
+          // fs.unlinkSync(filePath);
+          const check = await db.deleteById('images', fileName, { "text_id": textId });
+          if (check?.[0]?.id === fileName) {
+            fs.unlinkSync(filePath);
+          } else {
+            result = {"error": "db"};
+          }
         } catch (error) {
           result = error;
           console.log(error);
