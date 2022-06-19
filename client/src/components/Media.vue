@@ -125,7 +125,7 @@ onBeforeMount(async () => {
   // console.log("token", store.state.token);
   // Object.assign(headers, { Authorization: "Bearer " + store.state.token });
   const data = await store.get(`img/${id}`);
-  Object.assign(previewFileList, data.sort((a: any, b: any) => (new Date(a.stats.mtime)).getTime() - (new Date(b.stats.mtime)).getTime()));
+  Object.assign(previewFileList, data.sort((a: any, b: any) => (new Date(a.created)).getTime() - (new Date(b.created)).getTime()));
   isLoaded.value = true;
 });
 
