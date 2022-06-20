@@ -459,6 +459,15 @@ fs.mkdirSync(imgDir, { recursive: true });
     res.json(result);
   });
 
+  app.get('/api/languages', auth, async(req, res) => {
+    const languages = [
+      { code: 'be', name: 'Беларуская' },
+      { code: 'en', name: 'English' },
+      { code: 'ru', name: 'Русский' },
+    ];
+    res.json(languages);
+  });
+
   app.listen(port);
   console.log("Running at Port "+ port);
 
