@@ -2,16 +2,14 @@
 
 import { ref, reactive, onBeforeMount } from 'vue';
 import store from '../store';
-import router from '../router';
+// import router from '../router';
 import axios, { AxiosError } from "axios";
 import { useMessage } from 'naive-ui';
+import type { SelectOption } from 'naive-ui';
 
 const message = useMessage();
-const text = ref('');
-const link = ref('');
-
-const sourceMode = ref('text');
-const importMode = ref('plain');
+const languages = reactive([] as Array<SelectOption>);
+const form = reactive({ text: '', link: '', lang: null, src: 'text', format: 'plain', });
 
 const items = [
     {
@@ -45,11 +43,12 @@ const sources = [
 ];
 
 const startProcessing = async () => {
-    // .trim()
-    if (sourceMode.value === "text") {
+    console.log("form", form);
 
+    if (form.src === "text") {
+        console.log("process text data");
     } else { // if URL
-        const url = link.value.trim();
+        const url = form.link.trim();
         console.log(`URL [${url}]`);
         try {
             // https://raw.githubusercontent.com/dracor-org/greekdracor/main/tei/aristophanes-frogs.xml
@@ -63,7 +62,6 @@ const startProcessing = async () => {
             console.log(error);
         }
     }
-
 };
 
 const getFile = (e: Event) => {
@@ -76,7 +74,7 @@ const getFile = (e: Event) => {
         reader.onload = evt => {
             const buf = evt?.target?.result;
             if (buf) {
-                text.value = (typeof buf === 'string' ? buf : Buffer.from(buf).toString());
+                form.text = (typeof buf === 'string' ? buf : Buffer.from(buf).toString());
             }
         }
 
@@ -87,22 +85,26 @@ const getFile = (e: Event) => {
 };
 
 onBeforeMount(async () => {
-    //   const data = await store.get('texts');
-    //   Object.assign(texts, data);
-    //   isLoaded.value = true;
+    const data = await store.get('languages');
+    Object.assign(languages, data.map((x: any) => ({ label: x.name, value: x.code })));
     // console.log("data", data);
 });
-
 
 </script>
 
 <template>
     <n-card title="Importing Text" :bordered="false" class="minimal left">
         <template #header-extra>
-            <n-button icon-placement="left" type="primary" @click="startProcessing">Start</n-button>
+            <n-button icon-placement="left" type="primary" @click="startProcessing">Run</n-button>
         </template>
         <n-space vertical size="large">
-            <n-radio-group v-model:value="sourceMode" name="radiogroup">
+            <n-select
+                v-model:value="form.lang"
+                filterable
+                placeholder="Please select a language of a text"
+                :options="languages"
+            />
+            <n-radio-group v-model:value="form.src" name="radiogroup">
                 <n-space>
                     <n-radio
                         v-for="item in sources"
@@ -113,7 +115,7 @@ onBeforeMount(async () => {
                     />
                 </n-space>
             </n-radio-group>
-            <n-radio-group v-model:value="importMode" name="radiogroup">
+            <n-radio-group v-model:value="form.format" name="radiogroup">
                 <n-space>
                     <n-radio
                         v-for="item in items"
@@ -125,24 +127,22 @@ onBeforeMount(async () => {
                 </n-space>
             </n-radio-group>
             <input type="file" @change="getFile" />
-
             <n-input
-                v-model:value="link"
+                v-model:value="form.link"
                 clearable
                 spellcheck="false"
                 placeholder="Insert URL here..."
-                v-if="sourceMode === 'url'"
+                v-if="form.src === 'url'"
             />
-
             <n-input
-                v-model:value="text"
+                v-model:value="form.text"
                 type="textarea"
                 clearable
                 :autosize="{
                     minRows: 3
                 }"
                 placeholder="Insert text here..."
-                v-if="sourceMode === 'text'"
+                v-if="form.src === 'text'"
             />
         </n-space>
     </n-card>
