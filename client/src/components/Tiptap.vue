@@ -65,7 +65,7 @@
             class="selectable"
             :preview-disabled="true"
             :src="item.url"
-            @click="selectImage(item.url as string)"
+            @click="selectImage(item)"
           />
         </n-space>
       </n-image-group>
@@ -81,7 +81,7 @@
 
 <script setup lang="ts">
 import { onBeforeUnmount, onBeforeMount, ref, reactive } from 'vue';
-import type { UploadFileInfo } from 'naive-ui';
+// import type { UploadFileInfo } from 'naive-ui';
 import store from '../store';
 import { Editor, EditorContent } from '@tiptap/vue-3';
 // import StarterKit from '@tiptap/starter-kit'
@@ -109,7 +109,7 @@ const CustomBlockquote = Blockquote.extend({
 
 const showModal = ref(false);
 const id = store?.state?.user?.text_id;
-const previewFileList = reactive<UploadFileInfo[]>([]);
+const previewFileList = reactive<IImageItem[]>([]); // UploadFileInfo
 
 
 const customEditor = new Editor({
@@ -154,19 +154,38 @@ onBeforeUnmount(() => {
 
 onBeforeMount(async () => {
   const data = await store.get(`img/${id}`);
-  Object.assign(previewFileList, data.sort((a: any, b: any) => (new Date(a.stats.mtime)).getTime() - (new Date(b.stats.mtime)).getTime()));
+  Object.assign(previewFileList, data.sort((a: any, b: any) => (new Date(a.created)).getTime() - (new Date(b.created)).getTime()));
 });
 
-const addImage = () => {
-  const url = window.prompt('URL')
-  if (url) {
-    customEditor.chain().focus().setImage({ src: url }).run()
-  }
+// const addImage = () => {
+//   const url = window.prompt('URL')
+//   if (url) {
+//     customEditor.chain().focus().setImage({ src: url }).run()
+//   }
+// };
+
+interface IImageItem {
+  id: string,
+  user_id: number,
+  text_id: number,
+  filesize: number,
+  created: Date,
+  title: string
+  meta: string,
+  status: string,
+  loaded: boolean,
+  url: string,
+  name: string
 };
 
-const selectImage = (url: string) => {
-  // console.log("image", url);
-  customEditor.chain().focus().setImage({ src: url }).run();
+const selectImage = (item: IImageItem) => {
+  // console.log("image", item);
+  customEditor.chain().focus()
+    .setImage({ src: item.url })
+    .createParagraphNear()
+    .insertContent(item.title)
+    .setBlock({ class: 'caption' })
+    .run();
   showModal.value = false;
 };
 
@@ -176,6 +195,7 @@ defineExpose({ handle: customEditor });
 
 <style scoped lang="scss">
 :deep(.ProseMirror) {
+  min-height: 200px;
   > * + * {
     margin-top: 0.75em;
   }
