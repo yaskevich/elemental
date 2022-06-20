@@ -10,6 +10,7 @@ dotenv.config();
 import pg from 'pg';
 const { Pool } = pg;
 const pool = new Pool();
+const dryRun = false;
 
 import { fileURLToPath } from "url";
 
@@ -17,15 +18,21 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // entry point
 (async () => {
-  console.log("ARGUMENTS: <path> <2-character language code> <text ID>");
+  console.log("ARGUMENTS: <path> <2-character language code> <text ID> <format>");
   const args = process.argv.slice(2);
   const lang = args[1] && args[1].length === 2 ? args[1] : "en";
   const textId = Number(args[2])||'';
-  console.log(`• Path: '${args[0]}'\n• Language: '${lang}'\n• ID: ${textId}`);
+  const fileFormat = args[3] ? args[3].trim() : "txt";
 
-  if (!textId){
+  console.log(`• Path: '${args[0]}'\n• Language: '${lang}'\n• ID: ${textId}\n• Format: ${fileFormat}`);
+
+  if (!textId) {
     console.error("Text ID is not set! Exiting...");
     process.exit();
+  }
+
+  if (dryRun) {
+    console.warn("Dry run...");
   }
 
   const insert = async (pnum, snum, form, repr, type) => {
@@ -33,20 +40,21 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
     let tokenId = 0;
     const values = [token, lang];
     let result = {};
+    if (!dryRun) {
+      result = await pool.query("SELECT id from tokens where token = $1 and lang = $2", values);
 
-    result = await pool.query("SELECT id from tokens where token = $1 and lang = $2", values);
+      if (!result?.rows?.length) {
+        result = await pool.query(`INSERT INTO tokens (token, lang, meta) VALUES($1, $2, $3) RETURNING id`, [token, lang, type]);
+      }
 
-    if (!result?.rows?.length) {
-      result = await pool.query(`INSERT INTO tokens (token, lang, meta) VALUES($1, $2, $3) RETURNING id`, [token, lang, type]);
-    }
+      tokenId = result.rows[0]?.["id"];
 
-    tokenId = result.rows[0]?.["id"];
-
-    try {
-      result = await pool.query(`INSERT INTO strings (text_id, p, s, form, repr, token_id) VALUES($1, $2, $3, $4, $5, $6) RETURNING id`, [textId, pnum, snum, form, repr, tokenId]);
-      // console.log(result);
-    } catch (error) {
-      console.error(error);
+      try {
+        result = await pool.query(`INSERT INTO strings (text_id, p, s, form, repr, token_id) VALUES($1, $2, $3, $4, $5, $6) RETURNING id`, [textId, pnum, snum, form, repr, tokenId]);
+        // console.log(result);
+      } catch (error) {
+        console.error(error);
+      }
     }
     // console.log(pnum, snum, { form: form, repr: repr, type: type });
   };
@@ -57,12 +65,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
     if(textId) {
       try {
         await pool.query("DELETE from strings where text_id = $1", [textId]);
-        await pool.query("DELETE from tokens where lang = $1", [lang]);
+        // await pool.query("DELETE from tokens where lang = $1", [lang]);
       } catch (error) {
         console.error(error);
       }
     }
-
 
     // const tokens = file.split(/(?<=[ .…!?»\n])/);
     // // console.log(tokens);
@@ -72,6 +79,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
     //       console.log(`|${t}|`);
     //   }
     // }
+
     const paragraphs = file.split("\n");
     const paragraphsLength = paragraphs.length;
     let sn = 0;
@@ -125,7 +133,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
     }
   }
 
-  await pool.query("UPDATE texts SET loaded = True WHERE id = $1", [textId]);
+  if (!dryRun) {
+    await pool.query("UPDATE texts SET loaded = True WHERE id = $1", [textId]);
+  }
+
   await pool.end();
   console.log("\nDone!");
 })();
