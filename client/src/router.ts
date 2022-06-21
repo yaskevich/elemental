@@ -90,7 +90,7 @@ const routes = [
     name: 'Media',
   },
   {
-    path: '/import',
+    path: '/import/:id?',
     component: Import,
     name: 'Import',
   },
