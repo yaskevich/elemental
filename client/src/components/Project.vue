@@ -143,6 +143,7 @@
           The text is <span v-if="!txt.loaded">NOT</span> loaded into the database
         </n-tag>
         <n-button type="info" @click="publishText" size="small" v-if="txt.loaded">Publish</n-button>
+        <n-button v-else type="info" @click="router.push('/import/'+vuerouter.params.id)" size="small">Import</n-button>
       </n-space>
 
       <n-card v-if="txt.zipsize">
@@ -161,17 +162,9 @@
 
     </n-space>
 
-    <template #footer>
-      <!-- #footer -->
-      &nbsp;
-    </template>
-    <template #action>
-      <!-- #action -->
-    </template>
   </n-card>
 
 </template>
 
 <style scoped>
-
 </style>
