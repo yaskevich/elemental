@@ -182,7 +182,7 @@ let tokensToBind = JSON.parse(props.tokens) as Array<IToken>;
 // console.log('in tokens', tokensToBind);
 // const vuerouter = useRoute();
 // const id = vuerouter.params.id;
-let id = props.id;
+let id = Number(props.id);
 
 interface IEntry {
   long_json: Object;
