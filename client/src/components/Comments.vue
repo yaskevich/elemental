@@ -87,6 +87,12 @@
     onClick: () => {
       editComment(row.id);
     },
+    onAuxclick: () => {
+      window.open(`/comment/${row.id}`, '_blank');
+    },
+    // onContextmenu: () => {
+    //   console.log("test");
+    // },
   });
 
   const selectUser = (x:number) => (tableRef?.value as any).filter({ issues: -x });
