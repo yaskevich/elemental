@@ -85,10 +85,16 @@
   const rowProps = (row:IRow) => ({
     style: 'cursor: pointer;',
     onClick: () => {
-      editComment(row.id);
+      // console.log("id", row.id);
+      if (row?.id){
+        editComment(row.id);
+      }
     },
     onAuxclick: () => {
-      window.open(`/comment/${row.id}`, '_blank');
+      // console.log("id", row.id);
+      if (row?.id){
+        window.open(`/comment/${row.id}`, '_blank');
+      }
     },
     // onContextmenu: () => {
     //   console.log("test");
