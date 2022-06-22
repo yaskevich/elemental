@@ -4,14 +4,22 @@ import { ref, reactive, onBeforeMount } from 'vue';
 import store from '../store';
 // import router from '../router';
 import axios, { AxiosError } from "axios";
-import { useMessage } from 'naive-ui';
 import type { SelectOption } from 'naive-ui';
+import { FormInst, useMessage } from 'naive-ui'
 
+const formRef = ref<FormInst | null>(null);
 const message = useMessage();
 const languages = reactive([] as Array<SelectOption>);
 const form = reactive({ text: '', link: '', lang: null, src: 'text', format: 'plain', });
+const rules = {
+    lang: {
+        required: true,
+        trigger: ['blur', 'change'],
+        message: 'Please select a language',
+    }
+};
 
-const items = [
+const formats = [
     {
         value: 'plain',
         label: 'Plain Text',
@@ -20,12 +28,12 @@ const items = [
     {
         value: "rich",
         label: "Rich Text / HTML",
-        disabled: false,
+        disabled: true,
     },
     {
         value: 'xml',
-        label: 'XML',
-        disabled: false,
+        label: 'Custom',
+        disabled: true,
     },
 ];
 
@@ -42,25 +50,41 @@ const sources = [
     }
 ];
 
-const startProcessing = async () => {
-    console.log("form", form);
-
-    if (form.src === "text") {
-        console.log("process text data");
-    } else { // if URL
-        const url = form.link.trim();
-        console.log(`URL [${url}]`);
-        try {
-            // https://raw.githubusercontent.com/dracor-org/greekdracor/main/tei/aristophanes-frogs.xml
-            const response = await axios.get(url);
-            console.log(response);
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-                // : unknown | Error | AxiosError
-                message.error(`URL fetch error. ${error?.message}`, { duration: 5000 });
+const startProcessing = async (e: MouseEvent) => {
+    e.preventDefault();
+    // console.log("form", form);
+    try {
+        await formRef.value?.validate(async (errors) => {
+            if (!errors) {
+                // message.success('Valid');
+                if (form.src === "text") {
+                    console.log("send raw text");
+                    const data = await store.post('load', form);
+                    console.log(data);
+                } else { // if URL
+                    const url = form.link.trim();
+                    console.log(`URL [${url}]`);
+                    try {
+                        if (url) {
+                            // https://raw.githubusercontent.com/dracor-org/greekdracor/main/tei/aristophanes-frogs.xml
+                            const response = await axios.get(url);
+                            console.log(response);
+                        }
+                    } catch (error) {
+                        if (axios.isAxiosError(error)) {
+                            // : unknown | Error | AxiosError
+                            message.error(`URL fetch error. ${error?.message}`, { duration: 5000 });
+                        }
+                        console.log(error);
+                    }
+                }
+            } else {
+                console.log(errors)
+                message.error('Not all required fields are filled!');
             }
-            console.log(error);
-        }
+        });
+    } catch (error) {
+        console.log("fail");
     }
 };
 
@@ -97,36 +121,46 @@ onBeforeMount(async () => {
         <template #header-extra>
             <n-button icon-placement="left" type="primary" @click="startProcessing">Run</n-button>
         </template>
-        <n-space vertical size="large">
-            <n-select
-                v-model:value="form.lang"
-                filterable
-                placeholder="Please select a language of a text"
-                :options="languages"
-            />
-            <n-radio-group v-model:value="form.src" name="radiogroup">
-                <n-space>
+        <n-form ref="formRef" :label-width="80" :model="form" :rules="rules" size="small">
+            <n-form-item style="display:block;">
+                <n-radio-group v-model:value="form.format" name="radiogroup">
                     <n-radio
-                        v-for="item in sources"
+                        v-for="item in formats"
                         :key="item.value"
                         :value="item.value"
                         :label="item.label"
                         :disabled="item.disabled"
                     />
-                </n-space>
-            </n-radio-group>
-            <n-radio-group v-model:value="form.format" name="radiogroup">
-                <n-space>
-                    <n-radio
-                        v-for="item in items"
-                        :key="item.value"
-                        :value="item.value"
-                        :label="item.label"
-                        :disabled="item.disabled"
+                </n-radio-group>
+            </n-form-item>
+
+            <n-space justify="space-between">
+                <n-form-item style="display:block;">
+                    <n-radio-group v-model:value="form.src" name="radiogroup">
+                        <n-radio
+                            v-for="item in sources"
+                            :key="item.value"
+                            :value="item.value"
+                            :label="item.label"
+                            :disabled="item.disabled"
+                        />
+                    </n-radio-group>
+                </n-form-item>
+                <n-form-item path="lang" style="display:block;">
+                    <n-select
+                        v-model:value="form.lang"
+                        filterable
+                        placeholder="Please select a language of a text"
+                        :options="languages"
                     />
-                </n-space>
-            </n-radio-group>
-            <input type="file" @change="getFile" />
+                </n-form-item>
+            </n-space>
+
+            <div style="margin:0px 0px 15px 0px" v-if="form.src === 'text'">
+                <label for="userfile" style="padding-right: 5px">Choose text file to load</label>
+                <input id="userfile" name="userfile" type="file" @change="getFile" />
+            </div>
+
             <n-input
                 v-model:value="form.link"
                 clearable
@@ -134,6 +168,7 @@ onBeforeMount(async () => {
                 placeholder="Insert URL here..."
                 v-if="form.src === 'url'"
             />
+
             <n-input
                 v-model:value="form.text"
                 type="textarea"
@@ -144,7 +179,7 @@ onBeforeMount(async () => {
                 placeholder="Insert text here..."
                 v-if="form.src === 'text'"
             />
-        </n-space>
+        </n-form>
     </n-card>
 </template>
 
