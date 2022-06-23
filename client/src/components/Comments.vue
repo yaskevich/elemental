@@ -13,8 +13,9 @@
     </div>
      <n-space vertical :size="12">
       <n-space>
-        <n-button @click="clearSorter">Reset sorting</n-button>
-        <n-button @click="clearFilters">Reset filters</n-button>
+        <n-button @click="reset">Reset</n-button>
+        <!-- <n-button @click="clearSorter">Reset sorting</n-button>
+        <n-button @click="clearFilters">Reset filters</n-button> -->
         <n-select
           v-model:value="selectedUser"
           filterable
@@ -105,6 +106,8 @@
   const clearSorter = () => (tableRef?.value as any).sort(null);
 
   const clearFilters = () => { (tableRef?.value as any).filter(null); selectedUser.value = null; }
+
+  const reset = () => { clearSorter(), clearFilters() };
 
   const columns = [
     {
