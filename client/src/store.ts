@@ -148,5 +148,6 @@ export default {
   postUnauthorized,
   getUser,
   deleteById,
-  version: project.version,
+  version: project?.version,
+  git: 'https' + project?.repository?.url?.slice(3, -4),
 };
