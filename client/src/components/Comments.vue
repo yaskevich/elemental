@@ -46,7 +46,6 @@
   import { CheckBoxFilled as CheckIcon } from '@vicons/material';
   import { HelpOutlineFilled as HelpIcon } from '@vicons/material';
   import { SquareRound as SquareIcon } from '@vicons/material';
-  
 
   const vuerouter = useRoute();
   const tableRef = ref(null);
@@ -273,7 +272,19 @@
     router.push('/comment');
   };
 
-  const pagination = { pageSize: 100 };
+  const pagination = reactive({
+    page: 1,
+    onChange: (page: number) => {
+      pagination.page = page;
+    },
+    onUpdatePageSize: (pageSize: number) => {
+        pagination.pageSize = pageSize;
+        pagination.page = 1;
+    },
+    showSizePicker: true,
+    pageSize: 100,
+    pageSizes: [10, 100, 500, 1000, 5000],
+  });
 
   const summary = (pageData:Array<IRow>) => { 
   // console.log("pagedata", pageData);
