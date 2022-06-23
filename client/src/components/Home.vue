@@ -67,7 +67,6 @@ const state = store.state;
     <template #header-extra>
       <n-button icon-placement="left" type="primary" @click="openTextProps()">+ new</n-button>
     </template>
-
     <!-- <div style="max-width:300px;margin: 0 auto;" v-if="showForm">
         <n-input v-model:value="form.title" type="text" placeholder="Text title" />
         <n-input v-model:value="form.author" type="text" placeholder="Author name" />
@@ -115,7 +114,7 @@ const state = store.state;
         <n-button
           text
           tag="a"
-          :href="'https://github.com/yaskevich/elemental/commit/' + state.user.commit"
+          :href="store.git + '/commit/' + state.user.commit"
           target="_blank"
           type="primary"
         >{{ state.user.commit }}</n-button>
