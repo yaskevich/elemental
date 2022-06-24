@@ -456,7 +456,7 @@ export default {
   async getComments(id) {
     const values = [id];
     // let sql = 'SELECT * from comments WHERE text_id = $1 ORDER BY id DESC';
-    const sql = `SELECT id, priority, issues, title, published,
+    const sql = `SELECT id, priority, issues, tags, title, published,
      CASE WHEN id IN (SELECT unnest(comments) AS coms FROM strings WHERE comments::text <> '{}' group by coms)
      THEN '1'::boolean else '0'::boolean END as bound
      FROM comments WHERE text_id = $1 ORDER by priority DESC, id DESC`;
@@ -903,6 +903,20 @@ export default {
       data = result?.rows;
     } catch (err) {
       console.error(err);
+    }
+    return data;
+  },
+  async deleteFromStrings(textId) {
+    // console.log(`DELETE from ${table} with ${id} by ${user.username}`);
+    let data = [];
+    if (textId) {
+      try {
+        const result = await pool.query("DELETE from strings where text_id = $1", [textId]);
+        // await pool.query("DELETE from tokens where lang = $1", [lang]);
+        data = result?.rows;
+      } catch (err) {
+        console.error(err);
+      }
     }
     return data;
   },
