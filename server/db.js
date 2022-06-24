@@ -920,4 +920,28 @@ export default {
     }
     return data;
   },
+  async insertIntoStrings(textId, pnum, snum, form, repr, type) {
+    const token = repr.toLowerCase();
+    let tokenId = 0;
+    const values = [token, lang];
+    let result = {};
+    if (!dryRun) {
+      result = await pool.query("SELECT id from tokens where token = $1 and lang = $2", values);
+
+      if (!result?.rows?.length) {
+        result = await pool.query(`INSERT INTO tokens (token, lang, meta) VALUES($1, $2, $3) RETURNING id`, [token, lang, type]);
+      }
+
+      tokenId = result.rows[0]?.["id"];
+
+      try {
+        result = await pool.query(`INSERT INTO strings (text_id, p, s, form, repr, token_id) VALUES($1, $2, $3, $4, $5, $6) RETURNING id`, [textId, pnum, snum, form, repr, tokenId]);
+        // console.log(result);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    // console.log(pnum, snum, { form: form, repr: repr, type: type });
+  },
+
 };
