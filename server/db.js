@@ -943,5 +943,11 @@ export default {
     }
     // console.log(pnum, snum, { form: form, repr: repr, type: type });
   },
-
+  async setTextLoaded(textId) {
+    try {
+      await pool.query("UPDATE texts SET loaded = True WHERE id = $1", [textId]);
+    } catch (err) {
+      console.error(err);
+    }
+  },
 };
