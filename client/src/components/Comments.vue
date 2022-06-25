@@ -23,6 +23,13 @@
           :options="userList"
           @update:value="selectUser"
         />
+        <n-select
+          v-model:value="selectedTag"
+          filterable
+          placeholder="Filter by tag"
+          :options="tagsList"
+          @update:value="selectTag"
+        />
       </n-space>
       <!-- <n-data-table remote :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-class-name="rowClassName" /> -->
       <n-data-table ref="tableRef" :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-props="rowProps" :summary="summary" :paginate-single-page="false" />
@@ -57,6 +64,7 @@
     bound: boolean;
     id: number;
     issues: Array<Array<number>>;
+    tags: Array<number>;
     priority: number;
     published: null | boolean;
     title: string;
@@ -71,8 +79,9 @@
   const issuesValues = reactive([] as Array<number>);
   const users: keyable = reactive({}) as keyable;
   const userList = reactive([]);
+  const tagsList = reactive([]);
   const selectedUser = ref(null);
-
+  const selectedTag = ref(null);
   // defineProps<{ msg: string }>()
   const getID = (row: IRow) => {
     return row.id;
@@ -103,9 +112,14 @@
 
   const selectUser = (x:number) => (tableRef?.value as any).filter({ issues: -x });
 
+  const selectTag = (x:number) => (tableRef?.value as any).filter({ title: -x });
+  // {
+  //   console.log("x", x);
+  // };
+
   const clearSorter = () => (tableRef?.value as any).sort(null);
 
-  const clearFilters = () => { (tableRef?.value as any).filter(null); selectedUser.value = null; }
+  const clearFilters = () => { (tableRef?.value as any).filter(null); selectedUser.value = null; selectedTag.value = null; }
 
   const reset = () => { clearSorter(), clearFilters() };
 
@@ -130,6 +144,13 @@
       // },
       // defaultSortOrder: 'ascend',
       sorter: 'default',
+      filter (optionValue: number, row: IRow) {
+        selectedUser.value = null;
+        if (optionValue > 0) {
+          selectedTag.value = null;
+        }
+        return optionValue ? row.tags.includes(Math.abs(optionValue)) : !row.tags.length;
+      },
     },
     {
       title: 'ID',
@@ -167,7 +188,7 @@
         //   }
         // );
         return row.published ? h(NIcon, {"color": "green", size: 16}, { default: () => h(CheckIcon) }) : h('small', {"style": "color:#d0d3d4"}, 'draft');
-      }
+      },
     },
     {
       title: h(NIcon, {"color": "gray", "size": 24, "title": "Issues"}, { default: () => h(HelpIcon) }),
@@ -175,6 +196,7 @@
       // defaultFilterOptionValues: issuesValues,
       filterOptions: issuesArray,
       filter (optionValue: number, row: IRow) {
+        selectedTag.value = null;
         if (optionValue > 0) {
           selectedUser.value = null;
         }
@@ -261,6 +283,9 @@
     Object.assign(users, Object.fromEntries(usersData.map((x: any) => [x.id, x])));
     // console.log('issues from server', issues);
     Object.assign(userList, usersData.map((x:any) => ({value: x.id, label: `${x.firstname} ${x.lastname}`})));
+
+    const tagsData = await store.get('tags');
+    Object.assign(tagsList, tagsData.map((x:any) => ({value: x.id, label: x.ru})));
 
     if (store?.state?.user?.text_id) {
       // localStorage.setItem('text_id', String(id));
