@@ -137,7 +137,7 @@ const tables = tablesResult.rows.map(x => x.table_name);
 if(tables.length !== Object.keys(databaseScheme).length) {
   console.log("initializing database: started");
   try {
-    await pool.query('BEGIN')
+    await pool.query('BEGIN');
     try {
       for (let [key, value] of Object.entries(databaseScheme)) {
         if (!tables.includes(key)){
@@ -920,26 +920,22 @@ export default {
     }
     return data;
   },
-  async insertIntoStrings(textId, pnum, snum, form, repr, type) {
+  async insertIntoStrings(textId, langId, paragraphNumber, sentenceNumber, tokenForm, tokenRepr, tokenMeta) {
     const token = repr.toLowerCase();
     let tokenId = 0;
-    const values = [token, lang];
-    let result = {};
-    if (!dryRun) {
-      result = await pool.query("SELECT id from tokens where token = $1 and lang = $2", values);
+    let result = await pool.query("SELECT id from tokens where token = $1 and lang = $2", [token, langId]);
 
-      if (!result?.rows?.length) {
-        result = await pool.query(`INSERT INTO tokens (token, lang, meta) VALUES($1, $2, $3) RETURNING id`, [token, lang, type]);
-      }
+    if (!result?.rows?.length) {
+      result = await pool.query(`INSERT INTO tokens (token, lang, meta) VALUES($1, $2, $3) RETURNING id`, [token, langId, tokenMeta]);
+    }
 
-      tokenId = result.rows[0]?.["id"];
+    tokenId = result.rows[0]?.["id"];
 
-      try {
-        result = await pool.query(`INSERT INTO strings (text_id, p, s, form, repr, token_id) VALUES($1, $2, $3, $4, $5, $6) RETURNING id`, [textId, pnum, snum, form, repr, tokenId]);
-        // console.log(result);
-      } catch (error) {
-        console.error(error);
-      }
+    try {
+      result = await pool.query(`INSERT INTO strings (text_id, p, s, form, repr, token_id) VALUES($1, $2, $3, $4, $5, $6) RETURNING id`, [textId, paragraphNumber, sentenceNumber, tokenForm, tokenRepr, tokenId]);
+      // console.log(result);
+    } catch (error) {
+      console.error(error);
     }
     // console.log(pnum, snum, { form: form, repr: repr, type: type });
   },
