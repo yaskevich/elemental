@@ -416,7 +416,7 @@ fs.mkdirSync(imgDir, { recursive: true });
   app.get('/api/img/:id', auth, async(req, res) => {
     const id = req.params.id || 1;
     const result = await db.getImages(id);
-    const files = result.map(x=> ({...x, status: 'finished', name: x.id, url: `/api/images/${id}/${x.id}`, }) );
+    const files = result.map( x => ({...x, status: 'finished', name: x.id, url: `/api/images/${id}/${x.id}`, }) );
     // console.log("images", files);
     // const currentDir = path.join(imgDir, id);
     // const files = fs.existsSync(currentDir) ? fs.readdirSync( currentDir ).map(file => ({ id: file, name: file, status: 'finished', url: `/api/images/${id}/${file}`, stats: fs.statSync(path.join(currentDir, file)) })): [];
@@ -461,11 +461,23 @@ fs.mkdirSync(imgDir, { recursive: true });
 
   app.get('/api/languages', auth, async(req, res) => {
     const languages = [
-      { code: 'be', name: 'Беларуская' },
       { code: 'en', name: 'English' },
+      { code: 'be', name: 'Беларуская' },
+      { code: 'uk', name: 'Українська' },
       { code: 'ru', name: 'Русский' },
+      { code: 'pl', name: 'Polski' },
+      { code: 'de', name: 'Deutsch' },
+      { code: 'fr', name: 'Français' },
     ];
     res.json(languages);
+  });
+
+  app.post('/api/load', auth, async (req, res) => {
+    // console.log("comment id", req.params['id']);
+    // const comments = await db.getComments(req.params['id']);
+    console.log(`LANG [${req.body.lang}] FORMAT [${req.body.format}] LINK [${req.body.link}] SRC [${req.body.src}] TXT ${req.body.text.length}`);
+    // const result = await db.setComment(req.body, req.user);
+    res.json({});
   });
 
   app.listen(port);
