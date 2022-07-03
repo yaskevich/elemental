@@ -6,6 +6,10 @@ import store from '../store';
 import axios, { AxiosError } from "axios";
 import type { SelectOption } from 'naive-ui';
 import { FormInst, useMessage } from 'naive-ui'
+import { useRoute } from 'vue-router';
+
+const vuerouter = useRoute();
+const id = String(vuerouter.params.id);
 
 const formRef = ref<FormInst | null>(null);
 const message = useMessage();
@@ -50,7 +54,7 @@ const sources = [
     }
 ];
 
-const startProcessing = async (e: MouseEvent) => {
+const startProcessing = async (e: MouseEvent, dryRun: boolean) => {
     e.preventDefault();
     // console.log("form", form);
     try {
@@ -59,7 +63,7 @@ const startProcessing = async (e: MouseEvent) => {
                 // message.success('Valid');
                 if (form.src === "text") {
                     console.log("send raw text");
-                    const data = await store.post('load', form);
+                    const { data } = await store.post('load', { ...form, id: id, dry: dryRun });
                     console.log(data);
                 } else { // if URL
                     const url = form.link.trim();
@@ -119,7 +123,10 @@ onBeforeMount(async () => {
 <template>
     <n-card title="Importing Text" :bordered="false" class="minimal left">
         <template #header-extra>
-            <n-button icon-placement="left" type="primary" @click="startProcessing">Run</n-button>
+            <n-space>
+            <n-button icon-placement="left" type="primary" @click="startProcessing($event, true)">Test</n-button>
+            <n-button icon-placement="left" type="error" @click="startProcessing($event, false)">Run</n-button>
+            </n-space>
         </template>
         <n-form ref="formRef" :label-width="80" :model="form" :rules="rules" size="small">
             <n-form-item style="display:block;">
