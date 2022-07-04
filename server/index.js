@@ -46,18 +46,18 @@ fs.mkdirSync(imgDir, { recursive: true });
     }, process.env.JWT_SECRET);
 
   const strategy = new JWTStrategy(
-  {
-    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-    secretOrKey   : process.env.JWT_SECRET
-  },
-  (jwtPayload, done) =>
-    db.getUserDataByID(jwtPayload.sub)
-      .then(user => done(null, user))
-      .catch(err => done(err))
+    {
+      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+      secretOrKey: process.env.JWT_SECRET
+    },
+    (jwtPayload, done) =>
+      db.getUserDataByID(jwtPayload.sub)
+        .then(user => done(null, user))
+        .catch(err => done(err))
   );
 
   passport.use(strategy);
-  const auth = passport.authenticate('jwt', {session: false});
+  const auth = passport.authenticate('jwt', { session: false });
   app.use('/api/files', express.static(publicDir));
   app.use('/api/images', express.static(imgDir));
   app.use(fileUpload({ limits: { fileSize: imageFileLimit }, abortOnLimit: true, defParamCharset: 'utf8', }));
@@ -82,7 +82,7 @@ fs.mkdirSync(imgDir, { recursive: true });
     res.sendFile(path.join(publicDir, 'index.html'));
   });
 
-  app.post('/api/user/login', async(req, res) => {
+  app.post('/api/user/login', async (req, res) => {
     const userData = await db.getUserData(req.body['email'], req.body['password']);
     if (userData && Object.keys(userData).length && !userData?.['error']) {
       console.log(req.body['email'], '<SUCCESS>');
@@ -104,37 +104,37 @@ fs.mkdirSync(imgDir, { recursive: true });
     // res.redirect('/login');
   });
 
-  app.get('/api/user/info', auth, async(req,res) => {
+  app.get('/api/user/info', auth, async (req, res) => {
     // const settings = await db.getData("settings", 1);
     // const stats = await db.getStats();
     // res.json(Object.assign(req.user, {"settings": settings?.[0], "stats": stats, "commit": process.env.COMMIT, "server": __package.version, }));
     const text = await db.getUserText(req.user.id);
-    res.json({...req.user, text, "server": __package.version, "commit": process.env.COMMIT, });
-   });
+    res.json({ ...req.user, text, "server": __package.version, "commit": process.env.COMMIT, });
+  });
 
-  app.post('/api/user/reg', async(req,res) => {
+  app.post('/api/user/reg', async (req, res) => {
     const userdata = req.body;
     userdata.privs = 5; // default privileges
     const result = await db.createUser(userdata, false);
     res.json(result);
   });
 
-  app.post('/api/user/add', auth, async(req,res) => {
+  app.post('/api/user/add', auth, async (req, res) => {
     const result = await db.createUser(req.body, true);
     res.json(result);
   });
 
-  app.post('/api/user/text', auth, async(req,res) => {
+  app.post('/api/user/text', auth, async (req, res) => {
     const result = await db.selectText(req.user.id, req.body.id);
     res.json(result);
   });
 
-  app.post('/api/text', auth, async(req,res) => {
+  app.post('/api/text', auth, async (req, res) => {
     const result = await db.setText(req.body);
     res.json(result);
   });
 
-  app.post('/api/tokens', auth, async(req, res) => {
+  app.post('/api/tokens', auth, async (req, res) => {
     const tid = req.body.id;
     const cls = req.body.cls;
     const mode = Number(req.body.mode);
@@ -145,7 +145,7 @@ fs.mkdirSync(imgDir, { recursive: true });
     res.json(data);
   });
 
-  app.get('/api/data', auth, async(req, res) => {
+  app.get('/api/data', auth, async (req, res) => {
     const strings = await db.getUntagged();
     res.json(strings);
   });
@@ -246,31 +246,31 @@ fs.mkdirSync(imgDir, { recursive: true });
     res.json(tags);
   });
 
-  app.get('/api/conll', auth, async(req, res) => {
+  app.get('/api/conll', auth, async (req, res) => {
     const corpus = await db.getCorpusAsConll();
     const conll = nlp.convertToConll(corpus);
     res.send(conll);
   });
 
   app.get('/api/test', (req, res) => {
-    res.json({"message": "ok"});
+    res.json({ "message": "ok" });
   });
 
-  app.get('/api/priority', auth, async(req, res) => {
+  app.get('/api/priority', auth, async (req, res) => {
     const result = await db.getNextPriority();
     res.json(result);
   });
 
-  app.delete('/api/:table/:id', auth, async(req,res) => {
+  app.delete('/api/:table/:id', auth, async (req, res) => {
     // console.log('DELETE params', req.params, 'query', req.query);
     let result = {};
-    if (['comments'].includes(req.params['table'])){
+    if (['comments'].includes(req.params['table'])) {
       result = await db.deleteById(req.params['table'], req.params['id'], req.user);
     }
     res.json(result);
   });
 
-  app.get('/api/backup', auth, async(req, res) => {
+  app.get('/api/backup', auth, async (req, res) => {
     // https://www.npmjs.com/package/filesize
     const today = new Date();
     const backupFile = today.toISOString().split('T')[0] + '.tar';
@@ -288,15 +288,15 @@ fs.mkdirSync(imgDir, { recursive: true });
       // console.log(message);
     }
 
-    res.json({"file": backupFile + '.gz', "error": message});
+    res.json({ "file": backupFile + '.gz', "error": message });
   });
 
-  app.get('/api/backups', auth, async(req, res) => {
-    const fls = fs.readdirSync( backupDir );
+  app.get('/api/backups', auth, async (req, res) => {
+    const fls = fs.readdirSync(backupDir);
     res.json(fls);
   });
 
-  app.get('/api/backupfile', auth, async(req, res) => {
+  app.get('/api/backupfile', auth, async (req, res) => {
     const filePath = path.join(backupDir, req.query.id);
     if (fs.existsSync(filePath)) {
       res.download(filePath, (err) => {
@@ -311,7 +311,7 @@ fs.mkdirSync(imgDir, { recursive: true });
     }
   });
 
-  app.post('/api/publish', auth, async(req, res) => {
+  app.post('/api/publish', auth, async (req, res) => {
     const textId = Number(req.body.id) || 1;
     let result = {};
     try {
@@ -328,7 +328,7 @@ fs.mkdirSync(imgDir, { recursive: true });
       const tokens = await db.getText(textId);
 
       const comments = await db.getFullComments(textId);
-      const commentsDict = Object.assign({}, ...(comments.map(x => ({ [x.id]: x }) )));
+      const commentsDict = Object.assign({}, ...(comments.map(x => ({ [x.id]: x }))));
       // console.log(commentsDict);
 
       let content = '';
@@ -340,23 +340,23 @@ fs.mkdirSync(imgDir, { recursive: true });
           paragraph = '';
           p = token.p;
         }
-        if (token.meta !== 'ip'){
-            const commentId = token.comments?.[0];
-            const trans = commentsDict[commentId]?.trans || '';
-             // && commentsDict[commentId].published
-            const tooltipInfo = trans? ['tooltip', 'aria-label="'+trans + '"'] : ['', ''];
-            paragraph += (token.comments.length ? `<span class="${tooltipInfo[0]} token mark btn" ${tooltipInfo[1]} ${token.comments.length}" data-id="${commentId}">${token.form}</span>` : `<span class="token">${token.form}</span>`);
+        if (token.meta !== 'ip') {
+          const commentId = token.comments?.[0];
+          const trans = commentsDict[commentId]?.trans || '';
+          // && commentsDict[commentId].published
+          const tooltipInfo = trans ? ['tooltip', 'aria-label="' + trans + '"'] : ['', ''];
+          paragraph += (token.comments.length ? `<span class="${tooltipInfo[0]} token mark btn" ${tooltipInfo[1]} ${token.comments.length}" data-id="${commentId}">${token.form}</span>` : `<span class="token">${token.form}</span>`);
         }
       }
       content += `<div class="row"> ${paragraph} </div>\n\n`;
 
-      const output = mustache.render(template, {...textInfo.shift(), content: content, comments: comments });
+      const output = mustache.render(template, { ...textInfo.shift(), content: content, comments: comments });
 
       fs.writeFileSync(path.join(pubDir, 'index.html'), output);
-      fs.copyFileSync(path.join(__dirname, 'node_modules', 'mini.css' , 'dist', 'mini-default.min.css'), path.join(pubDir, 'mini.css'));
-      fs.copyFileSync(path.join(__dirname, 'node_modules', 'jquery' , 'dist', 'jquery.min.js'), path.join(pubDir, 'jquery.js'));
-      fs.copyFileSync(path.join(__dirname, 'node_modules', 'izimodal' , 'js', 'iziModal.min.js'), path.join(pubDir, 'izi.js'));
-      fs.copyFileSync(path.join(__dirname, 'node_modules', 'izimodal' , 'css', 'iziModal.min.css'), path.join(pubDir, 'izi.css'));
+      fs.copyFileSync(path.join(__dirname, 'node_modules', 'mini.css', 'dist', 'mini-default.min.css'), path.join(pubDir, 'mini.css'));
+      fs.copyFileSync(path.join(__dirname, 'node_modules', 'jquery', 'dist', 'jquery.min.js'), path.join(pubDir, 'jquery.js'));
+      fs.copyFileSync(path.join(__dirname, 'node_modules', 'izimodal', 'js', 'iziModal.min.js'), path.join(pubDir, 'izi.js'));
+      fs.copyFileSync(path.join(__dirname, 'node_modules', 'izimodal', 'css', 'iziModal.min.css'), path.join(pubDir, 'izi.css'));
 
       const now = Date.now();
       zip.sync.zip(pubDir).compress().save(zipPath);
@@ -372,7 +372,7 @@ fs.mkdirSync(imgDir, { recursive: true });
     res.json(result);
   });
 
-  app.post('/api/upload/:id', auth, async(req, res) => {
+  app.post('/api/upload/:id', auth, async (req, res) => {
     let status = 200;
     let fileName = '';
 
@@ -413,20 +413,20 @@ fs.mkdirSync(imgDir, { recursive: true });
     res.status(status).send(fileName);
   });
 
-  app.get('/api/img/:id', auth, async(req, res) => {
+  app.get('/api/img/:id', auth, async (req, res) => {
     const id = req.params.id || 1;
     const result = await db.getImages(id);
-    const files = result.map( x => ({...x, status: 'finished', name: x.id, url: `/api/images/${id}/${x.id}`, }) );
+    const files = result.map(x => ({ ...x, status: 'finished', name: x.id, url: `/api/images/${id}/${x.id}`, }));
     // console.log("images", files);
     // const currentDir = path.join(imgDir, id);
     // const files = fs.existsSync(currentDir) ? fs.readdirSync( currentDir ).map(file => ({ id: file, name: file, status: 'finished', url: `/api/images/${id}/${file}`, stats: fs.statSync(path.join(currentDir, file)) })): [];
     res.json(files);
   });
 
-  app.post('/api/unload', auth, async(req, res) => {
+  app.post('/api/unload', auth, async (req, res) => {
     const textId = String(Number(req.body.id) || 1);
     let result = {};
-    
+
     if (req.body?.file) {
       const fileName = req.body.file;
       const filePath = path.join(imgDir, textId, fileName);
@@ -436,7 +436,7 @@ fs.mkdirSync(imgDir, { recursive: true });
 
       if (comments.length) {
         // console.log("check", comments);
-        result = {"error": "comments", "comments": comments};
+        result = { "error": "comments", "comments": comments };
       } else {
         try {
           // fs.unlinkSync(filePath);
@@ -444,7 +444,7 @@ fs.mkdirSync(imgDir, { recursive: true });
           if (check?.[0]?.id === fileName) {
             fs.unlinkSync(filePath);
           } else {
-            result = {"error": "db"};
+            result = { "error": "db" };
           }
         } catch (error) {
           result = error;
@@ -453,13 +453,13 @@ fs.mkdirSync(imgDir, { recursive: true });
       }
 
     } else {
-      result = {"error": "id"};
+      result = { "error": "id" };
     }
 
     res.json(result);
   });
 
-  app.get('/api/languages', auth, async(req, res) => {
+  app.get('/api/languages', auth, async (req, res) => {
     const languages = [
       { code: 'en', name: 'English' },
       { code: 'be', name: 'Беларуская' },
@@ -473,14 +473,18 @@ fs.mkdirSync(imgDir, { recursive: true });
   });
 
   app.post('/api/load', auth, async (req, res) => {
-    // console.log("comment id", req.params['id']);
-    // const comments = await db.getComments(req.params['id']);
-    console.log(`LANG [${req.body.lang}] FORMAT [${req.body.format}] LINK [${req.body.link}] SRC [${req.body.src}] TXT ${req.body.text.length}`);
-    // const result = await db.setComment(req.body, req.user);
-    res.json({});
+    // console.log(`ID ${req.body.id} [test ${req.body.dry}] LANG [${req.body.lang}] FORMAT [${req.body.format}] LINK [${req.body.link}] SRC [${req.body.src}] TXT ${req.body.text.length}!`);
+    const textId = Number(req.body.id);
+    const langId = req.body.lang;
+    const content = req.body.text;
+    const dryRun = req.body.dry;
+    // console.log("start import");
+    const result = await nlp.importText(false, textId, langId, content, dryRun);
+    // console.log("complete import", result);
+    res.json(result);
   });
 
   app.listen(port);
-  console.log("Running at Port "+ port);
+  console.log("Running at Port " + port);
 
 })();
