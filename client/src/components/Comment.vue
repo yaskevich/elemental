@@ -148,6 +148,7 @@
 import store from '../store';
 import { ref, reactive, onBeforeMount, computed, onBeforeUnmount, onMounted, ComponentPublicInstance, h } from 'vue';
 import { onBeforeRouteLeave } from 'vue-router';
+import { useMessage } from 'naive-ui';
 import Tiptap from './Tiptap.vue';
 import router from '../router';
 // import { useRoute } from 'vue-router';
@@ -171,6 +172,8 @@ interface Props {
   id?: string;
   tokens?: string;
 }
+
+const message = useMessage();
 
 const props = withDefaults(defineProps<Props>(), {
   id: '',
@@ -410,14 +413,14 @@ const saveComment = async () => {
 
   if (checkIsEntryUpdated()) {
     console.log('changes → DB');
-    const data = await store.post('comment', entry);
-    if (data?.data?.id) {
-      entry.id = data.data.id;
+    const {data} = await store.post('comment', entry);
+    if (data?.id) {
+      entry.id = data.id;
       fromDB.value = JSON.stringify(entry);
       router.replace('/comment/' + entry.id);
       const boundTokensNumber = tokensToBind.length;
       if (boundTokensNumber) {
-        const result = await store.post('strings', { tokens: tokensToBind.map((x: IToken) => x.id), id: data.data.id });
+        const result = await store.post('strings', { tokens: tokensToBind.map((x: IToken) => x.id), id: data.id });
         // console.log("bind tokens", result);
         if (boundTokensNumber === result.data?.length) {
           console.log(`${boundTokensNumber} tokens were bound!`);
@@ -426,6 +429,9 @@ const saveComment = async () => {
           console.error('tokens were not bound!');
         }
       }
+    } else {
+      console.log(data)
+      message.error(`Changes were not saved: ${data?.error?.detail}`, { duration: 5000 });
     }
   } else {
     console.log('no changes – spare traffic...');
