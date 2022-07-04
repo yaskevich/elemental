@@ -117,6 +117,7 @@ const getUser = async() => {
         const response = await axios.get("/api/user/info", config);
         state.user = response.data;
       } catch (error) {
+        state.token = '';
         console.log("Cannot get user", error)
         return error;
       }
