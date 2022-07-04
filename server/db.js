@@ -28,6 +28,8 @@ const databaseScheme = {
     author text,
     title text,
     meta text,
+    site text,
+    credits text,
     loaded boolean DEFAULT false NOT NULL,
     grammar boolean DEFAULT false NOT NULL,
     comments boolean DEFAULT false NOT NULL`,
@@ -146,7 +148,7 @@ if(tables.length !== Object.keys(databaseScheme).length) {
           const createResult = await pool.query(`CREATE TABLE IF NOT EXISTS ${key} (${value})`);
         } catch (createError) {
           console.error(createError);
-          console.error(`Issue with table '${key}'!`)
+          console.error(`Issue with table '${key}'!`);
           throw createError;
         }
           // console.log("create", createResult);
@@ -541,7 +543,7 @@ export default {
            const logQuery = `INSERT INTO logs (user_id, table_name, record_id, data0, data1) VALUES($1, $2, $3, $4, $5) RETURNING id`;
            const table = 'comments';
            // enum types! - alter table logs
-           const logResult  = await pool.query(logQuery, [userObject.id, table, resultId, previousCommentObject, newCommentObject]);
+           const logResult = await pool.query(logQuery, [userObject.id, table, resultId, previousCommentObject, newCommentObject]);
            // console.log(logQuery, logResult);
            // return resultId;
            await pool.query('COMMIT');
@@ -921,7 +923,7 @@ export default {
     return data;
   },
   async insertIntoStrings(textId, langId, paragraphNumber, sentenceNumber, tokenForm, tokenRepr, tokenMeta) {
-    const token = repr.toLowerCase();
+    const token = tokenRepr.toLowerCase();
     let tokenId = 0;
     let result = await pool.query("SELECT id from tokens where token = $1 and lang = $2", [token, langId]);
 
@@ -940,10 +942,13 @@ export default {
     // console.log(pnum, snum, { form: form, repr: repr, type: type });
   },
   async setTextLoaded(textId) {
+    let result = [{}];
     try {
-      await pool.query("UPDATE texts SET loaded = True WHERE id = $1", [textId]);
+      const queryOutput = await pool.query("UPDATE texts SET loaded = True WHERE id = $1 RETURNING *", [textId]);
+      result = queryOutput?.rows;
     } catch (err) {
       console.error(err);
     }
+    return result;
   },
 };
