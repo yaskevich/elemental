@@ -22,7 +22,7 @@
   }
 
   const vuerouter = useRoute();
-  const id = String(vuerouter.params.id);
+  const id = ref(String(vuerouter.params.id));
   const txt = reactive({} as IText);
   const formRef = ref<FormInst | null>(null);
 
@@ -49,6 +49,9 @@
       console.log("result", data);
       if (!data?.id)  {
         console.log("database error");
+      } else {
+        id.value = data.id;
+        router.replace(`/project/${data.id}`);
       }
     } catch (errors:any) {
       console.log("errors", errors);
@@ -70,8 +73,8 @@
   };
 
   onBeforeMount(async () => {
-    if (id) {
-      const data = await store.get('texts', id);
+    if (id.value) {
+      const data = await store.get('texts', id.value);
       Object.assign(txt, data.shift());
       formatDate();
     } else {
@@ -136,7 +139,7 @@
 
     </n-form>
 
-    <n-space vertical>
+    <n-space vertical v-if="id">
 
       <n-space justify="space-between">
         <n-tag :type="txt.loaded? 'success': 'error'">
