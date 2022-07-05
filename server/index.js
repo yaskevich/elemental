@@ -9,7 +9,7 @@ import express from 'express';
 import fileUpload from 'express-fileupload';
 import fs from 'fs';
 import { execSync } from 'child_process';
-import compress from 'gzipme';
+import { gzipSync } from 'zlib';
 import zip from "zip-local";
 import mustache from 'mustache';
 import history from 'connect-history-api-fallback';
@@ -17,9 +17,10 @@ import jwt from 'jsonwebtoken';
 import passport from 'passport';
 import passportJWT from 'passport-jwt';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import nlp from './nlp.js';
 import db from './db.js';
-import { fileURLToPath } from 'url';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
@@ -279,9 +280,13 @@ fs.mkdirSync(imgDir, { recursive: true });
     let message = '';
 
     try {
-      const result = execSync(cmd);
+      // const result = execSync(cmd);
+      execSync(cmd);
       // console.log("backup result", result.toString("utf8"));
-      await compress(filename);
+      // await compress(filename);
+      const buffer = fs.readFileSync(filename);
+      const compressed = gzipSync(buffer);
+      fs.writeFileSync(`${filename}.gz`, compressed);
       fs.unlinkSync(filename);
     } catch (error) {
       message = error.output[2].toString("utf8");
@@ -317,7 +322,8 @@ fs.mkdirSync(imgDir, { recursive: true });
     try {
       const pubDir = path.join(publicDir, String(textId));
       const zipPath = path.join(pubDir, 'site.zip');
-      const template = fs.readFileSync(path.join(__dirname, 'reader.html'), 'utf8');
+      const templatePath = path.join(__dirname, 'reader.html');
+      const template = fs.readFileSync(templatePath, 'utf8');
 
       fs.rmSync(pubDir, { recursive: true, force: true });
       fs.mkdirSync(pubDir, { recursive: true });
