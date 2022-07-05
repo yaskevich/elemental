@@ -34,13 +34,18 @@ const cconj = ['а', 'і', 'але', 'ды', 'ні', 'дый', 'ці', 'прыч
 
 export default {
   async importText(isWeb, textId, langCode, text, dryRun) {
+    let [paragraphsNumber, sentencesNumber, tokensNumber] = [0, 0, 0];
+    let textInfo = {};
 
     const insertToken = async (pnum, snum, form, repr, type) => {
       if (dryRun) {
-        console.log(pnum, snum, form, repr, type);
+        if (!isWeb) {
+          console.log(pnum, snum, form, repr, type);
+        }
       } else {
         await db.insertIntoStrings(textId, langCode, pnum, snum, form, repr, type);
       }
+      tokensNumber++;
     };
 
     if (!dryRun) {
@@ -60,14 +65,14 @@ export default {
 
     try {
       paragraphs = text.split("\n");
+      paragraphsNumber = paragraphs.length;
+      // console.log(paragraphsNumber);
     } catch (error) {
       console.error(error);
     }
 
-    const paragraphsLength = paragraphs.length;
-    let sn = 0;
 
-    for (let p = 0; p < paragraphsLength; p++) {
+    for (let p = 0; p < paragraphsNumber; p++) {
       // console.log(paragraphs[p], "==");
       // const sentences = paragraphs[p].split(/([.…!?,:;«»]+)/);
       const sentences = paragraphs[p].split(/(?<=[.…!?»])\s+(?=[«–А-ЯЎІЁ])/);
@@ -76,51 +81,56 @@ export default {
       for (let s = 0; s < sentencesLength; s++) {
         // enable print to debug
         // console.log("•", sentences[s]);
-        process.stdout.write(sn + "\r");
+        if (!isWeb) {
+          process.stdout.write(sentencesNumber + "\r");
+        }
         const sent = sentences[s].split(" ");
         for (let token of sent.filter(x => x)) {
-          const withPuncts = token.split(/([^А-Яа-яA-Za-z\*\-])/);
+          const withPuncts = token.split(/([^А-Яа-яA-Za-z0-9\*\-])/);
           if (withPuncts.length > 1) {
             const word = withPuncts.shift();
             const puncts = withPuncts.filter(x => x);
             if (word) {
-              await insertToken(p, sn, token, word, "word");
+              await insertToken(p, sentencesNumber, token, word, "word");
             }
 
             if (puncts.length === 1) {
-              await insertToken(p, sn, puncts[0], puncts[0], word ? "ip" : "ip+");
+              await insertToken(p, sentencesNumber, puncts[0], puncts[0], word ? "ip" : "ip+");
             } else {
               const compound = puncts.join("");
               if (compound === "!.." || compound === "?..") {
-                await insertToken(p, sn, compound, compound, "ip");
+                await insertToken(p, sentencesNumber, compound, compound, "ip");
               } else {
                 // print only puncts, drop word if int end, remain if in the beginning
-                // console.error("■", p, sn, puncts, token);
+                // console.error("■", p, sentencesNumber, puncts, token);
                 const regex = new RegExp(/^[А-Яа-яA-Za-z*-]+$/);
 
                 for (let item of puncts) {
                   if (item.match(regex)) {
                     // if word
-                    await insertToken(p, sn, token, item, "word");
+                    await insertToken(p, sentencesNumber, token, item, "word");
                   } else {
-                    await insertToken(p, sn, item, item, "ip");
+                    await insertToken(p, sentencesNumber, item, item, "ip");
                   }
                 }
               }
             }
           } else {
-            await insertToken(p, sn, token, token, "word");
+            await insertToken(p, sentencesNumber, token, token, "word");
           }
         }
-        sn++;
+        sentencesNumber++;
       }
     }
 
     if (!dryRun) {
-      await db.setTextLoaded(textId);
+      textInfo = await db.setTextLoaded(textId);
+    } else {
+      textInfo = await db.getTexts(textId);
     }
 
     // await pool.end();
+    return { ...textInfo?.[0], stats: { tokens: tokensNumber, sentences: sentencesNumber, paragraphs: paragraphsNumber } };
 
   },
   convertToConll(corpus) {
