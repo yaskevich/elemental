@@ -19,6 +19,7 @@ import {
   LabelFilled,
   BackupFilled,
   HistoryFilled,
+  PersonSearchFilled,
 } from '@vicons/material'
 
 const vuerouter = useRoute();
@@ -58,6 +59,7 @@ const menuOptions: MenuOption[] = reactive([
           makeItem('Tags', 'Tags', AssignmentFilled),
           makeItem('Issues', 'Issues', LabelFilled),
           makeItem('Backups', 'Backups', BackupFilled),
+          makeItem('Users', 'Users', PersonSearchFilled),
           makeItem('Logs', 'Logs', HistoryFilled, true),
           // makeItem('', '', ),
         ]
