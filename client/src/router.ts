@@ -13,6 +13,7 @@ import Backups from './components/Backups.vue';
 import Project from './components/Project.vue';
 import Media from './components/Media.vue';
 import Import from './components/Import.vue';
+import Users from './components/Users.vue';
 
 const routes = [
   // {
@@ -93,6 +94,11 @@ const routes = [
     path: '/import/:id?',
     component: Import,
     name: 'Import',
+  },
+  {
+    path: '/users',
+    component: Users,
+    name: 'Users',
   },
 ];
 
