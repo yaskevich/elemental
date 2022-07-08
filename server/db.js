@@ -15,7 +15,12 @@ if (!process.env.NODE_ENV && configLoaded.error) {
 }
 const saltRounds = 8;
 const passOptions = {
-  length: 18, numbers: true, uppercase: false, excludeSimilarCharacters: true, strict: true, symbols: false
+  length: 18,
+  numbers: true,
+  uppercase: false,
+  excludeSimilarCharacters: true,
+  strict: true,
+  symbols: false,
 };
 
 const { Pool } = pg;
@@ -138,26 +143,31 @@ try {
 const tables = tablesResult.rows.map((x) => x.table_name);
 // console.log(tables);
 
+const prepareTable = async (args) => {
+  const tableName = args[0];
+  if (!tables.includes(tableName)) {
+    console.log(`init table '${tableName}'`);
+    try {
+      // const createResult = await pool.query(`CREATE TABLE IF NOT EXISTS ${key} (${value})`);
+      await pool.query(`CREATE TABLE IF NOT EXISTS ${tableName} (${args[1]})`);
+    } catch (createError) {
+      console.error(createError);
+      console.error(`Issue with table '${tableName}'!`);
+      throw createError;
+    }
+    // console.log("create", createResult);
+    // const ownerResult = await pool.query(`ALTER TABLE ${key} OWNER TO ${process.env.PGUSER}`);
+    await pool.query(`ALTER TABLE ${tableName} OWNER TO ${process.env.PGUSER}`);
+    // console.log("owner", ownerResult);
+  }
+};
+
 if (tables.length !== Object.keys(databaseScheme).length) {
   console.log('initializing database: started');
   try {
     await pool.query('BEGIN');
     try {
-      for (const [key, value] of Object.entries(databaseScheme)) {
-        if (!tables.includes(key)) {
-          console.log(`init table '${key}'`);
-          try {
-            const createResult = await pool.query(`CREATE TABLE IF NOT EXISTS ${key} (${value})`);
-          } catch (createError) {
-            console.error(createError);
-            console.error(`Issue with table '${key}'!`);
-            throw createError;
-          }
-          // console.log("create", createResult);
-          const ownerResult = await pool.query(`ALTER TABLE ${key} OWNER TO ${process.env.PGUSER}`);
-          // console.log("owner", ownerResult);
-        }
-      }
+      await Promise.all(Object.entries(databaseScheme).map(async (x) => prepareTable(x)));
       await pool.query('COMMIT');
       tablesResult = await pool.query(databaseQuery);
       console.log('initializing database: done');
@@ -201,14 +211,14 @@ export default {
       return { error: 'user status' };
     }
     return { error: 'email' };
-
-    return { error: 'unknown' };
   },
-  async createUser(data, isActivated = false) {
-    console.log('create user', data);
+  async createUser(formData, status = false) {
+    console.log('create user', formData);
+    const data = formData;
+    let isActivated = status;
     const usersData = await pool.query('SELECT * FROM users');
     if (usersData.rows.length) {
-      if (usersData.rows.filter((x) => x.email == data.email).length) {
+      if (usersData.rows.filter((x) => x.email === data.email).length) {
         return { error: 'email not unique' };
       }
     } else {
@@ -252,7 +262,7 @@ export default {
     return data;
   },
   async getUntagged() {
-    const sql = 'SELECT * from  tokens where meta is null or meta = \'\'';
+    const sql = 'SELECT * from tokens where meta is null or meta = \'\'';
     let data = [];
     try {
       const result = await pool.query(sql);
@@ -502,20 +512,16 @@ export default {
     return data;
   },
   async setComment(params, userObject) {
-    let {
-      id, text_id, title, published, long_json, long_html, long_text, brief_json, brief_html, brief_text, trans, priority, tags = [], issues = []
-    } = params;
-    const tagsAsArray = `{${tags.length ? tags.join(',') : ''}}`;
-    const issuesAsArray = `{${issues.length ? issues.map((x) => `{${x.join(',')}}`).join(',') : ''}}`;
+    const tagsAsArray = `{${params.tags.length ? params.tags.join(',') : ''}}`;
+    const issuesAsArray = `{${params.issues.length ? params.issues.map((x) => `{${x.join(',')}}`).join(',') : ''}}`;
     // console.log("issues", issuesAsArray);
-    text_id = Number(text_id);
-    const values = [text_id, title, published, long_json, long_html, long_text, brief_json, brief_html, brief_text, trans, priority, tagsAsArray, issuesAsArray];
+    const textId = Number(params.text_id);
+    const values = [textId, params.title, params.published, params.long_json, params.long_html, params.long_text, params.brief_json, params.brief_html, params.brief_text, params.trans, params.priority, tagsAsArray, issuesAsArray];
 
     let sql = '';
-    if (id) {
-      id = Number(id);
-      values.push(id);
 
+    if (params.id) {
+      values.push(Number(params.id));
       sql = `UPDATE comments SET text_id = $1, title = $2, published= $3, long_json = $4, long_html = $5, long_text = $6,
       brief_json = $7, brief_html = $8, brief_text = $9, trans = $10, priority = $11,
       tags = $12, issues = $13
@@ -528,8 +534,8 @@ export default {
     let data = {};
     try {
       let previousCommentObject = {};
-      if (id) {
-        const selection = await pool.query('SELECT * FROM comments WHERE id = $1', [id]);
+      if (params.id) {
+        const selection = await pool.query('SELECT * FROM comments WHERE id = $1', [Number(params.id)]);
         const commentObject = selection.rows[0];
         previousCommentObject = cleanCommentObject(commentObject);
       }
@@ -544,13 +550,13 @@ export default {
           const result = await pool.query(sql, values);
           data = result?.rows?.[0];
           const resultId = data.id;
-
           const logQuery = 'INSERT INTO logs (user_id, table_name, record_id, data0, data1) VALUES($1, $2, $3, $4, $5) RETURNING id';
           const table = 'comments';
           // enum types! - alter table logs
-          const logResult = await pool.query(logQuery, [userObject.id, table, resultId, previousCommentObject, newCommentObject]);
+          const logValues = [userObject.id, table, resultId, previousCommentObject, newCommentObject];
+          await pool.query(logQuery, logValues);
+          // const logResult = await pool.query(logQuery, logValues);
           // console.log(logQuery, logResult);
-          // return resultId;
           await pool.query('COMMIT');
         } catch (error) {
           await pool.query('ROLLBACK');
@@ -667,26 +673,33 @@ export default {
     }
     return data;
   },
-  async getUsers() {
-    const sql = 'SELECT id, username, firstname, lastname, email, privs, activated from users';
+  async getUsers(id) {
+    let sql = 'SELECT id, username, firstname, lastname, email, privs, activated from users';
     let data = [];
+    const values = [];
+
+    if (id) {
+      sql += ' WHERE id = $1';
+      values.push(id);
+    } else {
+      sql += ' ORDER BY id DESC';
+    }
+
     try {
-      const result = await pool.query(sql);
+      const result = await pool.query(sql, values);
       data = result?.rows;
     } catch (err) {
       console.error(err);
     }
+
     return data;
   },
   async deleteById(table, id, limits = {}) {
     // console.log(`DELETE from ${table} with ${id} by ${user.username}`);
     let data = [];
     try {
-      let sqlExtension = '';
-      for (const [key, value] of Object.entries(limits)) {
-        sqlExtension += ` AND ${key} = ${value}`;
-      }
-      const sql = `DELETE FROM ${table} WHERE id = $1 ${sqlExtension} RETURNING id`;
+      const sqlLimit = Object.entries(limits).map((x) => `AND ${x[0]} = ${x[1]}`).join(' ');
+      const sql = `DELETE FROM ${table} WHERE id = $1 ${sqlLimit} RETURNING id`;
       // console.log(sql);
       const result = await pool.query(sql, [id]);
       data = result?.rows;
