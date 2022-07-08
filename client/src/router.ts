@@ -14,6 +14,7 @@ import Project from './components/Project.vue';
 import Media from './components/Media.vue';
 import Import from './components/Import.vue';
 import Users from './components/Users.vue';
+import User from './components/User.vue';
 
 const routes = [
   // {
@@ -99,6 +100,11 @@ const routes = [
     path: '/users',
     component: Users,
     name: 'Users',
+  },
+  {
+    path: '/user/:id?',
+    component: User,
+    name: 'User',
   },
 ];
 
