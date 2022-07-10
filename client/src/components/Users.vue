@@ -17,7 +17,7 @@
                 </n-gi>
                 <n-gi style="text-align:right;">
                     <!-- <n-button type="error" @click="editUser(item)">Deactivate</n-button> -->
-                    <n-button type="info" size="small" @click="editUser(item)">Edit</n-button>
+                    <n-button type="info" size="small" @click="editUser(item)">Manage</n-button>
                 </n-gi>
             </n-grid>
         </n-space>
@@ -28,8 +28,30 @@
 
 import store from '../store';
 import router from '../router';
-import { ref, reactive, onBeforeMount } from 'vue';
+import { ref, reactive, onBeforeMount, h } from 'vue';
 import { CheckCircleRound, SecurityFilled, RadioButtonUncheckedFilled, } from '@vicons/material';
+import { NAlert, useMessage } from 'naive-ui'
+import type { MessageRenderMessage } from 'naive-ui'
+
+const renderMessage: MessageRenderMessage = (props) => {
+    const { type } = props
+    return h(
+        NAlert,
+        {
+            closable: props.closable,
+            onClose: props.onClose,
+            type: type === 'loading' ? 'default' : type,
+            title: 'Registration procedure',
+            style: {
+                boxShadow: 'var(--n-box-shadow)',
+                maxWidth: '250px',
+            }
+        },
+        {
+            default: () => props.content
+        }
+    )
+}
 
 interface IUser {
     id?: number,
@@ -41,6 +63,7 @@ interface IUser {
     activated: boolean,
 };
 
+const message = useMessage();
 const users: Array<IUser> = reactive([] as Array<IUser>);
 const isLoaded = ref(false);
 
@@ -52,7 +75,16 @@ onBeforeMount(async () => {
 });
 
 const editUser = async (user: IUser) => {
-    router.push(`/user/${user.id || ''}`);
+    if (user?.id) {
+        router.push(`/user/${user.id || ''}`);
+    } else {
+        message.info(`New users register by themselves. After that, the administrators will be able to activate new accounts.`, {
+            render: renderMessage,
+            closable: true,
+            duration: 10000,
+        })
+    }
+
 };
 
 </script>
