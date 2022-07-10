@@ -674,11 +674,25 @@ export default {
     return data;
   },
   async activateUser(userId, currentUser) {
-    console.log('activation request:', userId, 'by', currentUser);
+    console.log('activation request:', userId, 'by', currentUser.id);
     let data = {};
     if (userId && currentUser.privs === 1) {
       try {
         const sql = 'UPDATE users SET activated = True WHERE id = $1 RETURNING id';
+        const result = await pool.query(sql, [userId]);
+        data = result?.rows?.[0];
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    return data;
+  },
+  async elevateUser(userId, currentUser) {
+    console.log('privileges elevation request:', userId, 'by', currentUser.id);
+    let data = {};
+    if (userId && currentUser.privs === 1) {
+      try {
+        const sql = 'UPDATE users SET privs = 1 WHERE id = $1 RETURNING id';
         const result = await pool.query(sql, [userId]);
         data = result?.rows?.[0];
       } catch (err) {
