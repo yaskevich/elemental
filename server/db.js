@@ -63,6 +63,7 @@ const databaseScheme = {
     prefs json,
     _passhash TEXT NOT NULL,
     activated BOOLEAN NOT NULL DEFAULT FALSE,
+    requested timestamp with time zone,
     text_id integer,
     CONSTRAINT fk_users_texts FOREIGN KEY(text_id) REFERENCES texts(id)`,
 
@@ -189,8 +190,10 @@ const cleanCommentObject = (obj) => {
 
 export default {
   async getUserDataByID(id) {
-    const res = await pool.query('SELECT * from users WHERE id = $1 AND activated = TRUE', [id]);
-    return res?.rows[0];
+    const sql = 'UPDATE users SET requested = NOW() WHERE id = $1'; // to log activity
+    await pool.query(sql, [id]);
+    const result = await pool.query('SELECT * from users WHERE id = $1 AND activated = TRUE', [id]);
+    return result?.rows?.[0];
   },
   async getUserData(email, pwd) {
     if (!email) { return { error: 'email' }; }
@@ -233,7 +236,7 @@ export default {
     const hash = await bcrypt.hash(pwd, saltRounds);
     console.log('ready');
     // console.log(pwd, hash);
-    const result = await pool.query('INSERT INTO users (username, firstname, lastname, email, sex, privs, _passhash, activated) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id', [data.username, data.firstname, data.lastname, data.email, data.sex, data.privs, hash, isActivated]);
+    const result = await pool.query('INSERT INTO users (requested, username, firstname, lastname, email, sex, privs, _passhash, activated) VALUES(NOW(), $1, $2, $3, $4, $5, $6, $7, $8) RETURNING id', [data.username, data.firstname, data.lastname, data.email, data.sex, data.privs, hash, isActivated]);
     if (result.rows.length === 1) {
       return { message: pwd };
     }
@@ -702,7 +705,7 @@ export default {
     return data;
   },
   async getUsers(id) {
-    let sql = 'SELECT id, username, firstname, lastname, email, privs, activated from users';
+    let sql = 'SELECT id, username, firstname, lastname, email, privs, activated, requested from users';
     let data = [];
     const values = [];
 
@@ -710,7 +713,7 @@ export default {
       sql += ' WHERE id = $1';
       values.push(id);
     } else {
-      sql += ' ORDER BY id DESC';
+      sql += ' ORDER BY requested DESC';
     }
 
     try {
