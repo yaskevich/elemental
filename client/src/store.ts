@@ -23,6 +23,7 @@ interface IUserObject {
   commit: string,
   text_id: number,
   text?: ITextObject,
+  privs: number,
 };
 
 interface IState {
