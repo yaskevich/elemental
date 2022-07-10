@@ -117,6 +117,16 @@ app.post('/api/user/add', auth, async (req, res) => {
   res.json(result);
 });
 
+app.post('/api/user/activate', auth, async (req, res) => {
+  const result = await db.activateUser(req.body?.id, req.user);
+  res.json(result);
+});
+
+app.post('/api/user/elevate', auth, async (req, res) => {
+  const result = await db.elevateUser(req.body?.id, req.user);
+  res.json(result);
+});
+
 app.post('/api/user/text', auth, async (req, res) => {
   const result = await db.selectText(req.user.id, req.body.id);
   res.json(result);
@@ -232,12 +242,6 @@ app.get('/api/issues', auth, async (req, res) => {
 app.get('/api/users', auth, async (req, res) => {
   const users = await db.getUsers(req.query?.id);
   res.json(users);
-});
-
-app.post('/api/activate', auth, async (req, res) => {
-  console.log('activation request:', req.body?.id, 'by', req.user);
-  const result = await db.activateUser(req.body?.id, req.user);
-  res.json(result);
 });
 
 app.get('/api/tags', auth, async (req, res) => {
