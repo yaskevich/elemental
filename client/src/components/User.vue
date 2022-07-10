@@ -1,5 +1,10 @@
 <template>
-    <n-card title="User" :bordered="false" class="minimal left">
+    <n-card
+        :title="user?.id ? `${user.firstname} ${user.lastname}` : 'User'"
+        :bordered="false"
+        class="minimal left"
+        v-if="isLoaded"
+    >
         <n-form ref="formRef" :label-width="80" :model="user" :rules="rules">
             <n-form-item label="Username" path="username">
                 <n-input v-model:value="user.username" />
@@ -7,16 +12,19 @@
             <n-form-item label="E-mail" path="email">
                 <n-input v-model:value="user.email" placeholder="test@mail.com" />
             </n-form-item>
-
             <n-form-item label="First Name" path="firstname">
                 <n-input v-model:value="user.firstname" />
             </n-form-item>
             <n-form-item label="Last Name" path="lastname">
                 <n-input v-model:value="user.lastname" />
             </n-form-item>
-            <n-space>
-                <n-button v-if="!user.activated" type="error">Activate</n-button>
-                <n-button v-if="user.activated && user.privs > 1" type="warning">Make administrator</n-button>
+            <n-space v-if="store?.state?.user?.privs === 1">
+                <n-button v-if="!user.activated" type="error" @click="requestActivation">Activate</n-button>
+                <n-button
+                    v-if="user.activated && user.privs > 1"
+                    type="warning"
+                    @click="requestElevation"
+                >Make administrator</n-button>
             </n-space>
         </n-form>
     </n-card>
@@ -25,12 +33,9 @@
 <script setup lang="ts">
 
 import { ref, reactive, onBeforeMount } from 'vue';
-import store from '../store';
-import router from '../router';
 import { useRoute } from 'vue-router';
-import { FormInst, FormItemRule, FormValidationError, } from 'naive-ui'
-const vuerouter = useRoute();
-const id = ref(String(vuerouter.params.id));
+import { FormInst, FormItemRule, FormValidationError, } from 'naive-ui';
+import store from '../store';
 
 interface IUser {
     id?: number,
@@ -41,6 +46,28 @@ interface IUser {
     privs: number,
     activated: boolean,
 };
+
+const formRef = ref<FormInst | null>(null);
+const vuerouter = useRoute();
+const id = ref(String(vuerouter.params.id));
+
+const requestActivation = async () => {
+    const { data } = await store.post('user/activate', { id: id.value });
+    console.log("activated", data);
+    if (data?.id) {
+        user.activated = true;
+    }
+};
+
+const requestElevation = async () => {
+    const { data } = await store.post('user/elevate', { id: id.value });
+    console.log("elevated", data);
+    if (data?.id) {
+        user.privs = 1;
+    }
+};
+
+const isLoaded = ref(false);
 const user = reactive({} as IUser);
 const rules = {
     author: {
@@ -56,14 +83,14 @@ const rules = {
 };
 
 onBeforeMount(async () => {
-    console.log(id.value);
     if (id.value) {
         const data = await store.get('users', id.value);
-        console.log('user', data?.[0]);
+        // console.log('user', data?.[0]);
         Object.assign(user, data.shift());
     } else {
         console.log("add new");
     }
+    isLoaded.value = true;
 });
 
 </script>
