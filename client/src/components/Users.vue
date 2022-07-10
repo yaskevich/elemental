@@ -4,7 +4,13 @@
             <n-button type="primary" @click="editUser">+ new</n-button>
         </template>
         <n-space vertical size="large">
-            <n-grid x-gap="12" cols="2" responsive="screen" v-for="item in users" :key="item.id">
+            <n-grid
+                cols="2 s:3 m:3 l:3 xl:3"
+                x-gap="12"
+                responsive="screen"
+                v-for="item in users"
+                :key="item.id"
+            >
                 <n-gi>
                     <n-tag :type="item.activated ? 'success' : 'warning'">
                         {{ item.firstname }} {{ item.lastname }}
@@ -15,7 +21,17 @@
                         </template>
                     </n-tag>
                 </n-gi>
-                <n-gi style="text-align:right;">
+                <n-gi>
+                    <n-tooltip trigger="hover" placement="right">
+                        <template #trigger>
+                            <n-tag>
+                                <n-time :time="new Date(item.requested)" type="relative" />
+                            </n-tag>
+                        </template>
+                        <n-time :time="new Date(item.requested)" />
+                    </n-tooltip>
+                </n-gi>
+                <n-gi style class="aligned">
                     <!-- <n-button type="error" @click="editUser(item)">Deactivate</n-button> -->
                     <n-button type="info" size="small" @click="editUser(item)">Manage</n-button>
                 </n-gi>
@@ -61,6 +77,7 @@ interface IUser {
     email: string,
     privs: number,
     activated: boolean,
+    requested: Date,
 };
 
 const message = useMessage();
@@ -88,3 +105,15 @@ const editUser = async (user: IUser) => {
 };
 
 </script>
+
+<style>
+.aligned {
+    text-align: right;
+}
+
+@media only screen and (max-width: 600px) {
+    .aligned {
+        text-align: left;
+    }
+}
+</style>
