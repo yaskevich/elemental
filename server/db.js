@@ -673,6 +673,20 @@ export default {
     }
     return data;
   },
+  async activateUser(userId, currentUser) {
+    console.log('activation request:', userId, 'by', currentUser);
+    let data = {};
+    if (userId && currentUser.privs === 1) {
+      try {
+        const sql = 'UPDATE users SET activated = True WHERE id = $1 RETURNING id';
+        const result = await pool.query(sql, [userId]);
+        data = result?.rows?.[0];
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    return data;
+  },
   async getUsers(id) {
     let sql = 'SELECT id, username, firstname, lastname, email, privs, activated from users';
     let data = [];
