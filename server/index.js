@@ -268,7 +268,7 @@ app.delete('/api/:table/:id', auth, async (req, res) => {
   // console.log('DELETE params', req.params, 'query', req.query);
   let result = {};
   if (['comments'].includes(req.params.table)) {
-    result = await db.deleteById(req.params.table, req.params.id, req.user);
+    result = await db.deleteById(req.user, req.params.table, req.params.id);
   }
   res.json(result);
 });
@@ -445,7 +445,7 @@ app.post('/api/unload', auth, async (req, res) => {
     } else {
       try {
         // fs.unlinkSync(filePath);
-        const check = await db.deleteById('images', fileName, { text_id: textId });
+        const check = await db.deleteById(req.user, 'images', fileName, { text_id: textId });
         if (check?.[0]?.id === fileName) {
           fs.unlinkSync(filePath);
         } else {
