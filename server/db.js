@@ -515,8 +515,8 @@ export default {
     return data;
   },
   async setComment(params, userObject) {
-    const tagsAsArray = `{${params.tags.length ? params.tags.join(',') : ''}}`;
-    const issuesAsArray = `{${params.issues.length ? params.issues.map((x) => `{${x.join(',')}}`).join(',') : ''}}`;
+    const tagsAsArray = `{${params?.tags?.length ? params.tags.join(',') : ''}}`;
+    const issuesAsArray = `{${params?.issues?.length ? params.issues.map((x) => `{${x.join(',')}}`).join(',') : ''}}`;
     // console.log("issues", issuesAsArray);
     const textId = Number(params.text_id);
     const values = [textId, params.title, params.published, params.long_json, params.long_html, params.long_text, params.brief_json, params.brief_html, params.brief_text, params.trans, params.priority, tagsAsArray, issuesAsArray];
@@ -725,8 +725,9 @@ export default {
 
     return data;
   },
-  async deleteById(table, id, limits = {}) {
-    // console.log(`DELETE from ${table} with ${id} by ${user.username}`);
+  async deleteById(currentUser, table, id, limits = {}) {
+    console.log(`DELETE from ${table} with ${id} by ${currentUser.id} (${currentUser.username})`);
+    // console.log(table, id, limits);
     let data = [];
     try {
       const sqlLimit = Object.entries(limits).map((x) => `AND ${x[0]} = ${x[1]}`).join(' ');
