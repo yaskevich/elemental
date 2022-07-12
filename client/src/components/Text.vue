@@ -294,102 +294,107 @@ const items = [
 </script>
 
 <template>
-  <div v-if="isLoaded" class="left" style="padding: 0 10px 0 10px;">
-    <n-space justify="left" size="large">
-      <n-radio-group v-model:value="annotationMode" name="radiogroup">
-        <n-space>
-          <n-radio
-            v-for="item in items"
-            :key="item.value"
-            :value="item.value"
-            :label="item.label"
-            :disabled="item.disabled"
-          />
-        </n-space>
-      </n-radio-group>
-
-      <n-switch :round="false" :rail-style="actStyle" v-model:value="inspectMode">
-        <template #checked>Inspect</template>
-        <template #unchecked>Select</template>
-      </n-switch>
-
-      <!-- <n-button :color="inspectMode?'#ff69b4':'#8a2be2'" size="tiny" @click="inspectMode = !inspectMode">{{inspectMode?'Inspect':'Select'}}</n-button> -->
-
-      <n-switch
-        :round="false"
-        :rail-style="selStyle"
-        v-model:value="singleMode"
-        :style="`visibility: ${!inspectMode ? 'visible' : 'hidden'}`"
-      >
-        <template #checked>Unit</template>
-        <template #unchecked>Sequence</template>
-      </n-switch>
-    </n-space>
-
-    <n-divider />
-
-    <n-modal
-      v-model:show="showModal"
-      preset="dialog"
-      :title="'Bound comments for “' + selectedToken.form + '”'"
-      positive-text="Submit"
-      negative-text="Cancel"
-      @positive-click="submitModal"
-    >
-      <n-checkbox-group v-model:value="commentsToStore">
-        <template v-for="(commentId, index) in selectedToken.comments" :key="index">
-          <n-checkbox :value="commentId" :label="commentsObject[String(commentId)]['title']" />
-          <n-button ghost type="primary" size="tiny" @click="goToComment(commentId)">Comment</n-button>
-        </template>
-      </n-checkbox-group>
-    </n-modal>
-
-    <div>
-      <template v-for="(token, index) in text" :key="token.id" style="padding:.5rem;">
-        <div v-if="index && token.p !== text[index - 1].p" style="margin-bottom:1rem;"></div>
-        <button
-          :id="`id${token.id}`"
-          :class="`text-button ${token?.checked ? 'selected-button' : ''}  ${token?.comments?.length ? 'commented' : ''} ${highlightedTokens.length && highlightedTokens.includes(token.id) ? 'highlighted' : ''}`"
-          size="small"
-          :title="store.state.user?.text?.grammar ? token?.pos : token.comments.map(x => commentsObject[String(x)]['title']).join('•')"
-          v-if="token.meta !== 'ip'"
-          :disabled="token.meta === 'ip+'"
-          @click="selectToken(token, $event)"
-          :style="store.state.user?.text?.grammar && token?.pos ? { 'background-color': grammarScheme?.[token.pos]?.['color'] || 'gray', 'color': grammarScheme?.[token.pos]?.['font'] || 'black' } : ''"
-        >
-          {{ token.form }}
-          <sup v-if="token?.comments?.length">{{ token.comments.length }}</sup>
-        </button>
-      </template>
+  <div v-if="isLoaded" class="left" style="padding: 0 10px 20px 10px;">
+    <div class="minimal left" v-if="!store?.state?.user?.text_id">
+      <n-alert title="No text" type="warning">Select specific text before (at Home screen)</n-alert>
     </div>
+    <div v-else>
+      <n-space justify="left" size="large">
+        <n-radio-group v-model:value="annotationMode" name="radiogroup">
+          <n-space>
+            <n-radio
+              v-for="item in items"
+              :key="item.value"
+              :value="item.value"
+              :label="item.label"
+              :disabled="item.disabled"
+            />
+          </n-space>
+        </n-radio-group>
 
-    <n-drawer v-model:show="showDrawer" placement="bottom" :on-update:show="drawerUpdated()">
-      <n-drawer-content>
-        <n-space vertical>
-          <div style="margin: 5px;">
-            <template v-for="item in selectedArray" :key="item.id">
-              <span
-                v-if="item.meta !== 'ip'"
-                class="sequence selected-button text-button"
-              >{{ item.form }}</span>
-            </template>
-          </div>
-          <n-auto-complete
-            clearable
-            :options="options"
-            placeholder="Comment title or ID"
-            :on-update:value="(userInput: string) => queryDatabase(userInput)"
-            :on-select="(selectedValue: number) => selectOption(selectedValue)"
-          />
-          <div v-if="selectedCommentId" style="margin: 5px;">Comment: {{ selectedCommentTitle }}</div>
-          <div>
-            <n-button @click="clearSelection">Clear tokens selection</n-button>&nbsp;
-            <n-button @click="createComment" type="warning">Bind tokens to new comment</n-button>&nbsp;
-            <n-button @click="bindTokensToComment" v-if="selectedCommentId" type="success">Bind</n-button>
-          </div>
-        </n-space>
-      </n-drawer-content>
-    </n-drawer>
+        <n-switch :round="false" :rail-style="actStyle" v-model:value="inspectMode">
+          <template #checked>Inspect</template>
+          <template #unchecked>Select</template>
+        </n-switch>
+
+        <!-- <n-button :color="inspectMode?'#ff69b4':'#8a2be2'" size="tiny" @click="inspectMode = !inspectMode">{{inspectMode?'Inspect':'Select'}}</n-button> -->
+
+        <n-switch
+          :round="false"
+          :rail-style="selStyle"
+          v-model:value="singleMode"
+          :style="`visibility: ${!inspectMode ? 'visible' : 'hidden'}`"
+        >
+          <template #checked>Unit</template>
+          <template #unchecked>Sequence</template>
+        </n-switch>
+      </n-space>
+
+      <n-divider />
+
+      <n-modal
+        v-model:show="showModal"
+        preset="dialog"
+        :title="'Bound comments for “' + selectedToken.form + '”'"
+        positive-text="Submit"
+        negative-text="Cancel"
+        @positive-click="submitModal"
+      >
+        <n-checkbox-group v-model:value="commentsToStore">
+          <template v-for="(commentId, index) in selectedToken.comments" :key="index">
+            <n-checkbox :value="commentId" :label="commentsObject[String(commentId)]['title']" />
+            <n-button ghost type="primary" size="tiny" @click="goToComment(commentId)">Comment</n-button>
+          </template>
+        </n-checkbox-group>
+      </n-modal>
+
+      <div>
+        <template v-for="(token, index) in text" :key="token.id" style="padding:.5rem;">
+          <div v-if="index && token.p !== text[index - 1].p" style="margin-bottom:1rem;"></div>
+          <button
+            :id="`id${token.id}`"
+            :class="`text-button ${token?.checked ? 'selected-button' : ''}  ${token?.comments?.length ? 'commented' : ''} ${highlightedTokens.length && highlightedTokens.includes(token.id) ? 'highlighted' : ''}`"
+            size="small"
+            :title="store.state.user?.text?.grammar ? token?.pos : token.comments.map(x => commentsObject[String(x)]['title']).join('•')"
+            v-if="token.meta !== 'ip'"
+            :disabled="token.meta === 'ip+'"
+            @click="selectToken(token, $event)"
+            :style="store.state.user?.text?.grammar && token?.pos ? { 'background-color': grammarScheme?.[token.pos]?.['color'] || 'gray', 'color': grammarScheme?.[token.pos]?.['font'] || 'black' } : ''"
+          >
+            {{ token.form }}
+            <sup v-if="token?.comments?.length">{{ token.comments.length }}</sup>
+          </button>
+        </template>
+      </div>
+
+      <n-drawer v-model:show="showDrawer" placement="bottom" :on-update:show="drawerUpdated()">
+        <n-drawer-content>
+          <n-space vertical>
+            <div style="margin: 5px;">
+              <template v-for="item in selectedArray" :key="item.id">
+                <span
+                  v-if="item.meta !== 'ip'"
+                  class="sequence selected-button text-button"
+                >{{ item.form }}</span>
+              </template>
+            </div>
+            <n-auto-complete
+              clearable
+              :options="options"
+              placeholder="Comment title or ID"
+              :on-update:value="(userInput: string) => queryDatabase(userInput)"
+              :on-select="(selectedValue: number) => selectOption(selectedValue)"
+            />
+            <div v-if="selectedCommentId" style="margin: 5px;">Comment: {{ selectedCommentTitle }}</div>
+            <div>
+              <n-button @click="clearSelection">Clear tokens selection</n-button>&nbsp;
+              <n-button @click="createComment" type="warning">Bind tokens to new comment</n-button>&nbsp;
+              <n-button @click="bindTokensToComment" v-if="selectedCommentId" type="success">Bind</n-button>
+            </div>
+          </n-space>
+        </n-drawer-content>
+      </n-drawer>
+    </div>
   </div>
 </template>
 
