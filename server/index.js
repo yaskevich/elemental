@@ -118,7 +118,7 @@ app.post('/api/user/add', auth, async (req, res) => {
 });
 
 app.post('/api/user/activate', auth, async (req, res) => {
-  const result = await db.activateUser(req.body?.id, req.user);
+  const result = await db.changeActivationStatus(req.body?.id, req.user, Boolean(req.body?.status));
   res.json(result);
 });
 
