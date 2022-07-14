@@ -19,12 +19,22 @@
                 <n-input v-model:value="user.lastname" />
             </n-form-item>
             <n-space v-if="store?.state?.user?.privs === 1">
-                <n-button v-if="!user.activated" type="error" @click="requestActivation">Activate</n-button>
-                <n-button
-                    v-if="user.activated && user.privs > 1"
-                    type="warning"
-                    @click="requestElevation"
-                >Make administrator</n-button>
+                <template v-if="user.activated">
+                    <n-alert
+                        v-if="String(store?.state?.user?.id) === id"
+                        title="Disabling your own account is not allowed"
+                        type="warning"
+                    >Ask other administrators to deactivate your account if you do not need it anymore</n-alert>
+                    <n-button type="error" @click="changeActivationStatus(false)">Deactivate</n-button>
+                    <n-button
+                        v-if="user.activated && user.privs > 1"
+                        type="warning"
+                        @click="requestElevation"
+                    >Make administrator</n-button>
+                </template>
+                <template v-else>
+                    <n-button type="error" @click="changeActivationStatus(true)">Activate</n-button>
+                </template>
             </n-space>
         </n-form>
     </n-card>
@@ -51,11 +61,11 @@ const formRef = ref<FormInst | null>(null);
 const vuerouter = useRoute();
 const id = ref(String(vuerouter.params.id));
 
-const requestActivation = async () => {
-    const { data } = await store.post('user/activate', { id: id.value });
-    console.log("activated", data);
+const changeActivationStatus = async (status: boolean) => {
+    const { data } = await store.post('user/activate', { id: id.value, status: status });
+    console.log("activation status", status, data);
     if (data?.id) {
-        user.activated = true;
+        user.activated = status;
     }
 };
 
