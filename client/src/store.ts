@@ -1,6 +1,7 @@
 import { reactive } from "vue";
-import axios, {AxiosRequestConfig} from "axios";
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import project from '../package.json';
+import router from "./router";
 
 interface ITextObject {
   author: string,
@@ -32,114 +33,131 @@ interface IState {
   user?: IUserObject,
 };
 
-const state:IState = reactive({
+const state: IState = reactive({
   token: localStorage.getItem('token') || '',
   user: {},
   error: "",
 }) as IState;
 
-const getFile = async(route: string, id: string) : Promise<any> => {
+const getFile = async (route: string, id: string): Promise<any> => {
   if (state.token && id) {
     try {
-       const config = {
-         headers: { Authorization: "Bearer " + state.token },
-         responseType: "blob",
-         params: { id: id }
-       } as AxiosRequestConfig;
+      const config = {
+        headers: { Authorization: "Bearer " + state.token },
+        responseType: "blob",
+        params: { id: id }
+      } as AxiosRequestConfig;
 
-       const response = await axios.get("/api/" + route, config);
-       const blob = new Blob([response.data], { type: 'application/gzip' })
-       const link = document.createElement('a')
-       link.href = URL.createObjectURL(blob);
-       link.download = id;
-       link.click();
-       URL.revokeObjectURL(link.href);
-   } catch (error) {
-       return error;
-   }
- }
+      const response = await axios.get("/api/" + route, config);
+      const blob = new Blob([response.data], { type: 'application/gzip' })
+      const link = document.createElement('a')
+      link.href = URL.createObjectURL(blob);
+      link.download = id;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    } catch (error) {
+      return error;
+    }
+  }
 
 }
 
-const get = async(route: string, id: string = "", data: Object = {}): Promise<any> => {
+const logoutUser = () => {
+  state.token = '';
+  state.user = {} as IUserObject;
+  localStorage.removeItem('token');
+  router.replace('/login');
+};
+
+const get = async (route: string, id: string = "", data: Object = {}): Promise<any> => {
   if (state.token) {
     try {
       // console.log("data", data);
+      // console.log("token", state.token);
       const config = state.token ?
-      { headers: { Authorization: "Bearer " + state.token }, "params": {} }: {};
+        { headers: { Authorization: "Bearer " + state.token }, "params": {} } : {};
 
-      let params = id ? { id }: {};
-      config.params = {...params, ...data};
+      let params = id ? { id } : {};
+      config.params = { ...params, ...data };
 
       const response = await axios.get("/api/" + route, config);
       // console.log(response.data);
+
       return response.data;
-   } catch (error) {
-       console.log("Cannot get", error);
-       return error;
-   }
- }
- console.log("No key. Fail.");
+    } catch (error: any | AxiosError) {
+      console.log("Cannot get", error);
+      if (axios.isAxiosError(error)) {
+        // console.log("axios error");
+        if (error.response?.status === 401) {
+          console.log("access denied!");
+          logoutUser();
+        }
+      }
+      return error;
+    }
+  }
+  console.log("No key. Fail.");
 };
 
-const post = async(table: string, data: Object): Promise<any> => {
+const post = async (table: string, data: Object): Promise<any> => {
   if (state.token) {
     try {
       const config = { headers: { Authorization: "Bearer " + state.token } };
       // const config = {};
       // console.log(`POST ${table}`);
-      const response = await axios.post('/api/'+ table, data, config);
+      const response = await axios.post('/api/' + table, data, config);
       // console.log("store:response", response.data);
       return response;
-   } catch (error) {
-     console.log("Cannot get", error);
-     return error;
-   }
- }
- console.log("No token. Fail.");
+    } catch (error) {
+      console.log("Cannot get", error);
+      return error;
+    }
+  }
+  console.log("No token. Fail.");
 };
 
-const postUnauthorized = async(table: string, data: Object): Promise<any> => {
+const postUnauthorized = async (table: string, data: Object): Promise<any> => {
   try {
     // console.log(`POST ${table}`);
-    const response = await axios.post('/api/'+ table, data);
-    console.log("postUnauthorized", table, response.data);
+    const response = await axios.post('/api/' + table, data);
+    console.log("post [NO AUTH]", table, response.data);
     return response;
- } catch (error) {
-   console.log("Cannot get", error);
-   return error;
- }
-};
-
-const getUser = async() => {
-    if(state.token) {
-      try {
-        const config = { headers: { Authorization: "Bearer " + state.token }, };
-        const response = await axios.get("/api/user/info", config);
-        state.user = response.data;
-      } catch (error) {
-        state.token = '';
-        console.log("Cannot get user", error)
-        return error;
-      }
+  } catch (error) {
+    console.log("Cannot get", error);
+    return error;
   }
 };
 
-const deleteById = async(table: string, id: string): Promise<any> => {
+const getUser = async () => {
   if (state.token) {
     try {
-    const config = { headers: { Authorization: "Bearer " + state.token }, "params": {} };
-     // if(id) { config["params"] = { id: id }; }
-     // console.log("delete query", table, id);
-     const response = await axios.delete("/api/" + table + "/" + id, config);
-     // console.log(response.data);
-     return response;
-   } catch (error) {
-     console.log("Cannot delete", error);
-     return error;
-   }
- }
- console.log("No token. Fail.");
+      // console.log("token", state.token);
+      const config = { headers: { Authorization: "Bearer " + state.token }, };
+      const response = await axios.get("/api/user/info", config);
+      state.user = response.data;
+    } catch (error) {
+      console.log("Cannot get user", error)
+      logoutUser();
+      return error;
+    }
+  }
+};
+
+const deleteById = async (table: string, id: string): Promise<any> => {
+  if (state.token) {
+    try {
+      const config = { headers: { Authorization: "Bearer " + state.token }, "params": {} };
+      // if(id) { config["params"] = { id: id }; }
+      // console.log("delete query", table, id);
+      const response = await axios.delete("/api/" + table + "/" + id, config);
+      // console.log(response.data);
+      return response;
+    } catch (error) {
+      console.log("Cannot delete", error);
+      return error;
+    }
+  }
+  console.log("No token. Fail.");
 };
 
 export default {
