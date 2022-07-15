@@ -97,19 +97,22 @@ onBeforeMount(async () => {
   const textInfo = store.state.user?.text;
   // console.log("text info",  userInfo, textInfo);
   // console.log("grammar status", store.state.user?.text);
+  if (store?.state?.user?.text_id) {
+    const currentTextId = String(store?.state?.user?.text_id);
+    const data = await store.get('text', currentTextId, { grammar: store.state.user?.text?.grammar });
+    Object.assign(text, data);
+    console.log("content", Boolean(data[0]?.pos), data[0]);
 
-  const data = await store.get('text', String(store?.state?.user?.text_id), { grammar: store.state.user?.text?.grammar });
-  Object.assign(text, data);
-  console.log("content", Boolean(data[0]?.pos), data[0]);
-  if (store.state.user?.text?.grammar) {
-    const grammar = await store.get('grammar');
-    console.log("grammar", grammar);
-    Object.assign(grammarScheme, grammar);
+    if (store.state.user?.text?.grammar) {
+      const grammar = await store.get('grammar');
+      console.log("grammar", grammar);
+      Object.assign(grammarScheme, grammar);
+    }
+
+    const textComments = await store.get('textcomments', currentTextId);
+    Object.assign(commentsObject, ...textComments.map((item: any) => ({ [item.id]: item })));
   }
 
-
-  const textComments = await store.get('textcomments', String(store?.state?.user?.text_id));
-  Object.assign(commentsObject, ...textComments.map((item: any) => ({ [item.id]: item })));
   isLoaded.value = true;
 });
 
