@@ -1,6 +1,11 @@
 <template>
-  <n-card title="Media management" v-if="isLoaded" :bordered="false" class="minimal left">
-    <!-- <n-upload action="/api/upload" @preview="handlePreview">
+  <div class="minimal left">
+    <div v-if="isLoaded">
+      <div v-if="!store?.state?.user?.text_id">
+        <n-alert title="No text" type="warning">Select specific text before (at Home screen)</n-alert>
+      </div>
+      <n-card title="Media management" :bordered="false" v-else>
+        <!-- <n-upload action="/api/upload" @preview="handlePreview">
       <n-upload-dragger>
         <div style="margin-bottom: 12px">
           <n-icon size="48" :depth="3">
@@ -15,27 +20,29 @@
         </n-p>
       </n-upload-dragger>
     </n-upload>
-    <n-divider />-->
-    <n-upload
-      ref="uploadRef"
-      :action="`/api/upload/${id}`"
-      :headers="headers"
-      :default-file-list="previewFileList"
-      list-type="image-card"
-      @remove="handleRemoval"
-      @finish="imageLoaded"
-      @download="handleDownload"
-      @before-upload="beforeUpload"
-      :is-error-state="checkError"
-    />
-    <!-- 
+        <n-divider />-->
+        <n-upload
+          ref="uploadRef"
+          :action="`/api/upload/${id}`"
+          :headers="headers"
+          :default-file-list="previewFileList"
+          list-type="image-card"
+          @remove="handleRemoval"
+          @finish="imageLoaded"
+          @download="handleDownload"
+          @before-upload="beforeUpload"
+          :is-error-state="checkError"
+        />
+        <!-- 
        :show-download-button="true"
         @error="handleError"
-       -->
-    <n-modal v-model:show="showModal" preset="card" style="width: 600px" title="A Cool Picture">
-      <img :src="previewImageUrl" style="width: 100%" />
-    </n-modal>
-  </n-card>
+        -->
+        <n-modal v-model:show="showModal" preset="card" style="width: 600px" title="A Cool Picture">
+          <img :src="previewImageUrl" style="width: 100%" />
+        </n-modal>
+      </n-card>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -124,8 +131,10 @@ const beforeUpload = (data: { file: UploadFileInfo, fileList: UploadFileInfo[] }
 onBeforeMount(async () => {
   // console.log("token", store.state.token);
   // Object.assign(headers, { Authorization: "Bearer " + store.state.token });
-  const data = await store.get(`img/${id}`);
-  Object.assign(previewFileList, data.sort((a: any, b: any) => (new Date(a.created)).getTime() - (new Date(b.created)).getTime()));
+  if (id) {
+    const data = await store.get(`img/${id}`);
+    Object.assign(previewFileList, data.sort((a: any, b: any) => (new Date(a.created)).getTime() - (new Date(b.created)).getTime()));
+  }
   isLoaded.value = true;
 });
 
