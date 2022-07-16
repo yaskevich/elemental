@@ -127,6 +127,10 @@ app.post('/api/user/elevate', auth, async (req, res) => {
   res.json(result);
 });
 
+app.post('/api/user/update', auth, async (req, res) => {
+  res.json(await db.updateUser(req.user, req.body));
+});
+
 app.post('/api/user/text', auth, async (req, res) => {
   const result = await db.selectText(req.user.id, req.body.id);
   res.json(result);
@@ -420,7 +424,7 @@ app.post('/api/upload/:id', auth, async (req, res) => {
 });
 
 app.get('/api/img/:id', auth, async (req, res) => {
-  const id = req.params.id || 1;
+  const id = Number(req.params.id) || 1;
   const result = await db.getImages(id);
   const files = result.map((x) => ({
     ...x, status: 'finished', name: x.id, url: `/api/images/${id}/${x.id}`,
