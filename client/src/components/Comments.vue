@@ -280,22 +280,24 @@ onBeforeMount(async () => {
     console.log('change text id to prop', data);
   }
 
-  const issuesData = await store.get('issues');
-  const issuesObject = Object.fromEntries(issuesData.map((x: any) => [x.id, x]));
-  Object.assign(issues, issuesObject);
-
-  issuesArray.push(...issuesData.map((x: any) => ({ value: x.id, label: x.ru })));
-  issuesValues.push(...issuesArray.map((x: any) => x.value));
-
-  const usersData = await store.get('users');
-  Object.assign(users, Object.fromEntries(usersData.map((x: any) => [x.id, x])));
-  // console.log('issues from server', issues);
-  Object.assign(userList, usersData.map((x: any) => ({ value: x.id, label: `${x.firstname} ${x.lastname}` })));
-
-  const tagsData = await store.get('tags');
-  Object.assign(tagsList, tagsData.map((x: any) => ({ value: x.id, label: x.ru })));
 
   if (store?.state?.user?.text_id) {
+
+    const issuesData = await store.get('issues');
+    const issuesObject = Object.fromEntries(issuesData.map((x: any) => [x.id, x]));
+    Object.assign(issues, issuesObject);
+
+    issuesArray.push(...issuesData.map((x: any) => ({ value: x.id, label: x.ru })));
+    issuesValues.push(...issuesArray.map((x: any) => x.value));
+
+    const usersData = await store.get('users');
+    Object.assign(users, Object.fromEntries(usersData.map((x: any) => [x.id, x])));
+    // console.log('issues from server', issues);
+    Object.assign(userList, usersData.map((x: any) => ({ value: x.id, label: `${x.firstname} ${x.lastname}` })));
+
+    const tagsData = await store.get('tags');
+    Object.assign(tagsList, tagsData.map((x: any) => ({ value: x.id, label: x.ru })));
+
     // localStorage.setItem('text_id', String(id));
     const data = await store.get('comments/' + store.state.user.text_id);
     Object.assign(comments, data);
