@@ -7,7 +7,10 @@
     >
         <n-form ref="formRef" :label-width="80" :model="user" :rules="rules">
             <n-form-item label="Username" path="username">
-                <n-input v-model:value="user.username" />
+                <n-input
+                    v-model:value="user.username"
+                    @input="user.username = user.username.toLocaleLowerCase()"
+                />
             </n-form-item>
             <n-form-item label="E-mail" path="email">
                 <n-input v-model:value="user.email" placeholder="test@mail.com" />
@@ -25,7 +28,7 @@
                         title="Disabling your own account is not allowed"
                         type="warning"
                     >Ask other administrators to deactivate your account if you do not need it anymore</n-alert>
-                    <n-button type="error" @click="changeActivationStatus(false)">Deactivate</n-button>
+                    <n-button v-else type="error" @click="changeActivationStatus(false)">Deactivate</n-button>
                     <n-button
                         v-if="user.activated && user.privs > 1"
                         type="warning"
@@ -33,8 +36,9 @@
                     >Make administrator</n-button>
                 </template>
                 <template v-else>
-                    <n-button type="error" @click="changeActivationStatus(true)">Activate</n-button>
+                    <n-button type="success" @click="changeActivationStatus(true)">Activate</n-button>
                 </template>
+                <n-button type="info" @click="saveUser">Save</n-button>
             </n-space>
         </n-form>
     </n-card>
@@ -44,7 +48,7 @@
 
 import { ref, reactive, onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router';
-import { FormInst, FormItemRule, FormValidationError, } from 'naive-ui';
+import { FormInst, FormItemRule, FormValidationError, useMessage, } from 'naive-ui';
 import store from '../store';
 
 interface IUser {
@@ -57,9 +61,37 @@ interface IUser {
     activated: boolean,
 };
 
+const message = useMessage();
 const formRef = ref<FormInst | null>(null);
 const vuerouter = useRoute();
 const id = ref(String(vuerouter.params.id));
+const isLoaded = ref(false);
+const user = reactive({} as IUser);
+
+const rules = {
+    username: {
+        required: true,
+        message: "Username cannot be empty and must contain English letters and numbers only",
+        trigger: ['input', 'blur'],
+        pattern: new RegExp(/^[a-z][a-z0-9]+$/),
+    },
+    firstname: {
+        required: true,
+        message: 'First name cannot be empty',
+        trigger: ['input', 'blur'],
+    },
+    lastname: {
+        required: true,
+        message: 'Last name cannot be empty',
+        trigger: ['input', 'blur'],
+    },
+    email: {
+        required: true,
+        message: 'E-mail cannot be empty',
+        trigger: ['input', 'blur'],
+        type: 'email',
+    },
+};
 
 const changeActivationStatus = async (status: boolean) => {
     const { data } = await store.post('user/activate', { id: id.value, status: status });
@@ -77,19 +109,25 @@ const requestElevation = async () => {
     }
 };
 
-const isLoaded = ref(false);
-const user = reactive({} as IUser);
-const rules = {
-    author: {
-        required: true,
-        message: "Author's name cannot be empty",
-        trigger: 'blur',
-    },
-    title: {
-        required: true,
-        message: 'Text title cannot be empty',
-        trigger: 'blur',
-    },
+const saveUser = async (e: MouseEvent) => {
+    e.preventDefault();
+    try {
+        await formRef.value?.validate(async (errors) => {
+            if (!errors) {
+                // message.success('Valid');
+                const { data } = await store.post('user/update', user);
+                // console.log("save", data);
+                if (!data?.id) {
+                    message.error(data?.error ? data.error : 'unknown error');
+                }
+            } else {
+                console.log(errors)
+                // message.error('Not all required fields are filled!');
+            }
+        });
+    } catch (error) {
+        console.log("fail");
+    }
 };
 
 onBeforeMount(async () => {
