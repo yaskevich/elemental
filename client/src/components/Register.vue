@@ -10,7 +10,7 @@
         ref="formRef"
         v-if="showForm"
       >
-        <n-form-item label="Username (nick). English letters only" path="user.username">
+        <n-form-item label="Username (English letters and numbers)" path="user.username">
           <n-input v-model:value="formValue.user.username" placeholder="Input username" />
         </n-form-item>
 
@@ -37,18 +37,18 @@
           <n-button @click="handleValidateClick">Submit</n-button>
         </n-form-item>
       </n-form>
-      <div v-if="note" class="center-column" style="padding-bottom: 2rem;max-width:300px;">
-        <p>
-          After the administartor activates your account, you will be able to login with the e-mail
-          <em>{{ formValue.user.email }}</em> and this password:
-        </p>
-        <div style="font-family: monospace;font-size:2rem;">{{ note }}</div>
-        <p>Copy the password and store it securely.</p>
-        <!-- <div>
+    </div>
+    <div v-if="note">
+      <p>
+        After the administartor activates your account, you will be able to log in with the e-mail
+        <strong>{{ formValue.user.email }}</strong> and this password:
+      </p>
+      <div style="font-family: monospace;font-size:1.7rem;">{{ note }}</div>
+      <p>Copy the password and store it securely.</p>
+      <!-- <div>
           Copy password and go to
           <router-link to="/login">login page</router-link>.
-        </div>-->
-      </div>
+      </div>-->
     </div>
   </div>
 </template>
@@ -56,8 +56,9 @@
 <script setup lang="ts">
 
 import store from '../store';
-import { ref, reactive, onBeforeMount } from 'vue';
-import { FormInst } from 'naive-ui';
+import { ref, } from 'vue';
+import { FormInst, useMessage, } from 'naive-ui';
+const message = useMessage();
 
 const formRef = ref<FormInst | null>(null);
 const note = ref('');
@@ -113,16 +114,20 @@ const rules = {
 
 const handleValidateClick = (e: MouseEvent) => {
   e.preventDefault();
-  formValue.value.user.username = formValue.value.user.username.replace(/[^\x41-\x7F]/g, '');
+  formValue.value.user.username = formValue.value.user.username.replace(/[^\x41-\x7F0-9]/g, '');
   if (formRef!.value) {
     formRef.value.validate(async (errors: any) => {
       if (!errors) {
         // console.log(formValue.value);
-        const result = await store.postUnauthorized('user/reg', formValue.value.user);
-        const pwd = result?.data?.message;
-        // console.log(pwd);
-        note.value = pwd;
-        showForm.value = false;
+        const { data } = await store.postUnauthorized('user/reg', formValue.value.user);
+        if (data?.message) {
+          const pwd = data?.message;
+          console.log("result", data);
+          note.value = pwd;
+          showForm.value = false;
+        } else {
+          message.error(data?.error ? data.error : 'unknown error');
+        }
       } else {
         console.log(errors);
       }
