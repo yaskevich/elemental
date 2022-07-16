@@ -1,5 +1,6 @@
 <template>
   <div class="center-column">
+    <h3>Login</h3>
     <div class="left-column">
       <n-form :label-width="80" :model="formValue" ref="formRef">
         <n-form-item label="E-mail">
@@ -14,7 +15,10 @@
           <n-button @click="handleValidateClick">Submit</n-button>
         </n-form-item>
       </n-form>
+      <!-- <n-space vertical> -->
       <n-alert v-if="error?.error" title="Access denied" type="error">Reason: {{ error.error }}</n-alert>
+      <!-- <n-alert title="New user" type="info">If you do not have an account, please, register.</n-alert> -->
+      <!-- </n-space> -->
     </div>
   </div>
 </template>
