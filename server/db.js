@@ -224,6 +224,9 @@ export default {
       if (usersData.rows.filter((x) => x.email === data.email).length) {
         return { error: 'email not unique' };
       }
+      if (usersData.rows.filter((x) => x.username === data.username).length) {
+        return { error: 'username not unique' };
+      }
     } else {
       // if users table is empty it means it is first run and we have to create admin user
       // make later regular set up UI
@@ -236,11 +239,34 @@ export default {
     const hash = await bcrypt.hash(pwd, saltRounds);
     console.log('ready');
     // console.log(pwd, hash);
-    const result = await pool.query('INSERT INTO users (requested, username, firstname, lastname, email, sex, privs, _passhash, activated) VALUES(NOW(), $1, $2, $3, $4, $5, $6, $7, $8) RETURNING id', [data.username, data.firstname, data.lastname, data.email, data.sex, data.privs, hash, isActivated]);
+    const result = await pool.query('INSERT INTO users (requested, username, firstname, lastname, email, sex, privs, _passhash, activated) VALUES(NOW(), LOWER($1), INITCAP($2), INITCAP($3), LOWER($4), $5, $6, $7, $8) RETURNING id', [data.username, data.firstname, data.lastname, data.email, data.sex, data.privs, hash, isActivated]);
     if (result.rows.length === 1) {
       return { message: pwd };
     }
     return { error: 'user' };
+  },
+  async updateUser(currentUser, props) {
+    let data = {};
+    const userId = Number(props?.id);
+    if (userId && (currentUser.privs < 3 || currentUser.id === userId)) {
+      const sql = 'UPDATE users SET username = LOWER($2), firstname = INITCAP($3), lastname = INITCAP($4), email = LOWER($5) WHERE id = $1 RETURNING id';
+      const values = [userId, props.username, props.firstname, props.lastname, props.email];
+      try {
+        const usersData = await pool.query('SELECT * FROM users where id <> $1', [userId]);
+        if (usersData.rows.filter((x) => x.email === props.email).length) {
+          data = { error: 'email not unique' };
+        } else if (usersData.rows.filter((x) => x.username === props.username).length) {
+          console.log('username');
+          data = { error: 'username not unique' };
+        } else {
+          const result = await pool.query(sql, values);
+          data = result?.rows?.[0];
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    return data;
   },
   async getCorpusAsConll() {
     const sql = 'select strings.id as sid, strings.p, strings.form as v, strings.s, strings.token_id as tid, strings.repr, tokens.token as utoken, strings.unit_id as uid, pos as cl from strings left  join tokens on strings.token_id = tokens.id  left  join units on strings.unit_id = units.id order by sid';
