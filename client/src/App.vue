@@ -85,42 +85,31 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <!-- <div id="main" v-if="dataReady"> -->
-  <div id="main" v-if="loggedIn">
-    <div v-if="dataReady">
-      <n-menu v-model:value="activeKey" mode="horizontal" :options="menuOptions" />
-      <!-- 
-        <div id="nav">
-        <router-link to="/">Home</router-link>|
-        <router-link
-          to="/comments"
-          v-if="store?.state?.user?.text_id && store?.state?.user?.text?.comments"
-        >Comments</router-link>|
-        <router-link
-          to="/text"
-          v-if="store?.state?.user?.text_id && store?.state?.user?.text?.loaded"
-        >Text</router-link>|
-        <router-link to="/media">Media</router-link>|
-        <router-link to="/tags">Tags</router-link>|
-        <router-link to="/issues">Issues</router-link>|
-        <router-link to="/backups">Backups</router-link>|
-        <router-link to="/logs">Logs</router-link>
-        |
-        {{ state?.user?.username }}
-      </div>-->
-      <n-message-provider>
+  <n-message-provider>
+    <div id="main" v-if="loggedIn">
+      <div v-if="dataReady">
+        <n-menu v-model:value="activeKey" mode="horizontal" :options="menuOptions" />
         <router-view />
-      </n-message-provider>
+      </div>
     </div>
-  </div>
-  <div v-else>
-    <h3>Login</h3>
-    <Login />If you do not have an account, please, register
-    <Register />
-  </div>
-  <!-- <div v-else>
-    загрузка...
-  </div>-->
+    <div v-else style="max-width:300px;margin:auto">
+      <n-tabs
+        default-value="signin"
+        size="large"
+        animated
+        justify-content="center"
+        style="margin: 0 -4px"
+        pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;"
+      >
+        <n-tab-pane name="signin" tab="Log in">
+          <Login />
+        </n-tab-pane>
+        <n-tab-pane name="signup" tab="Register">
+          <Register />
+        </n-tab-pane>
+      </n-tabs>
+    </div>
+  </n-message-provider>
 </template>
 
 <style lang="scss">
@@ -136,20 +125,7 @@ onBeforeMount(async () => {
   max-width: 900px;
   margin: 0 auto;
 }
-/*
-#nav {
-  padding: 1rem;
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
-*/
 .left {
   text-align: left;
 }
