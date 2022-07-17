@@ -26,6 +26,7 @@
 <script setup lang="ts">
 
 import { ref, reactive } from 'vue';
+import router from '../router';
 import store from '../store';
 
 const formRef = ref(null);
@@ -45,6 +46,7 @@ const handleValidateClick = async (e: MouseEvent) => {
       store.state.token = data.token;
       localStorage.setItem('token', data.token);
       store.state.user = { ...store.state.user, ...data };
+      router.push('/')
     }
   }
 
