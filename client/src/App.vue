@@ -1,13 +1,7 @@
 <script setup lang="ts">
-// import router from './router'
-import { ref, reactive, onBeforeMount, computed, } from 'vue'
-import store from './store'
-import Login from './components/Login.vue'
-import Register from './components/Register.vue'
-
-import { h, Component } from 'vue'
-import { MenuOption, NIcon } from 'naive-ui'
-import { RouterLink, useRoute } from 'vue-router'
+import { h, Component, ref, reactive, onBeforeMount, computed, } from 'vue';
+import { MenuOption, NIcon } from 'naive-ui';
+import { RouterLink, useRoute } from 'vue-router';
 import {
   HomeFilled,
   CommentFilled,
@@ -20,7 +14,13 @@ import {
   BackupFilled,
   HistoryFilled,
   PersonSearchFilled,
+  LogOutFilled,
+  EditNoteFilled,
 } from '@vicons/material'
+import store from './store';
+import router from './router';
+import Login from './components/Login.vue';
+import Register from './components/Register.vue';
 
 const vuerouter = useRoute();
 const activeKey = ref<string | null>(null); // vuerouter?.name||'Home'
@@ -41,6 +41,15 @@ const makeItem = (name: string, title: string, icon: Component, disabled: boolea
   icon: renderIcon(icon)
 });
 
+const processMenu = (key: string, item: MenuOption) => {
+  if (key === 'logout') {
+    store.logoutUser();
+  } else if (key === 'profile') {
+    router.push(`/user/${state?.user?.id}`);
+  }
+  // console.log("key", key);
+};
+
 const menuOptions: MenuOption[] = reactive([
   makeItem('Home', 'Home', HomeFilled),
   makeItem('Comments', 'Comments', CommentFilled),
@@ -50,27 +59,50 @@ const menuOptions: MenuOption[] = reactive([
     key: 'management',
     icon: renderIcon(SettingsFilled),
     children: [
-      {
-        type: 'group',
-        label: 'Project',
-        key: 'project-management',
-        children: [
-          makeItem('Media', 'Media', PermMediaFilled),
-          makeItem('Tags', 'Tags', AssignmentFilled),
-          makeItem('Issues', 'Issues', LabelFilled),
-          makeItem('Backups', 'Backups', BackupFilled),
-          makeItem('Users', 'Users', PersonSearchFilled),
-          makeItem('Logs', 'Logs', HistoryFilled, true),
-          // makeItem('', '', ),
-        ]
-      },
-    ]
+      makeItem('Media', 'Media', PermMediaFilled),
+      makeItem('Tags', 'Tags', AssignmentFilled),
+      makeItem('Issues', 'Issues', LabelFilled),
+      makeItem('Backups', 'Backups', BackupFilled),
+      makeItem('Users', 'Users', PersonSearchFilled),
+      makeItem('Logs', 'Logs', HistoryFilled, true),
+      // makeItem('', '', ),
+    ],
+    // children: [
+    //   {
+    //     type: 'group',
+    //     label: 'Project',
+    //     key: 'project-management',
+    //     children: [
+    //       makeItem('Media', 'Media', PermMediaFilled),
+    //       makeItem('Tags', 'Tags', AssignmentFilled),
+    //       makeItem('Issues', 'Issues', LabelFilled),
+    //       makeItem('Backups', 'Backups', BackupFilled),
+    //       makeItem('Users', 'Users', PersonSearchFilled),
+    //       makeItem('Logs', 'Logs', HistoryFilled, true),
+    //       // makeItem('', '', ),
+    //     ]
+    //   },
+    // ]
   },
   {
     label: user,
     key: 'username',
-    disabled: true,
-    icon: renderIcon(PersonFilled)
+    disabled: false,
+    icon: renderIcon(PersonFilled),
+    children: [
+      {
+        label: 'Log out',
+        key: 'logout',
+        disabled: false,
+        icon: renderIcon(LogOutFilled),
+      },
+      {
+        label: 'Edit profile',
+        key: 'profile',
+        disabled: false,
+        icon: renderIcon(EditNoteFilled),
+      }
+    ]
   },
 ]);
 
@@ -88,7 +120,12 @@ onBeforeMount(async () => {
   <n-message-provider>
     <div id="main" v-if="loggedIn">
       <div v-if="dataReady">
-        <n-menu v-model:value="activeKey" mode="horizontal" :options="menuOptions" />
+        <n-menu
+          v-model:value="activeKey"
+          mode="horizontal"
+          :options="menuOptions"
+          @update:value="processMenu"
+        />
         <router-view />
       </div>
     </div>
