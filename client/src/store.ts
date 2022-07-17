@@ -135,9 +135,12 @@ const getUser = async () => {
       const config = { headers: { Authorization: "Bearer " + state.token }, };
       const response = await axios.get("/api/user/info", config);
       state.user = response.data;
-    } catch (error) {
-      console.log("Cannot get user", error)
-      logoutUser();
+    } catch (error: any | AxiosError) {
+      console.log("Cannot get user", error);
+      if (error.response?.status === 401) {
+        console.log("access denied!");
+        logoutUser();
+      }
       return error;
     }
   }
@@ -168,6 +171,7 @@ export default {
   postUnauthorized,
   getUser,
   deleteById,
+  logoutUser,
   version: project?.version,
   git: 'https' + project?.repository?.url?.slice(3, -4),
 };
