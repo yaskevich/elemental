@@ -4,7 +4,6 @@ import { ref, reactive, onBeforeMount } from 'vue';
 import store from '../store';
 // import router from '../router';
 import axios, { AxiosError } from "axios";
-import type { SelectOption } from 'naive-ui';
 import { FormInst, useMessage } from 'naive-ui'
 import { useRoute } from 'vue-router';
 
@@ -13,14 +12,14 @@ const id = String(vuerouter.params.id);
 
 const formRef = ref<FormInst | null>(null);
 const message = useMessage();
-const languages = reactive([] as Array<SelectOption>);
-const form = reactive({ text: '', link: '', lang: null, src: 'text', format: 'plain', });
+const form = reactive({ text: '', link: '', src: 'text', format: 'plain', });
+
 const rules = {
-    lang: {
+    text: {
         required: true,
-        trigger: ['blur', 'change'],
-        message: 'Please select a language',
-    }
+        trigger: ['blur', 'input'],
+        message: 'Please put a text',
+    },
 };
 
 const formats = [
@@ -62,7 +61,7 @@ const startProcessing = async (e: MouseEvent, dryRun: boolean) => {
             if (!errors) {
                 // message.success('Valid');
                 if (form.src === "text") {
-                    console.log("send raw text");
+                    console.log("send raw text", form);
                     const { data } = await store.post('load', { ...form, id: id, dry: dryRun });
                     console.log(data);
                 } else { // if URL
@@ -112,20 +111,26 @@ const getFile = (e: Event) => {
     }
 };
 
-onBeforeMount(async () => {
-    const data = await store.get('languages');
-    Object.assign(languages, data.map((x: any) => ({ label: x.name, value: x.code })));
-    // console.log("data", data);
-});
+// onBeforeMount(async () => {
+
+// });
 
 </script>
 
 <template>
-    <n-card title="Importing Text" :bordered="false" class="minimal left">
+    <n-card title="Importing Text" :bordered="false" class="minimal left" v-if="id">
         <template #header-extra>
             <n-space>
-            <n-button icon-placement="left" type="primary" @click="startProcessing($event, true)">Test</n-button>
-            <n-button icon-placement="left" type="error" @click="startProcessing($event, false)">Run</n-button>
+                <n-button
+                    icon-placement="left"
+                    type="primary"
+                    @click="startProcessing($event, true)"
+                >Test</n-button>
+                <n-button
+                    icon-placement="left"
+                    type="error"
+                    @click="startProcessing($event, false)"
+                >Run</n-button>
             </n-space>
         </template>
         <n-form ref="formRef" :label-width="80" :model="form" :rules="rules" size="small">
@@ -153,17 +158,9 @@ onBeforeMount(async () => {
                         />
                     </n-radio-group>
                 </n-form-item>
-                <n-form-item path="lang" style="display:block;">
-                    <n-select
-                        v-model:value="form.lang"
-                        filterable
-                        placeholder="Please select a language of a text"
-                        :options="languages"
-                    />
-                </n-form-item>
             </n-space>
 
-            <div style="margin:0px 0px 15px 0px" v-if="form.src === 'text'">
+            <div v-if="form.src === 'text'">
                 <label for="userfile" style="padding-right: 5px">Choose text file to load</label>
                 <input id="userfile" name="userfile" type="file" @change="getFile" />
             </div>
@@ -176,18 +173,21 @@ onBeforeMount(async () => {
                 v-if="form.src === 'url'"
             />
 
-            <n-input
-                v-model:value="form.text"
-                type="textarea"
-                clearable
-                :autosize="{
-                    minRows: 3
-                }"
-                placeholder="Insert text here..."
-                v-if="form.src === 'text'"
-            />
+            <n-form-item path="text">
+                <n-input
+                    v-model:value="form.text"
+                    type="textarea"
+                    clearable
+                    :autosize="{ minRows: 3 }"
+                    placeholder="Insert text here..."
+                    v-if="form.src === 'text'"
+                />
+            </n-form-item>
         </n-form>
     </n-card>
+    <div v-else class="minimal left">
+        <n-alert title="No text" type="warning">No text is selected to import</n-alert>
+    </div>
 </template>
 
 <style scoped>
