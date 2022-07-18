@@ -1,0 +1,8282 @@
+[
+    {
+        "name": "Afar",
+        "local": "Afaraf",
+        "location": null,
+        "tag": "aa",
+        "lcid": 4096,
+        "iso6392": "aar",
+        "iso6391": "aa",
+        "default": false
+    },
+    {
+        "name": "Afar",
+        "local": "Afaraf",
+        "location": "Djibouti",
+        "tag": "aa-DJ",
+        "lcid": 4096,
+        "iso6392": "aar",
+        "iso6391": "aa",
+        "default": false
+    },
+    {
+        "name": "Afar",
+        "local": "Afaraf",
+        "location": "Eritrea",
+        "tag": "aa-ER",
+        "lcid": 4096,
+        "iso6392": "aar",
+        "iso6391": "aa",
+        "default": false
+    },
+    {
+        "name": "Afar",
+        "local": "Afaraf",
+        "location": "Ethiopia",
+        "tag": "aa-ET",
+        "lcid": 4096,
+        "iso6392": "aar",
+        "iso6391": "aa",
+        "default": false
+    },
+    {
+        "name": "Afrikaans",
+        "local": "Afrikaans",
+        "location": null,
+        "tag": "af",
+        "lcid": 54,
+        "iso6392": "afr",
+        "iso6391": "af",
+        "default": false
+    },
+    {
+        "name": "Afrikaans",
+        "local": "Afrikaans",
+        "location": "Namibia",
+        "tag": "af-NA",
+        "lcid": 4096,
+        "iso6392": "afr",
+        "iso6391": "af",
+        "default": false
+    },
+    {
+        "name": "Afrikaans",
+        "local": "Afrikaans",
+        "location": "South Africa",
+        "tag": "af-ZA",
+        "lcid": 1078,
+        "iso6392": "afr",
+        "iso6391": "af",
+        "default": false
+    },
+    {
+        "name": "Aghem",
+        "local": null,
+        "location": null,
+        "tag": "agq",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Aghem",
+        "local": null,
+        "location": "Cameroon",
+        "tag": "agq-CM",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Akan",
+        "local": "Akan",
+        "location": null,
+        "tag": "ak",
+        "lcid": 4096,
+        "iso6392": "aka",
+        "iso6391": "ak",
+        "default": false
+    },
+    {
+        "name": "Akan",
+        "local": "Akan",
+        "location": "Ghana",
+        "tag": "ak-GH",
+        "lcid": 4096,
+        "iso6392": "aka",
+        "iso6391": "ak",
+        "default": false
+    },
+    {
+        "name": "Albanian",
+        "local": null,
+        "location": null,
+        "tag": "sq",
+        "lcid": 28,
+        "iso6392": "alb/sqi",
+        "iso6391": "sq",
+        "default": false
+    },
+    {
+        "name": "Albanian",
+        "local": null,
+        "location": "Albania",
+        "tag": "sq-AL",
+        "lcid": 1052,
+        "iso6392": "alb/sqi",
+        "iso6391": "sq",
+        "default": false
+    },
+    {
+        "name": "Albanian",
+        "local": null,
+        "location": "North Macedonia",
+        "tag": "sq-MK",
+        "lcid": 4096,
+        "iso6392": "alb/sqi",
+        "iso6391": "sq",
+        "default": false
+    },
+    {
+        "name": "Alsatian",
+        "local": null,
+        "location": null,
+        "tag": "gsw",
+        "lcid": 132,
+        "iso6392": "gsw",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Alsatian",
+        "local": null,
+        "location": "France",
+        "tag": "gsw-FR",
+        "lcid": 1156,
+        "iso6392": "gsw",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Alsatian",
+        "local": null,
+        "location": "Liechtenstein",
+        "tag": "gsw-LI",
+        "lcid": 4096,
+        "iso6392": "gsw",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Alsatian",
+        "local": null,
+        "location": "Switzerland",
+        "tag": "gsw-CH",
+        "lcid": 4096,
+        "iso6392": "gsw",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Amharic",
+        "local": "አማርኛ",
+        "location": null,
+        "tag": "am",
+        "lcid": 94,
+        "iso6392": "amh",
+        "iso6391": "am",
+        "default": false
+    },
+    {
+        "name": "Amharic",
+        "local": "አማርኛ",
+        "location": "Ethiopia",
+        "tag": "am-ET",
+        "lcid": 1118,
+        "iso6392": "amh",
+        "iso6391": "am",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": null,
+        "tag": "ar",
+        "lcid": 1,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "Algeria",
+        "tag": "ar-DZ",
+        "lcid": 5121,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "Bahrain",
+        "tag": "ar-BH",
+        "lcid": 15361,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "Chad",
+        "tag": "ar-TD",
+        "lcid": 4096,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "Comoros",
+        "tag": "ar-KM",
+        "lcid": 4096,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "Djibouti",
+        "tag": "ar-DJ",
+        "lcid": 4096,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "Egypt",
+        "tag": "ar-EG",
+        "lcid": 3073,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "Eritrea",
+        "tag": "ar-ER",
+        "lcid": 4096,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "Iraq",
+        "tag": "ar-IQ",
+        "lcid": 2049,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "Israel",
+        "tag": "ar-IL",
+        "lcid": 4096,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "Jordan",
+        "tag": "ar-JO",
+        "lcid": 11265,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "Kuwait",
+        "tag": "ar-KW",
+        "lcid": 13313,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "Lebanon",
+        "tag": "ar-LB",
+        "lcid": 12289,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "Libya",
+        "tag": "ar-LY",
+        "lcid": 4097,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "Mauritania",
+        "tag": "ar-MR",
+        "lcid": 4096,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "Morocco",
+        "tag": "ar-MA",
+        "lcid": 6145,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "Oman",
+        "tag": "ar-OM",
+        "lcid": 8193,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "Palestinian Authority",
+        "tag": "ar-PS",
+        "lcid": 4096,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "Qatar",
+        "tag": "ar-QA",
+        "lcid": 16385,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "Saudi Arabia",
+        "tag": "ar-SA",
+        "lcid": 1025,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "Somalia",
+        "tag": "ar-SO",
+        "lcid": 4096,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "South Sudan",
+        "tag": "ar-SS",
+        "lcid": 4096,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "Sudan",
+        "tag": "ar-SD",
+        "lcid": 4096,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "Syria",
+        "tag": "ar-SY",
+        "lcid": 10241,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "Tunisia",
+        "tag": "ar-TN",
+        "lcid": 7169,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "U.A.E.",
+        "tag": "ar-AE",
+        "lcid": 14337,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "World",
+        "tag": "ar-001",
+        "lcid": 4096,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Arabic",
+        "local": "العربية",
+        "location": "Yemen",
+        "tag": "ar-YE",
+        "lcid": 9217,
+        "iso6392": "ara",
+        "iso6391": "ar",
+        "default": false
+    },
+    {
+        "name": "Armenian",
+        "local": null,
+        "location": null,
+        "tag": "hy",
+        "lcid": 43,
+        "iso6392": "arm/hye",
+        "iso6391": "hy",
+        "default": false
+    },
+    {
+        "name": "Armenian",
+        "local": null,
+        "location": "Armenia",
+        "tag": "hy-AM",
+        "lcid": 1067,
+        "iso6392": "arm/hye",
+        "iso6391": "hy",
+        "default": false
+    },
+    {
+        "name": "Assamese",
+        "local": "অসমীয়া",
+        "location": null,
+        "tag": "as",
+        "lcid": 77,
+        "iso6392": "asm",
+        "iso6391": "as",
+        "default": false
+    },
+    {
+        "name": "Assamese",
+        "local": "অসমীয়া",
+        "location": "India",
+        "tag": "as-IN",
+        "lcid": 1101,
+        "iso6392": "asm",
+        "iso6391": "as",
+        "default": false
+    },
+    {
+        "name": "Asturian",
+        "local": null,
+        "location": null,
+        "tag": "ast",
+        "lcid": 4096,
+        "iso6392": "ast",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Asturian",
+        "local": null,
+        "location": "Spain",
+        "tag": "ast-ES",
+        "lcid": 4096,
+        "iso6392": "ast",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Asu",
+        "local": null,
+        "location": null,
+        "tag": "asa",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Asu",
+        "local": null,
+        "location": "Tanzania",
+        "tag": "asa-TZ",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Azerbaijani (Cyrillic)",
+        "local": null,
+        "location": null,
+        "tag": "az-Cyrl",
+        "lcid": 29740,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Azerbaijani (Cyrillic)",
+        "local": null,
+        "location": "Azerbaijan",
+        "tag": "az-Cyrl-AZ",
+        "lcid": 2092,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Azerbaijani (Latin)",
+        "local": null,
+        "location": null,
+        "tag": "az",
+        "lcid": 44,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Azerbaijani (Latin)",
+        "local": null,
+        "location": null,
+        "tag": "az-Latn",
+        "lcid": 30764,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Azerbaijani (Latin)",
+        "local": null,
+        "location": "Azerbaijan",
+        "tag": "az-Latn-AZ",
+        "lcid": 1068,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Bafia",
+        "local": null,
+        "location": null,
+        "tag": "ksf",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Bafia",
+        "local": null,
+        "location": "Cameroon",
+        "tag": "ksf-CM",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Bamanankan",
+        "local": null,
+        "location": null,
+        "tag": "bm",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Bamanankan (Latin)",
+        "local": null,
+        "location": "Mali",
+        "tag": "bm-Latn-ML",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Bangla",
+        "local": null,
+        "location": null,
+        "tag": "bn",
+        "lcid": 69,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Bangla",
+        "local": null,
+        "location": "Bangladesh",
+        "tag": "bn-BD",
+        "lcid": 2117,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Bangla",
+        "local": null,
+        "location": "India",
+        "tag": "bn-IN",
+        "lcid": 1093,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Basaa",
+        "local": null,
+        "location": null,
+        "tag": "bas",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Basaa",
+        "local": null,
+        "location": "Cameroon",
+        "tag": "bas-CM",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Bashkir",
+        "local": "Башҡортса",
+        "location": null,
+        "tag": "ba",
+        "lcid": 109,
+        "iso6392": "bak",
+        "iso6391": "ba",
+        "default": false
+    },
+    {
+        "name": "Bashkir",
+        "local": "Башҡортса",
+        "location": "Russia",
+        "tag": "ba-RU",
+        "lcid": 1133,
+        "iso6392": "bak",
+        "iso6391": "ba",
+        "default": false
+    },
+    {
+        "name": "Basque",
+        "local": null,
+        "location": null,
+        "tag": "eu",
+        "lcid": 45,
+        "iso6392": "baq/eus",
+        "iso6391": "eu",
+        "default": false
+    },
+    {
+        "name": "Basque",
+        "local": null,
+        "location": "Spain",
+        "tag": "eu-ES",
+        "lcid": 1069,
+        "iso6392": "baq/eus",
+        "iso6391": "eu",
+        "default": false
+    },
+    {
+        "name": "Belarusian",
+        "local": "Беларуская",
+        "location": null,
+        "tag": "be",
+        "lcid": 35,
+        "iso6392": "bel",
+        "iso6391": "be",
+        "default": false
+    },
+    {
+        "name": "Belarusian",
+        "local": "Беларуская",
+        "location": "Belarus",
+        "tag": "be-BY",
+        "lcid": 1059,
+        "iso6392": "bel",
+        "iso6391": "be",
+        "default": true
+    },
+    {
+        "name": "Bemba",
+        "local": null,
+        "location": null,
+        "tag": "bem",
+        "lcid": 4096,
+        "iso6392": "bem",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Bemba",
+        "local": null,
+        "location": "Zambia",
+        "tag": "bem-ZM",
+        "lcid": 4096,
+        "iso6392": "bem",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Bena",
+        "local": null,
+        "location": null,
+        "tag": "bez",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Bena",
+        "local": null,
+        "location": "Tanzania",
+        "tag": "bez-TZ",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Blin",
+        "local": null,
+        "location": null,
+        "tag": "byn",
+        "lcid": 4096,
+        "iso6392": "byn",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Blin",
+        "local": null,
+        "location": "Eritrea",
+        "tag": "byn-ER",
+        "lcid": 4096,
+        "iso6392": "byn",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Bodo",
+        "local": null,
+        "location": null,
+        "tag": "brx",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Bodo",
+        "local": null,
+        "location": "India",
+        "tag": "brx-IN",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Bosnian (Cyrillic)",
+        "local": null,
+        "location": null,
+        "tag": "bs-Cyrl",
+        "lcid": 25626,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Bosnian (Cyrillic)",
+        "local": null,
+        "location": "Bosnia and Herzegovina",
+        "tag": "bs-Cyrl-BA",
+        "lcid": 8218,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Bosnian (Latin)",
+        "local": null,
+        "location": null,
+        "tag": "bs-Latn",
+        "lcid": 26650,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Bosnian (Latin)",
+        "local": null,
+        "location": null,
+        "tag": "bs",
+        "lcid": 30746,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Bosnian (Latin)",
+        "local": null,
+        "location": "Bosnia and Herzegovina",
+        "tag": "bs-Latn-BA",
+        "lcid": 5146,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Breton",
+        "local": "Brezhoneg",
+        "location": null,
+        "tag": "br",
+        "lcid": 126,
+        "iso6392": "bre",
+        "iso6391": "br",
+        "default": false
+    },
+    {
+        "name": "Breton",
+        "local": "Brezhoneg",
+        "location": "France",
+        "tag": "br-FR",
+        "lcid": 1150,
+        "iso6392": "bre",
+        "iso6391": "br",
+        "default": false
+    },
+    {
+        "name": "Bulgarian",
+        "local": "Български",
+        "location": null,
+        "tag": "bg",
+        "lcid": 2,
+        "iso6392": "bul",
+        "iso6391": "bg",
+        "default": false
+    },
+    {
+        "name": "Bulgarian",
+        "local": "Български",
+        "location": "Bulgaria",
+        "tag": "bg-BG",
+        "lcid": 1026,
+        "iso6392": "bul",
+        "iso6391": "bg",
+        "default": false
+    },
+    {
+        "name": "Burmese",
+        "local": null,
+        "location": null,
+        "tag": "my",
+        "lcid": 85,
+        "iso6392": "bur/mya",
+        "iso6391": "my",
+        "default": false
+    },
+    {
+        "name": "Burmese",
+        "local": null,
+        "location": "Myanmar",
+        "tag": "my-MM",
+        "lcid": 1109,
+        "iso6392": "bur/mya",
+        "iso6391": "my",
+        "default": false
+    },
+    {
+        "name": "Catalan",
+        "local": "Català",
+        "location": null,
+        "tag": "ca",
+        "lcid": 3,
+        "iso6392": "cat",
+        "iso6391": "ca",
+        "default": false
+    },
+    {
+        "name": "Catalan",
+        "local": "Català",
+        "location": "Andorra",
+        "tag": "ca-AD",
+        "lcid": 4096,
+        "iso6392": "cat",
+        "iso6391": "ca",
+        "default": false
+    },
+    {
+        "name": "Catalan",
+        "local": "Català",
+        "location": "France",
+        "tag": "ca-FR",
+        "lcid": 4096,
+        "iso6392": "cat",
+        "iso6391": "ca",
+        "default": false
+    },
+    {
+        "name": "Catalan",
+        "local": "Català",
+        "location": "Italy",
+        "tag": "ca-IT",
+        "lcid": 4096,
+        "iso6392": "cat",
+        "iso6391": "ca",
+        "default": false
+    },
+    {
+        "name": "Catalan",
+        "local": "Català",
+        "location": "Spain",
+        "tag": "ca-ES",
+        "lcid": 1027,
+        "iso6392": "cat",
+        "iso6391": "ca",
+        "default": false
+    },
+    {
+        "name": "Cebuano",
+        "local": null,
+        "location": null,
+        "tag": "ceb",
+        "lcid": 4096,
+        "iso6392": "ceb",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Cebuan (Latin)",
+        "local": null,
+        "location": null,
+        "tag": "ceb-Latn",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Cebuan (Latin)",
+        "local": null,
+        "location": "Philippines",
+        "tag": "ceb-Latn-PH",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Central Atlas Tamazight (Latin)",
+        "local": null,
+        "location": "Morocco",
+        "tag": "tzm-Latn-",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Central Kurdish",
+        "local": null,
+        "location": null,
+        "tag": "ku",
+        "lcid": 146,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Central Kurdish",
+        "local": null,
+        "location": null,
+        "tag": "ku-Arab",
+        "lcid": 31890,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Central Kurdish",
+        "local": null,
+        "location": "Iraq",
+        "tag": "ku-Arab-IQ",
+        "lcid": 1170,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Chakma",
+        "local": null,
+        "location": null,
+        "tag": "ccp",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Chakma",
+        "local": null,
+        "location": "Chakma",
+        "tag": "ccp-Cakm",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Chakma",
+        "local": null,
+        "location": "India",
+        "tag": "ccp-Cakm-",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Chechen",
+        "local": "Нохчийн",
+        "location": "Russia",
+        "tag": "cd-RU",
+        "lcid": 4096,
+        "iso6392": "che",
+        "iso6391": "ce",
+        "default": false
+    },
+    {
+        "name": "Cherokee",
+        "local": null,
+        "location": null,
+        "tag": "chr",
+        "lcid": 92,
+        "iso6392": "chr",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Cherokee",
+        "local": null,
+        "location": null,
+        "tag": "chr-Cher",
+        "lcid": 31836,
+        "iso6392": "chr",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Cherokee",
+        "local": null,
+        "location": "United States",
+        "tag": "chr-Cher-US",
+        "lcid": 1116,
+        "iso6392": "chr",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Chiga",
+        "local": null,
+        "location": null,
+        "tag": "cgg",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Chiga",
+        "local": null,
+        "location": "Uganda",
+        "tag": "cgg-UG",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Chinese (Simplified)",
+        "local": null,
+        "location": null,
+        "tag": "zh-Hans",
+        "lcid": 4,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Chinese (Simplified)",
+        "local": null,
+        "location": null,
+        "tag": "zh",
+        "lcid": 30724,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Chinese (Simplified)",
+        "local": null,
+        "location": "People's Republic of China",
+        "tag": "zh-CN",
+        "lcid": 2052,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Chinese (Simplified)",
+        "local": null,
+        "location": "Singapore",
+        "tag": "zh-SG",
+        "lcid": 4100,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Chinese (Traditional)",
+        "local": null,
+        "location": null,
+        "tag": "zh-Hant",
+        "lcid": 31748,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Chinese (Traditional)",
+        "local": null,
+        "location": "Hong Kong S.A.R.",
+        "tag": "zh-HK",
+        "lcid": 3076,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Chinese (Traditional)",
+        "local": null,
+        "location": "Macao S.A.R.",
+        "tag": "zh-MO",
+        "lcid": 5124,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Chinese (Traditional)",
+        "local": null,
+        "location": "Taiwan",
+        "tag": "zh-TW",
+        "lcid": 1028,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Church Slavic",
+        "local": "Словѣ́ньскъ",
+        "location": "Russia",
+        "tag": "cu-RU",
+        "lcid": 4096,
+        "iso6392": "chu",
+        "iso6391": "cu",
+        "default": false
+    },
+    {
+        "name": "Congo Swahili",
+        "local": null,
+        "location": null,
+        "tag": "swc",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Congo Swahili",
+        "local": null,
+        "location": "Congo DRC",
+        "tag": "swc-CD",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Cornish",
+        "local": "Kernewek",
+        "location": null,
+        "tag": "kw",
+        "lcid": 4096,
+        "iso6392": "cor",
+        "iso6391": "kw",
+        "default": false
+    },
+    {
+        "name": "Cornish",
+        "local": "Kernewek",
+        "location": "United Kingdom",
+        "tag": "kw-GB",
+        "lcid": 4096,
+        "iso6392": "cor",
+        "iso6391": "kw",
+        "default": false
+    },
+    {
+        "name": "Corsican",
+        "local": "Corsu",
+        "location": null,
+        "tag": "co",
+        "lcid": 131,
+        "iso6392": "cos",
+        "iso6391": "co",
+        "default": false
+    },
+    {
+        "name": "Corsican",
+        "local": "Corsu",
+        "location": "France",
+        "tag": "co-FR",
+        "lcid": 1155,
+        "iso6392": "cos",
+        "iso6391": "co",
+        "default": false
+    },
+    {
+        "name": "Croatian",
+        "local": "Hrvatski",
+        "location": null,
+        "tag": "hr, ",
+        "lcid": 26,
+        "iso6392": "hrv",
+        "iso6391": "hr",
+        "default": false
+    },
+    {
+        "name": "Croatian",
+        "local": "Hrvatski",
+        "location": "Croatia",
+        "tag": "hr-HR",
+        "lcid": 1050,
+        "iso6392": "hrv",
+        "iso6391": "hr",
+        "default": false
+    },
+    {
+        "name": "Croatian (Latin)",
+        "local": null,
+        "location": "Bosnia and Herzegovina",
+        "tag": "hr-BA",
+        "lcid": 4122,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Czech",
+        "local": null,
+        "location": null,
+        "tag": "cs",
+        "lcid": 5,
+        "iso6392": "cze/ces",
+        "iso6391": "cs",
+        "default": false
+    },
+    {
+        "name": "Czech",
+        "local": null,
+        "location": "Czech Republic",
+        "tag": "cs-CZ",
+        "lcid": 1029,
+        "iso6392": "cze/ces",
+        "iso6391": "cs",
+        "default": false
+    },
+    {
+        "name": "Danish",
+        "local": "Dansk",
+        "location": null,
+        "tag": "da",
+        "lcid": 6,
+        "iso6392": "dan",
+        "iso6391": "da",
+        "default": false
+    },
+    {
+        "name": "Danish",
+        "local": "Dansk",
+        "location": "Denmark",
+        "tag": "da-DK",
+        "lcid": 1030,
+        "iso6392": "dan",
+        "iso6391": "da",
+        "default": false
+    },
+    {
+        "name": "Danish",
+        "local": "Dansk",
+        "location": "Greenland",
+        "tag": "da-GL",
+        "lcid": 4096,
+        "iso6392": "dan",
+        "iso6391": "da",
+        "default": false
+    },
+    {
+        "name": "Dari",
+        "local": null,
+        "location": null,
+        "tag": "prs",
+        "lcid": 140,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Dari",
+        "local": null,
+        "location": "Afghanistan",
+        "tag": "prs-AF",
+        "lcid": 1164,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Divehi",
+        "local": "Divehi",
+        "location": null,
+        "tag": "dv",
+        "lcid": 101,
+        "iso6392": "div",
+        "iso6391": "dv",
+        "default": false
+    },
+    {
+        "name": "Divehi",
+        "local": "Divehi",
+        "location": "Maldives",
+        "tag": "dv-MV",
+        "lcid": 1125,
+        "iso6392": "div",
+        "iso6391": "dv",
+        "default": false
+    },
+    {
+        "name": "Duala",
+        "local": null,
+        "location": null,
+        "tag": "dua",
+        "lcid": 4096,
+        "iso6392": "dua",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Duala",
+        "local": null,
+        "location": "Cameroon",
+        "tag": "dua-CM",
+        "lcid": 4096,
+        "iso6392": "dua",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Dutch",
+        "local": null,
+        "location": null,
+        "tag": "nl",
+        "lcid": 19,
+        "iso6392": "dut/nld",
+        "iso6391": "nl",
+        "default": false
+    },
+    {
+        "name": "Dutch",
+        "local": null,
+        "location": "Aruba",
+        "tag": "nl-AW",
+        "lcid": 4096,
+        "iso6392": "dut/nld",
+        "iso6391": "nl",
+        "default": false
+    },
+    {
+        "name": "Dutch",
+        "local": null,
+        "location": "Belgium",
+        "tag": "nl-BE",
+        "lcid": 2067,
+        "iso6392": "dut/nld",
+        "iso6391": "nl",
+        "default": false
+    },
+    {
+        "name": "Dutch",
+        "local": null,
+        "location": "Bonaire, Sint Eustatius and Saba ",
+        "tag": "nl-BQ",
+        "lcid": 4096,
+        "iso6392": "dut/nld",
+        "iso6391": "nl",
+        "default": false
+    },
+    {
+        "name": "Dutch",
+        "local": null,
+        "location": "Curaçao",
+        "tag": "nl-CW",
+        "lcid": 4096,
+        "iso6392": "dut/nld",
+        "iso6391": "nl",
+        "default": false
+    },
+    {
+        "name": "Dutch",
+        "local": null,
+        "location": "Netherlands",
+        "tag": "nl-NL",
+        "lcid": 1043,
+        "iso6392": "dut/nld",
+        "iso6391": "nl",
+        "default": false
+    },
+    {
+        "name": "Dutch",
+        "local": null,
+        "location": "Sint Maarten",
+        "tag": "nl-SX",
+        "lcid": 4096,
+        "iso6392": "dut/nld",
+        "iso6391": "nl",
+        "default": false
+    },
+    {
+        "name": "Dutch",
+        "local": null,
+        "location": "Suriname",
+        "tag": "nl-SR",
+        "lcid": 4096,
+        "iso6392": "dut/nld",
+        "iso6391": "nl",
+        "default": false
+    },
+    {
+        "name": "Dzongkha",
+        "local": "རྫོང་ཁ",
+        "location": null,
+        "tag": "dz",
+        "lcid": 4096,
+        "iso6392": "dzo",
+        "iso6391": "dz",
+        "default": false
+    },
+    {
+        "name": "Dzongkha",
+        "local": "རྫོང་ཁ",
+        "location": "Bhutan",
+        "tag": "dz-BT",
+        "lcid": 3153,
+        "iso6392": "dzo",
+        "iso6391": "dz",
+        "default": false
+    },
+    {
+        "name": "Embu",
+        "local": null,
+        "location": null,
+        "tag": "ebu",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Embu",
+        "local": null,
+        "location": "Kenya",
+        "tag": "ebu-KE",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": null,
+        "tag": "en",
+        "lcid": 9,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "American Samoa",
+        "tag": "en-AS",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Anguilla",
+        "tag": "en-AI",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Antigua and Barbuda",
+        "tag": "en-AG",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Australia",
+        "tag": "en-AU",
+        "lcid": 3081,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Austria",
+        "tag": "en-AT",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Bahamas",
+        "tag": "en-BS",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Barbados",
+        "tag": "en-BB",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Belgium",
+        "tag": "en-BE",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Belize",
+        "tag": "en-BZ",
+        "lcid": 10249,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Bermuda",
+        "tag": "en-BM",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Botswana",
+        "tag": "en-BW",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "British Indian Ocean Territory",
+        "tag": "en-IO",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "British Virgin Islands",
+        "tag": "en-VG",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Burundi",
+        "tag": "en-BI",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Cameroon",
+        "tag": "en-CM",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Canada",
+        "tag": "en-CA",
+        "lcid": 4105,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Caribbean",
+        "tag": "en-029",
+        "lcid": 9225,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Cayman Islands",
+        "tag": "en-KY",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Christmas Island",
+        "tag": "en-CX",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Cocos [Keeling] Islands",
+        "tag": "en-CC",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Cook Islands",
+        "tag": "en-CK",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Cyprus",
+        "tag": "en-CY",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Denmark",
+        "tag": "en-DK",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Dominica",
+        "tag": "en-DM",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Eritrea",
+        "tag": "en-ER",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Europe",
+        "tag": "en-150",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Falkland Islands",
+        "tag": "en-FK",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Finland",
+        "tag": "en-FI",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Fiji",
+        "tag": "en-FJ",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Gambia",
+        "tag": "en-GM",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Germany",
+        "tag": "en-DE",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Ghana",
+        "tag": "en-GH",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Gibraltar",
+        "tag": "en-GI",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Grenada",
+        "tag": "en-GD",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Guam",
+        "tag": "en-GU",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Guernsey",
+        "tag": "en-GG",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Guyana",
+        "tag": "en-GY",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Hong Kong",
+        "tag": "en-HK",
+        "lcid": 15369,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "India",
+        "tag": "en-IN",
+        "lcid": 16393,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Ireland",
+        "tag": "en-IE",
+        "lcid": 6153,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Isle of Man",
+        "tag": "en-IM",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Israel",
+        "tag": "en-IL",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Jamaica",
+        "tag": "en-JM",
+        "lcid": 8201,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Jersey",
+        "tag": "en-JE",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Kenya",
+        "tag": "en-KE",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Kiribati",
+        "tag": "en-KI",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Lesotho",
+        "tag": "en-LS",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Liberia",
+        "tag": "en-LR",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Macao SAR",
+        "tag": "en-MO",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Madagascar",
+        "tag": "en-MG",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Malawi",
+        "tag": "en-MW",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Malaysia",
+        "tag": "en-MY",
+        "lcid": 17417,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Malta",
+        "tag": "en-MT",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Marshall Islands",
+        "tag": "en-MH",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Mauritius",
+        "tag": "en-MU",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Micronesia",
+        "tag": "en-FM",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Montserrat",
+        "tag": "en-MS",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Namibia",
+        "tag": "en-NA",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Nauru",
+        "tag": "en-NR",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Netherlands",
+        "tag": "en-NL",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "New Zealand",
+        "tag": "en-NZ",
+        "lcid": 5129,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Nigeria",
+        "tag": "en-NG",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Niue",
+        "tag": "en-NU",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Norfolk Island",
+        "tag": "en-NF",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Northern Mariana Islands",
+        "tag": "en-MP",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Pakistan",
+        "tag": "en-PK",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Palau",
+        "tag": "en-PW",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Papua New Guinea",
+        "tag": "en-PG",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Pitcairn Islands",
+        "tag": "en-PN",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Puerto Rico",
+        "tag": "en-PR",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Republic of the Philippines",
+        "tag": "en-PH",
+        "lcid": 13321,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Rwanda",
+        "tag": "en-RW",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Saint Kitts and Nevis",
+        "tag": "en-KN",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Saint Lucia",
+        "tag": "en-LC",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Saint Vincent and the Grenadines",
+        "tag": "en-VC",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Samoa",
+        "tag": "en-WS",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Seychelles",
+        "tag": "en-SC",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Sierra Leone",
+        "tag": "en-SL",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Singapore",
+        "tag": "en-SG",
+        "lcid": 18441,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Sint Maarten",
+        "tag": "en-SX",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Slovenia",
+        "tag": "en-SI",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Solomon Islands",
+        "tag": "en-SB",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "South Africa",
+        "tag": "en-ZA",
+        "lcid": 7177,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "South Sudan",
+        "tag": "en-SS",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "St Helena, Ascension, Tristan da Cunha ",
+        "tag": "en-SH",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Sudan",
+        "tag": "en-SD",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Swaziland",
+        "tag": "en-SZ",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Sweden",
+        "tag": "en-SE",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Switzerland",
+        "tag": "en-CH",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Tanzania",
+        "tag": "en-TZ",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Tokelau",
+        "tag": "en-TK",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Tonga",
+        "tag": "en-TO",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Trinidad and Tobago",
+        "tag": "en-TT",
+        "lcid": 11273,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Turks and Caicos Islands",
+        "tag": "en-TC",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Tuvalu",
+        "tag": "en-TV",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Uganda",
+        "tag": "en-UG",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "United Arab Emirates",
+        "tag": "en-AE",
+        "lcid": 19465,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "United Kingdom",
+        "tag": "en-GB",
+        "lcid": 2057,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": true
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "United States",
+        "tag": "en-US",
+        "lcid": 1033,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": true
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "US Minor Outlying Islands",
+        "tag": "en-UM",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "US Virgin Islands",
+        "tag": "en-VI",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Vanuatu",
+        "tag": "en-VU",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "World",
+        "tag": "en-001",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Zambia",
+        "tag": "en-ZM",
+        "lcid": 4096,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "English",
+        "local": "English",
+        "location": "Zimbabwe",
+        "tag": "en-ZW",
+        "lcid": 12297,
+        "iso6392": "eng",
+        "iso6391": "en",
+        "default": false
+    },
+    {
+        "name": "Esperanto",
+        "local": "Esperanto",
+        "location": null,
+        "tag": "eo",
+        "lcid": 4096,
+        "iso6392": "epo",
+        "iso6391": "eo",
+        "default": false
+    },
+    {
+        "name": "Esperanto",
+        "local": "Esperanto",
+        "location": "World",
+        "tag": "eo-001",
+        "lcid": 4096,
+        "iso6392": "epo",
+        "iso6391": "eo",
+        "default": false
+    },
+    {
+        "name": "Estonian",
+        "local": "Eesti",
+        "location": null,
+        "tag": "et",
+        "lcid": 37,
+        "iso6392": "est",
+        "iso6391": "et",
+        "default": false
+    },
+    {
+        "name": "Estonian",
+        "local": "Eesti",
+        "location": "Estonia",
+        "tag": "et-EE",
+        "lcid": 1061,
+        "iso6392": "est",
+        "iso6391": "et",
+        "default": false
+    },
+    {
+        "name": "Ewe",
+        "local": "Eʋegbe",
+        "location": null,
+        "tag": "ee",
+        "lcid": 4096,
+        "iso6392": "ewe",
+        "iso6391": "ee",
+        "default": false
+    },
+    {
+        "name": "Ewe",
+        "local": "Eʋegbe",
+        "location": "Ghana",
+        "tag": "ee-GH",
+        "lcid": 4096,
+        "iso6392": "ewe",
+        "iso6391": "ee",
+        "default": false
+    },
+    {
+        "name": "Ewe",
+        "local": "Eʋegbe",
+        "location": "Togo",
+        "tag": "ee-TG",
+        "lcid": 4096,
+        "iso6392": "ewe",
+        "iso6391": "ee",
+        "default": false
+    },
+    {
+        "name": "Ewondo",
+        "local": null,
+        "location": null,
+        "tag": "ewo",
+        "lcid": 4096,
+        "iso6392": "ewo",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Ewondo",
+        "local": null,
+        "location": "Cameroon",
+        "tag": "ewo-CM",
+        "lcid": 4096,
+        "iso6392": "ewo",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Faroese",
+        "local": "Føroyskt",
+        "location": null,
+        "tag": "fo",
+        "lcid": 56,
+        "iso6392": "fao",
+        "iso6391": "fo",
+        "default": false
+    },
+    {
+        "name": "Faroese",
+        "local": "Føroyskt",
+        "location": "Denmark",
+        "tag": "fo-DK",
+        "lcid": 4096,
+        "iso6392": "fao",
+        "iso6391": "fo",
+        "default": false
+    },
+    {
+        "name": "Faroese",
+        "local": "Føroyskt",
+        "location": "Faroe Islands",
+        "tag": "fo-FO",
+        "lcid": 1080,
+        "iso6392": "fao",
+        "iso6391": "fo",
+        "default": false
+    },
+    {
+        "name": "Filipino",
+        "local": null,
+        "location": null,
+        "tag": "fil",
+        "lcid": 100,
+        "iso6392": "fil",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Filipino",
+        "local": null,
+        "location": "Philippines",
+        "tag": "fil-PH",
+        "lcid": 1124,
+        "iso6392": "fil",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Finnish",
+        "local": "Suomi",
+        "location": null,
+        "tag": "fi",
+        "lcid": 11,
+        "iso6392": "fin",
+        "iso6391": "fi",
+        "default": false
+    },
+    {
+        "name": "Finnish",
+        "local": "Suomi",
+        "location": "Finland",
+        "tag": "fi-FI",
+        "lcid": 1035,
+        "iso6392": "fin",
+        "iso6391": "fi",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": null,
+        "tag": "fr",
+        "lcid": 12,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Algeria",
+        "tag": "fr-DZ",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Belgium",
+        "tag": "fr-BE",
+        "lcid": 2060,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Benin",
+        "tag": "fr-BJ",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Burkina Faso",
+        "tag": "fr-BF",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Burundi",
+        "tag": "fr-BI",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Cameroon",
+        "tag": "fr-CM",
+        "lcid": 11276,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Canada",
+        "tag": "fr-CA",
+        "lcid": 3084,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Central African Republic",
+        "tag": "fr-CF",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Chad",
+        "tag": "fr-TD",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Comoros",
+        "tag": "fr-KM",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Congo",
+        "tag": "fr-CG",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Congo, DRC ",
+        "tag": "fr-CD",
+        "lcid": 9228,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Côte d'Ivoire",
+        "tag": "fr-CI",
+        "lcid": 12300,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Djibouti",
+        "tag": "fr-DJ",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Equatorial Guinea",
+        "tag": "fr-GQ",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "France",
+        "tag": "fr-FR",
+        "lcid": 1036,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "French Guiana",
+        "tag": "fr-GF",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "French Polynesia",
+        "tag": "fr-PF",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Gabon",
+        "tag": "fr-GA",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Guadeloupe",
+        "tag": "fr-GP",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Guinea",
+        "tag": "fr-GN",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Haiti",
+        "tag": "fr-HT",
+        "lcid": 15372,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Luxembourg",
+        "tag": "fr-LU",
+        "lcid": 5132,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Madagascar",
+        "tag": "fr-MG",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Mali",
+        "tag": "fr-ML",
+        "lcid": 13324,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Martinique",
+        "tag": "fr-MQ",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Mauritania",
+        "tag": "fr-MR",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Mauritius",
+        "tag": "fr-MU",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Mayotte",
+        "tag": "fr-YT",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Morocco",
+        "tag": "fr-MA",
+        "lcid": 14348,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "New Caledonia",
+        "tag": "fr-NC",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Niger",
+        "tag": "fr-NE",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Principality of Monaco",
+        "tag": "fr-MC",
+        "lcid": 6156,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Reunion",
+        "tag": "fr-RE",
+        "lcid": 8204,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Rwanda",
+        "tag": "fr-RW",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Saint Barthélemy",
+        "tag": "fr-BL",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Saint Martin",
+        "tag": "fr-MF",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Saint Pierre and Miquelon",
+        "tag": "fr-PM",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Senegal",
+        "tag": "fr-SN",
+        "lcid": 10252,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Seychelles",
+        "tag": "fr-SC",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Switzerland",
+        "tag": "fr-CH",
+        "lcid": 4108,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Syria",
+        "tag": "fr-SY",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Togo",
+        "tag": "fr-TG",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Tunisia",
+        "tag": "fr-TN",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Vanuatu",
+        "tag": "fr-VU",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "French",
+        "local": null,
+        "location": "Wallis and Futuna",
+        "tag": "fr-WF",
+        "lcid": 4096,
+        "iso6392": "fre/fra",
+        "iso6391": "fr",
+        "default": false
+    },
+    {
+        "name": "Frisian",
+        "local": null,
+        "location": null,
+        "tag": "fy",
+        "lcid": 98,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Frisian",
+        "local": null,
+        "location": "Netherlands",
+        "tag": "fy-NL",
+        "lcid": 1122,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Friulian",
+        "local": null,
+        "location": null,
+        "tag": "fur",
+        "lcid": 4096,
+        "iso6392": "fur",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Friulian",
+        "local": null,
+        "location": "Italy",
+        "tag": "fur-IT",
+        "lcid": 4096,
+        "iso6392": "fur",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Fulah",
+        "local": "Fulfulde",
+        "location": null,
+        "tag": "ff",
+        "lcid": 103,
+        "iso6392": "ful",
+        "iso6391": "ff",
+        "default": false
+    },
+    {
+        "name": "Fulah (Latin)",
+        "local": null,
+        "location": null,
+        "tag": "ff-Latn",
+        "lcid": 31847,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Fulah (Latin)",
+        "local": null,
+        "location": "Burkina Faso",
+        "tag": "ff-Latn-BF",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Fulah",
+        "local": "Fulfulde",
+        "location": "Cameroon",
+        "tag": "ff-CM",
+        "lcid": 4096,
+        "iso6392": "ful",
+        "iso6391": "ff",
+        "default": false
+    },
+    {
+        "name": "Fulah (Latin)",
+        "local": null,
+        "location": "Cameroon",
+        "tag": "ff-Latn-CM",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Fulah (Latin)",
+        "local": null,
+        "location": "Gambia",
+        "tag": "ff-Latn-GM",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Fulah (Latin)",
+        "local": null,
+        "location": "Ghana",
+        "tag": "ff-Latn-GH",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Fulah",
+        "local": "Fulfulde",
+        "location": "Guinea",
+        "tag": "ff-GN",
+        "lcid": 4096,
+        "iso6392": "ful",
+        "iso6391": "ff",
+        "default": false
+    },
+    {
+        "name": "Fulah (Latin)",
+        "local": null,
+        "location": "Guinea",
+        "tag": "ff-Latn-GN",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Fulah (Latin)",
+        "local": null,
+        "location": "Guinea-Bissau",
+        "tag": "ff-Latn-GW",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Fulah (Latin)",
+        "local": null,
+        "location": "Liberia",
+        "tag": "ff-Latn-LR",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Fulah",
+        "local": "Fulfulde",
+        "location": "Mauritania",
+        "tag": "ff-MR",
+        "lcid": 4096,
+        "iso6392": "ful",
+        "iso6391": "ff",
+        "default": false
+    },
+    {
+        "name": "Fulah (Latin)",
+        "local": null,
+        "location": "Mauritania",
+        "tag": "ff-Latn-MR",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Fulah (Latin)",
+        "local": null,
+        "location": "Niger",
+        "tag": "ff-Latn-NE",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Fulah",
+        "local": "Fulfulde",
+        "location": "Nigeria",
+        "tag": "ff-NG",
+        "lcid": 4096,
+        "iso6392": "ful",
+        "iso6391": "ff",
+        "default": false
+    },
+    {
+        "name": "Fulah (Latin)",
+        "local": null,
+        "location": "Nigeria",
+        "tag": "ff-Latn-NG",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Fulah",
+        "local": "Fulfulde",
+        "location": "Senegal",
+        "tag": "ff-Latn-SN",
+        "lcid": 2151,
+        "iso6392": "ful",
+        "iso6391": "ff",
+        "default": false
+    },
+    {
+        "name": "Fulah (Latin)",
+        "local": null,
+        "location": "Sierra Leone",
+        "tag": "ff-Latn-SL",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Galician",
+        "local": "Galego",
+        "location": null,
+        "tag": "gl",
+        "lcid": 86,
+        "iso6392": "glg",
+        "iso6391": "gl",
+        "default": false
+    },
+    {
+        "name": "Galician",
+        "local": "Galego",
+        "location": "Spain",
+        "tag": "gl-ES",
+        "lcid": 1110,
+        "iso6392": "glg",
+        "iso6391": "gl",
+        "default": false
+    },
+    {
+        "name": "Ganda",
+        "local": "Luganda",
+        "location": null,
+        "tag": "lg",
+        "lcid": 4096,
+        "iso6392": "lug",
+        "iso6391": "lg",
+        "default": false
+    },
+    {
+        "name": "Ganda",
+        "local": "Luganda",
+        "location": "Uganda",
+        "tag": "lg-UG",
+        "lcid": 4096,
+        "iso6392": "lug",
+        "iso6391": "lg",
+        "default": false
+    },
+    {
+        "name": "Georgian",
+        "local": null,
+        "location": null,
+        "tag": "ka",
+        "lcid": 55,
+        "iso6392": "geo/kat",
+        "iso6391": "ka",
+        "default": false
+    },
+    {
+        "name": "Georgian",
+        "local": null,
+        "location": "Georgia",
+        "tag": "ka-GE",
+        "lcid": 1079,
+        "iso6392": "geo/kat",
+        "iso6391": "ka",
+        "default": false
+    },
+    {
+        "name": "German",
+        "local": null,
+        "location": null,
+        "tag": "de",
+        "lcid": 7,
+        "iso6392": "ger/deu",
+        "iso6391": "de",
+        "default": false
+    },
+    {
+        "name": "German",
+        "local": null,
+        "location": "Austria",
+        "tag": "de-AT",
+        "lcid": 3079,
+        "iso6392": "ger/deu",
+        "iso6391": "de",
+        "default": false
+    },
+    {
+        "name": "German",
+        "local": null,
+        "location": "Belgium",
+        "tag": "de-BE",
+        "lcid": 4096,
+        "iso6392": "ger/deu",
+        "iso6391": "de",
+        "default": false
+    },
+    {
+        "name": "German",
+        "local": null,
+        "location": "Germany",
+        "tag": "de-DE",
+        "lcid": 1031,
+        "iso6392": "ger/deu",
+        "iso6391": "de",
+        "default": true
+    },
+    {
+        "name": "German",
+        "local": null,
+        "location": "Italy",
+        "tag": "de-IT",
+        "lcid": 4096,
+        "iso6392": "ger/deu",
+        "iso6391": "de",
+        "default": false
+    },
+    {
+        "name": "German",
+        "local": null,
+        "location": "Liechtenstein",
+        "tag": "de-LI",
+        "lcid": 5127,
+        "iso6392": "ger/deu",
+        "iso6391": "de",
+        "default": false
+    },
+    {
+        "name": "German",
+        "local": null,
+        "location": "Luxembourg",
+        "tag": "de-LU",
+        "lcid": 4103,
+        "iso6392": "ger/deu",
+        "iso6391": "de",
+        "default": false
+    },
+    {
+        "name": "German",
+        "local": null,
+        "location": "Switzerland",
+        "tag": "de-CH",
+        "lcid": 2055,
+        "iso6392": "ger/deu",
+        "iso6391": "de",
+        "default": false
+    },
+    {
+        "name": "Greek",
+        "local": null,
+        "location": null,
+        "tag": "el",
+        "lcid": 8,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Greek",
+        "local": null,
+        "location": "Cyprus",
+        "tag": "el-CY",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Greek",
+        "local": null,
+        "location": "Greece",
+        "tag": "el-GR",
+        "lcid": 1032,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Greenlandic",
+        "local": "Kalaallisut",
+        "location": null,
+        "tag": "kl",
+        "lcid": 111,
+        "iso6392": "kal",
+        "iso6391": "kl",
+        "default": false
+    },
+    {
+        "name": "Greenlandic",
+        "local": "Kalaallisut",
+        "location": "Greenland",
+        "tag": "kl-GL",
+        "lcid": 1135,
+        "iso6392": "kal",
+        "iso6391": "kl",
+        "default": false
+    },
+    {
+        "name": "Guarani",
+        "local": "Avañe'ẽ",
+        "location": null,
+        "tag": "gn",
+        "lcid": 116,
+        "iso6392": "grn",
+        "iso6391": "gn",
+        "default": false
+    },
+    {
+        "name": "Guarani",
+        "local": "Avañe'ẽ",
+        "location": "Paraguay",
+        "tag": "gn-PY",
+        "lcid": 1140,
+        "iso6392": "grn",
+        "iso6391": "gn",
+        "default": false
+    },
+    {
+        "name": "Gujarati",
+        "local": "ગુજરાતી",
+        "location": null,
+        "tag": "gu",
+        "lcid": 71,
+        "iso6392": "guj",
+        "iso6391": "gu",
+        "default": false
+    },
+    {
+        "name": "Gujarati",
+        "local": "ગુજરાતી",
+        "location": "India",
+        "tag": "gu-IN",
+        "lcid": 1095,
+        "iso6392": "guj",
+        "iso6391": "gu",
+        "default": false
+    },
+    {
+        "name": "Gusii",
+        "local": null,
+        "location": null,
+        "tag": "guz",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Gusii",
+        "local": null,
+        "location": "Kenya",
+        "tag": "guz-KE",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Hausa (Latin)",
+        "local": null,
+        "location": null,
+        "tag": "ha",
+        "lcid": 104,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Hausa (Latin)",
+        "local": null,
+        "location": null,
+        "tag": "ha-Latn",
+        "lcid": 31848,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Hausa (Latin)",
+        "local": null,
+        "location": "Ghana",
+        "tag": "ha-Latn-GH",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Hausa (Latin)",
+        "local": null,
+        "location": "Niger",
+        "tag": "ha-Latn-NE",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Hausa (Latin)",
+        "local": null,
+        "location": "Nigeria",
+        "tag": "ha-Latn-NG",
+        "lcid": 1128,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Hawaiian",
+        "local": null,
+        "location": null,
+        "tag": "haw",
+        "lcid": 117,
+        "iso6392": "haw",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Hawaiian",
+        "local": null,
+        "location": "United States",
+        "tag": "haw-US",
+        "lcid": 1141,
+        "iso6392": "haw",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Hebrew",
+        "local": "עברית",
+        "location": null,
+        "tag": "he",
+        "lcid": 13,
+        "iso6392": "heb",
+        "iso6391": "he",
+        "default": false
+    },
+    {
+        "name": "Hebrew",
+        "local": "עברית",
+        "location": "Israel",
+        "tag": "he-IL",
+        "lcid": 1037,
+        "iso6392": "heb",
+        "iso6391": "he",
+        "default": false
+    },
+    {
+        "name": "Hindi",
+        "local": "हिन्दी",
+        "location": null,
+        "tag": "hi",
+        "lcid": 57,
+        "iso6392": "hin",
+        "iso6391": "hi",
+        "default": false
+    },
+    {
+        "name": "Hindi",
+        "local": "हिन्दी",
+        "location": "India",
+        "tag": "hi-IN",
+        "lcid": 1081,
+        "iso6392": "hin",
+        "iso6391": "hi",
+        "default": false
+    },
+    {
+        "name": "Hungarian",
+        "local": "Magyar",
+        "location": null,
+        "tag": "hu",
+        "lcid": 14,
+        "iso6392": "hun",
+        "iso6391": "hu",
+        "default": false
+    },
+    {
+        "name": "Hungarian",
+        "local": "Magyar",
+        "location": "Hungary",
+        "tag": "hu-HU",
+        "lcid": 1038,
+        "iso6392": "hun",
+        "iso6391": "hu",
+        "default": false
+    },
+    {
+        "name": "Icelandic",
+        "local": null,
+        "location": null,
+        "tag": "is",
+        "lcid": 15,
+        "iso6392": "ice/isl",
+        "iso6391": "is",
+        "default": false
+    },
+    {
+        "name": "Icelandic",
+        "local": null,
+        "location": "Iceland",
+        "tag": "is-IS",
+        "lcid": 1039,
+        "iso6392": "ice/isl",
+        "iso6391": "is",
+        "default": false
+    },
+    {
+        "name": "Igbo",
+        "local": "Igbo",
+        "location": null,
+        "tag": "ig",
+        "lcid": 112,
+        "iso6392": "ibo",
+        "iso6391": "ig",
+        "default": false
+    },
+    {
+        "name": "Igbo",
+        "local": "Igbo",
+        "location": "Nigeria",
+        "tag": "ig-NG",
+        "lcid": 1136,
+        "iso6392": "ibo",
+        "iso6391": "ig",
+        "default": false
+    },
+    {
+        "name": "Indonesian",
+        "local": "Bahasa Indonesia",
+        "location": null,
+        "tag": "id",
+        "lcid": 33,
+        "iso6392": "ind",
+        "iso6391": "id",
+        "default": false
+    },
+    {
+        "name": "Indonesian",
+        "local": "Bahasa Indonesia",
+        "location": "Indonesia",
+        "tag": "id-ID",
+        "lcid": 1057,
+        "iso6392": "ind",
+        "iso6391": "id",
+        "default": false
+    },
+    {
+        "name": "Interlingua",
+        "local": null,
+        "location": null,
+        "tag": "ia",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Interlingua",
+        "local": null,
+        "location": "France",
+        "tag": "ia-FR",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Interlingua",
+        "local": null,
+        "location": "World",
+        "tag": "ia-001",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Inuktitut (Latin)",
+        "local": null,
+        "location": null,
+        "tag": "iu",
+        "lcid": 93,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Inuktitut (Latin)",
+        "local": null,
+        "location": null,
+        "tag": "iu-Latn",
+        "lcid": 31837,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Inuktitut (Latin)",
+        "local": null,
+        "location": "Canada",
+        "tag": "iu-Latn-CA",
+        "lcid": 2141,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Inuktitut (Syllabics)",
+        "local": null,
+        "location": null,
+        "tag": "iu-Cans",
+        "lcid": 30813,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Inuktitut (Syllabics)",
+        "local": null,
+        "location": "Canada",
+        "tag": "iu-Cans-CA",
+        "lcid": 1117,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Irish",
+        "local": "Gaeilge",
+        "location": null,
+        "tag": "ga",
+        "lcid": 60,
+        "iso6392": "gle",
+        "iso6391": "ga",
+        "default": false
+    },
+    {
+        "name": "Irish",
+        "local": "Gaeilge",
+        "location": "Ireland",
+        "tag": "ga-IE",
+        "lcid": 2108,
+        "iso6392": "gle",
+        "iso6391": "ga",
+        "default": false
+    },
+    {
+        "name": "Italian",
+        "local": "Italiano",
+        "location": null,
+        "tag": "it",
+        "lcid": 16,
+        "iso6392": "ita",
+        "iso6391": "it",
+        "default": false
+    },
+    {
+        "name": "Italian",
+        "local": "Italiano",
+        "location": "Italy",
+        "tag": "it-IT",
+        "lcid": 1040,
+        "iso6392": "ita",
+        "iso6391": "it",
+        "default": false
+    },
+    {
+        "name": "Italian",
+        "local": "Italiano",
+        "location": "San Marino",
+        "tag": "it-SM",
+        "lcid": 4096,
+        "iso6392": "ita",
+        "iso6391": "it",
+        "default": false
+    },
+    {
+        "name": "Italian",
+        "local": "Italiano",
+        "location": "Switzerland",
+        "tag": "it-CH",
+        "lcid": 2064,
+        "iso6392": "ita",
+        "iso6391": "it",
+        "default": false
+    },
+    {
+        "name": "Italian",
+        "local": "Italiano",
+        "location": "Vatican City",
+        "tag": "it-VA",
+        "lcid": 4096,
+        "iso6392": "ita",
+        "iso6391": "it",
+        "default": false
+    },
+    {
+        "name": "Japanese",
+        "local": "日本語",
+        "location": null,
+        "tag": "ja",
+        "lcid": 17,
+        "iso6392": "jpn",
+        "iso6391": "ja",
+        "default": false
+    },
+    {
+        "name": "Japanese",
+        "local": "日本語",
+        "location": "Japan",
+        "tag": "ja-JP",
+        "lcid": 1041,
+        "iso6392": "jpn",
+        "iso6391": "ja",
+        "default": false
+    },
+    {
+        "name": "Javanese",
+        "local": "Basa Jawa",
+        "location": null,
+        "tag": "jv",
+        "lcid": 4096,
+        "iso6392": "jav",
+        "iso6391": "jv",
+        "default": false
+    },
+    {
+        "name": "Javanese",
+        "local": "Basa Jawa",
+        "location": "Latin",
+        "tag": "jv-Latn",
+        "lcid": 4096,
+        "iso6392": "jav",
+        "iso6391": "jv",
+        "default": false
+    },
+    {
+        "name": "Javanese",
+        "local": "Basa Jawa",
+        "location": "Latin, Indonesia ",
+        "tag": "jv-Latn-ID",
+        "lcid": 4096,
+        "iso6392": "jav",
+        "iso6391": "jv",
+        "default": false
+    },
+    {
+        "name": "Jola-Fonyi",
+        "local": null,
+        "location": null,
+        "tag": "dyo",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Jola-Fonyi",
+        "local": null,
+        "location": "Senegal",
+        "tag": "dyo-SN",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Kabuverdianu",
+        "local": null,
+        "location": null,
+        "tag": "kea",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Kabuverdianu",
+        "local": null,
+        "location": "Cabo Verde",
+        "tag": "kea-CV",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Kabyle",
+        "local": null,
+        "location": null,
+        "tag": "kab",
+        "lcid": 4096,
+        "iso6392": "kab",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Kabyle",
+        "local": null,
+        "location": "Algeria",
+        "tag": "kab-DZ",
+        "lcid": 4096,
+        "iso6392": "kab",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Kako",
+        "local": null,
+        "location": null,
+        "tag": "kkj",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Kako",
+        "local": null,
+        "location": "Cameroon",
+        "tag": "kkj-CM",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Kalenjin",
+        "local": null,
+        "location": null,
+        "tag": "kln",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Kalenjin",
+        "local": null,
+        "location": "Kenya",
+        "tag": "kln-KE",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Kamba",
+        "local": null,
+        "location": null,
+        "tag": "kam",
+        "lcid": 4096,
+        "iso6392": "kam",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Kamba",
+        "local": null,
+        "location": "Kenya",
+        "tag": "kam-KE",
+        "lcid": 4096,
+        "iso6392": "kam",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Kannada",
+        "local": "ಕನ್ನಡ",
+        "location": null,
+        "tag": "kn",
+        "lcid": 75,
+        "iso6392": "kan",
+        "iso6391": "kn",
+        "default": false
+    },
+    {
+        "name": "Kannada",
+        "local": "ಕನ್ನಡ",
+        "location": "India",
+        "tag": "kn-IN",
+        "lcid": 1099,
+        "iso6392": "kan",
+        "iso6391": "kn",
+        "default": false
+    },
+    {
+        "name": "Kashmiri",
+        "local": "كشميري",
+        "location": null,
+        "tag": "ks",
+        "lcid": 96,
+        "iso6392": "kas",
+        "iso6391": "ks",
+        "default": false
+    },
+    {
+        "name": "Kashmiri",
+        "local": "كشميري",
+        "location": "Perso-Arabic",
+        "tag": "ks-Arab",
+        "lcid": 1120,
+        "iso6392": "kas",
+        "iso6391": "ks",
+        "default": false
+    },
+    {
+        "name": "Kashmiri",
+        "local": "كشميري",
+        "location": "Perso-Arabic",
+        "tag": "ks-Arab-IN",
+        "lcid": 4096,
+        "iso6392": "kas",
+        "iso6391": "ks",
+        "default": false
+    },
+    {
+        "name": "Kazakh",
+        "local": "Қазақша",
+        "location": null,
+        "tag": "kk",
+        "lcid": 63,
+        "iso6392": "kaz",
+        "iso6391": "kk",
+        "default": false
+    },
+    {
+        "name": "Kazakh",
+        "local": "Қазақша",
+        "location": "Kazakhstan",
+        "tag": "kk-KZ",
+        "lcid": 1087,
+        "iso6392": "kaz",
+        "iso6391": "kk",
+        "default": false
+    },
+    {
+        "name": "Khmer",
+        "local": null,
+        "location": null,
+        "tag": "km",
+        "lcid": 83,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Khmer",
+        "local": null,
+        "location": "Cambodia",
+        "tag": "km-KH",
+        "lcid": 1107,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "K'iche",
+        "local": null,
+        "location": null,
+        "tag": "quc",
+        "lcid": 134,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "K'iche",
+        "local": null,
+        "location": "Guatemala",
+        "tag": "quc-Latn-GT",
+        "lcid": 1158,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Kikuyu",
+        "local": "Gĩkũyũ",
+        "location": null,
+        "tag": "ki",
+        "lcid": 4096,
+        "iso6392": "kik",
+        "iso6391": "ki",
+        "default": false
+    },
+    {
+        "name": "Kikuyu",
+        "local": "Gĩkũyũ",
+        "location": "Kenya",
+        "tag": "ki-KE",
+        "lcid": 4096,
+        "iso6392": "kik",
+        "iso6391": "ki",
+        "default": false
+    },
+    {
+        "name": "Kinyarwanda",
+        "local": "Kinyarwanda",
+        "location": null,
+        "tag": "rw",
+        "lcid": 135,
+        "iso6392": "kin",
+        "iso6391": "rw",
+        "default": false
+    },
+    {
+        "name": "Kinyarwanda",
+        "local": "Kinyarwanda",
+        "location": "Rwanda",
+        "tag": "rw-RW",
+        "lcid": 1159,
+        "iso6392": "kin",
+        "iso6391": "rw",
+        "default": false
+    },
+    {
+        "name": "Kiswahili",
+        "local": null,
+        "location": null,
+        "tag": "sw",
+        "lcid": 65,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Kiswahili",
+        "local": null,
+        "location": "Kenya",
+        "tag": "sw-KE",
+        "lcid": 1089,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Kiswahili",
+        "local": null,
+        "location": "Tanzania",
+        "tag": "sw-TZ",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Kiswahili",
+        "local": null,
+        "location": "Uganda",
+        "tag": "sw-UG",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Konkani",
+        "local": null,
+        "location": null,
+        "tag": "kok",
+        "lcid": 87,
+        "iso6392": "kok",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Konkani",
+        "local": null,
+        "location": "India",
+        "tag": "kok-IN",
+        "lcid": 1111,
+        "iso6392": "kok",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Korean",
+        "local": "한국어",
+        "location": null,
+        "tag": "ko",
+        "lcid": 18,
+        "iso6392": "kor",
+        "iso6391": "ko",
+        "default": false
+    },
+    {
+        "name": "Korean",
+        "local": "한국어",
+        "location": "Korea",
+        "tag": "ko-KR",
+        "lcid": 1042,
+        "iso6392": "kor",
+        "iso6391": "ko",
+        "default": false
+    },
+    {
+        "name": "Korean",
+        "local": "한국어",
+        "location": "North Korea",
+        "tag": "ko-KP",
+        "lcid": 4096,
+        "iso6392": "kor",
+        "iso6391": "ko",
+        "default": false
+    },
+    {
+        "name": "Koyra Chiini",
+        "local": null,
+        "location": null,
+        "tag": "khq",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Koyra Chiini",
+        "local": null,
+        "location": "Mali",
+        "tag": "khq-ML",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Koyraboro Senni",
+        "local": null,
+        "location": null,
+        "tag": "ses",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Koyraboro Senni",
+        "local": null,
+        "location": "Mali",
+        "tag": "ses-ML",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Kwasio",
+        "local": null,
+        "location": null,
+        "tag": "nmg",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Kwasio",
+        "local": null,
+        "location": "Cameroon",
+        "tag": "nmg-CM",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Kyrgyz",
+        "local": "Кыргызча",
+        "location": null,
+        "tag": "ky",
+        "lcid": 64,
+        "iso6392": "kir",
+        "iso6391": "ky",
+        "default": false
+    },
+    {
+        "name": "Kyrgyz",
+        "local": "Кыргызча",
+        "location": "Kyrgyzstan",
+        "tag": "ky-KG",
+        "lcid": 1088,
+        "iso6392": "kir",
+        "iso6391": "ky",
+        "default": false
+    },
+    {
+        "name": "Kurdish",
+        "local": "Kurdî",
+        "location": "Perso-Arabic, Iran ",
+        "tag": "ku-Arab-IR",
+        "lcid": 4096,
+        "iso6392": "kur",
+        "iso6391": "ku",
+        "default": false
+    },
+    {
+        "name": "Lakota",
+        "local": null,
+        "location": null,
+        "tag": "lkt",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Lakota",
+        "local": null,
+        "location": "United States",
+        "tag": "lkt-US",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Langi",
+        "local": null,
+        "location": null,
+        "tag": "lag",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Langi",
+        "local": null,
+        "location": "Tanzania",
+        "tag": "lag-TZ",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Lao",
+        "local": "ພາສາລາວ",
+        "location": null,
+        "tag": "lo",
+        "lcid": 84,
+        "iso6392": "lao",
+        "iso6391": "lo",
+        "default": false
+    },
+    {
+        "name": "Lao",
+        "local": "ພາສາລາວ",
+        "location": "Lao P.D.R.",
+        "tag": "lo-LA",
+        "lcid": 1108,
+        "iso6392": "lao",
+        "iso6391": "lo",
+        "default": false
+    },
+    {
+        "name": "Latvian",
+        "local": "Latviešu",
+        "location": null,
+        "tag": "lv",
+        "lcid": 38,
+        "iso6392": "lav",
+        "iso6391": "lv",
+        "default": false
+    },
+    {
+        "name": "Latvian",
+        "local": "Latviešu",
+        "location": "Latvia",
+        "tag": "lv-LV",
+        "lcid": 1062,
+        "iso6392": "lav",
+        "iso6391": "lv",
+        "default": false
+    },
+    {
+        "name": "Lingala",
+        "local": "Lingála",
+        "location": null,
+        "tag": "ln",
+        "lcid": 4096,
+        "iso6392": "lin",
+        "iso6391": "ln",
+        "default": false
+    },
+    {
+        "name": "Lingala",
+        "local": "Lingála",
+        "location": "Angola",
+        "tag": "ln-AO",
+        "lcid": 4096,
+        "iso6392": "lin",
+        "iso6391": "ln",
+        "default": false
+    },
+    {
+        "name": "Lingala",
+        "local": "Lingála",
+        "location": "Central African Republic",
+        "tag": "ln-CF",
+        "lcid": 4096,
+        "iso6392": "lin",
+        "iso6391": "ln",
+        "default": false
+    },
+    {
+        "name": "Lingala",
+        "local": "Lingála",
+        "location": "Congo",
+        "tag": "ln-CG",
+        "lcid": 4096,
+        "iso6392": "lin",
+        "iso6391": "ln",
+        "default": false
+    },
+    {
+        "name": "Lingala",
+        "local": "Lingála",
+        "location": "Congo DRC",
+        "tag": "ln-CD",
+        "lcid": 4096,
+        "iso6392": "lin",
+        "iso6391": "ln",
+        "default": false
+    },
+    {
+        "name": "Lithuanian",
+        "local": "Lietuvių",
+        "location": null,
+        "tag": "lt",
+        "lcid": 39,
+        "iso6392": "lit",
+        "iso6391": "lt",
+        "default": false
+    },
+    {
+        "name": "Lithuanian",
+        "local": "Lietuvių",
+        "location": "Lithuania",
+        "tag": "lt-LT",
+        "lcid": 1063,
+        "iso6392": "lit",
+        "iso6391": "lt",
+        "default": false
+    },
+    {
+        "name": "Low German",
+        "local": null,
+        "location": null,
+        "tag": "nds",
+        "lcid": 4096,
+        "iso6392": "nds",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Low German",
+        "local": null,
+        "location": "Germany",
+        "tag": "nds-DE",
+        "lcid": 4096,
+        "iso6392": "nds",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Low German",
+        "local": null,
+        "location": "Netherlands",
+        "tag": "nds-NL",
+        "lcid": 4096,
+        "iso6392": "nds",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Lower Sorbian",
+        "local": null,
+        "location": null,
+        "tag": "dsb",
+        "lcid": 31790,
+        "iso6392": "dsb",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Lower Sorbian",
+        "local": null,
+        "location": "Germany",
+        "tag": "dsb-DE",
+        "lcid": 2094,
+        "iso6392": "dsb",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Luba-Katanga",
+        "local": "Tshiluba",
+        "location": null,
+        "tag": "lu",
+        "lcid": 4096,
+        "iso6392": "lub",
+        "iso6391": "lu",
+        "default": false
+    },
+    {
+        "name": "Luba-Katanga",
+        "local": "Tshiluba",
+        "location": "Congo DRC",
+        "tag": "lu-CD",
+        "lcid": 4096,
+        "iso6392": "lub",
+        "iso6391": "lu",
+        "default": false
+    },
+    {
+        "name": "Luo",
+        "local": null,
+        "location": null,
+        "tag": "luo",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Luo",
+        "local": null,
+        "location": "Kenya",
+        "tag": "luo-KE",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Luxembourgish",
+        "local": "Lëtzebuergesch",
+        "location": null,
+        "tag": "lb",
+        "lcid": 110,
+        "iso6392": "ltz",
+        "iso6391": "lb",
+        "default": false
+    },
+    {
+        "name": "Luxembourgish",
+        "local": "Lëtzebuergesch",
+        "location": "Luxembourg",
+        "tag": "lb-LU",
+        "lcid": 1134,
+        "iso6392": "ltz",
+        "iso6391": "lb",
+        "default": false
+    },
+    {
+        "name": "Luyia",
+        "local": null,
+        "location": null,
+        "tag": "luy",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Luyia",
+        "local": null,
+        "location": "Kenya",
+        "tag": "luy-KE",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Macedonian",
+        "local": null,
+        "location": null,
+        "tag": "mk",
+        "lcid": 47,
+        "iso6392": "mac/mkd",
+        "iso6391": "mk",
+        "default": false
+    },
+    {
+        "name": "Macedonian",
+        "local": null,
+        "location": "North Macedonia",
+        "tag": "mk-MK",
+        "lcid": 1071,
+        "iso6392": "mac/mkd",
+        "iso6391": "mk",
+        "default": false
+    },
+    {
+        "name": "Machame",
+        "local": null,
+        "location": null,
+        "tag": "jmc",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Machame",
+        "local": null,
+        "location": "Tanzania",
+        "tag": "jmc-TZ",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Makhuwa-Meetto",
+        "local": null,
+        "location": null,
+        "tag": "mgh",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Makhuwa-Meetto",
+        "local": null,
+        "location": "Mozambique",
+        "tag": "mgh-MZ",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Makonde",
+        "local": null,
+        "location": null,
+        "tag": "kde",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Makonde",
+        "local": null,
+        "location": "Tanzania",
+        "tag": "kde-TZ",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Malagasy",
+        "local": "Malagasy",
+        "location": null,
+        "tag": "mg",
+        "lcid": 4096,
+        "iso6392": "mlg",
+        "iso6391": "mg",
+        "default": false
+    },
+    {
+        "name": "Malagasy",
+        "local": "Malagasy",
+        "location": "Madagascar",
+        "tag": "mg-MG",
+        "lcid": 4096,
+        "iso6392": "mlg",
+        "iso6391": "mg",
+        "default": false
+    },
+    {
+        "name": "Malay",
+        "local": null,
+        "location": null,
+        "tag": "ms",
+        "lcid": 62,
+        "iso6392": "may/msa",
+        "iso6391": "ms",
+        "default": false
+    },
+    {
+        "name": "Malay",
+        "local": null,
+        "location": "Brunei Darussalam",
+        "tag": "ms-BN",
+        "lcid": 2110,
+        "iso6392": "may/msa",
+        "iso6391": "ms",
+        "default": false
+    },
+    {
+        "name": "Malay",
+        "local": null,
+        "location": "Malaysia",
+        "tag": "ms-MY",
+        "lcid": 1086,
+        "iso6392": "may/msa",
+        "iso6391": "ms",
+        "default": false
+    },
+    {
+        "name": "Malayalam",
+        "local": "മലയാളം",
+        "location": null,
+        "tag": "ml",
+        "lcid": 76,
+        "iso6392": "mal",
+        "iso6391": "ml",
+        "default": false
+    },
+    {
+        "name": "Malayalam",
+        "local": "മലയാളം",
+        "location": "India",
+        "tag": "ml-IN",
+        "lcid": 1100,
+        "iso6392": "mal",
+        "iso6391": "ml",
+        "default": false
+    },
+    {
+        "name": "Maltese",
+        "local": "Malti",
+        "location": null,
+        "tag": "mt",
+        "lcid": 58,
+        "iso6392": "mlt",
+        "iso6391": "mt",
+        "default": false
+    },
+    {
+        "name": "Maltese",
+        "local": "Malti",
+        "location": "Malta",
+        "tag": "mt-MT",
+        "lcid": 1082,
+        "iso6392": "mlt",
+        "iso6391": "mt",
+        "default": false
+    },
+    {
+        "name": "Manx",
+        "local": "Gaelg",
+        "location": null,
+        "tag": "gv",
+        "lcid": 4096,
+        "iso6392": "glv",
+        "iso6391": "gv",
+        "default": false
+    },
+    {
+        "name": "Manx",
+        "local": "Gaelg",
+        "location": "Isle of Man",
+        "tag": "gv-IM",
+        "lcid": 4096,
+        "iso6392": "glv",
+        "iso6391": "gv",
+        "default": false
+    },
+    {
+        "name": "Maori",
+        "local": null,
+        "location": null,
+        "tag": "mi",
+        "lcid": 129,
+        "iso6392": "mao/mri",
+        "iso6391": "mi",
+        "default": false
+    },
+    {
+        "name": "Maori",
+        "local": null,
+        "location": "New Zealand",
+        "tag": "mi-NZ",
+        "lcid": 1153,
+        "iso6392": "mao/mri",
+        "iso6391": "mi",
+        "default": false
+    },
+    {
+        "name": "Mapudungun",
+        "local": null,
+        "location": null,
+        "tag": "arn",
+        "lcid": 122,
+        "iso6392": "arn",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Mapudungun",
+        "local": null,
+        "location": "Chile",
+        "tag": "arn-CL",
+        "lcid": 1146,
+        "iso6392": "arn",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Marathi",
+        "local": "मराठी",
+        "location": null,
+        "tag": "mr",
+        "lcid": 78,
+        "iso6392": "mar",
+        "iso6391": "mr",
+        "default": false
+    },
+    {
+        "name": "Marathi",
+        "local": "मराठी",
+        "location": "India",
+        "tag": "mr-IN",
+        "lcid": 1102,
+        "iso6392": "mar",
+        "iso6391": "mr",
+        "default": false
+    },
+    {
+        "name": "Masai",
+        "local": null,
+        "location": null,
+        "tag": "mas",
+        "lcid": 4096,
+        "iso6392": "mas",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Masai",
+        "local": null,
+        "location": "Kenya",
+        "tag": "mas-KE",
+        "lcid": 4096,
+        "iso6392": "mas",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Masai",
+        "local": null,
+        "location": "Tanzania",
+        "tag": "mas-TZ",
+        "lcid": 4096,
+        "iso6392": "mas",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Mazanderani",
+        "local": null,
+        "location": "Iran",
+        "tag": "mzn-IR",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Meru",
+        "local": null,
+        "location": null,
+        "tag": "mer",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Meru",
+        "local": null,
+        "location": "Kenya",
+        "tag": "mer-KE",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Meta'",
+        "local": null,
+        "location": null,
+        "tag": "mgo",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Meta'",
+        "local": null,
+        "location": "Cameroon",
+        "tag": "mgo-CM",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Mohawk",
+        "local": null,
+        "location": null,
+        "tag": "moh",
+        "lcid": 124,
+        "iso6392": "moh",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Mohawk",
+        "local": null,
+        "location": "Canada",
+        "tag": "moh-CA",
+        "lcid": 1148,
+        "iso6392": "moh",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Mongolian (Cyrillic)",
+        "local": null,
+        "location": null,
+        "tag": "mn",
+        "lcid": 80,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Mongolian (Cyrillic)",
+        "local": null,
+        "location": null,
+        "tag": "mn-Cyrl",
+        "lcid": 30800,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Mongolian (Cyrillic)",
+        "local": null,
+        "location": "Mongolia",
+        "tag": "mn-MN",
+        "lcid": 1104,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Mongolian (Traditional Mongolian)",
+        "local": null,
+        "location": null,
+        "tag": "mn-Mong",
+        "lcid": 31824,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Mongolian (Traditional Mongolian)",
+        "local": null,
+        "location": "People's Republic of China",
+        "tag": "mn-Mong-CN",
+        "lcid": 2128,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Mongolian (Traditional Mongolian)",
+        "local": null,
+        "location": "Mongolia",
+        "tag": "mn-Mong-MN",
+        "lcid": 3152,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Morisyen",
+        "local": null,
+        "location": null,
+        "tag": "mfe",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Morisyen",
+        "local": null,
+        "location": "Mauritius",
+        "tag": "mfe-MU",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Mundang",
+        "local": null,
+        "location": null,
+        "tag": "mua",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Mundang",
+        "local": null,
+        "location": "Cameroon",
+        "tag": "mua-CM",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "N'ko",
+        "local": null,
+        "location": null,
+        "tag": "nqo",
+        "lcid": 4096,
+        "iso6392": "nqo",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "N'ko",
+        "local": null,
+        "location": "Guinea",
+        "tag": "nqo-GN",
+        "lcid": 4096,
+        "iso6392": "nqo",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Nama",
+        "local": null,
+        "location": null,
+        "tag": "naq",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Nama",
+        "local": null,
+        "location": "Namibia",
+        "tag": "naq-NA",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Nepali",
+        "local": "नेपाली",
+        "location": null,
+        "tag": "ne",
+        "lcid": 97,
+        "iso6392": "nep",
+        "iso6391": "ne",
+        "default": false
+    },
+    {
+        "name": "Nepali",
+        "local": "नेपाली",
+        "location": "India",
+        "tag": "ne-IN",
+        "lcid": 2145,
+        "iso6392": "nep",
+        "iso6391": "ne",
+        "default": false
+    },
+    {
+        "name": "Nepali",
+        "local": "नेपाली",
+        "location": "Nepal",
+        "tag": "ne-NP",
+        "lcid": 1121,
+        "iso6392": "nep",
+        "iso6391": "ne",
+        "default": false
+    },
+    {
+        "name": "Ngiemboon",
+        "local": null,
+        "location": null,
+        "tag": "nnh",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Ngiemboon",
+        "local": null,
+        "location": "Cameroon",
+        "tag": "nnh-CM",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Ngomba",
+        "local": null,
+        "location": null,
+        "tag": "jgo",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Ngomba",
+        "local": null,
+        "location": "Cameroon",
+        "tag": "jgo-CM",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Northern Luri",
+        "local": null,
+        "location": "Iraq",
+        "tag": "lrc-IQ",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Northern Luri",
+        "local": null,
+        "location": "Iran",
+        "tag": "lrc-IR",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "North Ndebele",
+        "local": "isiNdebele",
+        "location": null,
+        "tag": "nd",
+        "lcid": 4096,
+        "iso6392": "nde",
+        "iso6391": "nd",
+        "default": false
+    },
+    {
+        "name": "North Ndebele",
+        "local": "isiNdebele",
+        "location": "Zimbabwe",
+        "tag": "nd-ZW",
+        "lcid": 4096,
+        "iso6392": "nde",
+        "iso6391": "nd",
+        "default": false
+    },
+    {
+        "name": "Norwegian (Bokmal)",
+        "local": null,
+        "location": null,
+        "tag": "no",
+        "lcid": 20,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Norwegian (Bokmal)",
+        "local": null,
+        "location": null,
+        "tag": "nb",
+        "lcid": 31764,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Norwegian (Bokmal)",
+        "local": null,
+        "location": "Norway",
+        "tag": "nb-NO",
+        "lcid": 1044,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Norwegian (Nynorsk)",
+        "local": null,
+        "location": null,
+        "tag": "nn",
+        "lcid": 30740,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Norwegian (Nynorsk)",
+        "local": null,
+        "location": "Norway",
+        "tag": "nn-NO",
+        "lcid": 2068,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Norwegian Bokmål",
+        "local": "Norsk (Bokmål)",
+        "location": "Svalbard and Jan Mayen",
+        "tag": "nb-SJ",
+        "lcid": 4096,
+        "iso6392": "nob",
+        "iso6391": "nb",
+        "default": false
+    },
+    {
+        "name": "Nuer",
+        "local": null,
+        "location": null,
+        "tag": "nus",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Nuer",
+        "local": null,
+        "location": "Sudan",
+        "tag": "nus-SD",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Nuer",
+        "local": null,
+        "location": "South Sudan",
+        "tag": "nus-SS",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Nyankole",
+        "local": null,
+        "location": null,
+        "tag": "nyn",
+        "lcid": 4096,
+        "iso6392": "nyn",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Nyankole",
+        "local": null,
+        "location": "Uganda",
+        "tag": "nyn-UG",
+        "lcid": 4096,
+        "iso6392": "nyn",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Occitan",
+        "local": null,
+        "location": null,
+        "tag": "oc",
+        "lcid": 130,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Occitan",
+        "local": null,
+        "location": "France",
+        "tag": "oc-FR",
+        "lcid": 1154,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Odia",
+        "local": null,
+        "location": null,
+        "tag": "or",
+        "lcid": 72,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Odia",
+        "local": null,
+        "location": "India",
+        "tag": "or-IN",
+        "lcid": 1096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Oromo",
+        "local": "Afaan Oromoo",
+        "location": null,
+        "tag": "om",
+        "lcid": 114,
+        "iso6392": "orm",
+        "iso6391": "om",
+        "default": false
+    },
+    {
+        "name": "Oromo",
+        "local": "Afaan Oromoo",
+        "location": "Ethiopia",
+        "tag": "om-ET",
+        "lcid": 1138,
+        "iso6392": "orm",
+        "iso6391": "om",
+        "default": false
+    },
+    {
+        "name": "Oromo",
+        "local": "Afaan Oromoo",
+        "location": "Kenya",
+        "tag": "om-KE",
+        "lcid": 4096,
+        "iso6392": "orm",
+        "iso6391": "om",
+        "default": false
+    },
+    {
+        "name": "Ossetian",
+        "local": "Ирон æвзаг",
+        "location": null,
+        "tag": "os",
+        "lcid": 4096,
+        "iso6392": "oss",
+        "iso6391": "os",
+        "default": false
+    },
+    {
+        "name": "Ossetian",
+        "local": "Ирон æвзаг",
+        "location": "Cyrillic, Georgia ",
+        "tag": "os-GE",
+        "lcid": 4096,
+        "iso6392": "oss",
+        "iso6391": "os",
+        "default": false
+    },
+    {
+        "name": "Ossetian",
+        "local": "Ирон æвзаг",
+        "location": "Cyrillic, Russia ",
+        "tag": "os-RU",
+        "lcid": 4096,
+        "iso6392": "oss",
+        "iso6391": "os",
+        "default": false
+    },
+    {
+        "name": "Pashto",
+        "local": "پښتو",
+        "location": null,
+        "tag": "ps",
+        "lcid": 99,
+        "iso6392": "pus",
+        "iso6391": "ps",
+        "default": false
+    },
+    {
+        "name": "Pashto",
+        "local": "پښتو",
+        "location": "Afghanistan",
+        "tag": "ps-AF",
+        "lcid": 1123,
+        "iso6392": "pus",
+        "iso6391": "ps",
+        "default": false
+    },
+    {
+        "name": "Pashto",
+        "local": "پښتو",
+        "location": "Pakistan",
+        "tag": "ps-PK",
+        "lcid": 4096,
+        "iso6392": "pus",
+        "iso6391": "ps",
+        "default": false
+    },
+    {
+        "name": "Persian",
+        "local": null,
+        "location": null,
+        "tag": "fa",
+        "lcid": 41,
+        "iso6392": "per/fas",
+        "iso6391": "fa",
+        "default": false
+    },
+    {
+        "name": "Persian",
+        "local": null,
+        "location": "Afghanistan",
+        "tag": "fa-AF",
+        "lcid": 4096,
+        "iso6392": "per/fas",
+        "iso6391": "fa",
+        "default": false
+    },
+    {
+        "name": "Persian",
+        "local": null,
+        "location": "Iran",
+        "tag": "fa-IR",
+        "lcid": 1065,
+        "iso6392": "per/fas",
+        "iso6391": "fa",
+        "default": false
+    },
+    {
+        "name": "Polish",
+        "local": "Polski",
+        "location": null,
+        "tag": "pl",
+        "lcid": 21,
+        "iso6392": "pol",
+        "iso6391": "pl",
+        "default": false
+    },
+    {
+        "name": "Polish",
+        "local": "Polski",
+        "location": "Poland",
+        "tag": "pl-PL",
+        "lcid": 1045,
+        "iso6392": "pol",
+        "iso6391": "pl",
+        "default": true
+    },
+    {
+        "name": "Portuguese",
+        "local": "Português",
+        "location": null,
+        "tag": "pt",
+        "lcid": 22,
+        "iso6392": "por",
+        "iso6391": "pt",
+        "default": false
+    },
+    {
+        "name": "Portuguese",
+        "local": "Português",
+        "location": "Angola",
+        "tag": "pt-AO",
+        "lcid": 4096,
+        "iso6392": "por",
+        "iso6391": "pt",
+        "default": false
+    },
+    {
+        "name": "Portuguese",
+        "local": "Português",
+        "location": "Brazil",
+        "tag": "pt-BR",
+        "lcid": 1046,
+        "iso6392": "por",
+        "iso6391": "pt",
+        "default": false
+    },
+    {
+        "name": "Portuguese",
+        "local": "Português",
+        "location": "Cabo Verde",
+        "tag": "pt-CV",
+        "lcid": 4096,
+        "iso6392": "por",
+        "iso6391": "pt",
+        "default": false
+    },
+    {
+        "name": "Portuguese",
+        "local": "Português",
+        "location": "Equatorial Guinea",
+        "tag": "pt-GQ",
+        "lcid": 4096,
+        "iso6392": "por",
+        "iso6391": "pt",
+        "default": false
+    },
+    {
+        "name": "Portuguese",
+        "local": "Português",
+        "location": "Guinea-Bissau",
+        "tag": "pt-GW",
+        "lcid": 4096,
+        "iso6392": "por",
+        "iso6391": "pt",
+        "default": false
+    },
+    {
+        "name": "Portuguese",
+        "local": "Português",
+        "location": "Luxembourg",
+        "tag": "pt-LU",
+        "lcid": 4096,
+        "iso6392": "por",
+        "iso6391": "pt",
+        "default": false
+    },
+    {
+        "name": "Portuguese",
+        "local": "Português",
+        "location": "Macao SAR",
+        "tag": "pt-MO",
+        "lcid": 4096,
+        "iso6392": "por",
+        "iso6391": "pt",
+        "default": false
+    },
+    {
+        "name": "Portuguese",
+        "local": "Português",
+        "location": "Mozambique",
+        "tag": "pt-MZ",
+        "lcid": 4096,
+        "iso6392": "por",
+        "iso6391": "pt",
+        "default": false
+    },
+    {
+        "name": "Portuguese",
+        "local": "Português",
+        "location": "Portugal",
+        "tag": "pt-PT",
+        "lcid": 2070,
+        "iso6392": "por",
+        "iso6391": "pt",
+        "default": false
+    },
+    {
+        "name": "Portuguese",
+        "local": "Português",
+        "location": "São Tomé and Príncipe",
+        "tag": "pt-ST",
+        "lcid": 4096,
+        "iso6392": "por",
+        "iso6391": "pt",
+        "default": false
+    },
+    {
+        "name": "Portuguese",
+        "local": "Português",
+        "location": "Switzerland",
+        "tag": "pt-CH",
+        "lcid": 4096,
+        "iso6392": "por",
+        "iso6391": "pt",
+        "default": false
+    },
+    {
+        "name": "Portuguese",
+        "local": "Português",
+        "location": "Timor-Leste",
+        "tag": "pt-TL",
+        "lcid": 4096,
+        "iso6392": "por",
+        "iso6391": "pt",
+        "default": false
+    },
+    {
+        "name": "Prussian",
+        "local": null,
+        "location": null,
+        "tag": "prg-001",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Pseudo Language",
+        "local": null,
+        "location": "Pseudo locale for east Asian/complex script localization testing",
+        "tag": "qps-ploca",
+        "lcid": 1534,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Pseudo Language",
+        "local": null,
+        "location": "Pseudo locale used for localization testing",
+        "tag": "qps-ploc",
+        "lcid": 1281,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Pseudo Language",
+        "local": null,
+        "location": "Pseudo locale used for localization testing of mirrored locales",
+        "tag": "qps-plocm",
+        "lcid": 2559,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Punjabi",
+        "local": "ਪੰਜਾਬੀ",
+        "location": null,
+        "tag": "pa",
+        "lcid": 70,
+        "iso6392": "pan",
+        "iso6391": "pa",
+        "default": false
+    },
+    {
+        "name": "Punjabi",
+        "local": "ਪੰਜਾਬੀ",
+        "location": null,
+        "tag": "pa-Arab",
+        "lcid": 31814,
+        "iso6392": "pan",
+        "iso6391": "pa",
+        "default": false
+    },
+    {
+        "name": "Punjabi",
+        "local": "ਪੰਜਾਬੀ",
+        "location": "India",
+        "tag": "pa-IN",
+        "lcid": 1094,
+        "iso6392": "pan",
+        "iso6391": "pa",
+        "default": false
+    },
+    {
+        "name": "Punjabi",
+        "local": "ਪੰਜਾਬੀ",
+        "location": "Islamic Republic of Pakistan",
+        "tag": "pa-Arab-PK",
+        "lcid": 2118,
+        "iso6392": "pan",
+        "iso6391": "pa",
+        "default": false
+    },
+    {
+        "name": "Quechua",
+        "local": "Runa Simi",
+        "location": null,
+        "tag": "quz",
+        "lcid": 107,
+        "iso6392": "que",
+        "iso6391": "qu",
+        "default": false
+    },
+    {
+        "name": "Quechua",
+        "local": "Runa Simi",
+        "location": "Bolivia",
+        "tag": "quz-BO",
+        "lcid": 1131,
+        "iso6392": "que",
+        "iso6391": "qu",
+        "default": false
+    },
+    {
+        "name": "Quechua",
+        "local": "Runa Simi",
+        "location": "Ecuador",
+        "tag": "quz-EC",
+        "lcid": 2155,
+        "iso6392": "que",
+        "iso6391": "qu",
+        "default": false
+    },
+    {
+        "name": "Quechua",
+        "local": "Runa Simi",
+        "location": "Peru",
+        "tag": "quz-PE",
+        "lcid": 3179,
+        "iso6392": "que",
+        "iso6391": "qu",
+        "default": false
+    },
+    {
+        "name": "Ripuarian",
+        "local": null,
+        "location": null,
+        "tag": "ksh",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Ripuarian",
+        "local": null,
+        "location": "Germany",
+        "tag": "ksh-DE",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Romanian",
+        "local": null,
+        "location": null,
+        "tag": "ro",
+        "lcid": 24,
+        "iso6392": "rum/ron",
+        "iso6391": "ro",
+        "default": false
+    },
+    {
+        "name": "Romanian",
+        "local": null,
+        "location": "Moldova",
+        "tag": "ro-MD",
+        "lcid": 2072,
+        "iso6392": "rum/ron",
+        "iso6391": "ro",
+        "default": false
+    },
+    {
+        "name": "Romanian",
+        "local": null,
+        "location": "Romania",
+        "tag": "ro-RO",
+        "lcid": 1048,
+        "iso6392": "rum/ron",
+        "iso6391": "ro",
+        "default": false
+    },
+    {
+        "name": "Romansh",
+        "local": "Rumantsch",
+        "location": null,
+        "tag": "rm",
+        "lcid": 23,
+        "iso6392": "roh",
+        "iso6391": "rm",
+        "default": false
+    },
+    {
+        "name": "Romansh",
+        "local": "Rumantsch",
+        "location": "Switzerland",
+        "tag": "rm-CH",
+        "lcid": 1047,
+        "iso6392": "roh",
+        "iso6391": "rm",
+        "default": false
+    },
+    {
+        "name": "Rombo",
+        "local": null,
+        "location": null,
+        "tag": "rof",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Rombo",
+        "local": null,
+        "location": "Tanzania",
+        "tag": "rof-TZ",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Rundi",
+        "local": "Kirundi",
+        "location": null,
+        "tag": "rn",
+        "lcid": 4096,
+        "iso6392": "run",
+        "iso6391": "rn",
+        "default": false
+    },
+    {
+        "name": "Rundi",
+        "local": "Kirundi",
+        "location": "Burundi",
+        "tag": "rn-BI",
+        "lcid": 4096,
+        "iso6392": "run",
+        "iso6391": "rn",
+        "default": false
+    },
+    {
+        "name": "Russian",
+        "local": "Русский",
+        "location": null,
+        "tag": "ru",
+        "lcid": 25,
+        "iso6392": "rus",
+        "iso6391": "ru",
+        "default": false
+    },
+    {
+        "name": "Russian",
+        "local": "Русский",
+        "location": "Belarus",
+        "tag": "ru-BY",
+        "lcid": 4096,
+        "iso6392": "rus",
+        "iso6391": "ru",
+        "default": true
+    },
+    {
+        "name": "Russian",
+        "local": "Русский",
+        "location": "Kazakhstan",
+        "tag": "ru-KZ",
+        "lcid": 4096,
+        "iso6392": "rus",
+        "iso6391": "ru",
+        "default": false
+    },
+    {
+        "name": "Russian",
+        "local": "Русский",
+        "location": "Kyrgyzstan",
+        "tag": "ru-KG",
+        "lcid": 4096,
+        "iso6392": "rus",
+        "iso6391": "ru",
+        "default": false
+    },
+    {
+        "name": "Russian",
+        "local": "Русский",
+        "location": "Moldova",
+        "tag": "ru-MD",
+        "lcid": 2073,
+        "iso6392": "rus",
+        "iso6391": "ru",
+        "default": false
+    },
+    {
+        "name": "Russian",
+        "local": "Русский",
+        "location": "Russia",
+        "tag": "ru-RU",
+        "lcid": 1049,
+        "iso6392": "rus",
+        "iso6391": "ru",
+        "default": true
+    },
+    {
+        "name": "Russian",
+        "local": "Русский",
+        "location": "Ukraine",
+        "tag": "ru-UA",
+        "lcid": 4096,
+        "iso6392": "rus",
+        "iso6391": "ru",
+        "default": false
+    },
+    {
+        "name": "Rwa",
+        "local": null,
+        "location": null,
+        "tag": "rwk",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Rwa",
+        "local": null,
+        "location": "Tanzania",
+        "tag": "rwk-TZ",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Saho",
+        "local": null,
+        "location": null,
+        "tag": "ssy",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Saho",
+        "local": null,
+        "location": "Eritrea",
+        "tag": "ssy-ER",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Sakha",
+        "local": null,
+        "location": null,
+        "tag": "sah",
+        "lcid": 133,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Sakha",
+        "local": null,
+        "location": "Russia",
+        "tag": "sah-RU",
+        "lcid": 1157,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Samburu",
+        "local": null,
+        "location": null,
+        "tag": "saq",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Samburu",
+        "local": null,
+        "location": "Kenya",
+        "tag": "saq-KE",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Sami (Inari)",
+        "local": null,
+        "location": null,
+        "tag": "smn",
+        "lcid": 28731,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Sami (Inari)",
+        "local": null,
+        "location": "Finland",
+        "tag": "smn-FI",
+        "lcid": 9275,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Sami (Lule)",
+        "local": null,
+        "location": null,
+        "tag": "smj",
+        "lcid": 31803,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Sami (Lule)",
+        "local": null,
+        "location": "Norway",
+        "tag": "smj-NO",
+        "lcid": 4155,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Sami (Lule)",
+        "local": null,
+        "location": "Sweden",
+        "tag": "smj-SE",
+        "lcid": 5179,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Sami (Northern)",
+        "local": null,
+        "location": null,
+        "tag": "se",
+        "lcid": 59,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Sami (Northern)",
+        "local": null,
+        "location": "Finland",
+        "tag": "se-FI",
+        "lcid": 3131,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Sami (Northern)",
+        "local": null,
+        "location": "Norway",
+        "tag": "se-NO",
+        "lcid": 1083,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Sami (Northern)",
+        "local": null,
+        "location": "Sweden",
+        "tag": "se-SE",
+        "lcid": 2107,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Sami (Skolt)",
+        "local": null,
+        "location": null,
+        "tag": "sms",
+        "lcid": 29755,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Sami (Skolt)",
+        "local": null,
+        "location": "Finland",
+        "tag": "sms-FI",
+        "lcid": 8251,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Sami (Southern)",
+        "local": null,
+        "location": null,
+        "tag": "sma",
+        "lcid": 30779,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Sami (Southern)",
+        "local": null,
+        "location": "Norway",
+        "tag": "sma-NO",
+        "lcid": 6203,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Sami (Southern)",
+        "local": null,
+        "location": "Sweden",
+        "tag": "sma-SE",
+        "lcid": 7227,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Sango",
+        "local": "Sängö",
+        "location": null,
+        "tag": "sg",
+        "lcid": 4096,
+        "iso6392": "sag",
+        "iso6391": "sg",
+        "default": false
+    },
+    {
+        "name": "Sango",
+        "local": "Sängö",
+        "location": "Central African Republic",
+        "tag": "sg-CF",
+        "lcid": 4096,
+        "iso6392": "sag",
+        "iso6391": "sg",
+        "default": false
+    },
+    {
+        "name": "Sangu",
+        "local": null,
+        "location": null,
+        "tag": "sbp",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Sangu",
+        "local": null,
+        "location": "Tanzania",
+        "tag": "sbp-TZ",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Sanskrit",
+        "local": "संस्कृतम्",
+        "location": null,
+        "tag": "sa",
+        "lcid": 79,
+        "iso6392": "san",
+        "iso6391": "sa",
+        "default": false
+    },
+    {
+        "name": "Sanskrit",
+        "local": "संस्कृतम्",
+        "location": "India",
+        "tag": "sa-IN",
+        "lcid": 1103,
+        "iso6392": "san",
+        "iso6391": "sa",
+        "default": false
+    },
+    {
+        "name": "Scottish Gaelic",
+        "local": "Gàidhlig",
+        "location": null,
+        "tag": "gd",
+        "lcid": 145,
+        "iso6392": "gla",
+        "iso6391": "gd",
+        "default": false
+    },
+    {
+        "name": "Scottish Gaelic",
+        "local": "Gàidhlig",
+        "location": "United Kingdom",
+        "tag": "gd-GB",
+        "lcid": 1169,
+        "iso6392": "gla",
+        "iso6391": "gd",
+        "default": false
+    },
+    {
+        "name": "Sena",
+        "local": null,
+        "location": null,
+        "tag": "seh",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Sena",
+        "local": null,
+        "location": "Mozambique",
+        "tag": "seh-MZ",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Serbian (Cyrillic)",
+        "local": null,
+        "location": null,
+        "tag": "sr-Cyrl",
+        "lcid": 27674,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Serbian (Cyrillic)",
+        "local": null,
+        "location": "Bosnia and Herzegovina",
+        "tag": "sr-Cyrl-BA",
+        "lcid": 7194,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Serbian (Cyrillic)",
+        "local": null,
+        "location": "Montenegro",
+        "tag": "sr-Cyrl-ME",
+        "lcid": 12314,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Serbian (Cyrillic)",
+        "local": null,
+        "location": "Serbia",
+        "tag": "sr-Cyrl-RS",
+        "lcid": 10266,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Serbian (Cyrillic)",
+        "local": null,
+        "location": "Serbia and Montenegro (Former)",
+        "tag": "sr-Cyrl-CS",
+        "lcid": 3098,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Serbian (Latin)",
+        "local": null,
+        "location": null,
+        "tag": "sr-Latn",
+        "lcid": 28698,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Serbian (Latin)",
+        "local": null,
+        "location": null,
+        "tag": "sr",
+        "lcid": 31770,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Serbian (Latin)",
+        "local": null,
+        "location": "Bosnia and Herzegovina",
+        "tag": "sr-Latn-BA",
+        "lcid": 6170,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Serbian (Latin)",
+        "local": null,
+        "location": "Montenegro",
+        "tag": "sr-Latn-ME",
+        "lcid": 11290,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Serbian (Latin)",
+        "local": null,
+        "location": "Serbia",
+        "tag": "sr-Latn-RS",
+        "lcid": 9242,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Serbian (Latin)",
+        "local": null,
+        "location": "Serbia and Montenegro (Former)",
+        "tag": "sr-Latn-CS",
+        "lcid": 2074,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Sesotho sa Leboa",
+        "local": null,
+        "location": null,
+        "tag": "nso",
+        "lcid": 108,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Sesotho sa Leboa",
+        "local": null,
+        "location": "South Africa",
+        "tag": "nso-ZA",
+        "lcid": 1132,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Setswana",
+        "local": null,
+        "location": null,
+        "tag": "tn",
+        "lcid": 50,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Setswana",
+        "local": null,
+        "location": "Botswana",
+        "tag": "tn-BW",
+        "lcid": 2098,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Setswana",
+        "local": null,
+        "location": "South Africa",
+        "tag": "tn-ZA",
+        "lcid": 1074,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Shambala",
+        "local": null,
+        "location": null,
+        "tag": "ksb",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Shambala",
+        "local": null,
+        "location": "Tanzania",
+        "tag": "ksb-TZ",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Shona",
+        "local": "ChiShona",
+        "location": null,
+        "tag": "sn",
+        "lcid": 4096,
+        "iso6392": "sna",
+        "iso6391": "sn",
+        "default": false
+    },
+    {
+        "name": "Shona",
+        "local": "ChiShona",
+        "location": "Latin",
+        "tag": "sn-Latn",
+        "lcid": 4096,
+        "iso6392": "sna",
+        "iso6391": "sn",
+        "default": false
+    },
+    {
+        "name": "Shona",
+        "local": "ChiShona",
+        "location": "Zimbabwe",
+        "tag": "sn-Latn-ZW",
+        "lcid": 4096,
+        "iso6392": "sna",
+        "iso6391": "sn",
+        "default": false
+    },
+    {
+        "name": "Sindhi",
+        "local": "سنڌي‎",
+        "location": null,
+        "tag": "sd",
+        "lcid": 89,
+        "iso6392": "snd",
+        "iso6391": "sd",
+        "default": false
+    },
+    {
+        "name": "Sindhi",
+        "local": "سنڌي‎",
+        "location": null,
+        "tag": "sd-Arab",
+        "lcid": 31833,
+        "iso6392": "snd",
+        "iso6391": "sd",
+        "default": false
+    },
+    {
+        "name": "Sindhi",
+        "local": "سنڌي‎",
+        "location": "Islamic Republic of Pakistan",
+        "tag": "sd-Arab-PK",
+        "lcid": 2137,
+        "iso6392": "snd",
+        "iso6391": "sd",
+        "default": false
+    },
+    {
+        "name": "Sinhala",
+        "local": "සිංහල",
+        "location": null,
+        "tag": "si",
+        "lcid": 91,
+        "iso6392": "sin",
+        "iso6391": "si",
+        "default": false
+    },
+    {
+        "name": "Sinhala",
+        "local": "සිංහල",
+        "location": "Sri Lanka",
+        "tag": "si-LK",
+        "lcid": 1115,
+        "iso6392": "sin",
+        "iso6391": "si",
+        "default": false
+    },
+    {
+        "name": "Slovak",
+        "local": null,
+        "location": null,
+        "tag": "sk",
+        "lcid": 27,
+        "iso6392": "slo/slk",
+        "iso6391": "sk",
+        "default": false
+    },
+    {
+        "name": "Slovak",
+        "local": null,
+        "location": "Slovakia",
+        "tag": "sk-SK",
+        "lcid": 1051,
+        "iso6392": "slo/slk",
+        "iso6391": "sk",
+        "default": false
+    },
+    {
+        "name": "Slovenian",
+        "local": "Slovenščina",
+        "location": null,
+        "tag": "sl",
+        "lcid": 36,
+        "iso6392": "slv",
+        "iso6391": "sl",
+        "default": false
+    },
+    {
+        "name": "Slovenian",
+        "local": "Slovenščina",
+        "location": "Slovenia",
+        "tag": "sl-SI",
+        "lcid": 1060,
+        "iso6392": "slv",
+        "iso6391": "sl",
+        "default": false
+    },
+    {
+        "name": "Soga",
+        "local": null,
+        "location": null,
+        "tag": "xog",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Soga",
+        "local": null,
+        "location": "Uganda",
+        "tag": "xog-UG",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Somali",
+        "local": "Soomaaliga",
+        "location": null,
+        "tag": "so",
+        "lcid": 119,
+        "iso6392": "som",
+        "iso6391": "so",
+        "default": false
+    },
+    {
+        "name": "Somali",
+        "local": "Soomaaliga",
+        "location": "Djibouti",
+        "tag": "so-DJ",
+        "lcid": 4096,
+        "iso6392": "som",
+        "iso6391": "so",
+        "default": false
+    },
+    {
+        "name": "Somali",
+        "local": "Soomaaliga",
+        "location": "Ethiopia",
+        "tag": "so-ET",
+        "lcid": 4096,
+        "iso6392": "som",
+        "iso6391": "so",
+        "default": false
+    },
+    {
+        "name": "Somali",
+        "local": "Soomaaliga",
+        "location": "Kenya",
+        "tag": "so-KE",
+        "lcid": 4096,
+        "iso6392": "som",
+        "iso6391": "so",
+        "default": false
+    },
+    {
+        "name": "Somali",
+        "local": "Soomaaliga",
+        "location": "Somalia",
+        "tag": "so-SO",
+        "lcid": 1143,
+        "iso6392": "som",
+        "iso6391": "so",
+        "default": false
+    },
+    {
+        "name": "Sotho",
+        "local": null,
+        "location": null,
+        "tag": "st",
+        "lcid": 48,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Sotho",
+        "local": null,
+        "location": "South Africa",
+        "tag": "st-ZA",
+        "lcid": 1072,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "South Ndebele",
+        "local": "isiNdebele",
+        "location": null,
+        "tag": "nr",
+        "lcid": 4096,
+        "iso6392": "nbl",
+        "iso6391": "nr",
+        "default": false
+    },
+    {
+        "name": "South Ndebele",
+        "local": "isiNdebele",
+        "location": "South Africa",
+        "tag": "nr-ZA",
+        "lcid": 4096,
+        "iso6392": "nbl",
+        "iso6391": "nr",
+        "default": false
+    },
+    {
+        "name": "Southern Sotho",
+        "local": null,
+        "location": "Lesotho",
+        "tag": "st-LS",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": null,
+        "tag": "es",
+        "lcid": 10,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Argentina",
+        "tag": "es-AR",
+        "lcid": 11274,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Belize",
+        "tag": "es-BZ",
+        "lcid": 4096,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Bolivarian Republic of Venezuela",
+        "tag": "es-VE",
+        "lcid": 8202,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Bolivia",
+        "tag": "es-BO",
+        "lcid": 16394,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Brazil",
+        "tag": "es-BR",
+        "lcid": 4096,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Chile",
+        "tag": "es-CL",
+        "lcid": 13322,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Colombia",
+        "tag": "es-CO",
+        "lcid": 9226,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Costa Rica",
+        "tag": "es-CR",
+        "lcid": 5130,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Cuba",
+        "tag": "es-CU",
+        "lcid": 23562,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Dominican Republic",
+        "tag": "es-DO",
+        "lcid": 7178,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Ecuador",
+        "tag": "es-EC",
+        "lcid": 12298,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "El Salvador",
+        "tag": "es-SV",
+        "lcid": 17418,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Equatorial Guinea",
+        "tag": "es-GQ",
+        "lcid": 4096,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Guatemala",
+        "tag": "es-GT",
+        "lcid": 4106,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Honduras",
+        "tag": "es-HN",
+        "lcid": 18442,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Latin America",
+        "tag": "es-419",
+        "lcid": 22538,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Mexico",
+        "tag": "es-MX",
+        "lcid": 2058,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Nicaragua",
+        "tag": "es-NI",
+        "lcid": 19466,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Panama",
+        "tag": "es-PA",
+        "lcid": 6154,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Paraguay",
+        "tag": "es-PY",
+        "lcid": 15370,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Peru",
+        "tag": "es-PE",
+        "lcid": 10250,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Philippines",
+        "tag": "es-PH",
+        "lcid": 4096,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Puerto Rico",
+        "tag": "es-PR",
+        "lcid": 20490,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Spain",
+        "tag": "es-ES_tradnl",
+        "lcid": 1034,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Spain",
+        "tag": "es-ES",
+        "lcid": 3082,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "UnitedStates",
+        "tag": "es-US",
+        "lcid": 21514,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish",
+        "local": "Español",
+        "location": "Uruguay",
+        "tag": "es-UY",
+        "lcid": 14346,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Standard Moroccan Tamazight",
+        "local": null,
+        "location": null,
+        "tag": "zgh",
+        "lcid": 4096,
+        "iso6392": "zgh",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Standard Moroccan Tamazight",
+        "local": null,
+        "location": "Morocco",
+        "tag": "zgh-Tfng-MA",
+        "lcid": 4096,
+        "iso6392": "zgh",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Standard Moroccan Tamazight",
+        "local": null,
+        "location": "Tifinagh",
+        "tag": "zgh-Tfng",
+        "lcid": 4096,
+        "iso6392": "zgh",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Swati",
+        "local": "SiSwati",
+        "location": null,
+        "tag": "ss",
+        "lcid": 4096,
+        "iso6392": "ssw",
+        "iso6391": "ss",
+        "default": false
+    },
+    {
+        "name": "Swati",
+        "local": "SiSwati",
+        "location": "South Africa",
+        "tag": "ss-ZA",
+        "lcid": 4096,
+        "iso6392": "ssw",
+        "iso6391": "ss",
+        "default": false
+    },
+    {
+        "name": "Swati",
+        "local": "SiSwati",
+        "location": "Swaziland",
+        "tag": "ss-SZ",
+        "lcid": 4096,
+        "iso6392": "ssw",
+        "iso6391": "ss",
+        "default": false
+    },
+    {
+        "name": "Swedish",
+        "local": "Svenska",
+        "location": null,
+        "tag": "sv",
+        "lcid": 29,
+        "iso6392": "swe",
+        "iso6391": "sv",
+        "default": false
+    },
+    {
+        "name": "Swedish",
+        "local": "Svenska",
+        "location": "Åland Islands",
+        "tag": "sv-AX",
+        "lcid": 4096,
+        "iso6392": "swe",
+        "iso6391": "sv",
+        "default": false
+    },
+    {
+        "name": "Swedish",
+        "local": "Svenska",
+        "location": "Finland",
+        "tag": "sv-FI",
+        "lcid": 2077,
+        "iso6392": "swe",
+        "iso6391": "sv",
+        "default": false
+    },
+    {
+        "name": "Swedish",
+        "local": "Svenska",
+        "location": "Sweden",
+        "tag": "sv-SE",
+        "lcid": 1053,
+        "iso6392": "swe",
+        "iso6391": "sv",
+        "default": false
+    },
+    {
+        "name": "Syriac",
+        "local": null,
+        "location": null,
+        "tag": "syr",
+        "lcid": 90,
+        "iso6392": "syr",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Syriac",
+        "local": null,
+        "location": "Syria",
+        "tag": "syr-SY",
+        "lcid": 1114,
+        "iso6392": "syr",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Tachelhit",
+        "local": null,
+        "location": null,
+        "tag": "shi",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Tachelhit",
+        "local": null,
+        "location": "Tifinagh",
+        "tag": "shi-Tfng",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Tachelhit",
+        "local": null,
+        "location": "Tifinagh, Morocco ",
+        "tag": "shi-Tfng-MA",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Tachelhit (Latin)",
+        "local": null,
+        "location": null,
+        "tag": "shi-Latn",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Tachelhit (Latin)",
+        "local": null,
+        "location": "Morocco",
+        "tag": "shi-Latn-MA",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Taita",
+        "local": null,
+        "location": null,
+        "tag": "dav",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Taita",
+        "local": null,
+        "location": "Kenya",
+        "tag": "dav-KE",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Tajik (Cyrillic)",
+        "local": null,
+        "location": null,
+        "tag": "tg",
+        "lcid": 40,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Tajik (Cyrillic)",
+        "local": null,
+        "location": null,
+        "tag": "tg-Cyrl",
+        "lcid": 31784,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Tajik (Cyrillic)",
+        "local": null,
+        "location": "Tajikistan",
+        "tag": "tg-Cyrl-TJ",
+        "lcid": 1064,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Tamazight (Latin)",
+        "local": null,
+        "location": null,
+        "tag": "tzm",
+        "lcid": 95,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Tamazight (Latin)",
+        "local": null,
+        "location": null,
+        "tag": "tzm-Latn",
+        "lcid": 31839,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Tamazight (Latin)",
+        "local": null,
+        "location": "Algeria",
+        "tag": "tzm-Latn-DZ",
+        "lcid": 2143,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Tamil",
+        "local": "தமிழ்",
+        "location": null,
+        "tag": "ta",
+        "lcid": 73,
+        "iso6392": "tam",
+        "iso6391": "ta",
+        "default": false
+    },
+    {
+        "name": "Tamil",
+        "local": "தமிழ்",
+        "location": "India",
+        "tag": "ta-IN",
+        "lcid": 1097,
+        "iso6392": "tam",
+        "iso6391": "ta",
+        "default": false
+    },
+    {
+        "name": "Tamil",
+        "local": "தமிழ்",
+        "location": "Malaysia",
+        "tag": "ta-MY",
+        "lcid": 4096,
+        "iso6392": "tam",
+        "iso6391": "ta",
+        "default": false
+    },
+    {
+        "name": "Tamil",
+        "local": "தமிழ்",
+        "location": "Singapore",
+        "tag": "ta-SG",
+        "lcid": 4096,
+        "iso6392": "tam",
+        "iso6391": "ta",
+        "default": false
+    },
+    {
+        "name": "Tamil",
+        "local": "தமிழ்",
+        "location": "Sri Lanka",
+        "tag": "ta-LK",
+        "lcid": 2121,
+        "iso6392": "tam",
+        "iso6391": "ta",
+        "default": false
+    },
+    {
+        "name": "Tasawaq",
+        "local": null,
+        "location": null,
+        "tag": "twq",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Tasawaq",
+        "local": null,
+        "location": "Niger",
+        "tag": "twq-NE",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Tatar",
+        "local": "Татарча",
+        "location": null,
+        "tag": "tt",
+        "lcid": 68,
+        "iso6392": "tat",
+        "iso6391": "tt",
+        "default": false
+    },
+    {
+        "name": "Tatar",
+        "local": "Татарча",
+        "location": "Russia",
+        "tag": "tt-RU",
+        "lcid": 1092,
+        "iso6392": "tat",
+        "iso6391": "tt",
+        "default": false
+    },
+    {
+        "name": "Telugu",
+        "local": "తెలుగు",
+        "location": null,
+        "tag": "te",
+        "lcid": 74,
+        "iso6392": "tel",
+        "iso6391": "te",
+        "default": false
+    },
+    {
+        "name": "Telugu",
+        "local": "తెలుగు",
+        "location": "India",
+        "tag": "te-IN",
+        "lcid": 1098,
+        "iso6392": "tel",
+        "iso6391": "te",
+        "default": false
+    },
+    {
+        "name": "Teso",
+        "local": null,
+        "location": null,
+        "tag": "teo",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Teso",
+        "local": null,
+        "location": "Kenya",
+        "tag": "teo-KE",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Teso",
+        "local": null,
+        "location": "Uganda",
+        "tag": "teo-UG",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Thai",
+        "local": "ภาษาไทย",
+        "location": null,
+        "tag": "th",
+        "lcid": 30,
+        "iso6392": "tha",
+        "iso6391": "th",
+        "default": false
+    },
+    {
+        "name": "Thai",
+        "local": "ภาษาไทย",
+        "location": "Thailand",
+        "tag": "th-TH",
+        "lcid": 1054,
+        "iso6392": "tha",
+        "iso6391": "th",
+        "default": false
+    },
+    {
+        "name": "Tibetan",
+        "local": null,
+        "location": null,
+        "tag": "bo",
+        "lcid": 81,
+        "iso6392": "tib/bod",
+        "iso6391": "bo",
+        "default": false
+    },
+    {
+        "name": "Tibetan",
+        "local": null,
+        "location": "India",
+        "tag": "bo-IN",
+        "lcid": 4096,
+        "iso6392": "tib/bod",
+        "iso6391": "bo",
+        "default": false
+    },
+    {
+        "name": "Tibetan",
+        "local": null,
+        "location": "People's Republic of China",
+        "tag": "bo-CN",
+        "lcid": 1105,
+        "iso6392": "tib/bod",
+        "iso6391": "bo",
+        "default": false
+    },
+    {
+        "name": "Tigre",
+        "local": null,
+        "location": null,
+        "tag": "tig",
+        "lcid": 4096,
+        "iso6392": "tig",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Tigre",
+        "local": null,
+        "location": "Eritrea",
+        "tag": "tig-ER",
+        "lcid": 4096,
+        "iso6392": "tig",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Tigrinya",
+        "local": "ትግርኛ",
+        "location": null,
+        "tag": "ti",
+        "lcid": 115,
+        "iso6392": "tir",
+        "iso6391": "ti",
+        "default": false
+    },
+    {
+        "name": "Tigrinya",
+        "local": "ትግርኛ",
+        "location": "Eritrea",
+        "tag": "ti-ER",
+        "lcid": 2163,
+        "iso6392": "tir",
+        "iso6391": "ti",
+        "default": false
+    },
+    {
+        "name": "Tigrinya",
+        "local": "ትግርኛ",
+        "location": "Ethiopia",
+        "tag": "ti-ET",
+        "lcid": 1139,
+        "iso6392": "tir",
+        "iso6391": "ti",
+        "default": false
+    },
+    {
+        "name": "Tongan",
+        "local": null,
+        "location": null,
+        "tag": "to",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Tongan",
+        "local": null,
+        "location": "Tonga",
+        "tag": "to-TO",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Tsonga",
+        "local": "Xitsonga",
+        "location": null,
+        "tag": "ts",
+        "lcid": 49,
+        "iso6392": "tso",
+        "iso6391": "ts",
+        "default": false
+    },
+    {
+        "name": "Tsonga",
+        "local": "Xitsonga",
+        "location": "South Africa",
+        "tag": "ts-ZA",
+        "lcid": 1073,
+        "iso6392": "tso",
+        "iso6391": "ts",
+        "default": false
+    },
+    {
+        "name": "Turkish",
+        "local": "Türkçe",
+        "location": null,
+        "tag": "tr",
+        "lcid": 31,
+        "iso6392": "tur",
+        "iso6391": "tr",
+        "default": false
+    },
+    {
+        "name": "Turkish",
+        "local": "Türkçe",
+        "location": "Cyprus",
+        "tag": "tr-CY",
+        "lcid": 4096,
+        "iso6392": "tur",
+        "iso6391": "tr",
+        "default": false
+    },
+    {
+        "name": "Turkish",
+        "local": "Türkçe",
+        "location": "Turkey",
+        "tag": "tr-TR",
+        "lcid": 1055,
+        "iso6392": "tur",
+        "iso6391": "tr",
+        "default": false
+    },
+    {
+        "name": "Turkmen",
+        "local": "Türkmençe",
+        "location": null,
+        "tag": "tk",
+        "lcid": 66,
+        "iso6392": "tuk",
+        "iso6391": "tk",
+        "default": false
+    },
+    {
+        "name": "Turkmen",
+        "local": "Türkmençe",
+        "location": "Turkmenistan",
+        "tag": "tk-TM",
+        "lcid": 1090,
+        "iso6392": "tuk",
+        "iso6391": "tk",
+        "default": false
+    },
+    {
+        "name": "Ukrainian",
+        "local": "Українська",
+        "location": null,
+        "tag": "uk",
+        "lcid": 34,
+        "iso6392": "ukr",
+        "iso6391": "uk",
+        "default": false
+    },
+    {
+        "name": "Ukrainian",
+        "local": "Українська",
+        "location": "Ukraine",
+        "tag": "uk-UA",
+        "lcid": 1058,
+        "iso6392": "ukr",
+        "iso6391": "uk",
+        "default": true
+    },
+    {
+        "name": "Upper Sorbian",
+        "local": null,
+        "location": null,
+        "tag": "hsb",
+        "lcid": 46,
+        "iso6392": "hsb",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Upper Sorbian",
+        "local": null,
+        "location": "Germany",
+        "tag": "hsb-DE",
+        "lcid": 1070,
+        "iso6392": "hsb",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Urdu",
+        "local": "اردو",
+        "location": null,
+        "tag": "ur",
+        "lcid": 32,
+        "iso6392": "urd",
+        "iso6391": "ur",
+        "default": false
+    },
+    {
+        "name": "Urdu",
+        "local": "اردو",
+        "location": "India",
+        "tag": "ur-IN",
+        "lcid": 2080,
+        "iso6392": "urd",
+        "iso6391": "ur",
+        "default": false
+    },
+    {
+        "name": "Urdu",
+        "local": "اردو",
+        "location": "Islamic Republic of Pakistan",
+        "tag": "ur-PK",
+        "lcid": 1056,
+        "iso6392": "urd",
+        "iso6391": "ur",
+        "default": false
+    },
+    {
+        "name": "Uyghur",
+        "local": "ئۇيغۇرچه",
+        "location": null,
+        "tag": "ug",
+        "lcid": 128,
+        "iso6392": "uig",
+        "iso6391": "ug",
+        "default": false
+    },
+    {
+        "name": "Uyghur",
+        "local": "ئۇيغۇرچه",
+        "location": "People's Republic of China",
+        "tag": "ug-CN",
+        "lcid": 1152,
+        "iso6392": "uig",
+        "iso6391": "ug",
+        "default": false
+    },
+    {
+        "name": "Uzbek",
+        "local": "O‘zbek",
+        "location": "Perso-Arabic",
+        "tag": "uz-Arab",
+        "lcid": 4096,
+        "iso6392": "uzb",
+        "iso6391": "uz",
+        "default": false
+    },
+    {
+        "name": "Uzbek",
+        "local": "O‘zbek",
+        "location": "Perso-Arabic, Afghanistan ",
+        "tag": "uz-Arab-AF",
+        "lcid": 4096,
+        "iso6392": "uzb",
+        "iso6391": "uz",
+        "default": false
+    },
+    {
+        "name": "Uzbek (Cyrillic)",
+        "local": null,
+        "location": null,
+        "tag": "uz-Cyrl",
+        "lcid": 30787,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Uzbek (Cyrillic)",
+        "local": null,
+        "location": "Uzbekistan",
+        "tag": "uz-Cyrl-UZ",
+        "lcid": 2115,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Uzbek (Latin)",
+        "local": null,
+        "location": null,
+        "tag": "uz",
+        "lcid": 67,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Uzbek (Latin)",
+        "local": null,
+        "location": null,
+        "tag": "uz-Latn",
+        "lcid": 31811,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Uzbek (Latin)",
+        "local": null,
+        "location": "Uzbekistan",
+        "tag": "uz-Latn-UZ",
+        "lcid": 1091,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Vai",
+        "local": null,
+        "location": null,
+        "tag": "vai",
+        "lcid": 4096,
+        "iso6392": "vai",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Vai",
+        "local": null,
+        "location": null,
+        "tag": "vai-Vaii",
+        "lcid": 4096,
+        "iso6392": "vai",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Vai",
+        "local": null,
+        "location": "Liberia",
+        "tag": "vai-Vaii-LR",
+        "lcid": 4096,
+        "iso6392": "vai",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Vai (Latin)",
+        "local": null,
+        "location": "Liberia",
+        "tag": "vai-Latn-LR",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Vai (Latin)",
+        "local": null,
+        "location": null,
+        "tag": "vai-Latn",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Valencian",
+        "local": "Català",
+        "location": "Spain",
+        "tag": "ca-ES-",
+        "lcid": 2051,
+        "iso6392": "cat",
+        "iso6391": "ca",
+        "default": false
+    },
+    {
+        "name": "Venda",
+        "local": "Tshivenḓa",
+        "location": null,
+        "tag": "ve",
+        "lcid": 51,
+        "iso6392": "ven",
+        "iso6391": "ve",
+        "default": false
+    },
+    {
+        "name": "Venda",
+        "local": "Tshivenḓa",
+        "location": "South Africa",
+        "tag": "ve-ZA",
+        "lcid": 1075,
+        "iso6392": "ven",
+        "iso6391": "ve",
+        "default": false
+    },
+    {
+        "name": "Vietnamese",
+        "local": "Tiếng Việt",
+        "location": null,
+        "tag": "vi",
+        "lcid": 42,
+        "iso6392": "vie",
+        "iso6391": "vi",
+        "default": false
+    },
+    {
+        "name": "Vietnamese",
+        "local": "Tiếng Việt",
+        "location": "Vietnam",
+        "tag": "vi-VN",
+        "lcid": 1066,
+        "iso6392": "vie",
+        "iso6391": "vi",
+        "default": false
+    },
+    {
+        "name": "Volapük",
+        "local": "Volapük",
+        "location": null,
+        "tag": "vo",
+        "lcid": 4096,
+        "iso6392": "vol",
+        "iso6391": "vo",
+        "default": false
+    },
+    {
+        "name": "Volapük",
+        "local": "Volapük",
+        "location": "World",
+        "tag": "vo-001",
+        "lcid": 4096,
+        "iso6392": "vol",
+        "iso6391": "vo",
+        "default": false
+    },
+    {
+        "name": "Vunjo",
+        "local": null,
+        "location": null,
+        "tag": "vun",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Vunjo",
+        "local": null,
+        "location": "Tanzania",
+        "tag": "vun-TZ",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Walser",
+        "local": null,
+        "location": null,
+        "tag": "wae",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Walser",
+        "local": null,
+        "location": "Switzerland",
+        "tag": "wae-CH",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Welsh",
+        "local": null,
+        "location": null,
+        "tag": "cy",
+        "lcid": 82,
+        "iso6392": "wel/cym",
+        "iso6391": "cy",
+        "default": false
+    },
+    {
+        "name": "Welsh",
+        "local": null,
+        "location": "United Kingdom",
+        "tag": "cy-GB",
+        "lcid": 1106,
+        "iso6392": "wel/cym",
+        "iso6391": "cy",
+        "default": false
+    },
+    {
+        "name": "Wolaytta",
+        "local": null,
+        "location": null,
+        "tag": "wal",
+        "lcid": 4096,
+        "iso6392": "wal",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Wolaytta",
+        "local": null,
+        "location": "Ethiopia",
+        "tag": "wal-ET",
+        "lcid": 4096,
+        "iso6392": "wal",
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Wolof",
+        "local": "Wolof",
+        "location": null,
+        "tag": "wo",
+        "lcid": 136,
+        "iso6392": "wol",
+        "iso6391": "wo",
+        "default": false
+    },
+    {
+        "name": "Wolof",
+        "local": "Wolof",
+        "location": "Senegal",
+        "tag": "wo-SN",
+        "lcid": 1160,
+        "iso6392": "wol",
+        "iso6391": "wo",
+        "default": false
+    },
+    {
+        "name": "Xhosa",
+        "local": "isiXhosa",
+        "location": null,
+        "tag": "xh",
+        "lcid": 52,
+        "iso6392": "xho",
+        "iso6391": "xh",
+        "default": false
+    },
+    {
+        "name": "Xhosa",
+        "local": "isiXhosa",
+        "location": "South Africa",
+        "tag": "xh-ZA",
+        "lcid": 1076,
+        "iso6392": "xho",
+        "iso6391": "xh",
+        "default": false
+    },
+    {
+        "name": "Yangben",
+        "local": null,
+        "location": null,
+        "tag": "yav",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Yangben",
+        "local": null,
+        "location": "Cameroon",
+        "tag": "yav-CM",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Yi",
+        "local": null,
+        "location": null,
+        "tag": "ii",
+        "lcid": 120,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Yi",
+        "local": null,
+        "location": "People's Republic of China",
+        "tag": "ii-CN",
+        "lcid": 1144,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Yoruba",
+        "local": "Yorùbá",
+        "location": null,
+        "tag": "yo",
+        "lcid": 106,
+        "iso6392": "yor",
+        "iso6391": "yo",
+        "default": false
+    },
+    {
+        "name": "Yoruba",
+        "local": "Yorùbá",
+        "location": "Benin",
+        "tag": "yo-BJ",
+        "lcid": 4096,
+        "iso6392": "yor",
+        "iso6391": "yo",
+        "default": false
+    },
+    {
+        "name": "Yoruba",
+        "local": "Yorùbá",
+        "location": "Nigeria",
+        "tag": "yo-NG",
+        "lcid": 1130,
+        "iso6392": "yor",
+        "iso6391": "yo",
+        "default": false
+    },
+    {
+        "name": "Zarma",
+        "local": null,
+        "location": null,
+        "tag": "dje",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Zarma",
+        "local": null,
+        "location": "Niger",
+        "tag": "dje-NE",
+        "lcid": 4096,
+        "iso6392": null,
+        "iso6391": null,
+        "default": false
+    },
+    {
+        "name": "Zulu",
+        "local": "isiZulu",
+        "location": null,
+        "tag": "zu",
+        "lcid": 53,
+        "iso6392": "zul",
+        "iso6391": "zu",
+        "default": false
+    },
+    {
+        "name": "Zulu",
+        "local": "isiZulu",
+        "location": "South Africa",
+        "tag": "zu-ZA",
+        "lcid": 1077,
+        "iso6392": "zul",
+        "iso6391": "zu",
+        "default": false
+    }
+]
