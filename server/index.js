@@ -18,7 +18,9 @@ import db from './db.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const __package = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
+const __package = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
+const __locales = JSON.parse(fs.readFileSync(path.join(__dirname, 'locales.json'), 'utf8'));
+// https://github.com/TiagoDanin/Locale-Codes/blob/master/documentation.md
 const backupDir = path.join(__dirname, 'backup');
 const publicDir = path.join(__dirname, 'public');
 const imgDir = path.join(__dirname, 'images');
@@ -468,27 +470,28 @@ app.post('/api/unload', auth, async (req, res) => {
 });
 
 app.get('/api/languages', auth, async (req, res) => {
-  const languages = [
-    { code: 'en', name: 'English' },
-    { code: 'be', name: 'Беларуская' },
-    { code: 'uk', name: 'Українська' },
-    { code: 'ru', name: 'Русский' },
-    { code: 'pl', name: 'Polski' },
-    { code: 'de', name: 'Deutsch' },
-    { code: 'fr', name: 'Français' },
-  ];
-  res.json(languages);
+  let matches = [];
+  if (req.query.id) {
+    const chunk = req.query.id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(chunk, 'i');
+    matches = __locales.filter((x) => x.location && (regex.test(x.tag) || regex.test(x.name) || regex.test(x.location) || regex.test(x.local)));
+  } else {
+    matches = __locales.filter((x) => x.default && x.location);
+  }
+  res.json(matches);
 });
 
 app.post('/api/load', auth, async (req, res) => {
   Object.entries(req.body).map((x) => console.log(`${x[0]}`.padEnd(10), x[0] === 'text' ? `*${x[1].length}` : x[1]));
-
+  let result = {};
   const textId = Number(req.body.id);
-  const langId = req.body.lang;
-  const content = req.body.text;
-  const dryRun = req.body.dry;
-  // console.log("start import");
-  const result = await nlp.importText(true, textId, langId, content, dryRun);
+  if (textId) {
+    const langId = req.body.lang;
+    const content = req.body.text;
+    const dryRun = req.body.dry;
+    // console.log("start import");
+    result = await nlp.importText(true, textId, langId, content, dryRun);
+  }
   // console.log("complete import", result);
   res.json(result);
 });
