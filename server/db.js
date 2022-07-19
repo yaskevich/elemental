@@ -37,7 +37,7 @@ const databaseScheme = {
     meta text,
     site text,
     credits text,
-    lang text,
+    lang text NOT NULL,
     loaded boolean DEFAULT false NOT NULL,
     grammar boolean DEFAULT false NOT NULL,
     comments boolean DEFAULT false NOT NULL`,
@@ -132,6 +132,11 @@ const databaseScheme = {
     CONSTRAINT fk_images_texts FOREIGN KEY(text_id) REFERENCES texts(id),
     CONSTRAINT fk_images_users FOREIGN KEY(user_id) REFERENCES users(id)`,
 
+  sources: `
+    id SERIAL PRIMARY KEY,
+    lang text NOT NULL,
+    citekey text NOT NULL,
+    bibtex jsonb NOT NULL`,
 };
 
 let tablesResult;
