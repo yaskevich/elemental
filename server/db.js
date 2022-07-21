@@ -134,7 +134,8 @@ const databaseScheme = {
     id SERIAL PRIMARY KEY,
     lang text NOT NULL,
     citekey text NOT NULL UNIQUE,
-    bibtex jsonb NOT NULL`,
+    bibtex jsonb NOT NULL,
+    text_id integer NOT NULL`,
 };
 
 let tablesResult;
@@ -1043,22 +1044,38 @@ export default {
       sql = 'UPDATE sources SET lang = $2, bibtex = $3, citekey = $4 WHERE id = $1';
     } else {
       // console.log(params.bib.length);
-      sql = 'INSERT INTO sources (lang, bibtex, citekey) VALUES ($1, $2, $3)';
+      sql = 'INSERT INTO sources (text_id, lang, bibtex, citekey) VALUES ($1, $2, $3, $4)';
+      const textId = Number(params.text) || 1;
+      values.push(textId);
     }
     sql += ' RETURNING id';
 
     try {
       const queue = [];
       for (let i = 0; i < params.bib.length; i++) {
-        // console.log(i, params.bib[i].id);
         const bibjson = params.bib[i];
         const query = pool.query(sql, values.concat([params.lang, JSON.stringify(bibjson), bibjson.id]));
         queue.push(query);
       }
       data = (await Promise.all(queue)).map((x) => x?.rows?.[0]);
     } catch (err) {
-      // console.error(err);
-      data = { error: err.detail };
+      // console.error(JSON.stringify(err));
+      data = { error: err?.detail || err?.routine };
+    }
+    return data;
+  },
+  async getSource(sourceId) {
+    let sql = 'SELECT * from sources';
+    const id = Number(sourceId);
+    if (id) {
+      sql += ` WHERE id = ${id}`;
+    }
+    let data = [];
+    try {
+      const result = await pool.query(sql);
+      data = result?.rows;
+    } catch (err) {
+      console.error(err);
     }
     return data;
   },
