@@ -3,36 +3,6 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import project from '../package.json';
 import router from "./router";
 
-interface ITextObject {
-  author: string,
-  comments: boolean,
-  grammar: boolean,
-  id: number,
-  meta: string,
-  title: string,
-  loaded: boolean,
-};
-
-interface IUserObject {
-  id: number,
-  username: string,
-  firstname: string,
-  lastname: string,
-  email: string,
-  sex: number,
-  server: string,
-  commit: string,
-  text_id: number,
-  text?: ITextObject,
-  privs: number,
-};
-
-interface IState {
-  token?: string,
-  error?: string,
-  user?: IUserObject,
-};
-
 const state: IState = reactive({
   token: localStorage.getItem('token') || '',
   user: {},
@@ -59,8 +29,7 @@ const getFile = async (route: string, id: string): Promise<any> => {
       return error;
     }
   }
-
-}
+};
 
 const logoutUser = () => {
   state.token = '';
