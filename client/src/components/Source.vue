@@ -135,7 +135,7 @@ const save = async (e: MouseEvent) => {
         await setLanguage();
         await formRef.value?.validate(async (errors) => {
             if (!errors) {
-                const { data } = await store.post('source', { lang: form.lang, bib: cjsObject.value.data, id: form.id });
+                const { data } = await store.post('source', { lang: form.lang, bib: cjsObject.value.data, id: form.id, text: store?.state?.user?.text_id });
                 if (data?.error) {
                     const note = data.error === `Key (citekey)=(${cjsObject?.value?.data?.[0]?.id}) already exists.` ? 'The publication with this ID already exists in the database. Please, pay attention to avoid duplicates!' : data.error;
                     message.error(note, {duration: 5000});
