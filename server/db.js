@@ -1,9 +1,6 @@
 import dotenv from 'dotenv';
-
 import bcrypt from 'bcrypt';
-
 import passGen from 'generate-password';
-
 import pg from 'pg';
 
 const configLoaded = dotenv.config();
@@ -13,6 +10,7 @@ if (!process.env.NODE_ENV && configLoaded.error) {
   console.error(configLoaded.error.toString());
   process.exit(1);
 }
+
 const saltRounds = 8;
 const passOptions = {
   length: 18,
@@ -123,7 +121,7 @@ const databaseScheme = {
     CONSTRAINT fk_logs_users FOREIGN KEY(user_id) REFERENCES users(id)`,
 
   images: `
-    id TEXT NOT NULL,
+    id TEXT NOT NULL UNIQUE,
     filesize integer NOT NULL,
     user_id integer NOT NULL,
     text_id integer NOT NULL,
@@ -135,7 +133,7 @@ const databaseScheme = {
   sources: `
     id SERIAL PRIMARY KEY,
     lang text NOT NULL,
-    citekey text NOT NULL,
+    citekey text NOT NULL UNIQUE,
     bibtex jsonb NOT NULL`,
 };
 
@@ -1032,5 +1030,36 @@ export default {
       console.error(err);
     }
     return result;
+  },
+  async setSource(params) {
+    const values = [];
+    // console.log(params);
+    // return;
+    let sql = '';
+    let data = [];
+    if (params?.id) {
+      const id = Number(params.id);
+      values.push(id);
+      sql = 'UPDATE sources SET lang = $2, bibtex = $3, citekey = $4 WHERE id = $1';
+    } else {
+      // console.log(params.bib.length);
+      sql = 'INSERT INTO sources (lang, bibtex, citekey) VALUES ($1, $2, $3)';
+    }
+    sql += ' RETURNING id';
+
+    try {
+      const queue = [];
+      for (let i = 0; i < params.bib.length; i++) {
+        // console.log(i, params.bib[i].id);
+        const bibjson = params.bib[i];
+        const query = pool.query(sql, values.concat([params.lang, JSON.stringify(bibjson), bibjson.id]));
+        queue.push(query);
+      }
+      data = (await Promise.all(queue)).map((x) => x?.rows?.[0]);
+    } catch (err) {
+      // console.error(err);
+      data = { error: err.detail };
+    }
+    return data;
   },
 };
