@@ -15,6 +15,8 @@ import Media from './components/Media.vue';
 import Import from './components/Import.vue';
 import Users from './components/Users.vue';
 import User from './components/User.vue';
+import Sources from './components/Sources.vue';
+import Source from './components/Source.vue';
 
 const routes = [
   // {
@@ -105,6 +107,16 @@ const routes = [
     path: '/user/:id?',
     component: User,
     name: 'User',
+  },
+  {
+    path: '/sources',
+    component: Sources,
+    name: 'Sources',
+  },
+  {
+    path: '/source/:id?',
+    component: Source,
+    name: 'Source',
   },
 ];
 
