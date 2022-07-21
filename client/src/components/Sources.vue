@@ -3,6 +3,9 @@
         <template #header-extra>
             <n-button type="primary" @click="$router.push('/source/')">+ new</n-button>
         </template>
+        <div v-if="!sources.length">
+            <n-text type="error">There are no sources!</n-text>
+        </div>
         <n-card
             :title="item.citekey"
             v-for="(item, key) in sources"
