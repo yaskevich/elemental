@@ -6,3 +6,11 @@ declare module '*.vue' {
   const component: DefineComponent<{}, {}, any>
   export default component
 }
+declare module "citation-js" {
+  class Cite {
+      constructor(T: string, W?: Object);
+      data: Array<{ id: number }>;
+      format: Function;
+  }
+  export default Cite;
+}
