@@ -129,8 +129,8 @@ onBeforeMount(async () => {
 });
 
 const publishText = async () => {
-  console.log('publish text', id);
-  const { data } = await store.post('publish', { id });
+  // console.log('publish text', id.value);
+  const { data } = await store.post('publish', { id: id.value });
   console.log('data', data);
   txt.zipsize = data.bytes;
   txt.published = data.published;
