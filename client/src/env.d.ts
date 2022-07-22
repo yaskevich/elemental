@@ -8,7 +8,7 @@ declare module '*.vue' {
 }
 declare module "citation-js" {
   class Cite {
-      constructor(T: string, W?: Object);
+      constructor(T: string | IBibTex, W?: Object);
       data: Array<{ id: number }>;
       format: Function;
   }
