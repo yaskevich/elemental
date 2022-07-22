@@ -23,11 +23,14 @@ const __locales = JSON.parse(fs.readFileSync(path.join(__dirname, 'locales.json'
 // https://github.com/TiagoDanin/Locale-Codes/blob/master/documentation.md
 const backupDir = path.join(__dirname, 'backup');
 const publicDir = path.join(__dirname, 'public');
+const siteDir = path.join(__dirname, 'sites');
 const imgDir = path.join(__dirname, 'images');
 fs.mkdirSync(backupDir, { recursive: true });
 fs.mkdirSync(imgDir, { recursive: true });
+fs.mkdirSync(siteDir, { recursive: true });
 
 const app = express();
+const zipName = 'site.zip';
 const port = process.env.PORT || 8080;
 const appName = __package?.name || String(port);
 const imageFileLimit = Number(process.env.IMGLIMIT) || 1024 * 1024; // 1 MB
@@ -53,8 +56,9 @@ const strategy = new JWTStrategy(
 
 passport.use(strategy);
 const auth = passport.authenticate('jwt', { session: false });
-app.use('/api/files', express.static(publicDir));
+app.use('/api/files', express.static(siteDir));
 app.use('/api/images', express.static(imgDir));
+
 app.use(fileUpload({ limits: { fileSize: imageFileLimit }, abortOnLimit: true, defParamCharset: 'utf8' }));
 app.use(compression());
 app.set('trust proxy', 1);
@@ -203,6 +207,10 @@ app.get('/api/texts', auth, async (req, res) => {
   const textId = Number(req.query.id);
   // console.log("texts", textId);
   const textInfo = await db.getTexts(textId);
+  // console.log(textInfo);
+  if (!fs.existsSync(path.join(textInfo?.[0].dir, zipName))) {
+    delete textInfo[0].zipsize;
+  }
   res.json(textInfo);
 });
 
@@ -328,8 +336,8 @@ app.post('/api/publish', auth, async (req, res) => {
   let result = {};
   if (textId) {
     try {
-      const pubDir = path.join(publicDir, String(textId));
-      const zipPath = path.join(pubDir, 'site.zip');
+      const pubDir = path.join(siteDir, String(textId));
+      const zipPath = path.join(pubDir, zipName);
       const templatePath = path.join(__dirname, 'reader.html');
       const template = fs.readFileSync(templatePath, 'utf8');
 
