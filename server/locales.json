@@ -7153,6 +7153,16 @@
         "name": "Spanish",
         "local": "Español",
         "location": "Spain",
+        "tag": "es-ES",
+        "lcid": 3082,
+        "iso6392": "spa",
+        "iso6391": "es",
+        "default": false
+    },
+    {
+        "name": "Spanish (Traditional)",
+        "local": "Español (Tradicional)",
+        "location": "Spain",
         "tag": "es-ES_tradnl",
         "lcid": 1034,
         "iso6392": "spa",
@@ -7162,17 +7172,7 @@
     {
         "name": "Spanish",
         "local": "Español",
-        "location": "Spain",
-        "tag": "es-ES",
-        "lcid": 3082,
-        "iso6392": "spa",
-        "iso6391": "es",
-        "default": false
-    },
-    {
-        "name": "Spanish",
-        "local": "Español",
-        "location": "UnitedStates",
+        "location": "United States",
         "tag": "es-US",
         "lcid": 21514,
         "iso6392": "spa",
