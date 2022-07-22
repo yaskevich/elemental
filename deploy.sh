@@ -11,6 +11,8 @@ mkdir $TEMP -p
 
 mv $WORK/backup/ $TEMP
 mv $WORK/images/ $TEMP
+mv $WORK/sites/ $TEMP
+
 
 pm2 delete $APP
 rm -rf $DIR/$PROD/$APP
@@ -39,6 +41,8 @@ printf "\nCOMMIT=%s" $HASH >> $WORK/.env
 
 mv $TEMP/backup $WORK
 mv $TEMP/images $WORK
+mv $TEMP/sites $WORK
+
 rm -rf $TEMP
 
 cd $WORK
