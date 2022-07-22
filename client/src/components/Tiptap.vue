@@ -75,6 +75,8 @@
     </n-modal>
     <div>
       <editor-content :editor="customEditor" :class="`${editorclass} annotation`" />
+      <div class="counter" v-if="customEditor"
+      >{{ customEditor.storage.characterCount.characters() }} characters / {{ customEditor.storage.characterCount.words() }} words</div>
     </div>
   </div>
 </template>
@@ -98,6 +100,7 @@ import Bold from '@tiptap/extension-bold';
 import Image from '@tiptap/extension-image';
 import Dropcursor from '@tiptap/extension-dropcursor';
 import Nodeblock from '../nodeblock';
+import CharacterCount from '@tiptap/extension-character-count';
 
 
 defineProps<{ editorclass: string }>();
@@ -144,6 +147,7 @@ const customEditor = new Editor({
     Nodeblock.configure({
       classes: ['caption', 'error'],
     }),
+    CharacterCount.configure(),
     // StarterKit,
   ],
 });
@@ -285,5 +289,11 @@ defineExpose({ handle: customEditor });
     position: relative;
     z-index: 1000;
   }
+}
+.counter {
+  color: #868e96;
+  margin-top: -1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 </style>
