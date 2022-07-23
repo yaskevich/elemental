@@ -24,13 +24,16 @@
       :class="{ 'is-active': customEditor.isActive('bold') }"
     >emphasized</button>
 
-    <button @click="showModal = true" style="background-color: #fac9ff;">+image</button>
+    <button @click="showImagesModal = true" style="background-color: #fac9ff;">+image</button>
 
     <button
       @click="customEditor.chain().focus().setBlock({ class: 'caption' }).run()"
       style="background-color: #fac9ff;"
     >caption</button>
 
+    <button @click="showSourcesModal = true" style="background-color: lightyellow;">+ref</button>
+
+    <br />
     <!-- clear formatting -->
     <button
       @click="customEditor.chain().focus().clearNodes().unsetAllMarks().run()"
@@ -43,7 +46,27 @@
     >del</button>
 
     <n-modal
-      v-model:show="showModal"
+      v-model:show="showSourcesModal"
+      :style="{ 'max-width': '600px' }"
+      class="custom-card"
+      preset="card"
+      title="Select a reference"
+      :bordered="false"
+      size="huge"
+      :segmented="{ content: 'soft', footer: 'soft' }"
+    >
+      <n-select
+        v-model:value="selectedSource"
+        clearable
+        filterable
+        :options="sources"
+        placeholder="Bibliographic sources"
+      />
+    </n-modal>
+    <!-- customEditor.chain().focus().setCitation({ id: 7 }).run() -->
+
+    <n-modal
+      v-model:show="showImagesModal"
       :style="{ 'max-width': '600px' }"
       class="custom-card"
       preset="card"
@@ -75,7 +98,9 @@
     </n-modal>
     <div>
       <editor-content :editor="customEditor" :class="`${editorclass} annotation`" />
-      <div class="counter" v-if="customEditor"
+      <div
+        class="counter"
+        v-if="customEditor"
       >{{ customEditor.storage.characterCount.characters() }} characters / {{ customEditor.storage.characterCount.words() }} words</div>
     </div>
   </div>
@@ -86,22 +111,20 @@ import { onBeforeUnmount, onBeforeMount, ref, reactive } from 'vue';
 // import type { UploadFileInfo } from 'naive-ui';
 import store from '../store';
 import { Editor, EditorContent } from '@tiptap/vue-3';
-// import StarterKit from '@tiptap/starter-kit'
 import Document from '@tiptap/extension-document';
 import Paragraph from '@tiptap/extension-paragraph';
 import Text from '@tiptap/extension-text';
 import History from '@tiptap/extension-history';
-// import TextStyle from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
 import Placeholder from '@tiptap/extension-placeholder';
-import Annotation from '../annotation';
 import Blockquote from '@tiptap/extension-blockquote';
 import Bold from '@tiptap/extension-bold';
 import Image from '@tiptap/extension-image';
 import Dropcursor from '@tiptap/extension-dropcursor';
-import Nodeblock from '../nodeblock';
 import CharacterCount from '@tiptap/extension-character-count';
-
+import Spanclassed from '../extensions/spanclassed';
+import Pclassed from '../extensions/pclassed';
+import Citation from '../extensions/citation';
 
 defineProps<{ editorclass: string }>();
 
@@ -110,10 +133,12 @@ const CustomBlockquote = Blockquote.extend({
   content: 'paragraph*',
 });
 
-const showModal = ref(false);
+const showImagesModal = ref(false);
+const showSourcesModal = ref(false);
 const id = store?.state?.user?.text_id;
 const previewFileList = reactive<IImageItem[]>([]); // UploadFileInfo
-
+const selectedSource = ref(null);
+const sources = reactive([] as Array<IBib>);
 
 const customEditor = new Editor({
   content: '',
@@ -124,12 +149,11 @@ const customEditor = new Editor({
     Paragraph,
     Text,
     History,
-    // TextStyle,
     Color,
     Placeholder.configure({
       placeholder: 'Start writing your comment...',
     }),
-    Annotation.configure({
+    Spanclassed.configure({
       classes,
     }),
     CustomBlockquote.configure({
@@ -144,11 +168,11 @@ const customEditor = new Editor({
     }),
     Image,
     Dropcursor,
-    Nodeblock.configure({
+    Pclassed.configure({
       classes: ['caption', 'error'],
     }),
     CharacterCount.configure(),
-    // StarterKit,
+    Citation,
   ],
 });
 
@@ -157,8 +181,12 @@ onBeforeUnmount(() => {
 });
 
 onBeforeMount(async () => {
-  const data = await store.get(`img/${id}`);
-  Object.assign(previewFileList, data.sort((a: any, b: any) => (new Date(a.created)).getTime() - (new Date(b.created)).getTime()));
+  const images = await store.get(`img/${id}`);
+  Object.assign(previewFileList, images.sort((a: any, b: any) => (new Date(a.created)).getTime() - (new Date(b.created)).getTime()));
+  const data = await store.get('source');
+  Object.assign(sources, data.map((x: any) => ({ ...x, label: `${x.citekey.padEnd(10, '.')} ${x.bibtex.title}` })));
+  console.log('data from server', data);
+  // isLoaded.value = true;
 });
 
 // const addImage = () => {
@@ -190,7 +218,7 @@ const selectImage = (item: IImageItem) => {
     .insertContent(item.title)
     .setBlock({ class: 'caption' })
     .run();
-  showModal.value = false;
+  showImagesModal.value = false;
 };
 
 defineExpose({ handle: customEditor });
@@ -203,6 +231,7 @@ defineExpose({ handle: customEditor });
   > * + * {
     margin-top: 0.75em;
   }
+
   img {
     max-width: 90%;
     max-height: 200px;
@@ -295,5 +324,9 @@ defineExpose({ handle: customEditor });
   margin-top: -1rem;
   padding-top: 1rem;
   padding-bottom: 1rem;
+}
+
+button {
+  margin-right: 1px;
 }
 </style>
