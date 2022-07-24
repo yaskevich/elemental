@@ -1,9 +1,10 @@
-import { mergeAttributes, Node } from '@tiptap/core'
-import { VueNodeViewRenderer } from '@tiptap/vue-3'
-import Component from './Component.vue'
+import { mergeAttributes, Node } from '@tiptap/core';
+import { VueNodeViewRenderer } from '@tiptap/vue-3';
+import Component from './Component.vue';
 
 export interface CitationOptions {
     inline: boolean,
+    sources: Array<IBib>,
     HTMLAttributes: Record<string, any>,
 }
 
@@ -23,12 +24,11 @@ export const Citation = Node.create<CitationOptions>({
     //   inline() {
     //     return this.options.inline
     //   },
-    group() {
-        return this.options.inline ? 'inline' : 'block';
-    },
+    group() { return this.options.inline ? 'inline' : 'block'; },
 
     addOptions() {
         return {
+            sources: [],
             inline: true,
             HTMLAttributes: {},
         }
@@ -39,25 +39,19 @@ export const Citation = Node.create<CitationOptions>({
             id: {
                 default: null,
             },
+            data: {
+                default: this.options.sources
+            }
         }
     },
 
-    parseHTML() {
-        return [
-            {
-                tag: 'cite',
-            },
-        ]
-    },
+    parseHTML() { return [{ tag: 'cite', }] },
 
     renderHTML({ HTMLAttributes }) {
-        // console.log(HTMLAttributes);
         return ['cite', mergeAttributes(HTMLAttributes)]
     },
 
-    addNodeView() {
-        return VueNodeViewRenderer(Component);
-    },
+    addNodeView() { return VueNodeViewRenderer(Component); },
 
     addCommands() {
         return {
