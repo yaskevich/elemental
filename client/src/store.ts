@@ -33,7 +33,7 @@ const getFile = async (route: string, id: string): Promise<any> => {
 
 const logoutUser = () => {
   state.token = '';
-  state.user = {} as IUserObject;
+  state.user = {} as IUser;
   localStorage.removeItem('token');
   router.replace('/login');
 };
