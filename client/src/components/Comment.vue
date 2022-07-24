@@ -1,145 +1,136 @@
 <template>
+  <!-- <h1>{{entry.title}}</h1> -->
+  <n-card title :bordered="false" class="minimal" v-show="ready">
+    <div class="box">
+      <n-space justify="center">
+        <div v-for="(issue, index) in entry.issues" :key="index">
+          <n-tooltip trigger="hover" placement="bottom">
+            <template #trigger>
+              <n-tag
+                closable
+                @close="removeIssue(issue)"
+                :color="{ color: issuesKV[issue[0]].color, textColor: 'white', }"
+              >{{ issuesKV[issue[0]]?.["ru"] }}</n-tag>
+            </template>
+            {{ issue[1] ? ('Assigned to ' + usersKV[issue[1]].firstname + ' ' + usersKV[issue[1]].lastname) : 'Not assigned' }}
+          </n-tooltip>
+        </div>
+      </n-space>
+    </div>
+
+    <div class="box">
+      <n-space justify="center">
+        <!-- <router-link :to="'/preview/'+entry.id">Preview</router-link> -->
+        <n-button secondary type="info" :disabled="!entry.id" @click="showPreview(entry.id)">Preview</n-button>
+
+        <n-switch style="margin-top: .4rem;" v-model:value="entry.published" :round="false">
+          <template #checked>Published</template>
+          <template #unchecked>Draft</template>
+        </n-switch>
+
+        <n-button type="info" @click="saveComment" :disabled="!(entry.title && entry.priority)">Save</n-button>
+      </n-space>
+    </div>
+
+    <div class="box">
+      <n-space justify="center">
+        <n-input-number
+          v-model:value="entry.priority"
+          :validator="validateID"
+          style="width:100px;"
+          type="text"
+          placeholder="ID"
+        />
+
+        <n-dropdown trigger="hover" @select="addTag" :options="tagsList">
+          <n-button>+ tag</n-button>
+        </n-dropdown>
+
+        <n-dropdown trigger="hover" @select="addIssue" :options="issuesList">
+          <n-button>+ issue</n-button>
+        </n-dropdown>
+      </n-space>
+    </div>
+
+    <n-text type="error" v-if="!entry.priority">ID should not be empty!</n-text>
+
+    <div class="box">
+      <n-input
+        v-model:value="entry.title"
+        type="text"
+        placeholder="Heading"
+        class="maininput"
+        autofocus
+      />
+      <!-- <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" /> -->
+    </div>
+
+    <div class="box" v-if="boundStrings.length">
+      <n-space justify="center">
+        <n-dropdown
+          trigger="hover"
+          :options="[{ label: 'Go to text', key: 'go', stack: stack as Array<IToken>, icon: renderIcon(BackIcon) }, { label: 'Unbind span', key: 'unbind', stack: stack as Array<IToken>, icon: renderIcon(UnbindLink) }]"
+          @select="handleSelect"
+          v-for="(stack, index) in boundStrings"
+          :key="index"
+        >
+          <n-button type="info" dashed size="small">
+            <template v-for="item in stack" :key="item.id" style="margin-right: 5px;">
+              <span v-if="item.meta !== 'ip'">{{ item.form }}&nbsp;</span>
+            </template>
+          </n-button>
+        </n-dropdown>
+      </n-space>
+    </div>
+
+    <div class="box">
+      <n-tag
+        v-for="tag in entry.tags"
+        :key="tag"
+        closable
+        @close="removeTag(tag)"
+        style="margin-right: 10px;"
+        size="small"
+      >{{ tagsList.filter((x: any) => x.key == tag)?.shift()?.["label"] }}</n-tag>
+    </div>
+
+    <n-text type="error" v-if="!entry.title">Heading should not be empty!</n-text>
+    <!-- <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" /> -->
+    <!-- <n-divider title-placement="center">
+      <span class="zone">translation</span>
+    </n-divider>-->
+    <n-input v-model:value="entry.trans" type="text" placeholder="Translation" />
+    <!-- <n-divider title-placement="center">
+      <span class="zone">brief comment</span>
+    </n-divider>-->
+    <n-divider />
+    <Tiptap ref="editor1Ref" editorclass="briefeditor" :data="sources" />
+    <!-- <n-divider title-placement="center">
+      <span class="zone">full comment</span>
+    </n-divider>-->
+    <!-- <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" /> -->
+    <n-divider />
+    <Tiptap ref="editor2Ref" editorclass="fulleditor" :data="sources" />
+
+    <!-- <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" /> -->
+    <n-space v-if="Boolean(entry.id)" justify="space-between">
+      <n-popconfirm @positive-click="deleteComment">
+        <template #trigger>
+          <n-button type="error" :disabled="Boolean(boundStrings?.length)">Delete</n-button>
+        </template> You are about to delete the comment. This action is permanent. Please confirm, if you are sure
+      </n-popconfirm>
+      <n-button type="info" @click="saveComment" :disabled="!(entry.title && entry.priority)">Save</n-button>
+    </n-space>
+
+    <p v-if="Boolean(boundStrings?.length)" style="font-size: 0.75rem;">
+      <n-text
+        type="error"
+      >It is not allowed to delete a comment, if it has bound tokens. One should unbind tokens before.</n-text>
+    </p>
+  </n-card>
   <div v-if="!ready">
     loading...
     <!-- <n-spin size="large" /> -->
-  </div>
-  <!-- <h1>{{entry.title}}</h1> -->
-  <div :style="`visibility:${ready ? 'visible' : 'hidden'}`">
-    <n-card title :bordered="false" class="minimal">
-      <div class="box">
-        <n-space justify="center">
-          <div v-for="(issue, index) in entry.issues" :key="index">
-            <n-tooltip trigger="hover" placement="bottom">
-              <template #trigger>
-                <n-tag
-                  closable
-                  @close="removeIssue(issue)"
-                  :color="{ color: issuesKV[issue[0]].color, textColor: 'white', }"
-                >{{ issuesKV[issue[0]]?.["ru"] }}</n-tag>
-              </template>
-              {{ issue[1] ? ('Assigned to ' + usersKV[issue[1]].firstname + ' ' + usersKV[issue[1]].lastname) : 'Not assigned' }}
-            </n-tooltip>
-          </div>
-        </n-space>
-      </div>
-
-      <div class="box">
-        <n-space justify="center">
-          <!-- <router-link :to="'/preview/'+entry.id">Preview</router-link> -->
-          <n-button
-            secondary
-            type="info"
-            :disabled="!entry.id"
-            @click="showPreview(entry.id)"
-          >Preview</n-button>
-
-          <n-switch style="margin-top: .4rem;" v-model:value="entry.published" :round="false">
-            <template #checked>Published</template>
-            <template #unchecked>Draft</template>
-          </n-switch>
-
-          <n-button
-            type="info"
-            @click="saveComment"
-            :disabled="!(entry.title && entry.priority)"
-          >Save</n-button>
-        </n-space>
-      </div>
-
-      <div class="box">
-        <n-space justify="center">
-          <n-input-number
-            v-model:value="entry.priority"
-            :validator="validateID"
-            style="width:100px;"
-            type="text"
-            placeholder="ID"
-          />
-
-          <n-dropdown trigger="hover" @select="addTag" :options="tagsList">
-            <n-button>+ tag</n-button>
-          </n-dropdown>
-
-          <n-dropdown trigger="hover" @select="addIssue" :options="issuesList">
-            <n-button>+ issue</n-button>
-          </n-dropdown>
-        </n-space>
-      </div>
-
-      <n-text type="error" v-if="!entry.priority">ID should not be empty!</n-text>
-
-      <div class="box">
-        <n-input
-          v-model:value="entry.title"
-          type="text"
-          placeholder="Heading"
-          class="maininput"
-          autofocus
-        />
-        <!-- <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" /> -->
-      </div>
-
-      <div class="box" v-if="boundStrings.length">
-        <n-space justify="center">
-          <n-dropdown
-            trigger="hover"
-            :options="[{ label: 'Go to text', key: 'go', stack: stack as Array<IToken>, icon: renderIcon(BackIcon) }, { label: 'Unbind span', key: 'unbind', stack: stack as Array<IToken>, icon: renderIcon(UnbindLink) }]"
-            @select="handleSelect"
-            v-for="(stack, index) in boundStrings"
-            :key="index"
-          >
-            <n-button type="info" dashed size="small">
-              <template v-for="item in stack" :key="item.id" style="margin-right: 5px;">
-                <span v-if="item.meta !== 'ip'">{{ item.form }}&nbsp;</span>
-              </template>
-            </n-button>
-          </n-dropdown>
-        </n-space>
-      </div>
-
-      <div class="box">
-        <n-tag
-          v-for="tag in entry.tags"
-          :key="tag"
-          closable
-          @close="removeTag(tag)"
-          style="margin-right: 10px;"
-          size="small"
-        >{{ tagsList.filter((x: any) => x.key == tag)?.shift()?.["label"] }}</n-tag>
-      </div>
-
-      <n-text type="error" v-if="!entry.title">Heading should not be empty!</n-text>
-      <!-- <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" /> -->
-      <!-- <n-divider title-placement="center">
-        <span class="zone">translation</span>
-      </n-divider>-->
-      <n-input v-model:value="entry.trans" type="text" placeholder="Translation" />
-      <!-- <n-divider title-placement="center">
-        <span class="zone">brief comment</span>
-      </n-divider>-->
-      <Tiptap ref="editor1Ref" editorclass="briefeditor" class="tiptapdiv" />
-      <!-- <n-divider title-placement="center">
-        <span class="zone">full comment</span>
-      </n-divider>-->
-      <!-- <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" /> -->
-      <Tiptap ref="editor2Ref" editorclass="fulleditor" class="tiptapdiv" />
-
-      <!-- <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" /> -->
-      <n-space v-if="Boolean(entry.id)" justify="space-between">
-        <n-popconfirm @positive-click="deleteComment">
-          <template #trigger>
-            <n-button type="error" :disabled="Boolean(boundStrings?.length)">Delete</n-button>
-          </template> You are about to delete the comment. This action is permanent. Please confirm, if you are sure
-        </n-popconfirm>
-        <n-button type="info" @click="saveComment" :disabled="!(entry.title && entry.priority)">Save</n-button>
-      </n-space>
-
-      <p v-if="Boolean(boundStrings?.length)" style="font-size: 0.75rem;">
-        <n-text
-          type="error"
-        >It is not allowed to delete a comment, if it has bound tokens. One should unbind tokens before.</n-text>
-      </p>
-    </n-card>
   </div>
 </template>
 
@@ -157,54 +148,15 @@ import type { Component } from 'vue';
 import { NIcon } from 'naive-ui';
 import { ArrowBackFilled as BackIcon, LinkOffFilled as UnbindLink } from '@vicons/material';
 
-interface IToken {
-  id: number;
-  checked?: boolean;
-  form: string;
-  repr: string;
-  meta: string;
-  p: number;
-  s: number;
-  comments: Array<number>;
-}
-
-interface Props {
-  id?: string;
-  tokens?: string;
-}
-
 const message = useMessage();
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<{ id?: string; tokens?: string; }>(), {
   id: '',
   tokens: '[]',
 });
 
-// console.log('props', props);
 let tokensToBind = JSON.parse(props.tokens) as Array<IToken>;
-// console.log('in tokens', tokensToBind);
-// const vuerouter = useRoute();
-// const id = vuerouter.params.id;
 let id = Number(props.id);
-
-interface IEntry {
-  long_json: Object;
-  long_html: string;
-  long_text: string;
-  brief_json: Object;
-  brief_html: string;
-  brief_text: string;
-  text_id: number;
-  id: number;
-  issues: Array<[number, number]>;
-  tags: Array<number>;
-  priority: number;
-  published: boolean;
-  trans: string;
-  title: string;
-}
-
-// const entry: IEntry = reactive<IEntry>({});
 const entry: IEntry = reactive({}) as IEntry;
 // ref<HTMLDivElement>();
 const editor1Ref = ref<ComponentPublicInstance>();
@@ -212,15 +164,9 @@ const editor2Ref = ref<ComponentPublicInstance>();
 const boundStrings = reactive([] as Array<Array<IToken>>);
 const ready = ref(false);
 const fromDB = ref('');
-const kekRef = ref(null);
-
-interface keyable {
-  [key: string]: any;
-}
-
+const sources = reactive([] as Array<IBib>);
 const usersKV: keyable = reactive({}) as keyable;
 const issuesKV: keyable = reactive({}) as keyable;
-
 const tagsList = reactive([]);
 const issuesList = reactive([]);
 
@@ -270,6 +216,10 @@ onBeforeUnmount(() => {
 });
 
 onBeforeMount(async () => {
+  const sourcesData = await store.get('source');
+  Object.assign(sources, sourcesData.map((x: any, i: number) => ({ ...x, label: `${x.citekey.padEnd(10, '.')} ${x.bibtex.title}`, value: i })));
+  // console.log('data from server', sourcesData);
+
   const usersData = await store.get('users');
   Object.assign(usersKV, Object.fromEntries(usersData.map((x: any) => [x.id, x])));
   // console.log("users k/v", usersKV);
@@ -413,7 +363,7 @@ const saveComment = async () => {
 
   if (checkIsEntryUpdated()) {
     console.log('changes → DB');
-    const {data} = await store.post('comment', entry);
+    const { data } = await store.post('comment', entry);
     if (data?.id) {
       entry.id = data.id;
       fromDB.value = JSON.stringify(entry);
@@ -437,6 +387,7 @@ const saveComment = async () => {
     console.log('no changes – spare traffic...');
   }
 };
+
 const goToText = (stringTokens: Array<IToken>) => {
   router.push({ name: 'Text', params: { tokens: JSON.stringify(stringTokens) } });
 };
@@ -473,7 +424,7 @@ const handleSelect = async (key: string | number, option: DropdownOption) => {
       console.error('delete error for', entry.id);
     }
   }
-}
+};
 
 const renderIcon = (icon: Component) => {
   return () => {
@@ -492,8 +443,5 @@ const renderIcon = (icon: Component) => {
 .maininput div div input {
   font-weight: bold;
   min-width: 200px;
-}
-.tiptapdiv {
-  margin-top: 2rem;
 }
 </style>
