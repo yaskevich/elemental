@@ -31,7 +31,7 @@
       style="background-color: #fac9ff;"
     >caption</button>
 
-    <button @click="showSourcesModal = true" style="background-color: lightyellow;">+ref</button>
+    <button @click="showSourcesModal = true" style="background-color: #CCFFFF;">+ref</button>
 
     <br />
     <!-- clear formatting -->
@@ -56,14 +56,21 @@
       :segmented="{ content: 'soft', footer: 'soft' }"
     >
       <n-select
-        v-model:value="selectedSource"
         clearable
         filterable
-        :options="sources"
+        :options="data"
         placeholder="Bibliographic sources"
+        @update:value="onSourceSelected"
+        style="margin-bottom: 15px;"
       />
+
+      <div v-html="html" v-if="html" style="margin-bottom: 15px;"></div>
+
+      <n-space justify="space-between">
+        <n-button type="info" @click="showSourcesModal = false;">Cancel</n-button>
+        <n-button type="success" @click="insertCitation" :disabled="!selectedSourceId">Insert</n-button>
+      </n-space>
     </n-modal>
-    <!-- customEditor.chain().focus().setCitation({ id: 7 }).run() -->
 
     <n-modal
       v-model:show="showImagesModal"
@@ -108,8 +115,6 @@
 
 <script setup lang="ts">
 import { onBeforeUnmount, onBeforeMount, ref, reactive } from 'vue';
-// import type { UploadFileInfo } from 'naive-ui';
-import store from '../store';
 import { Editor, EditorContent } from '@tiptap/vue-3';
 import Document from '@tiptap/extension-document';
 import Paragraph from '@tiptap/extension-paragraph';
@@ -125,8 +130,12 @@ import CharacterCount from '@tiptap/extension-character-count';
 import Spanclassed from '../extensions/spanclassed';
 import Pclassed from '../extensions/pclassed';
 import Citation from '../extensions/citation';
+import Cite from 'citation-js';
+import store from '../store';
+// import type { UploadFileInfo } from 'naive-ui';
+// import type { SelectOption } from 'naive-ui';
 
-defineProps<{ editorclass: string }>();
+const props = defineProps<{ editorclass: string, data: any }>();
 
 const classes = ['error', 'name', 'example', 'book'];
 const CustomBlockquote = Blockquote.extend({
@@ -137,8 +146,8 @@ const showImagesModal = ref(false);
 const showSourcesModal = ref(false);
 const id = store?.state?.user?.text_id;
 const previewFileList = reactive<IImageItem[]>([]); // UploadFileInfo
-const selectedSource = ref(null);
-const sources = reactive([] as Array<IBib>);
+const html = ref('');
+const selectedSourceId = ref<number>();
 
 const customEditor = new Editor({
   content: '',
@@ -172,9 +181,24 @@ const customEditor = new Editor({
       classes: ['caption', 'error'],
     }),
     CharacterCount.configure(),
-    Citation,
+    Citation.configure({
+      sources: props.data,
+    }),
   ],
 });
+
+const onSourceSelected = (index: number, option: IBib) => {
+  // console.log(index, option);
+  if (index !== null) {
+    html.value = (new Cite(option?.bibtex)).format('bibliography', { format: 'html', template: 'apa', lang: option.lang });
+    selectedSourceId.value = option.id;
+  }
+};
+
+const insertCitation = () => {
+  showSourcesModal.value = false;
+  customEditor.chain().focus().setCitation({ id: selectedSourceId.value as number }).run();
+}
 
 onBeforeUnmount(() => {
   customEditor.destroy();
@@ -183,9 +207,6 @@ onBeforeUnmount(() => {
 onBeforeMount(async () => {
   const images = await store.get(`img/${id}`);
   Object.assign(previewFileList, images.sort((a: any, b: any) => (new Date(a.created)).getTime() - (new Date(b.created)).getTime()));
-  const data = await store.get('source');
-  Object.assign(sources, data.map((x: any) => ({ ...x, label: `${x.citekey.padEnd(10, '.')} ${x.bibtex.title}` })));
-  console.log('data from server', data);
   // isLoaded.value = true;
 });
 
@@ -195,20 +216,6 @@ onBeforeMount(async () => {
 //     customEditor.chain().focus().setImage({ src: url }).run()
 //   }
 // };
-
-interface IImageItem {
-  id: string,
-  user_id: number,
-  text_id: number,
-  filesize: number,
-  created: Date,
-  title: string
-  meta: string,
-  status: string,
-  loaded: boolean,
-  url: string,
-  name: string
-};
 
 const selectImage = (item: IImageItem) => {
   // console.log("image", item);
@@ -299,7 +306,7 @@ defineExpose({ handle: customEditor });
 :deep(.annotation) {
   display: inline-block;
   text-align: left;
-  min-width: 300px;
+  min-width: 100%;
   &.fulleditor div {
     background-color: lightyellow;
   }
@@ -328,5 +335,12 @@ defineExpose({ handle: customEditor });
 
 button {
   margin-right: 1px;
+}
+
+:deep(.csl-entry) {
+  padding: 0.5rem;
+  background: rgba(171, 196, 207, 0.745);
+  border-radius: 3px;
+  margin-bottom: 1rem;
 }
 </style>
