@@ -3,11 +3,73 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import project from '../package.json';
 import router from "./router";
 
-const state: IState = reactive({
+import Document from '@tiptap/extension-document';
+import Paragraph from '@tiptap/extension-paragraph';
+import Text from '@tiptap/extension-text';
+import History from '@tiptap/extension-history';
+import Color from '@tiptap/extension-color';
+import Placeholder from '@tiptap/extension-placeholder';
+import Blockquote from '@tiptap/extension-blockquote';
+import Bold from '@tiptap/extension-bold';
+import Image from '@tiptap/extension-image';
+import Dropcursor from '@tiptap/extension-dropcursor';
+import CharacterCount from '@tiptap/extension-character-count';
+import Spanclassed from './extensions/spanclassed';
+import Pclassed from './extensions/pclassed';
+import Citation from './extensions/citation';
+import { generateHTML } from '@tiptap/core';
+
+const customTiptapClasses = {
+  "span": ['error', 'name', 'example', 'book'],
+  "p": ['caption', 'error'],
+};
+
+const getExtensions = (sources: Array<IBib>) => {
+  return [
+    Document,
+    Paragraph,
+    Text,
+    History,
+    Color,
+    Placeholder.configure({
+      placeholder: 'Start writing your comment...',
+    }),
+    Spanclassed.configure({
+      classes: customTiptapClasses.span,
+    }),
+    Blockquote.extend({
+      content: 'paragraph*',
+    }).configure({
+      HTMLAttributes: {
+        class: 'quote',
+      },
+    }),
+    Bold.configure({
+      HTMLAttributes: {
+        class: 'em',
+      },
+    }),
+    Image,
+    Dropcursor,
+    Pclassed.configure({
+      classes: customTiptapClasses.p,
+    }),
+    CharacterCount.configure(),
+    Citation.configure({
+      sources,
+    }),
+  ];
+};
+
+const convertJSONtoHTML = (json: Object, sources: Array<IBib>) => {
+  return generateHTML(json, getExtensions(sources));
+};
+
+const state = reactive<IState>({
   token: localStorage.getItem('token') || '',
-  user: {},
+  user: {} as IUser,
   error: "",
-}) as IState;
+});
 
 const getFile = async (route: string, id: string): Promise<any> => {
   if (state.token && id) {
@@ -143,4 +205,7 @@ export default {
   logoutUser,
   version: project?.version,
   git: 'https' + project?.repository?.url?.slice(3, -4),
+  getExtensions,
+  convertJSONtoHTML,
+  customTiptapClasses,
 };
