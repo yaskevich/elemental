@@ -8,60 +8,47 @@
       <n-divider title-placement="left">
         <span class="zone">translation</span>
       </n-divider>
+
       <p style="margin-top:-1rem;font-style:italic;">{{ entry.trans }}</p>
-      <n-divider title-placement="left">
-        <span class="zone">brief comment</span>
-      </n-divider>
-      <div v-if="entry.brief_text">
-        <div v-html="entry.brief_html"></div>
+      <div v-if="entry.brief_json?.content?.[0].content">
+        <n-divider title-placement="left">
+          <span class="zone">brief comment</span>
+        </n-divider>
+        <div v-html="render(entry.brief_json, sources)"></div>
       </div>
-      <n-divider title-placement="left">
-        <span class="zone">full comment</span>
-      </n-divider>
-      <div v-if="entry.long_text">
-        <div v-html="entry.long_html"></div>
+
+      <div v-if="entry.long_json?.content?.[0].content">
+        <n-divider title-placement="left">
+          <span class="zone">full comment</span>
+        </n-divider>
+        <div v-html="render(entry.long_json, sources)"></div>
       </div>
+
       <n-divider />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-
-import store from '../store';
-import { ref, reactive, onBeforeMount } from 'vue';
+import { reactive, onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router';
+import store from '../store';
 
 const vuerouter = useRoute();
 const id = vuerouter.params.id;
-
-interface IEntry {
-  long_json: Object;
-  long_html: string;
-  long_text: string;
-  brief_json: Object;
-  brief_html: string;
-  brief_text: string;
-  text_id: number;
-  id: number;
-  issues: Array<number>;
-  tags: Array<number>;
-  priority: number;
-  published: boolean;
-  trans: string;
-  title: string;
-}
-
 const entry: IEntry = reactive({}) as IEntry;
+const sources = reactive([] as Array<IBib>);
+const render = store.convertJSONtoHTML;
 
 onBeforeMount(async () => {
   if (id) {
-    const data = await store.get(`comment/${id}`);
-    console.log('data from server', data);
-    if (data.length) {
-      console.log('data', data);
-      Object.assign(entry, data[0]);
+    const commentData = await store.get(`comment/${id}`);
+    if (commentData.length) {
+      // console.log('data', commentData);
+      Object.assign(entry, commentData.shift());
     }
+    const sourcesData = await store.get('source');
+    Object.assign(sources, sourcesData);
   }
 });
 
@@ -126,5 +113,16 @@ onBeforeMount(async () => {
   color: gray;
   font-weight: bold;
   margin-top: -5px;
+}
+
+:deep(cite) {
+  padding: 0px 5px;
+
+  &::before {
+    content: "[" attr(id) "]";
+    color: darkred;
+    font-weight: bold;
+    font-style: normal;
+  }
 }
 </style>
