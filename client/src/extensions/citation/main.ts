@@ -4,8 +4,8 @@ import Component from './Component.vue';
 
 export interface CitationOptions {
     inline: boolean,
-    sources: Array<IBib>,
     HTMLAttributes: Record<string, any>,
+    sources: Array<IBib>,
 }
 
 declare module '@tiptap/core' {
@@ -26,32 +26,31 @@ export const Citation = Node.create<CitationOptions>({
     //   },
     group() { return this.options.inline ? 'inline' : 'block'; },
 
+    // defaultOptions: {
+    //     inline: true,
+    //     HTMLAttributes: {},
+    // },
+
     addOptions() {
         return {
-            sources: [],
             inline: true,
             HTMLAttributes: {},
+            sources: []
         }
     },
 
-    addAttributes() {
-        return {
-            id: {
-                default: null,
-            },
-            data: {
-                default: this.options.sources
-            }
-        }
-    },
+    addAttributes() { return { id: { default: null, }, } },
 
     parseHTML() { return [{ tag: 'cite', }] },
 
-    renderHTML({ HTMLAttributes }) {
-        return ['cite', mergeAttributes(HTMLAttributes)]
+    // renderText 
+    renderHTML({ HTMLAttributes, node }) {
+        // console.log(node);
+        // [{"type":"text","text":" конец цитаты "}
+        return ['cite', mergeAttributes(({...HTMLAttributes, content: "kek"}))]
     },
 
-    addNodeView() { return VueNodeViewRenderer(Component); },
+    addNodeView() { return VueNodeViewRenderer(Component) },
 
     addCommands() {
         return {

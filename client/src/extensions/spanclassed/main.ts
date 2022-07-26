@@ -33,7 +33,7 @@ declare module '@tiptap/core' {
 // export const pasteRegex = /(?:^|\s)((?:==)((?:[^~]+))(?:==))/g
 
 export const Spanclassed = Mark.create<SpanclassedOptions>({
-  name: 'annotation',
+  name: 'spanclassed',
 
   addOptions() {
     return {
