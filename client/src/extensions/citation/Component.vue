@@ -1,6 +1,6 @@
 <template>
   <node-view-wrapper as="span" class="citation" draggable="true" data-drag-handle>
-    <n-tooltip trigger="hover" @click="clicked" width="300">
+    <n-tooltip trigger="hover" @click="$router.push(`/source/${node.attrs.id}`)" width="300">
       <template #trigger>
         <span style="white-space:nowrap;">
           <n-icon :component="ArticleFilled" style="vertical-align: middle;" />
