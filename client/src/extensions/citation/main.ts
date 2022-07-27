@@ -20,7 +20,10 @@ export const Citation = Node.create<CitationOptions>({
     name: 'citation',
     draggable: true,
     atom: true,
+    // isolating: true,
     inline: true,
+    // content: 'text*',
+    selectable: true,
     //   inline() {
     //     return this.options.inline
     //   },
@@ -43,11 +46,11 @@ export const Citation = Node.create<CitationOptions>({
 
     parseHTML() { return [{ tag: 'cite', }] },
 
-    // renderText 
+    renderText({ node }) { return `REF(${node.attrs.id})` },
+
     renderHTML({ HTMLAttributes, node }) {
-        // console.log(node);
-        // [{"type":"text","text":" конец цитаты "}
-        return ['cite', mergeAttributes(({...HTMLAttributes, content: "kek"}))]
+        const bib = this.options.sources.filter((x: IBib) => x.id === node.attrs.id)?.[0]?.bibtex;
+        return ['cite', mergeAttributes(({...HTMLAttributes, title: 'citation'})), `(${bib?.author?.[0]?.family} ${bib?.issued?.['date-parts'][0][0]})`];
     },
 
     addNodeView() { return VueNodeViewRenderer(Component) },
@@ -62,4 +65,4 @@ export const Citation = Node.create<CitationOptions>({
             },
         }
     }
-})
+});
