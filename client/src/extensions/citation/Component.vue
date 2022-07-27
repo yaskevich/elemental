@@ -1,13 +1,13 @@
 <template>
   <node-view-wrapper as="span" class="citation" draggable="true" data-drag-handle>
-    <n-tooltip trigger="hover" @click="clicked">
+    <n-tooltip trigger="hover" @click="clicked" width="300">
       <template #trigger>
         <span style="white-space:nowrap;">
           <n-icon :component="ArticleFilled" style="vertical-align: middle;" />
           {{ source?.citekey }}
         </span>
       </template>
-      {{ source?.bibtex?.title }}
+      <span v-html="html"></span>
     </n-tooltip>
 
     <!-- <button @click="process">{{ node.attrs.id }}</button> -->
@@ -16,14 +16,18 @@
 
 <script setup lang="ts">
 import { NodeViewWrapper, nodeViewProps } from '@tiptap/vue-3';
-import { ArticleFilled } from '@vicons/material'
+import { ArticleFilled } from '@vicons/material';
+import Cite from 'citation-js';
+
 const props = defineProps(nodeViewProps);
 const source = props.extension.options.sources.filter((x: IBib) => x.id === props.node.attrs.id)?.[0];
+const html = (new Cite(source?.bibtex)).format('bibliography', { format: 'html', template: 'apa', lang: source?.lang });
 
 const clicked = () => {
   console.log("Source is clicked!");
+};
 
-}
+
 // console.log(props);
 
 // const process = () => {
