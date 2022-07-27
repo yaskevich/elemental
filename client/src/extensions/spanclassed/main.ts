@@ -1,13 +1,14 @@
 import {
   Mark,
-  markInputRule,
-  markPasteRule,
+  // markInputRule,
+  // markPasteRule,
   mergeAttributes,
 } from '@tiptap/core'
 
 export interface SpanclassedOptions {
   HTMLAttributes: Record<string, any>,
   classes: Array<string>,
+  exclusive: boolean,
 }
 
 declare module '@tiptap/core' {
@@ -35,9 +36,14 @@ declare module '@tiptap/core' {
 export const Spanclassed = Mark.create<SpanclassedOptions>({
   name: 'spanclassed',
 
+  excludes() {
+    return this.options.exclusive ? '_' : '';
+  },
+
   addOptions() {
     return {
       classes: [''],
+      exclusive: false,
       HTMLAttributes: {},
     }
   },
@@ -77,11 +83,11 @@ export const Spanclassed = Mark.create<SpanclassedOptions>({
   addCommands() {
     return {
       setAnnotation: attributes => ({ commands }) => {
-        console.log("set attrs", attributes);
+        // console.log("set attrs", attributes);
         return commands.setMark(this.name, attributes)
       },
       toggleAnnotation: attributes => ({ commands }) => {
-        console.log("toggle attrs", attributes);
+        // console.log("toggle attrs", attributes);
         return commands.toggleMark(this.name, attributes)
       },
       unsetAnnotation: () => ({ commands }) => {
@@ -91,14 +97,15 @@ export const Spanclassed = Mark.create<SpanclassedOptions>({
   },
 
   addKeyboardShortcuts() {
+    // it seems there is no more non-set hotkeys in browsers
     const letters = ['q', 'i', 'y', 'm', 'l'];
-    const mapping  = [];
+    const mapping = [];
 
     for (let i = 0; i < this.options.classes.length; i++) {
-      if (i === letters.length){
+      if (i === letters.length) {
         break;
       }
-      mapping.push( ['Mod-'+letters[i], () => this.editor.commands.toggleAnnotation({ class:  this.options.classes[i] })])
+      mapping.push(['Mod-' + letters[i], () => this.editor.commands.toggleAnnotation({ class: this.options.classes[i] })])
     }
 
     return Object.fromEntries(mapping);
