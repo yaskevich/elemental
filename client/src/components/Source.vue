@@ -2,7 +2,10 @@
     <n-card title="Source" :bordered="false" class="minimal left" v-if="isLoaded">
         <template #header-extra>
             <!-- <n-checkbox v-model:checked="isBatch" style="margin-right:1rem;">Batch mode</n-checkbox> -->
-            <n-button type="primary" @click="save">Save</n-button>
+            <n-space>
+                <n-button type="error" @click="remove" v-if="vuerouter.params.id">Delete</n-button>
+                <n-button type="primary" @click="save">Save</n-button>
+            </n-space>
         </template>
         <n-form ref="formRef" :label-width="80" :model="form" :rules="rules">
             <n-space vertical>
@@ -55,9 +58,9 @@
 
 <script setup lang="ts">
 import store from '../store';
-import { ref, reactive, onBeforeMount, computed, unref, } from 'vue';
+import { ref, reactive, onBeforeMount, computed, unref, h, } from 'vue';
 import router from '../router';
-import { useRoute } from 'vue-router';
+import { RouterLink, useRoute } from 'vue-router';
 import type { SelectOption, FormInst, FormItemRule, } from 'naive-ui';
 import { useMessage } from 'naive-ui';
 import Cite from 'citation-js';
@@ -129,6 +132,23 @@ const setLanguage = async () => {
     }
 };
 
+const remove = async () => {
+    // console.log(form.id);
+    const { data } = await store.deleteById('sources', form.id);
+    // console.log("result", data);
+    if (data?.[0]?.id === Number(form.id)) {
+        // message.success("The item was deleted successfully");
+        router.push('/sources');
+    } else if (data?.length) {
+        const links = data.map((x: any) => h(RouterLink, { to: '/comment/' + x.id, style: 'display:block;', class: "msglink" }, { default: () => x.title }));
+        const container = h('div', {}, [h('span', {}, `There are comments with this source (${data.length})`)]);
+        const vnode = h('div', {}, [container, links, "Remove the references from comments before deleting this source."]);
+        message.error(() => vnode, { duration: 5000, closable: true });
+    } else {
+        message.error('Unknown error');
+    }
+};
+
 const save = async (e: MouseEvent) => {
     e.preventDefault();
     try {
@@ -138,7 +158,7 @@ const save = async (e: MouseEvent) => {
                 const { data } = await store.post('source', { lang: form.lang, bib: cjsObject.value.data, id: form.id, text: store?.state?.user?.text_id });
                 if (data?.error) {
                     const note = data.error === `Key (citekey)=(${cjsObject?.value?.data?.[0]?.id}) already exists.` ? 'The publication with this ID already exists in the database. Please, pay attention to avoid duplicates!' : data.error;
-                    message.error(note, {duration: 5000});
+                    message.error(note, { duration: 5000 });
                 } else {
                     if (!form.id) {
                         form.id = data?.[0]?.id;
@@ -167,9 +187,8 @@ onBeforeMount(async () => {
         form.lang = data[0].lang;
         form.bib = (new Cite(data[0].bibtex)).format('bibtex');
     } else {
-        console.log("default language", store.state?.user?.text?.lang);
+        // console.log("default language", store.state?.user?.text?.lang);
         form.lang = unref(store.state?.user?.text?.lang) || '';
-        console.log("add new");
     }
     await setLanguage();
     isLoaded.value = true;
