@@ -83,12 +83,8 @@ const databaseScheme = {
     text_id integer,
     title text NOT NULL,
     long_json json,
-    long_html text,
-    long_text text,
     published boolean DEFAULT false,
     brief_json json,
-    brief_html text,
-    brief_text text,
     trans text DEFAULT '',
     priority real,
     tags integer[] DEFAULT '{}',
@@ -188,9 +184,7 @@ if (tables.length !== Object.keys(databaseScheme).length) {
 }
 
 const cleanCommentObject = (obj) => {
-  const {
-    long_html, brief_html, long_text, brief_text, id, ...rest
-  } = obj;
+  const { id, ...rest } = obj;
   return rest;
 };
 
@@ -551,18 +545,16 @@ export default {
     const issuesAsArray = `{${params?.issues?.length ? params.issues.map((x) => `{${x.join(',')}}`).join(',') : ''}}`;
     // console.log("issues", issuesAsArray);
     const textId = Number(params.text_id);
-    const values = [textId, params.title, params.published, params.long_json, params.long_html, params.long_text, params.brief_json, params.brief_html, params.brief_text, params.trans, params.priority, tagsAsArray, issuesAsArray];
+    const values = [textId, params.title, params.published, params.long_json, params.brief_json, params.trans, params.priority, tagsAsArray, issuesAsArray];
 
     let sql = '';
 
     if (params.id) {
       values.push(Number(params.id));
-      sql = `UPDATE comments SET text_id = $1, title = $2, published= $3, long_json = $4, long_html = $5, long_text = $6,
-      brief_json = $7, brief_html = $8, brief_text = $9, trans = $10, priority = $11,
-      tags = $12, issues = $13
-      WHERE id = $14`;
+      sql = `UPDATE comments SET text_id = $1, title = $2, published= $3, long_json = $4, brief_json = $5, trans = $6, priority = $7, tags = $8, issues = $9
+      WHERE id = $10`;
     } else {
-      sql = 'INSERT INTO comments (text_id, title, published, long_json, long_html, long_text, brief_json, brief_html, brief_text, trans, priority, tags, issues) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)';
+      sql = 'INSERT INTO comments (text_id, title, published, long_json, brief_json, trans, priority, tags, issues) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)';
     }
     sql += ' RETURNING id';
 
@@ -1076,6 +1068,22 @@ export default {
       data = result?.rows;
     } catch (err) {
       console.error(err);
+    }
+    return data;
+  },
+  async checkCommentsForSource(id) {
+    let data = [];
+    if (id) {
+      const sql = `SELECT id, priority, title FROM comments WHERE 
+            jsonb_path_exists(brief_json::jsonb, '$.** ? (@.id == ${id})')
+            OR
+            jsonb_path_exists(long_json::jsonb, '$.** ? (@.id == ${id})')`;
+      try {
+        const result = await pool.query(sql);
+        data = result?.rows;
+      } catch (err) {
+        console.error(err);
+      }
     }
     return data;
   },
