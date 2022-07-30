@@ -3,7 +3,7 @@
     <!-- <button @click="customEditor.chain().focus().toggleAnnotation().run()" :class="{ 'is-active': customEditor.isActive('annotation') }">Toggle Annotation</button> -->
 
     <button
-      v-for="item in classes"
+      v-for="item in spanclasses"
       @click="customEditor.chain().focus().toggleAnnotation({ class: item }).run()"
       :class="{ 'is-active': customEditor.isActive('annotation', { class: item }) }"
       style="background-color: #c9c9ff;"
@@ -12,7 +12,6 @@
     <!-- <button @click="customEditor.chain().focus().unsetAnnotation().run()" :disabled="!customEditor.isActive('annotation')">
               Clear Annotation
     </button>-->
-    <!-- <button @click="addImage">+image</button> -->
 
     <button
       @click="customEditor.chain().focus().toggleBlockquote().run()"
@@ -22,6 +21,7 @@
     <button
       @click="customEditor.commands.toggleBold()"
       :class="{ 'is-active': customEditor.isActive('bold') }"
+      style="font-weight:bold;"
     >emphasized</button>
 
     <button @click="showImagesModal = true" style="background-color: #fac9ff;">+image</button>
@@ -34,10 +34,11 @@
     <button @click="showSourcesModal = true" style="background-color: #CCFFFF;">+ref</button>
 
     <br />
+
     <!-- clear formatting -->
     <button
       @click="customEditor.chain().focus().clearNodes().unsetAllMarks().run()"
-      style="font-weight:bold;"
+      style="background-color:white"
     >clear</button>
 
     <button
@@ -116,20 +117,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onBeforeMount, ref, reactive } from 'vue';
 import { Editor, EditorContent } from '@tiptap/vue-3';
-import Document from '@tiptap/extension-document';
-import Paragraph from '@tiptap/extension-paragraph';
-import Text from '@tiptap/extension-text';
-import History from '@tiptap/extension-history';
-import Color from '@tiptap/extension-color';
-import Placeholder from '@tiptap/extension-placeholder';
-import Blockquote from '@tiptap/extension-blockquote';
-import Bold from '@tiptap/extension-bold';
-import Image from '@tiptap/extension-image';
-import Dropcursor from '@tiptap/extension-dropcursor';
-import CharacterCount from '@tiptap/extension-character-count';
-import Spanclassed from '../extensions/spanclassed';
-import Pclassed from '../extensions/pclassed';
-import Citation from '../extensions/citation';
 import Cite from 'citation-js';
 import store from '../store';
 // import type { UploadFileInfo } from 'naive-ui';
@@ -137,54 +124,19 @@ import store from '../store';
 
 const props = defineProps<{ editorclass: string, data: any }>();
 
-const classes = ['error', 'name', 'example', 'book'];
-const CustomBlockquote = Blockquote.extend({
-  content: 'paragraph*',
-});
-
 const showImagesModal = ref(false);
 const showSourcesModal = ref(false);
 const id = store?.state?.user?.text_id;
 const previewFileList = reactive<IImageItem[]>([]); // UploadFileInfo
 const html = ref('');
 const selectedSourceId = ref<number>();
+const spanclasses = store.customTiptapClasses.span;
 
 const customEditor = new Editor({
   content: '',
   autofocus: 'end',
   editable: true,
-  extensions: [
-    Document,
-    Paragraph,
-    Text,
-    History,
-    Color,
-    Placeholder.configure({
-      placeholder: 'Start writing your comment...',
-    }),
-    Spanclassed.configure({
-      classes,
-    }),
-    CustomBlockquote.configure({
-      HTMLAttributes: {
-        class: 'quote',
-      },
-    }),
-    Bold.configure({
-      HTMLAttributes: {
-        class: 'em',
-      },
-    }),
-    Image,
-    Dropcursor,
-    Pclassed.configure({
-      classes: ['caption', 'error'],
-    }),
-    CharacterCount.configure(),
-    Citation.configure({
-      sources: props.data,
-    }),
-  ],
+  extensions: store.getExtensions(props.data),
 });
 
 const onSourceSelected = (index: number, option: IBib) => {
