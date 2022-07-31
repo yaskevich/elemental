@@ -205,11 +205,11 @@ app.get('/api/grammar', auth, async (req, res) => {
 
 app.get('/api/texts', auth, async (req, res) => {
   const textId = Number(req.query.id);
-  // console.log("texts", textId);
+  // console.log('texts', textId);
   const textInfo = await db.getTexts(textId);
   // console.log(textInfo);
-  if (!fs.existsSync(path.join(textInfo?.[0].dir, zipName))) {
-    delete textInfo[0].zipsize;
+  if (textId && !fs.existsSync(path.join(textInfo?.[0].dir, zipName))) {
+    delete textInfo?.[0].zipsize;
   }
   res.json(textInfo);
 });
@@ -283,7 +283,13 @@ app.delete('/api/:table/:id', auth, async (req, res) => {
   let result = {};
   if (['comments'].includes(req.params.table)) {
     result = await db.deleteById(req.user, req.params.table, req.params.id);
+  } else if (req.params.table === 'sources') {
+    result = await db.checkCommentsForSource(req.params.id);
+    if (!result?.length) {
+      result = await db.deleteById(req.user, 'sources', req.params.id);
+    }
   }
+
   res.json(result);
 });
 
