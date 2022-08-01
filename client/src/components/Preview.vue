@@ -1,28 +1,17 @@
 <template>
   <div style="max-width:600px;margin: 0 auto;text-align: left; padding: 0 15px 10px 15px">
     <h2>
-      <span style="color:lightgray;">({{ entry.priority }})</span>
-      {{ entry.title }}
+      <span style="color:lightgray;">({{ comment.priority }})</span>
+      {{ comment.title }}
     </h2>
     <div>
-      <n-divider title-placement="left">
-        <span class="zone">translation</span>
-      </n-divider>
-
-      <p style="margin-top:-1rem;font-style:italic;">{{ entry.trans }}</p>
-      <div v-if="entry.brief_json?.content?.[0].content">
+      <template v-for="item in scheme" :key="item.id">
         <n-divider title-placement="left">
-          <span class="zone">brief comment</span>
+          <span class="zone">{{ item.title }}</span>
         </n-divider>
-        <div v-html="render(entry.brief_json, sources)"></div>
-      </div>
-
-      <div v-if="entry.long_json?.content?.[0].content">
-        <n-divider title-placement="left">
-          <span class="zone">full comment</span>
-        </n-divider>
-        <div v-html="render(entry.long_json, sources)"></div>
-      </div>
+        <p v-if="item.type === 'line'" class="line">{{ comment?.entry?.[item.id] }}</p>
+        <div v-if="item.type === 'rich'" v-html="render(comment?.entry?.[item.id], sources)"></div>
+      </template>
 
       <n-divider />
     </div>
@@ -36,16 +25,18 @@ import store from '../store';
 
 const vuerouter = useRoute();
 const id = vuerouter.params.id;
-const entry: IEntry = reactive({}) as IEntry;
+const comment = reactive({} as IComment);
 const sources = reactive([] as Array<IBib>);
 const render = store.convertJSONtoHTML;
+const scheme = store?.state?.user?.text?.scheme || [];
+
 
 onBeforeMount(async () => {
   if (id) {
     const commentData = await store.get(`comment/${id}`);
     if (commentData.length) {
       // console.log('data', commentData);
-      Object.assign(entry, commentData.shift());
+      Object.assign(comment, commentData.shift());
     }
     const sourcesData = await store.get('source');
     Object.assign(sources, sourcesData);
@@ -58,7 +49,6 @@ onBeforeMount(async () => {
 :deep(var.error) {
   display: none;
 }
-
 :deep(var.name) {
   font-weight: bold;
   font-style: normal;
@@ -67,7 +57,6 @@ onBeforeMount(async () => {
   padding: 3px;
   border-radius: 8px;
 }
-
 :deep(var.example) {
   /* background-color: rgb(246, 248, 250); */
   background-color: rgb(227, 232, 244);
@@ -77,13 +66,11 @@ onBeforeMount(async () => {
   line-height: 1.4em;
   padding: 3px;
 }
-
 :deep(var.book) {
   background: #eee;
   padding: 0 3px;
   color: #c76c0c;
 }
-
 :deep(blockquote) {
   background: #f9f9f9;
   border-left: 10px solid #ccc;
@@ -91,7 +78,6 @@ onBeforeMount(async () => {
   padding: 0.5em 10px;
   quotes: "\201C""\201D""\2018""\2019";
 }
-
 :deep(blockquote):before {
   color: #ccc;
   content: open-quote;
@@ -100,11 +86,9 @@ onBeforeMount(async () => {
   margin-right: 0.25em;
   vertical-align: -0.4em;
 }
-
 :deep(blockquote p) {
   display: inline;
 }
-
 :deep(img) {
   max-width: 370px;
   max-height: 300px;
@@ -114,15 +98,15 @@ onBeforeMount(async () => {
   font-weight: bold;
   margin-top: -5px;
 }
-
 :deep(cite) {
+  font-style: normal;
+  color: gray;
+  /*
   padding: 0px 5px;
-
-  &::before {
-    content: "[" attr(id) "]";
-    color: darkred;
-    font-weight: bold;
-    font-style: normal;
-  }
+  */
+}
+:deep(.line) {
+  margin-top: -1rem;
+  letter-spacing: 2px;
 }
 </style>
