@@ -36,6 +36,7 @@ const getExtensions = (sources: Array<IBib>) => {
     }),
     Spanclassed.configure({
       classes: customTiptapClasses.span,
+      exclusive: true,
     }),
     Blockquote.extend({
       content: 'paragraph*',
@@ -62,7 +63,7 @@ const getExtensions = (sources: Array<IBib>) => {
 };
 
 const convertJSONtoHTML = (json: Object, sources: Array<IBib>) => {
-  return generateHTML(json, getExtensions(sources));
+  return json ? generateHTML(json, getExtensions(sources)) : '';
 };
 
 const state = reactive<IState>({
