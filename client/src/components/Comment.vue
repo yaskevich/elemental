@@ -1,9 +1,8 @@
 <template>
-  <!-- <h1>{{entry.title}}</h1> -->
-  <n-card title :bordered="false" class="minimal" v-show="ready">
-    <div class="box">
+  <n-card title :bordered="false" class="minimal" v-if="ready">
+    <n-space vertical size="large">
       <n-space justify="center">
-        <div v-for="(issue, index) in entry.issues" :key="index">
+        <div v-for="(issue, index) in comment.issues" :key="'issue' + index">
           <n-tooltip trigger="hover" placement="bottom">
             <template #trigger>
               <n-tag
@@ -16,26 +15,30 @@
           </n-tooltip>
         </div>
       </n-space>
-    </div>
 
-    <div class="box">
       <n-space justify="center">
-        <!-- <router-link :to="'/preview/'+entry.id">Preview</router-link> -->
-        <n-button secondary type="info" :disabled="!entry.id" @click="showPreview(entry.id)">Preview</n-button>
+        <n-button
+          secondary
+          type="info"
+          :disabled="!comment.id"
+          @click="showPreview(comment.id)"
+        >Preview</n-button>
 
-        <n-switch style="margin-top: .4rem;" v-model:value="entry.published" :round="false">
+        <n-switch style="margin-top: .4rem;" v-model:value="comment.published" :round="false">
           <template #checked>Published</template>
           <template #unchecked>Draft</template>
         </n-switch>
 
-        <n-button type="info" @click="saveComment" :disabled="!(entry.title && entry.priority)">Save</n-button>
+        <n-button
+          type="info"
+          @click="saveComment"
+          :disabled="!(comment.title && comment.priority)"
+        >Save</n-button>
       </n-space>
-    </div>
 
-    <div class="box">
       <n-space justify="center">
         <n-input-number
-          v-model:value="entry.priority"
+          v-model:value="comment.priority"
           :validator="validateID"
           style="width:100px;"
           type="text"
@@ -50,23 +53,30 @@
           <n-button>+ issue</n-button>
         </n-dropdown>
       </n-space>
-    </div>
 
-    <n-text type="error" v-if="!entry.priority">ID should not be empty!</n-text>
+      <n-text type="error" v-if="!comment.priority">ID should not be empty</n-text>
+      <n-space justify="center">
+        <div v-for="(tag, index) in comment.tags" :key="index">
+          <n-tag
+            closable
+            @close="removeTag(tag)"
+            style="margin-right: 10px;"
+            size="small"
+          >{{ tagsList.filter((x: any) => x.key == tag)?.shift()?.["label"] }}</n-tag>
+        </div>
+      </n-space>
 
-    <div class="box">
       <n-input
-        v-model:value="entry.title"
+        v-model:value="comment.title"
         type="text"
         placeholder="Heading"
         class="maininput"
         autofocus
-      />
-      <!-- <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" /> -->
-    </div>
+      ></n-input>
 
-    <div class="box" v-if="boundStrings.length">
-      <n-space justify="center">
+      <n-text type="error" v-if="!comment.title">Heading should not be empty!</n-text>
+
+      <n-space justify="center" v-if="boundStrings.length">
         <n-dropdown
           trigger="hover"
           :options="[{ label: 'Go to text', key: 'go', stack: stack as Array<IToken>, icon: renderIcon(BackIcon) }, { label: 'Unbind span', key: 'unbind', stack: stack as Array<IToken>, icon: renderIcon(UnbindLink) }]"
@@ -81,54 +91,46 @@
           </n-button>
         </n-dropdown>
       </n-space>
-    </div>
 
-    <div class="box">
-      <n-tag
-        v-for="tag in entry.tags"
-        :key="tag"
-        closable
-        @close="removeTag(tag)"
-        style="margin-right: 10px;"
-        size="small"
-      >{{ tagsList.filter((x: any) => x.key == tag)?.shift()?.["label"] }}</n-tag>
-    </div>
 
-    <n-text type="error" v-if="!entry.title">Heading should not be empty!</n-text>
-    <!-- <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" /> -->
-    <!-- <n-divider title-placement="center">
-      <span class="zone">translation</span>
-    </n-divider>-->
-    <n-input v-model:value="entry.trans" type="text" placeholder="Translation" />
-    <!-- <n-divider title-placement="center">
-      <span class="zone">brief comment</span>
-    </n-divider>-->
-    <n-divider />
-    <Tiptap ref="editor1Ref" editorclass="briefeditor" :data="sources" />
-    <!-- <n-divider title-placement="center">
-      <span class="zone">full comment</span>
-    </n-divider>-->
-    <!-- <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" /> -->
-    <n-divider />
-    <Tiptap ref="editor2Ref" editorclass="fulleditor" :data="sources" />
+      <template v-for="(item, index) in scheme" :key="item.id">
+        <n-input
+          v-if="item.type === 'line'"
+          v-model:value="comment.entry[item.id]"
+          type="text"
+          :placeholder="item.title"
+        />
 
-    <!-- <n-divider style="width:300px;text-align: center; margin:auto;padding:1rem;" /> -->
-    <n-space v-if="Boolean(entry.id)" justify="space-between">
-      <n-popconfirm @positive-click="deleteComment">
-        <template #trigger>
-          <n-button type="error" :disabled="Boolean(boundStrings?.length)">Delete</n-button>
-        </template> You are about to delete the comment. This action is permanent. Please confirm, if you are sure
-      </n-popconfirm>
-      <n-button type="info" @click="saveComment" :disabled="!(entry.title && entry.priority)">Save</n-button>
-    </n-space>
+        <Tiptap
+          v-if="item.type === 'rich'"
+          :ref="el => { editorRefs[item.id] = el }"
+          :editorclass="index % 2 ? 'even' : 'odd'"
+          :data="sources"
+          :content="comment.entry[item.id]"
+        />
+      </template>
 
-    <p v-if="Boolean(boundStrings?.length)" style="font-size: 0.75rem;">
+      <n-space v-if="Boolean(comment.id)" justify="space-between">
+        <n-popconfirm @positive-click="deleteComment">
+          <template #trigger>
+            <n-button type="error" :disabled="Boolean(boundStrings?.length)">Delete</n-button>
+          </template> You are about to delete the comment. This action is permanent. Please confirm, if you are sure
+        </n-popconfirm>
+        <n-button
+          type="info"
+          @click="saveComment"
+          :disabled="!(comment.title && comment.priority)"
+        >Save</n-button>
+      </n-space>
+
       <n-text
+        v-if="Boolean(boundStrings?.length)"
+        style="font-size: 0.75rem;"
         type="error"
       >It is not allowed to delete a comment, if it has bound tokens. One should unbind tokens before.</n-text>
-    </p>
+    </n-space>
   </n-card>
-  <div v-if="!ready">
+  <div v-else>
     loading...
     <!-- <n-spin size="large" /> -->
   </div>
@@ -137,7 +139,7 @@
 <script setup lang="ts">
 
 import store from '../store';
-import { ref, reactive, onBeforeMount, computed, onBeforeUnmount, onMounted, ComponentPublicInstance, h } from 'vue';
+import { ref, reactive, onBeforeMount, computed, onBeforeUnmount, onMounted, ComponentPublicInstance, h, toRaw, watch, onRenderTracked, onRenderTriggered } from 'vue';
 import { onBeforeRouteLeave } from 'vue-router';
 import { useMessage } from 'naive-ui';
 import Tiptap from './Tiptap.vue';
@@ -148,42 +150,62 @@ import type { Component } from 'vue';
 import { NIcon } from 'naive-ui';
 import { ArrowBackFilled as BackIcon, LinkOffFilled as UnbindLink } from '@vicons/material';
 
-const message = useMessage();
-
 const props = withDefaults(defineProps<{ id?: string; tokens?: string; }>(), {
   id: '',
   tokens: '[]',
 });
+const message = useMessage();
+const scheme = store?.state?.user?.text?.scheme || [];
 
 let tokensToBind = JSON.parse(props.tokens) as Array<IToken>;
 let id = Number(props.id);
-const entry: IEntry = reactive({}) as IEntry;
-// ref<HTMLDivElement>();
-const editor1Ref = ref<ComponentPublicInstance>();
-const editor2Ref = ref<ComponentPublicInstance>();
-const boundStrings = reactive([] as Array<Array<IToken>>);
+
+const comment = reactive({ entry: {} }) as IComment;
+const comment0 = reactive({}) as IComment;
+
+const boundStrings = reactive<Array<Array<IToken>>>([]);
 const ready = ref(false);
-const fromDB = ref('');
-const sources = reactive([] as Array<IBib>);
-const usersKV: keyable = reactive({}) as keyable;
-const issuesKV: keyable = reactive({}) as keyable;
+const sources = reactive<Array<IBib>>([]);
+const usersKV = reactive<keyable>({});
+const issuesKV = reactive<keyable>({});
 const tagsList = reactive([]);
 const issuesList = reactive([]);
+// ref<HTMLDivElement>();
+const editorRefs = reactive<keyable>({});
+// onRenderTracked((event) => {
+//   //  console.log('renderTracked:', { key, target, type });
+
+// });
+
+// onRenderTriggered((event) => {
+//   //  console.log('renderTriggered:', { key, target, type });
+//   // debugger
+// });
+
+// watch(editorRefs, (selection, prevSelection) => {
+//   console.log("WATCH", selection)
+//   console.log("W", editorRefs['brief']?.handle.getJSON());
+//   console.log("W", editorRefs['article']?.handle.getJSON());
+// });
+
+// watch(store.state, (selection, prevSelection) => {
+//   console.log("WATCH!!!", selection)
+// });
 
 const removeTag = (id: number) => {
-  entry.tags = entry.tags.filter(x => x !== id);
+  comment.tags = comment.tags.filter(x => x !== id);
 };
 
 const addTag = (id: number) => {
-  entry?.tags ? entry.tags.push(id) : (entry.tags = [id]);
+  comment?.tags ? comment.tags.push(id) : (comment.tags = [id]);
 };
 
 const removeIssue = (item: [number, number]) => {
-  entry.issues = entry.issues.filter(x => x[0] !== item[0] || x[0] !== item[0]);
+  comment.issues = comment.issues.filter(x => x[0] !== item[0] || x[0] !== item[0]);
 };
 
 const addIssue = (item: [number, number]) => {
-  entry?.issues ? entry.issues.push(item) : (entry.issues = [item]);
+  comment?.issues ? comment.issues.push(item) : (comment.issues = [item]);
 };
 
 const askToLeave = (event: any) => {
@@ -227,13 +249,13 @@ onBeforeMount(async () => {
 
   Object.assign(
     tagsList,
-    tagData.map((x: any) => ({ label: x.ru, key: x.id, disabled: computed(() => entry.tags?.includes(x.id)) }))
+    tagData.map((x: any) => ({ label: x.ru, key: x.id, disabled: computed(() => comment.tags?.includes(x.id)) }))
   );
   const issueData = await store.get('issues');
   const issueListData = issueData.map((x: any) => ({
     label: x.ru,
     key: x.id,
-    disabled: computed(() => entry.issues?.map((d: any) => d[0]).includes(x.id)),
+    disabled: computed(() => comment.issues?.map((d: any) => d[0]).includes(x.id)),
     children: [{
       label: '(Nobody)',
       key: [x.id, 0],
@@ -245,48 +267,44 @@ onBeforeMount(async () => {
     }))),
   }));
   Object.assign(issuesList, issueListData);
-
   Object.assign(issuesKV, Object.fromEntries(issueData.map((x: any) => [x.id, x])));
-  // console.log(issuesKV);
 
   if (id) {
     const data = await store.get(`comment/${id}`);
+
     if (data.length) {
-      fromDB.value = JSON.stringify(data[0]);
-      Object.assign(entry, data[0]);
-
-      const editor1: any = editor1Ref?.value;
-      const editor2: any = editor2Ref?.value;
-
-      if (editor1?.handle && editor2?.handle) {
-        editor1.handle.commands.setContent(data?.[0].brief_json, false);
-        editor2.handle.commands.setContent(data?.[0].long_json, false);
-      } else {
-        console.log("Cannot get Editor instance!");
-      }
-
+      const commentStored = data?.[0];
+      Object.assign(comment0, JSON.parse(JSON.stringify(toRaw(commentStored))));
+      Object.assign(comment, commentStored);
+      // console.log("in entry", commentStored.entry);
     }
+
   } else {
+    console.log("no ID!");
+
     const { priority } = await store.get('priority');
+
     if (tokensToBind.length) {
-      entry.title = tokensToBind
+      comment.title = tokensToBind
         .filter((x: IToken) => x.meta !== 'ip')
         .map((x: IToken) => x.form)
         .join(' ');
       boundStrings.push(tokensToBind);
     }
+
     if (priority) {
-      entry.priority = priority;
+      comment.priority = priority;
     }
+
   }
 
-  if (!entry.text_id) {
+  if (!comment.text_id) {
     // console.log('no text_id', store.state.user.text_id);
-    entry.text_id = store?.state?.user?.text_id as number || 1;
+    comment.text_id = store?.state?.user?.text_id as number || 1;
   }
 
-  if (entry?.id) {
-    const stringsList = await store.get('commentstrings', String(entry.text_id), { comment: entry.id });
+  if (comment?.id) {
+    const stringsList = await store.get('commentstrings', String(comment.text_id), { comment: comment.id });
     // console.log("strings list", stringsList);
     if (stringsList.length) {
       let key = '';
@@ -326,48 +344,52 @@ const checkValidMarkup = (document: any) => {
 };
 
 const checkIsEntryUpdated = () => {
-  let result: boolean = false;
-  const editor1: any = editor1Ref?.value;
-  const editor2: any = editor2Ref?.value;
+  let result = false;
 
-  if (editor1?.handle && editor2?.handle) {
-    entry.brief_json = editor1.handle.getJSON();
-    entry.brief_html = editor1.handle.getHTML();
-    entry.brief_text = editor1.handle.getText();
+  scheme.filter(x => x.type === 'rich').map(x => {
+    // console.log(x.id, commentStored.entry[x.id]);
+    if (editorRefs[x.id]?.handle) {
+      comment.entry[x.id] = editorRefs[x.id].handle.getJSON();
+      checkValidMarkup(comment.entry[x.id]);
+      editorRefs[x.id].handle.commands.setContent(comment.entry[x.id], false);
+    }
+  });
 
-    entry.long_json = editor2.handle.getJSON();
-    entry.long_html = editor2.handle.getHTML();
-    entry.long_text = editor2.handle.getText();
+  if (comment?.id) {
 
-    checkValidMarkup(entry.brief_json);
-    checkValidMarkup(entry.long_json);
+    for (let key0 in comment0) {
+      const key = key0 as keyof IComment;
+      const val0 = comment0[key];
+      const val = comment[key];
+      // console.log(`${key}0`, toRaw(val0))
+      // console.log(`${key}1`, toRaw(val));
 
-    editor1.handle.commands.setContent(entry.brief_json, false);
-    editor2.handle.commands.setContent(entry.long_json, false);
-  }
-  // console.log("1", fromDB.value);
-  // console.log("2", JSON.stringify(entry));
+      if (JSON.stringify(val0) !== JSON.stringify(val)) {
+        console.log("change:", key);
+        // console.log("change:", key, toRaw(val0), '→', toRaw(val));
+        // console.log("change:", key, '\n\n', JSON.stringify(toRaw(val0)), '\n\n', JSON.stringify(toRaw(val)));
+        result = true;
+        break;
+      }
 
-  if (entry.id) {
-    result = !(fromDB.value === JSON.stringify(entry));
+    }
   } else {
-    result = Boolean(entry?.title || entry?.trans || entry?.long_text || entry?.brief_text);
+    result = Boolean(comment?.title);
   }
   // console.log("update check result", result);
   return result;
 };
 
 const saveComment = async () => {
-  // console.log(JSON.stringify(entry.long_json));
-  // console.log(entry.long_html);
-
   if (checkIsEntryUpdated()) {
     console.log('changes → DB');
-    const { data } = await store.post('comment', entry);
+    // console.log(toRaw(comment));
+
+    const { data } = await store.post('comment', comment);
     if (data?.id) {
-      entry.id = data.id;
-      fromDB.value = JSON.stringify(entry);
-      router.replace('/comment/' + entry.id);
+      comment.id = data.id;
+      Object.assign(comment0, JSON.parse(JSON.stringify(toRaw(comment))));
+      router.replace('/comment/' + comment.id);
       const boundTokensNumber = tokensToBind.length;
       if (boundTokensNumber) {
         const result = await store.post('strings', { tokens: tokensToBind.map((x: IToken) => x.id), id: data.id });
@@ -380,7 +402,7 @@ const saveComment = async () => {
         }
       }
     } else {
-      console.log(data)
+      console.log(data);
       message.error(`Changes were not saved: ${data?.error?.detail}`, { duration: 5000 });
     }
   } else {
@@ -393,12 +415,12 @@ const goToText = (stringTokens: Array<IToken>) => {
 };
 
 const deleteComment = async () => {
-  if (entry?.id) {
-    const { data } = await store.deleteById('comments', String(entry.id));
-    if (data && data.length === 1 && data[0]?.id === entry.id) {
+  if (comment?.id) {
+    const { data } = await store.deleteById('comments', String(comment.id));
+    if (data && data.length === 1 && data[0]?.id === comment.id) {
       router.push({ name: 'Comments' });
     } else {
-      console.error('delete error for', entry.id);
+      console.error('delete error for', comment.id);
     }
   }
 };
@@ -408,7 +430,7 @@ const handleSelect = async (key: string | number, option: DropdownOption) => {
     goToText(option.stack as Array<IToken>);
   } else {
     const tokens = (option.stack as Array<IToken>).map(x => x.id);
-    const { data } = await store.post('commentstrings', { id: entry.id, tokens });
+    const { data } = await store.post('commentstrings', { id: comment.id, tokens });
     const tokensCleared: Array<number> = (data as Array<IToken>).map(x => x.id);
     const tokenStr = tokensCleared.sort().join();
 
@@ -421,7 +443,7 @@ const handleSelect = async (key: string | number, option: DropdownOption) => {
       }
       console.log("span binding removed");
     } else {
-      console.error('delete error for', entry.id);
+      console.error('delete error for', comment.id);
     }
   }
 };
@@ -437,9 +459,6 @@ const renderIcon = (icon: Component) => {
 </script>
 
 <style>
-.box {
-  margin-bottom: 0.5rem;
-}
 .maininput div div input {
   font-weight: bold;
   min-width: 200px;
