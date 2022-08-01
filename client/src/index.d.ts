@@ -18,6 +18,7 @@ interface IText {
     zipsize: number,
     lang: string,
     langLabel: string,
+    scheme: Array<{ type: string, id: string, title: string }>,
 }
 
 interface IUser {
@@ -42,8 +43,19 @@ interface IState {
     user?: IUser,
 }
 
+interface IBibPerson {
+    given: string,
+    family: string,
+}
+
 interface IBibTex {
+    id: string,
     type: string,
+    page?: string,
+    title: string,
+    'citation-key': string,
+    author: Array<IBibPerson>,
+    issued: { 'date-parts': Array<Array<number>> },
 }
 
 interface IBib {
@@ -64,21 +76,15 @@ interface IToken {
     comments: Array<number>,
 }
 
-interface IEntry {
-    long_json: Object,
-    long_html: string,
-    long_text: string,
-    brief_json: Object,
-    brief_html: string,
-    brief_text: string,
+interface IComment {
+    title: string,
     text_id: number,
     id: number,
     issues: Array<[number, number]>,
     tags: Array<number>,
     priority: number,
     published: boolean,
-    trans: string,
-    title: string,
+    entry: any,
 }
 
 interface IImageItem {
