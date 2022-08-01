@@ -59,7 +59,7 @@
       <n-select
         clearable
         filterable
-        :options="data"
+        :options="sources"
         placeholder="Bibliographic sources"
         @update:value="onSourceSelected"
         style="margin-bottom: 15px;"
@@ -90,7 +90,7 @@
       <n-image-group>
         <n-space>
           <n-image
-            v-for="(item, index) in previewFileList"
+            v-for="(item, index) in images"
             :key="index"
             width="100"
             class="selectable"
@@ -119,15 +119,12 @@ import { onBeforeUnmount, onBeforeMount, ref, reactive } from 'vue';
 import { Editor, EditorContent } from '@tiptap/vue-3';
 import Cite from 'citation-js';
 import store from '../store';
-// import type { UploadFileInfo } from 'naive-ui';
 // import type { SelectOption } from 'naive-ui';
 
-const props = defineProps<{ editorclass: string, data: any, content: any }>();
+const props = defineProps<{ editorclass: string, sources: any, images: any, content: any }>();
 
 const showImagesModal = ref(false);
 const showSourcesModal = ref(false);
-const id = store?.state?.user?.text_id;
-const previewFileList = reactive<IImageItem[]>([]); // UploadFileInfo
 const html = ref('');
 const selectedSourceId = ref<number>();
 const spanclasses = store.customTiptapClasses.span;
@@ -136,7 +133,7 @@ const customEditor = new Editor({
   content: '',
   autofocus: 'end',
   editable: true,
-  extensions: store.getExtensions(props.data),
+  extensions: store.getExtensions(props.sources),
   // onUpdate({ editor }) {
   //   // The content has changed.
   //   console.log("TT changed!");
@@ -172,11 +169,9 @@ onBeforeUnmount(() => {
   customEditor.destroy();
 });
 
-onBeforeMount(async () => {
-  const images = await store.get(`img/${id}`);
-  Object.assign(previewFileList, images.sort((a: any, b: any) => (new Date(a.created)).getTime() - (new Date(b.created)).getTime()));
-  // isLoaded.value = true;
-});
+// onBeforeMount(async () => {
+// isLoaded.value = true;
+// });
 
 // const addImage = () => {
 //   const url = window.prompt('URL')
