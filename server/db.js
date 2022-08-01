@@ -35,6 +35,7 @@ const databaseScheme = {
     meta text,
     site text,
     credits text,
+    scheme json,
     lang text NOT NULL,
     loaded boolean DEFAULT false NOT NULL,
     grammar boolean DEFAULT false NOT NULL,
@@ -82,13 +83,11 @@ const databaseScheme = {
     id SERIAL PRIMARY KEY,
     text_id integer,
     title text NOT NULL,
-    long_json json,
     published boolean DEFAULT false,
-    brief_json json,
-    trans text DEFAULT '',
     priority real,
     tags integer[] DEFAULT '{}',
     issues integer[] DEFAULT '{}',
+    entry json,
     CONSTRAINT fk_comments_texts FOREIGN KEY(text_id) REFERENCES texts(id)`,
 
   strings: `
@@ -545,16 +544,16 @@ export default {
     const issuesAsArray = `{${params?.issues?.length ? params.issues.map((x) => `{${x.join(',')}}`).join(',') : ''}}`;
     // console.log("issues", issuesAsArray);
     const textId = Number(params.text_id);
-    const values = [textId, params.title, params.published, params.long_json, params.brief_json, params.trans, params.priority, tagsAsArray, issuesAsArray];
+    const values = [textId, params.title, params.published, params.entry, params.priority, tagsAsArray, issuesAsArray];
 
     let sql = '';
 
     if (params.id) {
       values.push(Number(params.id));
-      sql = `UPDATE comments SET text_id = $1, title = $2, published= $3, long_json = $4, brief_json = $5, trans = $6, priority = $7, tags = $8, issues = $9
-      WHERE id = $10`;
+      sql = `UPDATE comments SET text_id = $1, title = $2, published= $3, entry = $4, priority = $5, tags = $6, issues = $7
+      WHERE id = $8`;
     } else {
-      sql = 'INSERT INTO comments (text_id, title, published, long_json, brief_json, trans, priority, tags, issues) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)';
+      sql = 'INSERT INTO comments (text_id, title, published, entry, priority, tags, issues) VALUES ($1, $2, $3, $4, $5, $6, $7)';
     }
     sql += ' RETURNING id';
 
@@ -929,9 +928,7 @@ export default {
     let data = [];
     if (url) {
       const sql = `SELECT id, priority, title FROM comments WHERE 
-            jsonb_path_exists(brief_json::jsonb, '$.** ? (@.src == "${url}")')
-            OR
-            jsonb_path_exists(long_json::jsonb, '$.** ? (@.src == "${url}")')`;
+      jsonb_path_exists(entry::jsonb, '$.** ? (@.type == "image" && @.attrs.src == "${url}")')`;
       try {
         const result = await pool.query(sql);
         data = result?.rows;
@@ -1068,22 +1065,6 @@ export default {
       data = result?.rows;
     } catch (err) {
       console.error(err);
-    }
-    return data;
-  },
-  async checkCommentsForSource(id) {
-    let data = [];
-    if (id) {
-      const sql = `SELECT id, priority, title FROM comments WHERE 
-            jsonb_path_exists(brief_json::jsonb, '$.** ? (@.id == ${id})')
-            OR
-            jsonb_path_exists(long_json::jsonb, '$.** ? (@.id == ${id})')`;
-      try {
-        const result = await pool.query(sql);
-        data = result?.rows;
-      } catch (err) {
-        console.error(err);
-      }
     }
     return data;
   },
