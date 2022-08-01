@@ -92,7 +92,6 @@
         </n-dropdown>
       </n-space>
 
-
       <template v-for="(item, index) in scheme" :key="item.id">
         <n-input
           v-if="item.type === 'line'"
@@ -105,8 +104,9 @@
           v-if="item.type === 'rich'"
           :ref="el => { editorRefs[item.id] = el }"
           :editorclass="index % 2 ? 'even' : 'odd'"
-          :data="sources"
+          :sources="sources"
           :content="comment.entry[item.id]"
+          :images="images"
         />
       </template>
 
@@ -149,6 +149,7 @@ import type { DropdownOption } from 'naive-ui';
 import type { Component } from 'vue';
 import { NIcon } from 'naive-ui';
 import { ArrowBackFilled as BackIcon, LinkOffFilled as UnbindLink } from '@vicons/material';
+// import type { UploadFileInfo } from 'naive-ui';
 
 const props = withDefaults(defineProps<{ id?: string; tokens?: string; }>(), {
   id: '',
@@ -156,7 +157,7 @@ const props = withDefaults(defineProps<{ id?: string; tokens?: string; }>(), {
 });
 const message = useMessage();
 const scheme = store?.state?.user?.text?.scheme || [];
-
+const textId = store?.state?.user?.text_id;
 let tokensToBind = JSON.parse(props.tokens) as Array<IToken>;
 let id = Number(props.id);
 
@@ -166,6 +167,8 @@ const comment0 = reactive({}) as IComment;
 const boundStrings = reactive<Array<Array<IToken>>>([]);
 const ready = ref(false);
 const sources = reactive<Array<IBib>>([]);
+const images = reactive<IImageItem[]>([]); // UploadFileInfo
+
 const usersKV = reactive<keyable>({});
 const issuesKV = reactive<keyable>({});
 const tagsList = reactive([]);
@@ -238,20 +241,18 @@ onBeforeUnmount(() => {
 });
 
 onBeforeMount(async () => {
-  const sourcesData = await store.get('source');
+  const [sourcesData, usersData, issueData, tagData, imagesData] = await Promise.all([
+    store.get('source'), store.get('users'), store.get('issues'), store.get('tags'), store.get(`img/${textId}`),
+  ]);
+
+  Object.assign(images, imagesData.sort((a: any, b: any) => (new Date(a.created)).getTime() - (new Date(b.created)).getTime()));
+
   Object.assign(sources, sourcesData.map((x: any, i: number) => ({ ...x, label: `${x.citekey.padEnd(10, '.')} ${x.bibtex.title}`, value: i })));
-  // console.log('data from server', sourcesData);
-
-  const usersData = await store.get('users');
   Object.assign(usersKV, Object.fromEntries(usersData.map((x: any) => [x.id, x])));
-  // console.log("users k/v", usersKV);
-  const tagData = await store.get('tags');
-
   Object.assign(
     tagsList,
     tagData.map((x: any) => ({ label: x.ru, key: x.id, disabled: computed(() => comment.tags?.includes(x.id)) }))
   );
-  const issueData = await store.get('issues');
   const issueListData = issueData.map((x: any) => ({
     label: x.ru,
     key: x.id,
@@ -270,13 +271,29 @@ onBeforeMount(async () => {
   Object.assign(issuesKV, Object.fromEntries(issueData.map((x: any) => [x.id, x])));
 
   if (id) {
-    const data = await store.get(`comment/${id}`);
+    const [commentData, stringsList] = await Promise.all([store.get(`comment/${id}`), store.get('commentstrings', String(textId), { comment: id }),]);
 
-    if (data.length) {
-      const commentStored = data?.[0];
+    if (commentData.length) {
+      const commentStored = commentData?.[0];
       Object.assign(comment0, JSON.parse(JSON.stringify(toRaw(commentStored))));
       Object.assign(comment, commentStored);
-      // console.log("in entry", commentStored.entry);
+    }
+
+    if (stringsList.length) {
+      let key = '';
+      let stack = [] as Array<IToken>;
+      for (let item of stringsList) {
+        if (item.s !== key) {
+          if (stack.length) {
+            boundStrings.push(stack);
+            stack = [];
+          }
+          key = item.s;
+        }
+        stack.push(item);
+      }
+      boundStrings.push(stack);
+      // console.log("boundStrings", boundStrings);
     }
 
   } else {
@@ -296,32 +313,6 @@ onBeforeMount(async () => {
       comment.priority = priority;
     }
 
-  }
-
-  if (!comment.text_id) {
-    // console.log('no text_id', store.state.user.text_id);
-    comment.text_id = store?.state?.user?.text_id as number || 1;
-  }
-
-  if (comment?.id) {
-    const stringsList = await store.get('commentstrings', String(comment.text_id), { comment: comment.id });
-    // console.log("strings list", stringsList);
-    if (stringsList.length) {
-      let key = '';
-      let stack = [] as Array<IToken>;
-      for (let item of stringsList) {
-        if (item.s !== key) {
-          if (stack.length) {
-            boundStrings.push(stack);
-            stack = [];
-          }
-          key = item.s;
-        }
-        stack.push(item);
-      }
-      boundStrings.push(stack);
-    }
-    // console.log("boundStrings", boundStrings);
   }
 
   ready.value = true;
