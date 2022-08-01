@@ -122,7 +122,7 @@ import store from '../store';
 // import type { UploadFileInfo } from 'naive-ui';
 // import type { SelectOption } from 'naive-ui';
 
-const props = defineProps<{ editorclass: string, data: any }>();
+const props = defineProps<{ editorclass: string, data: any, content: any }>();
 
 const showImagesModal = ref(false);
 const showSourcesModal = ref(false);
@@ -137,6 +137,21 @@ const customEditor = new Editor({
   autofocus: 'end',
   editable: true,
   extensions: store.getExtensions(props.data),
+  // onUpdate({ editor }) {
+  //   // The content has changed.
+  //   console.log("TT changed!");
+  // },
+  onCreate({ editor }) {
+    // The editor is ready.
+    // console.log("TT ready", editor, props);
+    if (props.content) {
+      editor.commands.setContent(props.content, false);
+    }
+  },
+  // onDestroy() {
+  //   // The editor is being destroyed.
+  //   console.log("TT bye");
+  // },
 });
 
 const onSourceSelected = (index: number, option: IBib) => {
@@ -153,6 +168,7 @@ const insertCitation = () => {
 }
 
 onBeforeUnmount(() => {
+  // console.log("TT component unmount");
   customEditor.destroy();
 });
 
@@ -259,11 +275,11 @@ defineExpose({ handle: customEditor });
   display: inline-block;
   text-align: left;
   min-width: 100%;
-  &.fulleditor div {
-    background-color: lightyellow;
-  }
-  &.briefeditor div {
+  &.even div {
     background-color: #feebdd;
+  }
+  &.odd div {
+    background-color: lightyellow;
   }
 }
 
