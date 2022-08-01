@@ -1,6 +1,6 @@
 {
   "name": "flowercat-server",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "FlowerCAT server application",
   "author": "Alyaxey Yaskevich",
   "license": "ISC",
@@ -8,7 +8,7 @@
     "type": "git",
     "url": "git://github.com/yaskevich/flowercat.git"
   },
-  "main": "index.js",
+  "main": "index",
   "type": "module",
   "directories": {
     "test": "test"
@@ -17,6 +17,13 @@
     "dev": "nodemon index.js",
     "start": "",
     "build": ""
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "backup/*",
+      "images/*",
+      "sites/*"
+    ]
   },
   "dependencies": {
     "@simonwep/selection-js": "^2.1.2",
@@ -45,7 +52,7 @@
   },
   "devDependencies": {
     "args": "^5.0.3",
-    "eslint": "^8.19.0",
+    "eslint": "^8.21.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0"
   }
