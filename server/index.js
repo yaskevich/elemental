@@ -5,8 +5,6 @@ import fileUpload from 'express-fileupload';
 import fs from 'fs';
 import { execSync } from 'child_process';
 import { gzipSync } from 'zlib';
-import zip from 'zip-local';
-import mustache from 'mustache';
 import history from 'connect-history-api-fallback';
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
@@ -15,6 +13,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import nlp from './nlp.js';
 import db from './db.js';
+import ssr from './ssr.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -278,6 +277,10 @@ app.get('/api/priority', auth, async (req, res) => {
   res.json(result);
 });
 
+app.post('/api/publish', auth, async (req, res) => {
+  res.json(await ssr.build(__dirname, req.body.id, siteDir, zipName));
+});
+
 app.delete('/api/:table/:id', auth, async (req, res) => {
   // console.log('DELETE params', req.params, 'query', req.query);
   let result = {};
@@ -337,73 +340,6 @@ app.get('/api/backupfile', auth, async (req, res) => {
   }
 });
 
-app.post('/api/publish', auth, async (req, res) => {
-  const textId = Number(req.body.id);
-  let result = {};
-  if (textId) {
-    try {
-      const pubDir = path.join(siteDir, String(textId));
-      const zipPath = path.join(pubDir, zipName);
-      const templatePath = path.join(__dirname, 'reader.html');
-      const template = fs.readFileSync(templatePath, 'utf8');
-
-      fs.rmSync(pubDir, { recursive: true, force: true });
-      fs.mkdirSync(pubDir, { recursive: true });
-
-      // console.log("request to publish", textId, pubDir);
-      const textInfo = await db.getTexts(textId);
-      // console.log("textInfo", textInfo);
-      const tokens = await db.getText(textId);
-
-      const comments = await db.getFullComments(textId);
-      const commentsDict = Object.assign({}, ...(comments.map((x) => ({ [x.id]: x }))));
-      // console.log(commentsDict);
-
-      let content = '';
-      let paragraph = '';
-      let p = 0;
-
-      tokens.forEach((token) => {
-        if (token.p !== p) {
-          content += `<div class="row">${paragraph}</div>\n\n`;
-          paragraph = '';
-          p = token.p;
-        }
-        if (token.meta !== 'ip') {
-          const commentId = token.comments?.[0];
-          const trans = commentsDict[commentId]?.trans || '';
-          // && commentsDict[commentId].published
-          const tooltipInfo = trans ? ['tooltip', `aria-label="${trans}"`] : ['', ''];
-          paragraph += (token.comments.length ? `<span class="${tooltipInfo[0]} token mark btn" ${tooltipInfo[1]} ${token.comments.length}" data-id="${commentId}">${token.form}</span>` : `<span class="token">${token.form}</span>`);
-        }
-      });
-
-      content += `<div class="row"> ${paragraph} </div>\n\n`;
-
-      const output = mustache.render(template, { ...textInfo.shift(), content, comments });
-
-      fs.writeFileSync(path.join(pubDir, 'index.html'), output);
-      fs.copyFileSync(path.join(__dirname, 'node_modules', 'mini.css', 'dist', 'mini-default.min.css'), path.join(pubDir, 'mini.css'));
-      fs.copyFileSync(path.join(__dirname, 'node_modules', 'jquery', 'dist', 'jquery.min.js'), path.join(pubDir, 'jquery.js'));
-      fs.copyFileSync(path.join(__dirname, 'node_modules', 'izimodal', 'js', 'iziModal.min.js'), path.join(pubDir, 'izi.js'));
-      fs.copyFileSync(path.join(__dirname, 'node_modules', 'izimodal', 'css', 'iziModal.min.css'), path.join(pubDir, 'izi.css'));
-
-      const now = Date.now();
-      zip.sync.zip(pubDir).compress().save(zipPath);
-      const stats = fs.statSync(zipPath);
-
-      await db.updatePubInfo(textId, pubDir, stats.size, now);
-      result = { bytes: stats.size, dir: pubDir, published: now };
-    } catch (genError) {
-      console.error(`HTML generation error for text ${textId}`, genError);
-      result = { error: genError.message };
-    }
-  } else {
-    result = { error: 'no ID' };
-  }
-  res.json(result);
-});
-
 app.post('/api/upload/:id', auth, async (req, res) => {
   let status = 200;
   let fileName = '';
@@ -452,6 +388,15 @@ app.get('/api/img/:id', auth, async (req, res) => {
     ...x, status: 'finished', name: x.id, url: `/api/images/${id}/${x.id}`,
   }));
   res.json(files);
+});
+
+app.get('/api/check/:type', auth, async (req, res) => {
+  let result = {};
+  if (req.params.type === 'img') {
+    const url = `/api/images/${req.query.text}/${req.query.id}`;
+    result = await db.checkCommentsForImage(url);
+  }
+  res.json(result);
 });
 
 app.post('/api/unload', auth, async (req, res) => {
