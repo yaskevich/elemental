@@ -32,9 +32,9 @@
           @download="handleDownload"
           @before-upload="beforeUpload"
           :is-error-state="checkError"
+          :show-download-button="true"
         />
         <!-- 
-       :show-download-button="true"
         @error="handleError"
         -->
         <n-modal v-model:show="showModal" preset="card" style="width: 600px" title="A Cool Picture">
@@ -47,11 +47,12 @@
 
 <script setup lang="ts">
 
-import { ref, reactive, onBeforeMount } from 'vue';
+import { ref, reactive, onBeforeMount, h } from 'vue';
 import store from '../store';
 // import { ArchiveFilled as ArchiveIcon } from '@vicons/material';
 import type { UploadInst, UploadFileInfo } from 'naive-ui';
 import { useMessage } from 'naive-ui';
+import { RouterLink } from 'vue-router';
 // import { useRoute } from 'vue-router';
 // const vuerouter = useRoute();
 // const id = vuerouter.params.id || 1;
@@ -96,8 +97,13 @@ const handleRemoval = async (upInfo: { file: UploadFileInfo, fileList: Array<Upl
 
 const handleDownload = async (file: UploadFileInfo) => {
   const filename = file.fullPath ? loadedFiles[file.id] : file.name;
-  // console.log("file", filename);
+  const data = await store.get('check/img', filename, {text: id});
+  console.log("file", filename, data);
   // console.log(previewFileList);
+  const links = data.map((x: any) => h(RouterLink, { to: '/comment/' + x.id, style: 'display:block;', class: "msglink" }, { default: () => x.title }));
+  const container = h('div', {}, [h('span', {}, `There are comments with this image (${data.length})`)]);
+  const vnode = h('div', {}, [container, links, "Remove the images from comments before deleting this image."]);
+  message.error(() => vnode, { duration: 5000, closable: true });
 };
 
 const handleError = async (upInfo: { file: UploadFileInfo, event?: ProgressEvent }) => {
