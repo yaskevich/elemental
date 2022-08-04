@@ -62,6 +62,11 @@ const compileHTML = (params) => `
 </html>
 `;
 
+const renderFigure = (figObj) => {
+  const caption = figObj?.content?.[0]?.text ? `<figcaption>${figObj?.content?.[0]?.text}</figcaption>` : '';
+  return `<figure><img src="${figObj.attrs.src}" />${caption}</figure>`;
+};
+
 const build = async (currentDir, id, siteDir, filename) => {
   const textId = Number(id);
   if (!textId) {
@@ -95,11 +100,13 @@ const build = async (currentDir, id, siteDir, filename) => {
               return cl && cl !== 'error' ? `<span class="${cl}">${obj.text}</span>` : '';
             }
             return obj.text;
-          case 'image':
-          // console.log(obj.attrs.src);
-            return `<img src="${obj.attrs.src}" />`;
-          case 'pclassed':
-            return obj.attrs.class === 'caption' ? `<figcaption>${rendermap(obj)}</figcaption>` : '';
+          case 'figure':
+            return renderFigure(obj);
+          // case 'image':
+          // // console.log(obj.attrs.src);
+          //   return `<img src="${obj.attrs.src}" />`;
+          // case 'pclassed':
+          //   return obj.attrs.class === 'caption' ? `<figcaption>${rendermap(obj)}</figcaption>` : '';
           case 'citation':
             return `<span class="citation" title="${sourcesDict[obj.attrs.id].bibtex.title}">(${sourcesDict[obj.attrs.id].bibtex.id})</span>`;
           case 'paragraph':
