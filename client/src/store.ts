@@ -14,14 +14,17 @@ import Bold from '@tiptap/extension-bold';
 import Image from '@tiptap/extension-image';
 import Dropcursor from '@tiptap/extension-dropcursor';
 import CharacterCount from '@tiptap/extension-character-count';
+import Gapcursor from '@tiptap/extension-gapcursor';
 import Spanclassed from './extensions/spanclassed';
-import Pclassed from './extensions/pclassed';
+// import Pclassed from './extensions/pclassed';
 import Citation from './extensions/citation';
+import Figure from '@yaskevich/extension-figure';
+
 import { generateHTML } from '@tiptap/core';
 
 const customTiptapClasses = {
   "span": ['error', 'name', 'example', 'book'],
-  "p": ['caption', 'error'],
+  // "p": ['caption', 'error'],
 };
 
 const getExtensions = (sources: Array<IBib>) => {
@@ -52,13 +55,15 @@ const getExtensions = (sources: Array<IBib>) => {
     }),
     Image,
     Dropcursor,
-    Pclassed.configure({
-      classes: customTiptapClasses.p,
-    }),
+    // Pclassed.configure({
+    //   classes: customTiptapClasses.p,
+    // }),
     CharacterCount.configure(),
     Citation.configure({
       sources,
     }),
+    Figure,
+    Gapcursor,
   ];
 };
 
