@@ -26,10 +26,10 @@
 
     <button @click="showImagesModal = true" style="background-color: #fac9ff;">+image</button>
 
-    <button
+    <!-- <button
       @click="customEditor.chain().focus().setBlock({ class: 'caption' }).run()"
       style="background-color: #fac9ff;"
-    >caption</button>
+    >caption</button>-->
 
     <button @click="showSourcesModal = true" style="background-color: #CCFFFF;">+ref</button>
 
@@ -104,8 +104,8 @@
         Footer
       </template>-->
     </n-modal>
-    <div>
-      <editor-content :editor="customEditor" :class="`${editorclass} annotation`" />
+    <div :class="editorclass + ' editorboard'">
+      <editor-content :editor="customEditor" class />
       <div
         class="counter"
         v-if="customEditor"
@@ -162,7 +162,7 @@ const onSourceSelected = (index: number, option: IBib) => {
 const insertCitation = () => {
   showSourcesModal.value = false;
   customEditor.chain().focus().setCitation({ id: selectedSourceId.value as number }).run();
-}
+};
 
 onBeforeUnmount(() => {
   // console.log("TT component unmount");
@@ -181,13 +181,18 @@ onBeforeUnmount(() => {
 // };
 
 const selectImage = (item: IImageItem) => {
-  // console.log("image", item);
-  customEditor.chain().focus()
-    .setImage({ src: item.url })
-    .createParagraphNear()
-    .insertContent(item.title)
-    .setBlock({ class: 'caption' })
+  const title = item.title || '';
+  customEditor
+    .chain()
+    .focus()
+    .setFigure({ src: item.url, caption: title })
     .run();
+  // customEditor.chain().focus()
+  //   .setImage({ src: item.url, alt: item.title, title: item.title })
+  //   .createParagraphNear()
+  //   .insertContent(item.title)
+  //   .setBlock({ class: 'caption' })
+  //   .run();
   showImagesModal.value = false;
 };
 
@@ -198,10 +203,42 @@ defineExpose({ handle: customEditor });
 <style scoped lang="scss">
 :deep(.ProseMirror) {
   min-height: 200px;
-  > * + * {
+  padding: 0.75em;
+  /*  > * + * {
     margin-top: 0.75em;
   }
+*/
+  margin-bottom: 0.5em;
 
+  figure {
+    max-width: 25rem;
+    /*border: 3px solid #0d0d0d;*/
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+    padding: 0.5rem;
+
+    text-align: center;
+    margin: auto;
+  }
+  figcaption {
+    margin-top: 0.25rem;
+    text-align: center;
+    padding: 0.5rem;
+    border: 2px dashed #0d0d0d20;
+    border-radius: 0.5rem;
+  }
+  img {
+    display: block;
+    /*
+    max-width: 90%;
+    max-height: 200px;
+    padding: 10px;*/
+    max-width: min(100%, 25rem);
+    height: auto;
+    border-radius: 0.5rem;
+  }
+
+  /*
   img {
     max-width: 90%;
     max-height: 200px;
@@ -211,13 +248,12 @@ defineExpose({ handle: customEditor });
       outline: 3px solid #68cef8;
     }
   }
+  */
 
   blockquote.quote {
     background-color: lightgray;
   }
-  p {
-    padding: 2px 10px 2px 10px;
-  }
+
   p.is-editor-empty:first-child::before {
     content: attr(data-placeholder);
     float: left;
@@ -225,12 +261,16 @@ defineExpose({ handle: customEditor });
     pointer-events: none;
     height: 0;
   }
-
+  /*
   p.caption {
     color: white;
     background-color: orange;
     font-weight: bold;
     margin-top: -15px;
+  }
+  */
+  p {
+    margin: auto;
   }
 
   p var {
@@ -266,16 +306,17 @@ defineExpose({ handle: customEditor });
   }
 }
 
-:deep(.annotation) {
+.even {
+  background-color: #feebdd;
+}
+.odd {
+  background-color: lightyellow;
+}
+:deep(.editorboard) {
   display: inline-block;
   text-align: left;
   min-width: 100%;
-  &.even div {
-    background-color: #feebdd;
-  }
-  &.odd div {
-    background-color: lightyellow;
-  }
+  margin-top: 0.5em;
 }
 
 .selectable {
@@ -294,6 +335,7 @@ defineExpose({ handle: customEditor });
   margin-top: -1rem;
   padding-top: 1rem;
   padding-bottom: 1rem;
+  text-align: center;
 }
 
 button {
