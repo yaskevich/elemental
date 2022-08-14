@@ -167,6 +167,11 @@ app.get('/api/strings', auth, async (req, res) => {
   res.json(strings);
 });
 
+app.get('/api/fullcomments/:id', auth, async (req, res) => {
+  const comments = await db.getFullComments(req.params.id);
+  res.json(comments);
+});
+
 app.get('/api/comments/:id', auth, async (req, res) => {
   // console.log("comment id", req.params['id']);
   const comments = await db.getComments(req.params.id);
