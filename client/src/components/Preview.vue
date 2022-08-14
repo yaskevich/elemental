@@ -1,7 +1,7 @@
 <template>
-  <div style="max-width:600px;margin: 0 auto;text-align: left; padding: 0 15px 10px 15px">
+  <div class="minimal left">
     <h2>
-      <span style="color:lightgray;">({{ comment.priority }})</span>
+      <span class="number" v-if="comment.priority">({{ comment.priority }})</span>
       {{ comment.title }}
     </h2>
     <div>
@@ -12,7 +12,6 @@
         <p v-if="item.type === 'line'" class="line">{{ comment?.entry?.[item.id] }}</p>
         <div v-if="item.type === 'rich'" v-html="render(comment?.entry?.[item.id], sources)"></div>
       </template>
-
       <n-divider />
     </div>
   </div>
@@ -46,6 +45,9 @@ onBeforeMount(async () => {
 </script>
 
 <style scoped lang="scss">
+:deep(.number) {
+  color: lightgray;
+}
 :deep(var.error) {
   display: none;
 }
@@ -89,15 +91,6 @@ onBeforeMount(async () => {
 :deep(blockquote p) {
   display: inline;
 }
-:deep(img) {
-  max-width: 370px;
-  max-height: 300px;
-}
-:deep(img + p.caption) {
-  color: gray;
-  font-weight: bold;
-  margin-top: -5px;
-}
 :deep(cite) {
   font-style: normal;
   color: gray;
@@ -108,5 +101,19 @@ onBeforeMount(async () => {
 :deep(.line) {
   margin-top: -1rem;
   letter-spacing: 2px;
+}
+:deep(img) {
+  max-width: 370px;
+  max-height: 300px;
+}
+:deep(figure) {
+  border: 1px solid silver;
+  text-align: center;
+  padding: 5px;
+}
+:deep(figcaption) {
+  color: rgb(37, 53, 223);
+  background-color: #ccc;
+  font-weight: bold;
 }
 </style>
