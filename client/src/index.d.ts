@@ -87,6 +87,17 @@ interface IComment {
     entry: any,
 }
 
+interface IFullComment {
+    title: string,
+    text_id: number,
+    id: number,
+    issues: Array<[number, number]>,
+    tags: Array<number>,
+    priority: number,
+    published: boolean,
+    entry: any,
+}
+
 interface IImageItem {
     id: string,
     user_id: number,
