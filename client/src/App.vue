@@ -17,6 +17,7 @@ import {
   LogOutFilled,
   EditNoteFilled,
   MenuBookFilled,
+  ReceiptLongFilled,
 } from '@vicons/material'
 import store from './store';
 import router from './router';
@@ -62,6 +63,7 @@ const menuOptions: MenuOption[] = reactive([
     children: [
       makeItem('Media', 'Media', PermMediaFilled),
       makeItem('Sources', 'Sources', MenuBookFilled),
+      makeItem('Flow', 'Flow', ReceiptLongFilled),
       makeItem('Tags', 'Tags', AssignmentFilled),
       makeItem('Issues', 'Issues', LabelFilled),
       makeItem('Backups', 'Backups', BackupFilled),
