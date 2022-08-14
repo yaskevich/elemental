@@ -928,7 +928,7 @@ export default {
     let data = [];
     if (url) {
       const sql = `SELECT id, priority, title FROM comments WHERE 
-      jsonb_path_exists(entry::jsonb, '$.** ? (@.type == "image" && @.attrs.src == "${url}")')`;
+      jsonb_path_exists(entry::jsonb, '$.** ? (@.type == "figure" && @.attrs.src == "${url}")')`;
       try {
         const result = await pool.query(sql);
         data = result?.rows;
@@ -1065,6 +1065,20 @@ export default {
       data = result?.rows;
     } catch (err) {
       console.error(err);
+    }
+    return data;
+  },
+  async checkCommentsForSource(id) {
+    let data = [];
+    if (id) {
+      const sql = `SELECT id, priority, title FROM comments WHERE jsonb_path_exists(entry::jsonb, '$.** ? (@.type == "citation" && @.attrs.id == ${id})')`;
+
+      try {
+        const result = await pool.query(sql);
+        data = result?.rows;
+      } catch (err) {
+        console.error(err);
+      }
     }
     return data;
   },
