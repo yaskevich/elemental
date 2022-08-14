@@ -17,6 +17,8 @@ import Users from './components/Users.vue';
 import User from './components/User.vue';
 import Sources from './components/Sources.vue';
 import Source from './components/Source.vue';
+import Flow from './components/Flow.vue';
+
 
 const routes = [
   // {
@@ -117,6 +119,11 @@ const routes = [
     path: '/source/:id?',
     component: Source,
     name: 'Source',
+  },
+  {
+    path: '/flow',
+    component: Flow,
+    name: 'Flow',
   },
 ];
 
