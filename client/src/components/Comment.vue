@@ -376,6 +376,10 @@ const saveComment = async () => {
     console.log('changes → DB');
     // console.log(toRaw(comment));
 
+    if (!comment?.text_id && textId) {
+      comment.text_id = textId;
+    }
+
     const { data } = await store.post('comment', comment);
     if (data?.id) {
       comment.id = data.id;
