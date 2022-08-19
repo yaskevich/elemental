@@ -15,16 +15,17 @@ import Image from '@tiptap/extension-image';
 import Dropcursor from '@tiptap/extension-dropcursor';
 import CharacterCount from '@tiptap/extension-character-count';
 import Gapcursor from '@tiptap/extension-gapcursor';
-import Spanclassed from './extensions/spanclassed';
-// import Pclassed from './extensions/pclassed';
 import Citation from './extensions/citation';
 import Figure from '@yaskevich/extension-figure';
-
+import Marker from '@yaskevich/extension-marker';
 import { generateHTML } from '@tiptap/core';
 
-const customTiptapClasses = {
-  "span": ['error', 'name', 'example', 'book'],
-  // "p": ['caption', 'error'],
+const MarkerConfig = {
+  classes: ['error', 'name', 'example', 'book'],
+  // it seems there are no more non-set hotkeys for a browsers
+  shortcuts: ['q', 'i', 'y', 'm', 'l'].map(x => 'Mod-' + x),
+  exclusive: true,
+  tag: 'var',
 };
 
 const getExtensions = (sources: Array<IBib>) => {
@@ -37,10 +38,7 @@ const getExtensions = (sources: Array<IBib>) => {
     Placeholder.configure({
       placeholder: 'Start writing your comment...',
     }),
-    Spanclassed.configure({
-      classes: customTiptapClasses.span,
-      exclusive: true,
-    }),
+    Marker.configure(MarkerConfig),
     Blockquote.extend({
       content: 'paragraph*',
     }).configure({
@@ -55,9 +53,6 @@ const getExtensions = (sources: Array<IBib>) => {
     }),
     Image,
     Dropcursor,
-    // Pclassed.configure({
-    //   classes: customTiptapClasses.p,
-    // }),
     CharacterCount.configure(),
     Citation.configure({
       sources,
@@ -213,5 +208,5 @@ export default {
   git: 'https' + project?.repository?.url?.slice(3, -4),
   getExtensions,
   convertJSONtoHTML,
-  customTiptapClasses,
+  markerClasses: MarkerConfig.classes,
 };
