@@ -202,10 +202,22 @@ const humanFileSize = (size: number) => {
       <n-form-item label="Grammar Tagging UI">
         <n-checkbox v-model:checked="txt.grammar" :label="`${txt.grammar ? '' : 'NOT'} enabled`" />
       </n-form-item>
-
-      <n-form-item label="Commenting UI">
-        <n-checkbox v-model:checked="txt.comments" :label="`${txt.comments ? '' : 'NOT'} enabled`" />
-      </n-form-item>
+      <n-space justify="space-between">
+        <n-form-item label="Commenting UI">
+          <n-checkbox
+            v-model:checked="txt.comments"
+            :label="`${txt.comments ? '' : 'NOT'} enabled`"
+          />
+        </n-form-item>
+        <n-form-item>
+          <n-button
+            v-if="txt.comments"
+            type="info"
+            @click="router.push('/scheme/' + vuerouter.params.id)"
+            size="small"
+          >Set Scheme</n-button>
+        </n-form-item>
+      </n-space>
     </n-form>
 
     <n-space vertical v-if="id">
