@@ -3,9 +3,9 @@
     <!-- <button @click="customEditor.chain().focus().toggleAnnotation().run()" :class="{ 'is-active': customEditor.isActive('annotation') }">Toggle Annotation</button> -->
 
     <button
-      v-for="item in spanclasses"
-      @click="customEditor.chain().focus().toggleAnnotation({ class: item }).run()"
-      :class="{ 'is-active': customEditor.isActive('annotation', { class: item }) }"
+      v-for="item in store.markerClasses"
+      @click="customEditor.chain().focus().toggleMarker({ class: item }).run()"
+      :class="{ 'is-active': customEditor.isActive('marker', { class: item }) }"
       style="background-color: #c9c9ff;"
     >{{ item }}</button>
 
@@ -105,7 +105,7 @@
       </template>-->
     </n-modal>
     <div :class="editorclass + ' editorboard'">
-      <editor-content :editor="customEditor" class />
+      <editor-content :editor="customEditor" />
       <div
         class="counter"
         v-if="customEditor"
@@ -127,7 +127,6 @@ const showImagesModal = ref(false);
 const showSourcesModal = ref(false);
 const html = ref('');
 const selectedSourceId = ref<number>();
-const spanclasses = store.customTiptapClasses.span;
 
 const customEditor = new Editor({
   content: '',
@@ -219,6 +218,11 @@ defineExpose({ handle: customEditor });
 
     text-align: center;
     margin: auto;
+
+    &[draggable="true"] {
+      border: 3px solid orange;
+      padding: 5px;
+    }
   }
   figcaption {
     margin-top: 0.25rem;
