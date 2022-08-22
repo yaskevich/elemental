@@ -30,6 +30,8 @@ const dataReady = ref(false);
 const loggedIn = computed(() => store?.state?.token?.length);
 const state = store.state;
 
+const settings = ref<ISettings>();
+
 const renderIcon = (icon: Component) => {
   return () => h(NIcon, null, { default: () => h(icon) })
 };
@@ -112,10 +114,15 @@ const menuOptions: MenuOption[] = reactive([
 
 onBeforeMount(async () => {
   await store.getUser();
-  dataReady.value = true;
-  document.title = store?.state?.user?.text?.title || 'App';
+  const storedTitle = store?.state?.user?.text?.title;
+  document.title = storedTitle || 'App';
   activeKey.value = String(vuerouter.name);
   // console.log("state", store.state.user);
+  if (!storedTitle) {
+    const { data } = await store.getUnauthorized('settings');
+    settings.value = data;
+  }
+  dataReady.value = true;
 });
 
 </script>
@@ -146,7 +153,10 @@ onBeforeMount(async () => {
           <Login />
         </n-tab-pane>
         <n-tab-pane name="signup" tab="Register">
-          <Register />
+          <Register v-if="settings?.registration_open" />
+          <n-h2 v-else>
+            <n-text type="warning">Registration is closed.</n-text>
+          </n-h2>
         </n-tab-pane>
       </n-tabs>
     </div>
