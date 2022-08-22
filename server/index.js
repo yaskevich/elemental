@@ -474,5 +474,9 @@ app.get('/api/source', auth, async (req, res) => {
   res.json(await db.getSource(req.query.id));
 });
 
+app.get('/api/settings', async (req, res) => {
+  res.json(await db.getSettings());
+});
+
 app.listen(port);
 console.log(`Running at Port ${port}`);
