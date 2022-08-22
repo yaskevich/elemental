@@ -20,6 +20,9 @@ interface IText {
     langLabel: string,
     scheme: Array<{ type: string, id: string, title: string }>,
 }
+interface ISettings {
+    registration_open: boolean,
+}
 
 interface IUser {
     id: number,
