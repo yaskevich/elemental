@@ -24,7 +24,7 @@ const MarkerConfig = {
   classes: ['error', 'name', 'example', 'book'],
   // it seems there are no more non-set hotkeys for a browsers
   shortcuts: ['q', 'i', 'y', 'm', 'l'].map(x => 'Mod-' + x),
-  exclusive: true,
+  exclusive: false,
   tag: 'var',
 };
 
