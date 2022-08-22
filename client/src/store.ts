@@ -160,6 +160,17 @@ const postUnauthorized = async (table: string, data: Object): Promise<any> => {
   }
 };
 
+const getUnauthorized = async (table: string, data?: Object): Promise<any> => {
+  try {
+    const response = await axios.get('/api/' + table, data);
+    console.log("get [NO AUTH]", table, response.data);
+    return response;
+  } catch (error) {
+    console.log("Cannot get", error);
+    return error;
+  }
+};
+
 const getUser = async () => {
   if (state.token) {
     try {
@@ -201,6 +212,7 @@ export default {
   get,
   post,
   postUnauthorized,
+  getUnauthorized,
   getUser,
   deleteById,
   logoutUser,
