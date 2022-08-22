@@ -131,6 +131,9 @@ const databaseScheme = {
     citekey text NOT NULL UNIQUE,
     bibtex jsonb NOT NULL,
     text_id integer NOT NULL`,
+
+  settings: `
+    registration_open boolean default true`
 };
 
 let tablesResult;
@@ -152,6 +155,10 @@ const prepareTable = async (args) => {
     try {
       // const createResult = await pool.query(`CREATE TABLE IF NOT EXISTS ${key} (${value})`);
       await pool.query(`CREATE TABLE IF NOT EXISTS ${tableName} (${args[1]})`);
+
+      if (tableName === 'settings') {
+        await pool.query('INSERT INTO settings DEFAULT VALUES');
+      }
     } catch (createError) {
       console.error(createError);
       console.error(`Issue with table '${tableName}'!`);
@@ -1079,6 +1086,18 @@ export default {
       } catch (err) {
         console.error(err);
       }
+    }
+    return data;
+  },
+  async getSettings() {
+    let data = [];
+    const sql = 'SELECT * FROM settings';
+
+    try {
+      const result = await pool.query(sql);
+      data = result?.rows?.[0];
+    } catch (err) {
+      console.error(err);
     }
     return data;
   },
