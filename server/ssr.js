@@ -152,7 +152,7 @@ data-iziModal-icon="icon-home" data-iziModal-fullscreen="true" style="padding: 5
 
     body += `<div class="row"> ${paragraph} </div>\n\n`;
 
-    const modals = comments.map(compileModal);
+    const modals = comments.map(compileModal).join('');
     const output = compileHTML({ ...textInfo.shift(), body, modals });
 
     fs.writeFileSync(path.join(pubDir, 'index.html'), output);
