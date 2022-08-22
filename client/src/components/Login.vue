@@ -8,7 +8,7 @@
         </n-form-item>
 
         <n-form-item path="password" label="Password">
-          <n-input v-model:value="formValue.password" type="password" @keydown.enter.prevent />
+          <n-input v-model:value="formValue.password" type="password" @keydown.enter.prevent autocomplete="on" show-password-on="click"/>
         </n-form-item>
 
         <n-form-item>
