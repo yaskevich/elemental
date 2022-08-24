@@ -1,5 +1,7 @@
 .ftpignore
 .ftpconfig
+auto-imports.d.ts
+components.d.ts
 data/
 node_modules
 server/public/*/*
