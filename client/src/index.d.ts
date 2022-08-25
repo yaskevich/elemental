@@ -68,15 +68,35 @@ interface IBib {
     bibtex: IBibTex,
 }
 
+interface IOption {
+    value: number;
+    label: string;
+}
+
+interface IRailStyle {
+    focused: boolean;
+    checked: boolean;
+}
+
+interface CategoryRecord {
+    color?: string;
+    font?: string;
+}
+
+interface ICategoriesScheme {
+    [key: string]: CategoryRecord;
+}
+
 interface IToken {
-    id: number,
-    checked?: boolean,
-    form: string,
-    repr: string,
-    meta: string,
-    p: number,
-    s: number,
-    comments: Array<number>,
+    id: number;
+    checked?: boolean;
+    form: string;
+    repr: string;
+    meta: string;
+    p: number;
+    s: number;
+    pos?: string;
+    comments: Array<number>;
 }
 
 interface IComment {
