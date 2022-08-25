@@ -141,11 +141,12 @@ data-iziModal-icon="icon-home" data-iziModal-fullscreen="true" style="padding: 5
       }
       if (token.meta !== 'ip') {
         const commentId = token.comments?.[0];
-        const trans = commentsDict[commentId]?.entry?.trans || '';
-        // && commentsDict[commentId].published
-        const tooltipInfo = trans ? ['tooltip', `aria-label="${trans}"`] : ['', ''];
+        const firstComment = commentsDict[commentId];
+        const isPublished = firstComment?.published;
 
-        paragraph += (commentId ? `<span class="${tooltipInfo[0]} token mark btn" ${tooltipInfo[1]} data-id="${commentId}">${token.form}</span>` : `<span class="token">${token.form}</span>`);
+        const tooltipInfo = (isPublished && firstComment?.entry?.trans) ? ['tooltip', `aria-label="${firstComment?.entry?.trans}"`] : ['', ''];
+
+        paragraph += (isPublished ? `<span class="${tooltipInfo[0]} token mark btn" ${tooltipInfo[1]} data-id="${commentId}">${token.form}</span>` : `<span class="token">${token.form}</span>`);
       }
     });
     // generating tooltips - end
