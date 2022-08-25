@@ -125,6 +125,8 @@ onBeforeMount(async () => {
   dataReady.value = true;
 });
 
+const color = 'green';
+
 </script>
 
 <template>
@@ -188,7 +190,6 @@ onBeforeMount(async () => {
 
 .center-column {
   text-align: center;
-
   .left-column {
     padding: 0 1rem 0 1rem;
     display: inline-table;
@@ -202,5 +203,96 @@ onBeforeMount(async () => {
   font-size: smaller;
   border-radius: 10% / 50%;
   font-variant: small-caps;
+}
+
+// annotation markers and zones
+var,
+button {
+  border-radius: 1px;
+  padding: 2px 2px 2px 2px;
+  font-style: normal;
+
+  &.error {
+    color: black;
+    background-color: #f0a020;
+    // rgba(232, 209, 0, 0.59);
+    // v-bind("color")
+    font-family: monospace;
+    // border: 1px solid red;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  &.name {
+    color: #1060c9;
+    background-color: rgb(243 243 4 / 42%);
+    font-weight: bold;
+  }
+
+  &.example {
+    // background-color: #f6f8fa;
+    color: #2c4b56;
+    background-color: lightgray;
+  }
+
+  &.book {
+    background: #eee;
+    // padding: 0 3px;
+    // color: #c76c0c;
+
+    text-decoration: underline;
+    // color: black;
+    // background-color: silver;
+  }
+}
+
+blockquote.quote {
+  // color: #2C4B56;
+  // background-color: lightgray;
+
+  background: #f9f9f9;
+  border-left: 10px solid #ccc;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  quotes: "\201C""\201D""\2018""\2019";
+}
+/*
+blockquote:before {
+  color: #ccc;
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+}
+*/
+figure {
+  max-width: 25rem;
+  /*border: 3px solid #0d0d0d;*/
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+  padding: 0.5rem;
+
+  text-align: center;
+  margin: auto;
+
+  &[draggable="true"] {
+    border: 3px solid lightpink;
+    padding: 5px;
+  }
+}
+figcaption {
+  margin-top: 0.25rem;
+  text-align: center;
+  padding: 0.5rem;
+  border: 2px dashed #0d0d0d20;
+  border-radius: 0.5rem;
+}
+cite {
+  font-style: normal;
+  color: gray;
+  /*
+  padding: 0px 5px;
+  */
 }
 </style>
