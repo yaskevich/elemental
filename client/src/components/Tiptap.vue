@@ -5,8 +5,7 @@
     <button
       v-for="item in store.markerClasses"
       @click="customEditor.chain().focus().toggleMarker({ class: item }).run()"
-      :class="{ 'is-active': customEditor.isActive('marker', { class: item }) }"
-      style="background-color: #c9c9ff;"
+      :class="{ 'is-active': customEditor.isActive('marker', { class: item }), [item]: true }"
     >{{ item }}</button>
 
     <!-- <button @click="customEditor.chain().focus().unsetAnnotation().run()" :disabled="!customEditor.isActive('annotation')">
@@ -16,7 +15,7 @@
     <button
       @click="customEditor.chain().focus().toggleBlockquote().run()"
       :class="{ 'is-active': customEditor.isActive('blockquote') }"
-    >quote</button>
+    >blockquote</button>
 
     <button
       @click="customEditor.commands.toggleBold()"
@@ -24,7 +23,8 @@
       style="font-weight:bold;"
     >emphasized</button>
 
-    <button @click="showImagesModal = true" style="background-color: #fac9ff;">+image</button>
+    <!-- style="background-color: #fac9ff;" -->
+    <button @click="showImagesModal = true">+image</button>
 
     <!-- <button
       @click="customEditor.chain().focus().setBlock({ class: 'caption' }).run()"
@@ -33,7 +33,7 @@
 
     <button @click="showSourcesModal = true" style="background-color: #CCFFFF;">+ref</button>
 
-    <br />
+    <!-- <br /> -->
 
     <!-- clear formatting -->
     <button
@@ -104,8 +104,8 @@
         Footer
       </template>-->
     </n-modal>
-    <div :class="editorclass + ' editorboard'">
-      <editor-content :editor="customEditor" />
+    <div class="editorboard">
+      <editor-content :editor="customEditor" :class="editorclass" />
       <div
         class="counter"
         v-if="customEditor"
@@ -203,34 +203,15 @@ defineExpose({ handle: customEditor });
 :deep(.ProseMirror) {
   min-height: 200px;
   padding: 0.75em;
+  &:focus {
+    outline: none;
+  }
   /*  > * + * {
     margin-top: 0.75em;
   }
 */
   margin-bottom: 0.5em;
 
-  figure {
-    max-width: 25rem;
-    /*border: 3px solid #0d0d0d;*/
-    border-radius: 0.5rem;
-    margin: 1rem 0;
-    padding: 0.5rem;
-
-    text-align: center;
-    margin: auto;
-
-    &[draggable="true"] {
-      border: 3px solid orange;
-      padding: 5px;
-    }
-  }
-  figcaption {
-    margin-top: 0.25rem;
-    text-align: center;
-    padding: 0.5rem;
-    border: 2px dashed #0d0d0d20;
-    border-radius: 0.5rem;
-  }
   img {
     display: block;
     /*
@@ -242,22 +223,18 @@ defineExpose({ handle: customEditor });
     border-radius: 0.5rem;
   }
 
+  :deep(img.ProseMirror-selectednode) {
+    outline: 3px solid #68cef8;
+  }
   /*
   img {
     max-width: 90%;
     max-height: 200px;
     padding: 10px;
 
-    &.ProseMirror-selectednode {
-      outline: 3px solid #68cef8;
-    }
+
   }
   */
-
-  blockquote.quote {
-    background-color: lightgray;
-  }
-
   p.is-editor-empty:first-child::before {
     content: attr(data-placeholder);
     float: left;
@@ -265,56 +242,30 @@ defineExpose({ handle: customEditor });
     pointer-events: none;
     height: 0;
   }
-  /*
-  p.caption {
-    color: white;
-    background-color: orange;
-    font-weight: bold;
-    margin-top: -15px;
-  }
-  */
+
   p {
     margin: auto;
   }
+}
 
-  p var {
-    border-radius: 1px;
-    padding: 2px 2px 2px 2px;
-    font-style: normal;
+:deep(div.even > div.ProseMirror) {
+  /* border: 5px dashed orange; */
+  // background-color: rgba(255, 166, 0, 0.125);
 
-    &.error {
-      color: black;
-      background-color: yellow;
-      font-family: monospace;
-      border: 1px solid red;
-    }
-
-    &.name {
-      color: red;
-      background-color: pink;
-    }
-
-    &.example {
-      color: white;
-      // background-color: #f6f8fa;
-      background-color: #748393;
-    }
-
-    &.book {
-      color: black;
-      background-color: orange;
-      font-size: 90%;
-      border: 1 px dashed pink;
-      font-style: italic;
-    }
+  &.ProseMirror-focused {
+    background-color: white;
+    border: 5px dashed #18a058;
   }
+  /* background-color: #feebdd; */
 }
+:deep(div.odd > div.ProseMirror) {
+  // background-color: rgba(124, 124, 177, 0.189);
 
-.even {
-  background-color: #feebdd;
-}
-.odd {
-  background-color: lightyellow;
+  &.ProseMirror-focused {
+    background-color: white;
+    border: 5px dashed #1060c9;
+    // rgb(124, 124, 177);
+  }
 }
 :deep(.editorboard) {
   display: inline-block;
@@ -322,7 +273,6 @@ defineExpose({ handle: customEditor });
   min-width: 100%;
   margin-top: 0.5em;
 }
-
 .selectable {
   border: 3px solid gray;
   cursor: grab;
