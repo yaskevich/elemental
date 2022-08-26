@@ -79,7 +79,7 @@
       <n-space justify="center" v-if="boundStrings.length">
         <n-dropdown
           trigger="hover"
-          :options="[{ label: 'Go to text', key: 'go', stack: stack as Array<IToken>, icon: renderIcon(BackIcon) }, { label: 'Unbind span', key: 'unbind', stack: stack as Array<IToken>, icon: renderIcon(UnbindLink) }]"
+          :options="[{ label: 'Go to text', key: 'go', stack: stack as Array<IToken>, icon: renderIcon(BackIcon) }, { label: 'Unbind span', key: 'unbind', stack: stack as Array<IToken>, icon: renderIcon(UnbindLink), disabled: !id }]"
           @select="handleSelect"
           v-for="(stack, index) in boundStrings"
           :key="index"
@@ -150,16 +150,17 @@ import type { Component } from 'vue';
 import { NIcon } from 'naive-ui';
 import { ArrowBackFilled as BackIcon, LinkOffFilled as UnbindLink } from '@vicons/material';
 // import type { UploadFileInfo } from 'naive-ui';
+import { useRoute } from 'vue-router';
+const vuerouter = useRoute();
 
-const props = withDefaults(defineProps<{ id?: string; tokens?: string; }>(), {
-  id: '',
-  tokens: '[]',
-});
 const message = useMessage();
 const scheme = store?.state?.user?.text?.scheme || [];
 const textId = store?.state?.user?.text_id;
-let tokensToBind = JSON.parse(props.tokens) as Array<IToken>;
-let id = Number(props.id);
+
+let tokensToBind = vuerouter.query?.tokens ? String(vuerouter.query.tokens).split(',').map(Number) : [];
+console.log("received token ids", tokensToBind);
+
+let id = Number(vuerouter.params.id);
 
 const comment = reactive({ entry: {} }) as IComment;
 const comment0 = reactive({}) as IComment;
@@ -280,16 +281,16 @@ onBeforeMount(async () => {
     }
 
     if (stringsList.length) {
-      let key = '';
-      let stack = [] as Array<IToken>;
+      let key = 0;
+      let stack: Array<IToken> = [];
       for (let item of stringsList) {
-        if (item.s !== key) {
+        if (key && (item.id !== key + 1)) {
           if (stack.length) {
             boundStrings.push(stack);
             stack = [];
           }
-          key = item.s;
         }
+        key = item.id;
         stack.push(item);
       }
       boundStrings.push(stack);
@@ -299,14 +300,17 @@ onBeforeMount(async () => {
   } else {
     console.log("no ID!");
 
-    const { priority } = await store.get('priority');
+    const data = await store.get('stringsrange', undefined, { tokens: tokensToBind });
 
-    if (tokensToBind.length) {
-      comment.title = tokensToBind
+    const { priority } = await store.get('priority');
+    // console.log("tokens", data);
+
+    if (data.length) {
+      comment.title = data
         .filter((x: IToken) => x.meta !== 'ip')
         .map((x: IToken) => x.form)
         .join(' ');
-      boundStrings.push(tokensToBind);
+      boundStrings.push(data);
     }
 
     if (priority) {
@@ -341,7 +345,7 @@ const checkIsEntryUpdated = () => {
     // console.log(x.id, commentStored.entry[x.id]);
     if (editorRefs[x.id]?.handle) {
       comment.entry[x.id] = editorRefs[x.id].handle.getJSON();
-      checkValidMarkup(comment.entry[x.id]);
+      // checkValidMarkup(comment.entry[x.id]);
       editorRefs[x.id].handle.commands.setContent(comment.entry[x.id], false);
     }
   });
@@ -387,11 +391,11 @@ const saveComment = async () => {
       router.replace('/comment/' + comment.id);
       const boundTokensNumber = tokensToBind.length;
       if (boundTokensNumber) {
-        const result = await store.post('strings', { tokens: tokensToBind.map((x: IToken) => x.id), id: data.id });
-        // console.log("bind tokens", result);
+        const result = await store.post('strings', { tokens: tokensToBind, id: data.id });
+        console.log("bind tokens", result);
         if (boundTokensNumber === result.data?.length) {
           console.log(`${boundTokensNumber} tokens were bound!`);
-          tokensToBind = [] as Array<IToken>;
+          tokensToBind = [];
         } else {
           console.error('tokens were not bound!');
         }
@@ -406,7 +410,10 @@ const saveComment = async () => {
 };
 
 const goToText = (stringTokens: Array<IToken>) => {
-  router.push({ name: 'Text', params: { tokens: JSON.stringify(stringTokens) } });
+  // console.log("go to", stringTokens.map(x => x.id));
+  const tokens = stringTokens.map(({ id }) => id).join();
+  // tokens: JSON.stringify(stringTokens)
+  router.push({ name: 'Text', query: { tokens } });
 };
 
 const deleteComment = async () => {
