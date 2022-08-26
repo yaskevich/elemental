@@ -665,6 +665,28 @@ export default {
     }
     return data;
   },
+  async getStringsRange(params) {
+    const range = params.tokens.map(Number);
+    // console.log('range', range);
+    let data = [];
+    if (range.length) {
+      try {
+        const values = [range.shift()];
+        let sql = 'SELECT strings.*, tokens.meta FROM strings LEFT JOIN tokens ON strings.token_id = tokens.id where strings.id ';
+        if (range.length) {
+          values.push(range.pop());
+          sql += 'BETWEEN $1 AND $2';
+        } else {
+          sql += '=$1';
+        }
+        const result = await pool.query(sql, values);
+        data = result?.rows;
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    return data;
+  },
   async getTextComments(textId) {
     const sql = "SELECT id, title FROM comments WHERE id IN (SELECT unnest(comments) AS coms FROM strings WHERE comments::text <> '{}' GROUP BY coms) AND text_id = $1";
     let data = [];
