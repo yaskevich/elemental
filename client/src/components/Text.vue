@@ -193,7 +193,8 @@ const drawerUpdated = () => {
 };
 
 const createComment = () => {
-  router.push({ name: 'Comment', params: { tokens: JSON.stringify(selectedArray.value) } });
+  const tokens = selectedArray.value.map(({ id }) => id).join();
+  router.push({ name: 'Comment', query: { tokens } });
 };
 
 const clearSelection = () => {
