@@ -133,7 +133,11 @@ const databaseScheme = {
     text_id integer NOT NULL`,
 
   settings: `
-    registration_open boolean default true`
+    registration_open boolean default true`,
+
+  classes: `
+    name TEXT NOT NULL UNIQUE,
+    css JSON`,
 };
 
 let tablesResult;
@@ -158,6 +162,9 @@ const prepareTable = async (args) => {
 
       if (tableName === 'settings') {
         await pool.query('INSERT INTO settings DEFAULT VALUES');
+      }
+      if (tableName === 'classes') {
+        await pool.query('INSERT INTO classes VALUES($1, $2)', ['error', '{"color": "#ff0000", "background-color": "#ffff00"}']);
       }
     } catch (createError) {
       console.error(createError);
@@ -1118,6 +1125,18 @@ export default {
     try {
       const result = await pool.query(sql);
       data = result?.rows?.[0];
+    } catch (err) {
+      console.error(err);
+    }
+    return data;
+  },
+  async getClasses() {
+    let data = [];
+    const sql = 'SELECT * FROM classes';
+
+    try {
+      const result = await pool.query(sql);
+      data = result?.rows;
     } catch (err) {
       console.error(err);
     }
