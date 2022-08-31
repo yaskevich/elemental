@@ -3,10 +3,10 @@
     <!-- <button @click="customEditor.chain().focus().toggleAnnotation().run()" :class="{ 'is-active': customEditor.isActive('annotation') }">Toggle Annotation</button> -->
 
     <button
-      v-for="item in store.markerClasses"
-      @click="customEditor.chain().focus().toggleMarker({ class: item }).run()"
-      :class="{ 'is-active': customEditor.isActive('marker', { class: item }), [item]: true }"
-    >{{ item }}</button>
+      v-for="item in store?.state?.user?.classes"
+      @click="customEditor.chain().focus().toggleMarker({ class: item.name }).run()"
+      :class="{ 'is-active': customEditor.isActive('marker', { class: item.name }), [item.name]: true }"
+    >{{ item.name }}</button>
 
     <!-- <button @click="customEditor.chain().focus().unsetAnnotation().run()" :disabled="!customEditor.isActive('annotation')">
               Clear Annotation
