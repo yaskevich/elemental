@@ -105,8 +105,10 @@ app.get('/api/user/logout', auth, async () => {
 
 app.get('/api/user/info', auth, async (req, res) => {
   const text = await db.getUserText(req.user.id);
+  const classes = await db.getClasses();
+
   res.json({
-    ...req.user, text, server: __package.version, commit: process.env.COMMIT,
+    ...req.user, text, classes, server: __package.version, commit: process.env.COMMIT,
   });
 });
 
