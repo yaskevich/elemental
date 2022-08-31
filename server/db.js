@@ -136,6 +136,7 @@ const databaseScheme = {
     registration_open boolean default true`,
 
   classes: `
+    id SERIAL PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
     css JSON`,
 };
@@ -164,7 +165,7 @@ const prepareTable = async (args) => {
         await pool.query('INSERT INTO settings DEFAULT VALUES');
       }
       if (tableName === 'classes') {
-        await pool.query('INSERT INTO classes VALUES($1, $2)', ['error', '{"color": "#ff0000", "background-color": "#ffff00"}']);
+        await pool.query('INSERT INTO classes (name, css) VALUES($1, $2)', ['error', '{"color": "#ff0000", "background-color": "#ffff00"}']);
       }
     } catch (createError) {
       console.error(createError);
@@ -1132,13 +1133,38 @@ export default {
   },
   async getClasses() {
     let data = [];
-    const sql = 'SELECT * FROM classes';
+    const sql = 'SELECT * FROM classes ORDER BY id';
 
     try {
       const result = await pool.query(sql);
       data = result?.rows;
     } catch (err) {
       console.error(err);
+    }
+    return data;
+  },
+  async setClass(params) {
+    const values = [JSON.stringify(params.css)];
+    // console.log(params);
+    // return;
+    let sql = '';
+    let data = [];
+    if (params?.name) {
+      const name = String(params.name);
+      values.push(name);
+      sql = 'UPDATE classes SET css = $1 WHERE name = $2';
+    } else {
+      sql = 'INSERT INTO classes (css, name) VALUES ($1, $2)';
+    }
+    sql += ' RETURNING name';
+    // console.log(sql);
+
+    try {
+      const result = await pool.query(sql, values);
+      data = result?.rows?.[0];
+    } catch (err) {
+      console.error(JSON.stringify(err));
+      data = { error: err?.detail || err?.routine };
     }
     return data;
   },
