@@ -1144,7 +1144,8 @@ export default {
     return data;
   },
   async setClass(params) {
-    const values = [JSON.stringify(params.css)];
+    const values = [JSON.stringify(params.css, (k, v) => v ?? undefined)];
+    // console.log(values);
     // console.log(params);
     // return;
     let sql = '';
