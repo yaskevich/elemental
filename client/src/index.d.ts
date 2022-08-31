@@ -38,6 +38,7 @@ interface IUser {
     requested: Date,
     text_id: number,
     text?: IText,
+    classes: Array<IAnnotationClass>,
 }
 
 interface IState {
@@ -162,4 +163,9 @@ interface ITag {
     id?: number,
     en: string,
     ru: string,
+}
+
+interface IAnnotationClass {
+    name: string,
+    css: StyleValue,
 }
