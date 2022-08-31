@@ -1,4 +1,4 @@
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import project from '../package.json';
 import router from "./router";
@@ -20,46 +20,43 @@ import Figure from '@yaskevich/extension-figure';
 import Marker from '@yaskevich/extension-marker';
 import { generateHTML } from '@tiptap/core';
 
-const MarkerConfig = {
-  classes: ['error', 'name', 'example', 'book'],
-  // it seems there are no more non-set hotkeys for a browsers
-  shortcuts: ['q', 'i', 'y', 'm', 'l'].map(x => 'Mod-' + x),
-  tag: 'var',
-};
+const getExtensions = (sources: Array<IBib>) => [
+  Document,
+  Paragraph,
+  Text,
+  History,
+  Color,
+  Placeholder.configure({
+    placeholder: 'Start writing your comment...',
+  }),
+  Marker.configure({
+    classes: state.user?.classes.map(x => x.name),
+    // it seems there are no more non-set hotkeys for a browsers
+    shortcuts: ['q', 'i', 'y', 'm', 'l'].map(x => 'Mod-' + x),
+    tag: 'var',
+  }),
+  Blockquote.extend({
+    content: 'paragraph*',
+  }).configure({
+    HTMLAttributes: {
+      class: 'quote',
+    },
+  }),
+  Bold.configure({
+    HTMLAttributes: {
+      class: 'em',
+    },
+  }),
+  Image,
+  Dropcursor,
+  CharacterCount.configure(),
+  Citation.configure({
+    sources,
+  }),
+  Figure,
+  Gapcursor,
+];
 
-const getExtensions = (sources: Array<IBib>) => {
-  return [
-    Document,
-    Paragraph,
-    Text,
-    History,
-    Color,
-    Placeholder.configure({
-      placeholder: 'Start writing your comment...',
-    }),
-    Marker.configure(MarkerConfig),
-    Blockquote.extend({
-      content: 'paragraph*',
-    }).configure({
-      HTMLAttributes: {
-        class: 'quote',
-      },
-    }),
-    Bold.configure({
-      HTMLAttributes: {
-        class: 'em',
-      },
-    }),
-    Image,
-    Dropcursor,
-    CharacterCount.configure(),
-    Citation.configure({
-      sources,
-    }),
-    Figure,
-    Gapcursor,
-  ];
-};
 
 const convertJSONtoHTML = (json: Object, sources: Array<IBib>) => {
   return json ? generateHTML(json, getExtensions(sources)) : '';
@@ -70,6 +67,27 @@ const state = reactive<IState>({
   user: {} as IUser,
   error: "",
 });
+
+const styleTagRef = ref<HTMLStyleElement>();
+
+const setCustomCSS = () => {
+  const css = state?.user?.classes.map(x => `var.${x.name}, button.${x.name} ${JSON.stringify(x.css).replaceAll('"', '').replaceAll(',', ';')}`).join('\n');
+  // console.log("CSS", css);
+
+  // const styleTag = document.createElement('link');
+  //      styleTag.type = "text/css";
+  //       styleTag.href = '/api/user.css';
+  //      document.head.appendChild(styleTag);
+  if (styleTagRef.value) {
+    // console.log("replace CSS");
+    document.head.removeChild(styleTagRef.value);
+  }
+  if (css) {
+    styleTagRef.value = document.createElement('style');
+    styleTagRef.value.appendChild(document.createTextNode(css));
+    document.head.appendChild(styleTagRef.value);
+  }
+};
 
 const getFile = async (route: string, id: string): Promise<any> => {
   if (state.token && id) {
@@ -173,10 +191,15 @@ const getUnauthorized = async (table: string, data?: Object): Promise<any> => {
 const getUser = async () => {
   if (state.token) {
     try {
+      ``
       // console.log("token", state.token);
       const config = { headers: { Authorization: "Bearer " + state.token }, };
       const response = await axios.get("/api/user/info", config);
       state.user = response.data;
+      // console.log(state.user);
+      if (state?.user?.classes) {
+        setCustomCSS();
+      }
     } catch (error: any | AxiosError) {
       console.log("Cannot get user", error);
       if (error.response?.status === 401) {
@@ -219,5 +242,5 @@ export default {
   git: 'https' + project?.repository?.url?.slice(3, -4),
   getExtensions,
   convertJSONtoHTML,
-  markerClasses: MarkerConfig.classes,
+  setCustomCSS,
 };
