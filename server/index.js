@@ -251,6 +251,10 @@ app.get('/api/stringsrange', auth, async (req, res) => {
   res.json(await db.getStringsRange(req.query));
 });
 
+app.get('/api/classes', auth, async (req, res) => {
+  res.json(await db.getClasses());
+});
+
 app.get('/api/textcomments', auth, async (req, res) => {
   const textId = Number(req.query.id) || 1;
   res.json(await db.getTextComments(textId));
