@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { h, Component, ref, reactive, onBeforeMount, computed, } from 'vue';
+import { h, Component, ref, reactive, onBeforeMount, onMounted, computed, toRaw } from 'vue';
 import { MenuOption, NIcon } from 'naive-ui';
 import { RouterLink, useRoute } from 'vue-router';
 import {
@@ -18,6 +18,7 @@ import {
   EditNoteFilled,
   MenuBookFilled,
   ReceiptLongFilled,
+  FormatPaintFilled,
 } from '@vicons/material'
 import store from './store';
 import router from './router';
@@ -29,7 +30,6 @@ const activeKey = ref<string | null>(null); // vuerouter?.name||'Home'
 const dataReady = ref(false);
 const loggedIn = computed(() => store?.state?.token?.length);
 const state = store.state;
-
 const settings = ref<ISettings>();
 
 const renderIcon = (icon: Component) => {
@@ -38,7 +38,7 @@ const renderIcon = (icon: Component) => {
 const user = computed(() => state?.user?.username);
 
 const makeItem = (name: string, title: string, icon: Component, disabled: boolean = false) => ({
-  label: () => h(RouterLink, { to: { name: name, params: { lang: 'en-US' } } },
+  label: () => h(RouterLink, { to: { name: name, } },
     { default: () => title }),
   key: name,
   disabled: disabled,
@@ -66,6 +66,7 @@ const menuOptions: MenuOption[] = reactive([
       makeItem('Media', 'Media', PermMediaFilled),
       makeItem('Sources', 'Sources', MenuBookFilled),
       makeItem('Flow', 'Flow', ReceiptLongFilled),
+      makeItem('Classes', 'Classes', FormatPaintFilled),
       makeItem('Tags', 'Tags', AssignmentFilled),
       makeItem('Issues', 'Issues', LabelFilled),
       makeItem('Backups', 'Backups', BackupFilled),
@@ -112,7 +113,10 @@ const menuOptions: MenuOption[] = reactive([
   },
 ]);
 
-onBeforeMount(async () => {
+// onBeforeMount(async () => {
+// });
+
+onMounted(async () => {
   await store.getUser();
   const storedTitle = store?.state?.user?.text?.title;
   document.title = storedTitle || 'App';
@@ -125,7 +129,7 @@ onBeforeMount(async () => {
   dataReady.value = true;
 });
 
-const color = 'green';
+// const color = 'green';
 
 </script>
 
@@ -213,37 +217,37 @@ button {
   font-style: normal;
 
   &.error {
-    color: black;
-    background-color: #f0a020;
-    // rgba(232, 209, 0, 0.59);
-    // v-bind("color")
-    font-family: monospace;
+    // color: black;
+    // background-color: #f0a020;
+    // // rgba(232, 209, 0, 0.59);
+    // // v-bind("color")
+    // font-family: monospace;
     // border: 1px solid red;
     padding-left: 5px;
     padding-right: 5px;
   }
 
-  &.name {
-    color: #1060c9;
-    background-color: rgb(243 243 4 / 42%);
-    font-weight: bold;
-  }
+  // &.name {
+  //   color: #1060c9;
+  //   background-color: rgb(243 243 4 / 42%);
+  //   font-weight: bold;
+  // }
 
-  &.example {
-    // background-color: #f6f8fa;
-    color: #2c4b56;
-    background-color: lightgray;
-  }
+  // &.example {
+  //   // background-color: #f6f8fa;
+  //   color: #2c4b56;
+  //   background-color: lightgray;
+  // }
 
-  &.book {
-    background: #eee;
-    // padding: 0 3px;
-    // color: #c76c0c;
+  // &.book {
+  //   background: #eee;
+  //   // padding: 0 3px;
+  //   // color: #c76c0c;
 
-    text-decoration: underline;
-    // color: black;
-    // background-color: silver;
-  }
+  //   text-decoration: underline;
+  //   // color: black;
+  //   // background-color: silver;
+  // }
 }
 
 blockquote.quote {
