@@ -19,6 +19,7 @@ import Sources from './components/Sources.vue';
 import Source from './components/Source.vue';
 import Flow from './components/Flow.vue';
 import Scheme from './components/Scheme.vue';
+import Classes from './components/Classes.vue';
 
 const routes = [
   // {
@@ -129,6 +130,11 @@ const routes = [
     path: '/scheme/:id?',
     component: Scheme,
     name: 'Scheme',
+  },
+  {
+    path: '/classes',
+    component: Classes,
+    name: 'Classes',
   },
 ];
 
