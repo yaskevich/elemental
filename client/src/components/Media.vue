@@ -50,7 +50,7 @@
 import { ref, reactive, onBeforeMount, h } from 'vue';
 import store from '../store';
 // import { ArchiveFilled as ArchiveIcon } from '@vicons/material';
-import type { UploadInst, UploadFileInfo } from 'naive-ui';
+import type { UploadInst, UploadFileInfo, MessageType } from 'naive-ui';
 import { useMessage } from 'naive-ui';
 import { RouterLink } from 'vue-router';
 // import { useRoute } from 'vue-router';
@@ -79,14 +79,23 @@ const imageLoaded = (options: { file: UploadFileInfo, event?: Event }) => {
   return;
 };
 
+const renderCommentsList = (data: any, msgType: MessageType, isDelete?: boolean) => {
+  const links = data.map((x: any) => h(RouterLink, { to: '/comment/' + x.id, style: 'display:block;', class: "msglink" }, { default: () => x.title }));
+  const container = h('div', {}, [h('span', {}, `There are comments with this image (${data.length})`)]);
+  const warnMsg = isDelete ? "Remove the images from comments before deleting this image." : '';
+  const vnode = h('div', {}, [container, links, warnMsg]);
+  message.create(() => vnode, { duration: 5000, closable: true, type: msgType });
+}
+
 const handleRemoval = async (upInfo: { file: UploadFileInfo, fileList: Array<UploadFileInfo> }) => {
   const filename = upInfo.file.fullPath ? loadedFiles[upInfo.file.id] : upInfo.file.name;
   // console.log(upInfo);
   const { data } = await store.post('unload', { id: id, file: filename });
-  console.log("result", data);
+  // console.log("result", data);
   if (Boolean(data?.errno || data?.error)) {
     if (data?.comments?.length) {
-      message.warning(`Image is bound to comments! Total: ${data.comments.length}`)
+      // message.warning(`Image is bound to comments! Total: ${data.comments.length}`)
+      renderCommentsList(data.comments, 'error', true);
     } else {
       message.warning("Image removal failed!")
     }
@@ -97,13 +106,11 @@ const handleRemoval = async (upInfo: { file: UploadFileInfo, fileList: Array<Upl
 
 const handleDownload = async (file: UploadFileInfo) => {
   const filename = file.fullPath ? loadedFiles[file.id] : file.name;
-  const data = await store.get('check/img', filename, {text: id});
-  console.log("file", filename, data);
+  const data = await store.get('check/img', filename, { text: id });
+  // console.log("file", filename, data);
   // console.log(previewFileList);
-  const links = data.map((x: any) => h(RouterLink, { to: '/comment/' + x.id, style: 'display:block;', class: "msglink" }, { default: () => x.title }));
-  const container = h('div', {}, [h('span', {}, `There are comments with this image (${data.length})`)]);
-  const vnode = h('div', {}, [container, links, "Remove the images from comments before deleting this image."]);
-  message.error(() => vnode, { duration: 5000, closable: true });
+  renderCommentsList(data, 'info');
+  return false;
 };
 
 const handleError = async (upInfo: { file: UploadFileInfo, event?: ProgressEvent }) => {
