@@ -5,11 +5,7 @@
                 {{ store?.state?.user?.text?.author }}.
                 {{ store?.state?.user?.text?.title }}
             </h3>
-            <div
-                v-for="(comment, index) in comments"
-                key="index"
-                class="comment"
-            >
+            <div v-for="(comment, index) in comments" key="index" class="comment">
                 <div>
                     <n-button
                         dashed
@@ -22,10 +18,14 @@
                     >{{ comment.title.split('').map((x, i) => !i ? x.toLocaleUpperCase() : x).join('') }}</span>
 
                     <template v-for="item in scheme" :key="item.id">
-                        <p
-                            v-if="item.type === 'line'"
-                            :class="item.type"
-                        >{{ comment?.entry?.[item.id] }}</p>
+                        <p v-if="item.type === 'line'" :class="item.type">
+                            <n-tag>
+                                {{ comment?.entry?.[item.id] }}
+                                <template #icon>
+                                    <n-icon :component="AbcFilled" />
+                                </template>
+                            </n-tag>
+                        </p>
                         <div
                             v-if="item.type === 'rich'"
                             :class="item.type"
@@ -39,19 +39,19 @@
     </n-card>
 </template>
 <script setup lang="ts">
-import { h, Component, ref, reactive, onBeforeMount, computed, } from 'vue';
-import router from '../router';
-import { useRoute } from 'vue-router';
+import { ref, reactive, onBeforeMount, } from 'vue';
+// import router from '../router';
+// import { useRoute } from 'vue-router';
 import store from '../store';
-const vuerouter = useRoute();
+// const vuerouter = useRoute();
+import { AbcFilled, } from '@vicons/material';
+
 const comments = reactive([] as Array<IFullComment>);
 const sources = reactive([] as Array<IBib>);
 
 const isLoaded = ref(false);
 const render = store.convertJSONtoHTML;
 const scheme = store?.state?.user?.text?.scheme || [];
-
-
 
 onBeforeMount(async () => {
     const pathId = store?.state?.user?.text_id || 1;
@@ -70,16 +70,20 @@ onBeforeMount(async () => {
     margin-left: 5px;
     font-size: 1rem;
     /* display: inline-block; */
-    &::first-letter {
-        text-transform: capitalize;
-    }
+    // &::first-letter {
+    //     text-transform: capitalize;
+    // }
 }
+// :deep(var) {
+//     all: revert !important;
+// }
 :deep(.number) {
     color: silver;
 }
-:deep(.line) {
-    font-style: italic;
-}
+// :deep(.line) {
+// font-style: italic;
+// font-family: monospace;
+// }
 :deep(.rich) {
     border: 1px dashed silver;
     margin-bottom: 5px;
@@ -90,15 +94,15 @@ onBeforeMount(async () => {
     max-height: 300px;
 }
 :deep(figure) {
-  border: 1px solid silver;
-  text-align: center;
-  padding: 5px;
+    border: 1px solid silver;
+    text-align: center;
+    padding: 5px;
 }
-:deep(.error) {
-  background-color: yellow;
-}
+// :deep(.error) {
+//     background-color: yellow;
+// }
 
-:deep(.comment){
+:deep(.comment) {
     background-color: rgba(211, 211, 211, 0.15);
     padding: 15px;
 }
