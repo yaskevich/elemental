@@ -71,7 +71,8 @@ const databaseScheme = {
     id SERIAL PRIMARY KEY,
     token text NOT NULL,
     meta text,
-    lang text`,
+    lang text,
+    UNIQUE (token, lang)`,
 
   units: `
     id SERIAL PRIMARY KEY,
@@ -1029,24 +1030,46 @@ export default {
     }
     return data;
   },
-  async insertIntoStrings(textId, langId, paragraphNumber, sentenceNumber, tokenForm, tokenRepr, tokenMeta) {
-    const token = tokenRepr.toLowerCase();
-    let tokenId = 0;
-    let result = await pool.query('SELECT id from tokens where token = $1 and lang = $2', [token, langId]);
-
-    if (!result?.rows?.length) {
-      result = await pool.query('INSERT INTO tokens (token, lang, meta) VALUES($1, $2, $3) RETURNING id', [token, langId, tokenMeta]);
-    }
-
-    tokenId = result.rows[0]?.id;
+  async insertBatchIntoStrings(textId, batch, langId, noStdout) {
+    const t0 = performance.now();
+    const tokensCount = batch.length;
+    const client = await pool.connect();
+    let isError = false;
 
     try {
-      result = await pool.query('INSERT INTO strings (text_id, p, s, form, repr, token_id) VALUES($1, $2, $3, $4, $5, $6) RETURNING id', [textId, paragraphNumber, sentenceNumber, tokenForm, tokenRepr, tokenId]);
-      // console.log(result);
+      await client.query('BEGIN');
+      /* eslint-disable no-await-in-loop */
+      /* eslint-disable-next-line no-restricted-syntax */
+      for (const [i, item] of batch.entries()) {
+        // { p: 45, s: 150, form: 'receive', repr: 'receive', meta: 'word' }
+        // console.log(item);
+        const token = item.repr.toLowerCase();
+
+        await client.query('INSERT INTO tokens (token, lang, meta) VALUES($1, $2, $3) ON CONFLICT (token, lang) DO NOTHING', [token, langId, item.meta]);
+        await client.query('INSERT INTO strings (text_id, p, s, form, repr) VALUES($1, $2, $3, $4, $5) ', [textId, item.p, item.s, item.form, token]);
+        // console.log(result);
+
+        if (!noStdout) {
+          process.stdout.write(`${i}/${tokensCount}\r`);
+        }
+      }
+      await client.query('UPDATE strings SET token_id = tokens.id FROM tokens WHERE tokens.lang = $1 AND tokens.token = strings.repr', [langId]);
+      await client.query('COMMIT');
     } catch (error) {
+      await client.query('ROLLBACK');
+      isError = true;
       console.error(error);
+    } finally {
+      client.release();
     }
-    // console.log(pnum, snum, { form: form, repr: repr, type: type });
+    if (isError) {
+      return undefined;
+    }
+
+    const t1 = performance.now();
+    const secs = ((t1 - t0) / 1000).toFixed(2);
+    console.log(`batch: ${secs}s`);
+    return secs;
   },
   async setTextLoaded(textId) {
     let result = [{}];

@@ -105,20 +105,10 @@ export default {
     });
     return format;
   },
-  async importText(isWeb, textId, content, language) {
-    const tokensCount = content.length;
+  async importText(textId, content, language, isWeb) {
     await db.deleteFromStrings(textId);
-    /* eslint-disable no-restricted-syntax */
-    for (const [i, item] of content.entries()) {
-      // { p: 45, s: 150, form: 'receive', repr: 'receive', meta: 'word' }
-      // console.log(item);
-      /* eslint-disable no-await-in-loop */
-      await db.insertIntoStrings(textId, language, item.p, item.s, item.form, item.repr, item.meta);
-      if (!isWeb) {
-        process.stdout.write(`${i}/${tokensCount}\r`);
-      }
-    }
-    // await pool.end();
-    return db.setTextLoaded(textId);
+    const result = await db.insertBatchIntoStrings(textId, content, language, isWeb);
+    await db.setTextLoaded(textId);
+    return result;
   },
 };
