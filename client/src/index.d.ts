@@ -1,171 +1,176 @@
+import { StyleValue } from 'vue'
 
-interface keyable {
-    [key: string]: any,
-}
+declare global {
 
-interface IText {
-    id: number,
-    author: string,
-    title: string,
-    meta: string,
-    grammar: boolean,
-    comments: boolean,
-    loaded: boolean,
-    published: string,
-    date: string,
-    credits: string,
-    site: string,
-    zipsize: number,
-    lang: string,
-    langLabel: string,
-    scheme: Array<{ type: string, id: string, title: string }>,
-}
-interface ISettings {
-    registration_open: boolean,
-}
+    interface keyable {
+        [key: string]: any,
+    }
 
-interface IUser {
-    id: number,
-    username: string,
-    firstname: string,
-    lastname: string,
-    email: string,
-    sex: number,
-    server: string,
-    commit: string,
-    privs: number,
-    activated: boolean,
-    requested: Date,
-    text_id: number,
-    text?: IText,
-    classes: Array<IAnnotationClass>,
-}
+    interface IText {
+        id: number,
+        author
+        : string,
+        title: string,
+        meta: string,
+        grammar: boolean,
+        comments: boolean,
+        loaded: boolean,
+        published: string,
+        date: string,
+        credits: string,
+        site: string,
+        zipsize: number,
+        lang: string,
+        langLabel: string,
+        scheme: Array<{ type: string, id: string, title: string }>,
+    }
+    interface ISettings {
+        registration_open: boolean,
+    }
 
-interface IState {
-    token?: string,
-    error?: string,
-    user?: IUser,
-}
+    interface IUser {
+        id: number,
+        username: string,
+        firstname: string,
+        lastname: string,
+        email: string,
+        sex: number,
+        server: string,
+        commit: string,
+        privs: number,
+        activated: boolean,
+        requested: Date,
+        text_id: number,
+        text?: IText,
+        classes: Array<IAnnotationClass>,
+    }
 
-interface IBibPerson {
-    given: string,
-    family: string,
-}
+    interface IState {
+        token?: string,
+        error?: string,
+        user?: IUser,
+    }
 
-interface IBibTex {
-    id: string,
-    type: string,
-    page?: string,
-    title: string,
-    'citation-key': string,
-    author: Array<IBibPerson>,
-    issued: { 'date-parts': Array<Array<number>> },
-}
+    interface IBibPerson {
+        given: string,
+        family: string,
+    }
 
-interface IBib {
-    id: number,
-    lang: string,
-    citekey: string,
-    bibtex: IBibTex,
-}
+    interface IBibTex {
+        id: string,
+        type: string,
+        page?: string,
+        title: string,
+        'citation-key': string,
+        author: Array<IBibPerson>,
+        issued: { 'date-parts': Array<Array<number>> },
+    }
 
-interface IOption {
-    value: number;
-    label: string;
-}
+    interface IBib {
+        id: number,
+        lang: string,
+        citekey: string,
+        bibtex: IBibTex,
+    }
 
-interface IRailStyle {
-    focused: boolean;
-    checked: boolean;
-}
+    interface IOption {
+        value: number;
+        label: string;
+    }
 
-interface CategoryRecord {
-    color?: string;
-    font?: string;
-}
+    interface IRailStyle {
+        focused: boolean;
+        checked: boolean;
+    }
 
-interface ICategoriesScheme {
-    [key: string]: CategoryRecord;
-}
+    interface CategoryRecord {
+        color?: string;
+        font?: string;
+    }
 
-interface IToken {
-    id: number;
-    checked?: boolean;
-    form: string;
-    repr: string;
-    meta: string;
-    p: number;
-    s: number;
-    pos?: string;
-    comments: Array<number>;
-}
+    interface ICategoriesScheme {
+        [key: string]: CategoryRecord;
+    }
 
-interface IComment {
-    title: string,
-    text_id: number,
-    id: number,
-    issues: Array<[number, number]>,
-    tags: Array<number>,
-    priority: number,
-    published: boolean,
-    entry: any,
-}
+    interface IToken {
+        id: number;
+        checked?: boolean;
+        form: string;
+        repr: string;
+        meta: string;
+        p: number;
+        s: number;
+        pos?: string;
+        comments: Array<number>;
+    }
 
-interface IFullComment {
-    title: string,
-    text_id: number,
-    id: number,
-    issues: Array<[number, number]>,
-    tags: Array<number>,
-    priority: number,
-    published: boolean,
-    entry: any,
-}
+    interface IComment {
+        title: string,
+        text_id: number,
+        id: number,
+        issues: Array<[number, number]>,
+        tags: Array<number>,
+        priority: number,
+        published: boolean,
+        entry: any,
+    }
 
-interface IImageItem {
-    id: string,
-    user_id: number,
-    text_id: number,
-    filesize: number,
-    created: Date,
-    title: string
-    meta: string,
-    status: string,
-    loaded: boolean,
-    url: string,
-    name: string,
-}
+    interface IFullComment {
+        title: string,
+        text_id: number,
+        id: number,
+        issues: Array<[number, number]>,
+        tags: Array<number>,
+        priority: number,
+        published: boolean,
+        entry: any,
+    }
 
-interface IRow {
-    bound: boolean,
-    id: number,
-    issues: Array<Array<number>>,
-    tags: Array<number>,
-    priority: number,
-    published: null | boolean,
-    title: string,
-}
+    interface IImageItem {
+        id: string,
+        user_id: number,
+        text_id: number,
+        filesize: number,
+        created: Date,
+        title: string
+        meta: string,
+        status: string,
+        loaded: boolean,
+        url: string,
+        name: string,
+    }
 
-interface IBackup {
-    filename: string,
-    state: boolean,
-    marked: boolean,
-}
+    interface IRow {
+        bound: boolean,
+        id: number,
+        issues: Array<Array<number>>,
+        tags: Array<number>,
+        priority: number,
+        published: null | boolean,
+        title: string,
+    }
 
-interface IIssue {
-    id?: number,
-    en: string,
-    ru: string,
-    color: string,
-}
+    interface IBackup {
+        filename: string,
+        state: boolean,
+        marked: boolean,
+    }
 
-interface ITag {
-    id?: number,
-    en: string,
-    ru: string,
-}
+    interface IIssue {
+        id?: number,
+        en: string,
+        ru: string,
+        color: string,
+    }
 
-interface IAnnotationClass {
-    name: string,
-    css: StyleValue,
+    interface ITag {
+        id?: number,
+        en: string,
+        ru: string,
+    }
+
+    interface IAnnotationClass {
+        name: string,
+        css: keyable, // StyleValue from vue did not work out
+    }
 }
