@@ -33,6 +33,7 @@ const zipName = 'site.zip';
 const port = process.env.PORT || 8080;
 const appName = __package?.name || String(port);
 const imageFileLimit = Number(process.env.IMGLIMIT) || 1024 * 1024; // 1 MB
+const textContentLimit = Number(process.env.TXTLIMIT) || 1024 * 1024 * 10; // 10 MB
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 
@@ -62,8 +63,8 @@ app.use(fileUpload({ limits: { fileSize: imageFileLimit }, abortOnLimit: true, d
 app.use(compression());
 app.set('trust proxy', 1);
 app.use(passport.initialize());
-app.use(bodyParser.json()); // support json encoded bodies
-app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+app.use(bodyParser.json({ limit: textContentLimit }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, 'node_modules', 'spectre.css', 'dist')));
 app.use(express.static(path.join(__dirname, 'node_modules', 'izimodal', 'css')));
@@ -471,7 +472,7 @@ app.post('/api/load', auth, async (req, res) => {
   const textId = Number(req.body.id);
   if (textId) {
     // console.log("start import");
-    result = await nlp.importText(true, textId, req.body.content, req.body.lang);
+    result = await nlp.importText(textId, req.body.content, req.body.lang, true);
     // console.log("complete import", result);
   }
   res.json(result);
