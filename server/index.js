@@ -214,7 +214,7 @@ app.get('/api/texts', auth, async (req, res) => {
   // console.log('texts', textId);
   const textInfo = await db.getTexts(textId);
   // console.log(textInfo);
-  if (textId && !fs.existsSync(path.join(textInfo?.[0].dir, zipName))) {
+  if (textId && textInfo?.[0].dir && !fs.existsSync(path.join(textInfo?.[0].dir, zipName))) {
     delete textInfo?.[0].zipsize;
   }
   res.json(textInfo);
@@ -466,17 +466,14 @@ app.get('/api/languages', auth, async (req, res) => {
 });
 
 app.post('/api/load', auth, async (req, res) => {
-  Object.entries(req.body).map((x) => console.log(`${x[0]}`.padEnd(10), x[0] === 'text' ? `*${x[1].length}` : x[1]));
+  console.log(Object.entries(req.body).map((x) => `${x[0]}: ${x[0] === 'content' ? `${x[1].length} tokens` : x[1]}`).join(' • '));
   let result = {};
   const textId = Number(req.body.id);
   if (textId) {
-    const langId = req.body.lang;
-    const content = req.body.text;
-    const dryRun = req.body.dry;
     // console.log("start import");
-    result = await nlp.importText(true, textId, langId, content, dryRun);
+    result = await nlp.importText(true, textId, req.body.content, req.body.lang);
+    // console.log("complete import", result);
   }
-  // console.log("complete import", result);
   res.json(result);
 });
 
