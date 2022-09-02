@@ -30,111 +30,6 @@ const sconj = ['што', 'калі', 'бо', 'то', 'хоць', 'дык', 'по
 const cconj = ['а', 'і', 'але', 'ды', 'ні', 'дый', 'ці', 'прычым', 'аднак'];
 
 export default {
-  async importText(isWeb, textId, langCode, text, dryRun) {
-    let [paragraphsNumber, sentencesNumber, tokensNumber] = [0, 0, 0];
-    let textInfo = {};
-
-    const insertToken = async (pnum, snum, form, repr, type) => {
-      if (dryRun) {
-        if (!isWeb) {
-          console.log(pnum, snum, form, repr, type);
-        }
-      } else {
-        await db.insertIntoStrings(textId, langCode, pnum, snum, form, repr, type);
-      }
-      tokensNumber++;
-    };
-
-    if (!dryRun) {
-      await db.deleteFromStrings(textId);
-    }
-
-    // const tokens = file.split(/(?<=[ .…!?»\n])/);
-    // // console.log(tokens);
-    // for (let i = 0; i < tokens.length; i++) {
-    //   const t = tokens[i];
-    //   if (t !== ' ' && t !== '\n' ){
-    //       console.log(`|${t}|`);
-    //   }
-    // }
-
-    let paragraphs = [];
-
-    try {
-      paragraphs = text.split('\n');
-      paragraphsNumber = paragraphs.length;
-      // console.log(paragraphsNumber);
-    } catch (error) {
-      console.error(error);
-    }
-
-    for (let p = 0; p < paragraphsNumber; p++) {
-      // console.log(paragraphs[p], "==");
-      // const sentences = paragraphs[p].split(/([.…!?,:;«»]+)/);
-      const sentences = paragraphs[p].split(/(?<=[.…!?»])\s+(?=[«–А-ЯЎІЁ])/);
-      const sentencesLength = sentences.length;
-      // console.log(sentences);
-      for (let s = 0; s < sentencesLength; s++) {
-        // enable print to debug
-        // console.log("•", sentences[s]);
-        if (!isWeb) {
-          process.stdout.write(`${sentencesNumber}\r`);
-        }
-        const sent = sentences[s].split(' ');
-        for (const token of sent.filter((x) => x)) {
-          const withPuncts = token.split(/([^А-Яа-яA-Za-z0-9\*\-])/);
-          if (withPuncts.length > 1) {
-            const word = withPuncts.shift();
-            const puncts = withPuncts.filter((x) => x);
-            if (word) {
-              await insertToken(p, sentencesNumber, token, word, 'word');
-            }
-
-            if (puncts.length === 1) {
-              await insertToken(p, sentencesNumber, puncts[0], puncts[0], word ? 'ip' : 'ip+');
-            } else {
-              const compound = puncts.join('');
-              if (compound === '!..' || compound === '?..') {
-                await insertToken(p, sentencesNumber, compound, compound, 'ip');
-              } else {
-                // print only puncts, drop word if int end, remain if in the beginning
-                // console.error("■", p, sentencesNumber, puncts, token);
-                const regex = new RegExp(/^[А-Яа-яA-Za-z*-]+$/);
-
-                for (const item of puncts) {
-                  if (item.match(regex)) {
-                    // if word
-                    await insertToken(p, sentencesNumber, token, item, 'word');
-                  } else {
-                    await insertToken(p, sentencesNumber, item, item, 'ip');
-                  }
-                }
-              }
-            }
-          } else {
-            await insertToken(p, sentencesNumber, token, token, 'word');
-          }
-        }
-        sentencesNumber++;
-      }
-    }
-
-    if (!dryRun) {
-      textInfo = await db.setTextLoaded(textId);
-    } else {
-      textInfo = await db.getTexts(textId);
-    }
-
-    // await pool.end();
-    return {
-      ...textInfo?.[0],
-      stats: {
-        tokens: tokensNumber,
-        sentences: sentencesNumber,
-        paragraphs: paragraphsNumber
-      }
-    };
-  },
   convertToConll(corpus) {
     // console.log(corpus[0]);
     // res.send('random.text');
@@ -209,5 +104,21 @@ export default {
       });
     });
     return format;
+  },
+  async importText(isWeb, textId, content, language) {
+    const tokensCount = content.length;
+    await db.deleteFromStrings(textId);
+    /* eslint-disable no-restricted-syntax */
+    for (const [i, item] of content.entries()) {
+      // { p: 45, s: 150, form: 'receive', repr: 'receive', meta: 'word' }
+      // console.log(item);
+      /* eslint-disable no-await-in-loop */
+      await db.insertIntoStrings(textId, language, item.p, item.s, item.form, item.repr, item.meta);
+      if (!isWeb) {
+        process.stdout.write(`${i}/${tokensCount}\r`);
+      }
+    }
+    // await pool.end();
+    return db.setTextLoaded(textId);
   },
 };
