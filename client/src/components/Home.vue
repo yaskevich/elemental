@@ -3,7 +3,7 @@
 import { ref, reactive, onBeforeMount } from 'vue';
 import store from '../store';
 import router from '../router';
-import { SettingsOutlined as SettingsIcon } from '@vicons/material';
+import { ModeEditFilled as SettingsIcon } from '@vicons/material';
 
 interface IText {
   id: number;
@@ -46,12 +46,12 @@ const goToText = async (id: number, title: string) => {
   // localStorage.setItem('text_id', String(id));
   if (id && store?.state?.user) {
     const { data } = await store.post('user/text', { id: id });
-    console.log('change text', data);
+    // console.log('change text', data);
     if (data?.id) {
       store.state.user.text_id = id;
       store.state.user.text = data;
       document.title = title;
-      router.push(`/comments/${id}`);
+      // router.push(`/comments/${id}`);
     } else {
       console.error('error', data);
     }
@@ -67,23 +67,24 @@ const state = store.state;
     <template #header-extra>
       <n-button icon-placement="left" type="primary" @click="openTextProps()">+ new</n-button>
     </template>
-    <!-- <div style="max-width:300px;margin: 0 auto;" v-if="showForm">
-        <n-input v-model:value="form.title" type="text" placeholder="Text title" />
-        <n-input v-model:value="form.author" type="text" placeholder="Author name" />
-        <n-input v-model:value="form.meta" type="text" placeholder="Description" />
-        <n-checkbox v-model:checked="form.grammar">Grammar tagging</n-checkbox>
-        <n-checkbox v-model:checked="form.comments">Comments handling</n-checkbox>
-        <n-button type="info" @click="saveText">Submit</n-button>
-        <n-button type="warning" @click="showForm = false">Cancel</n-button>
-    </div>-->
-
-    <div v-for="(value, key) in texts" :key="key" style="padding:.5rem;">
-      <n-space justify="space-between">
-        <n-button
-          @click="goToText(value.id, value.title)"
-          :type="value.id === store?.state?.user?.text_id ? 'info' : ''"
+    <n-space vertical size="large">
+      <n-space justify="space-between" v-for="(value, key) in texts" :key="key">
+        <n-tooltip trigger="hover">
+          <template #trigger>
+            <n-radio
+              :checked="value.id === store?.state?.user?.text_id"
+              @change="goToText(value.id, value.title)"
+            >{{ value.author }}.&nbsp;{{ value.title }}</n-radio>
+          </template>
+          {{ value.id === store?.state?.user?.text_id ? 'This is default project' : 'Click to make default' }}
+        </n-tooltip>
+        <!-- <n-button
+          @click="openTextProps(value.id)"
           :title="value.meta"
-        >{{ value.author }}.&nbsp;{{ value.title }}</n-button>
+          :type="value.id === store?.state?.user?.text_id ? 'info' : ''"
+        >{{ value.author }}.&nbsp;{{ value.title }}</n-button>-->
+        <!-- <n-text>{{ value.author }}.&nbsp;{{ value.title }}</n-text>
+        -->
         <n-button title="Text properties" @click="openTextProps(value.id)">
           <template #icon>
             <n-icon color="gray">
@@ -92,14 +93,7 @@ const state = store.state;
           </template>
         </n-button>
       </n-space>
-    </div>
-
-    <!-- <n-divider /> -->
-    <!-- <n-divider>
-      <small style="color:gray;">
-        Application
-      </small>
-    </n-divider>-->
+    </n-space>
 
     <n-descriptions
       label-placement="top"
@@ -117,7 +111,7 @@ const state = store.state;
           :href="store.git + '/commit/' + state.user.commit"
           target="_blank"
           type="primary"
-        >{{ state.user.commit }}</n-button>
+        >{{ state.user.commit }}{{ state.user?.unix ? ' • ' + (new Date(state.user.unix * 1000)).toLocaleDateString() : '' }}</n-button>
       </n-descriptions-item>
     </n-descriptions>
 
