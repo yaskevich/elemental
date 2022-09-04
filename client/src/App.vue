@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { h, Component, ref, reactive, onBeforeMount, onMounted, computed, toRaw } from 'vue';
+import { h, Component, ref, reactive, onBeforeMount, onMounted, computed, watch } from 'vue';
 import { MenuOption, NIcon } from 'naive-ui';
 import { RouterLink, useRoute } from 'vue-router';
 import {
@@ -37,11 +37,20 @@ const renderIcon = (icon: Component) => {
 };
 const user = computed(() => state?.user?.username);
 
+watch(state, (currentValue, oldValue) => {
+  console.log("state UPDATED", currentValue?.user?.text?.comments);
+  Object.assign(menuOptions, buildMenu());
+
+  // console.log(oldValue);
+});
+
+
 const makeItem = (name: string, title: string, icon: Component, disabled: boolean = false) => ({
   label: () => h(RouterLink, { to: { name: name, } },
     { default: () => title }),
   key: name,
   disabled: disabled,
+  show: !disabled,
   icon: renderIcon(icon)
 });
 
@@ -51,12 +60,13 @@ const processMenu = (key: string, item: MenuOption) => {
   } else if (key === 'profile') {
     router.push(`/user/${state?.user?.id}`);
   }
-  // console.log("key", key);
 };
 
-const menuOptions: MenuOption[] = reactive([
+const menuOptions: MenuOption[] = reactive([]);
+
+const buildMenu = () => [
   makeItem('Home', 'Home', HomeFilled),
-  makeItem('Comments', 'Comments', CommentFilled),
+  makeItem('Comments', 'Comments', CommentFilled, !store?.state?.user?.text?.comments),
   makeItem('Text', 'Text', TextSnippetFilled),
   {
     label: 'Management',
@@ -71,7 +81,7 @@ const menuOptions: MenuOption[] = reactive([
       makeItem('Issues', 'Issues', LabelFilled),
       makeItem('Backups', 'Backups', BackupFilled),
       makeItem('Users', 'Users', PersonSearchFilled),
-      makeItem('Logs', 'Logs', HistoryFilled, true),
+      // makeItem('Logs', 'Logs', HistoryFilled, true),
       // makeItem('', '', ),
     ],
     // children: [
@@ -111,7 +121,7 @@ const menuOptions: MenuOption[] = reactive([
       }
     ]
   },
-]);
+];
 
 // onBeforeMount(async () => {
 // });
@@ -126,6 +136,7 @@ onMounted(async () => {
     const { data } = await store.getUnauthorized('settings');
     settings.value = data;
   }
+
   dataReady.value = true;
 });
 
