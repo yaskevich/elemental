@@ -154,27 +154,33 @@ const formatToken = (pnum: number, snum: number, form: string, repr: string, typ
 
 const processToken = (para: number, sent: number, token: string) => {
     const withPuncts = token.split(tokenDetectRegExp);
+    const tokens = [];
+
     if (withPuncts.length > 1) {
         const word = withPuncts.shift();
         const puncts = withPuncts.filter((x) => x);
+
         if (word) {
-            return formatToken(para, sent, token, word, 'word');
+            tokens.push(formatToken(para, sent, token, word, 'word'));
         }
 
         if (puncts.length === 1) {
-            return formatToken(para, sent, puncts[0], puncts[0], word ? 'ip' : 'ip+');
-        }
+            tokens.push(formatToken(para, sent, puncts[0], puncts[0], word ? 'ip' : 'ip+'));
+        } else {
 
-        const compound = puncts.join('');
-        if (compound === '!..' || compound === '?..') {
-            return formatToken(para, sent, compound, compound, 'ip');
+            const compound = puncts.join('');
+            if (compound === '!..' || compound === '?..') {
+                tokens.push(formatToken(para, sent, compound, compound, 'ip'));
+            } else {
+                // print only puncts, drop word if in the end, preserve if in the beginning
+                // console.error("■", p, sentencesNumber, puncts, token);
+                tokens.push(puncts.map((x) => formatToken(para, sent, token, x, (x.match(wordRegExp) ? 'word' : 'ip'))));
+            }
         }
-
-        // print only puncts, drop word if in the end, preserve if in the beginning
-        // console.error("■", p, sentencesNumber, puncts, token);
-        return puncts.map((x) => formatToken(para, sent, token, x, (x.match(wordRegExp) ? 'word' : 'ip')));
+    } else {
+        tokens.push(formatToken(para, sent, token, token, 'word'));
     }
-    return formatToken(para, sent, token, token, 'word');
+    return tokens;
 };
 
 const processSentence = (sentence: string, pnum: number) => {
@@ -196,14 +202,31 @@ const startProcessing = async (e: MouseEvent, dryRun: boolean) => {
                 // message.success('Valid');
                 if (form.src === "text") {
                     // console.log("send raw text", form);
+                    const t0 = performance.now();
                     isProcessing.value = true;
                     const textArray = textToJSON(form.text);
+                    // console.log(textArray);
+                    let suffix = '';
+                    const info = `The text was processed: ${paragraphsNumber} paragraphs, ${sentencesNumber} sentences, ${textArray.length} tokens. `;
+                    let serverSecs = 0;
+
                     if (!dryRun) {
                         const lang2Letter = textInfo.value?.lang.split('-').shift();
                         const { data } = await store.post('load', { content: textArray, id: id, lang: lang2Letter });
-                        console.log("text posted", data);
+                        // console.log("text posted", data);
+                        serverSecs = data;
                     }
-                    message.success(`The text was processed: ${paragraphsNumber} paragraphs, ${sentencesNumber} sentences, ${textArray.length} tokens. ${dryRun ? '' : 'Import is completed!'}`, { closable: true, duration: 5000 });
+                    const t1 = performance.now();
+                    const secs = ((t1 - t0) / 1000).toFixed(2);
+
+                    if (dryRun) {
+                        suffix = `Test is completed.`;
+                    } else {
+                        suffix = serverSecs ? `Import is completed successfully: ${secs}s (${serverSecs}s)` : `Import failed: ${secs}s`;
+                    }
+
+                    message.create(info + suffix, { duration: 10000, closable: true, type: dryRun ? 'warning' : serverSecs ? 'success' : 'error' });
+
                     isProcessing.value = false;
                 } else { // if URL
                     const url = form.link.trim();
