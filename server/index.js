@@ -89,6 +89,7 @@ app.post('/api/user/login', async (req, res) => {
     userData.token = token;
     userData.server = __package.version;
     userData.commit = process.env.COMMIT;
+    userData.unix = process.env.COMMITUNIX;
     res.json(userData);
   } else {
     console.log(`login attempt as [${req.body.email}]•[${req.body.password}]►${userData.error}◄`);
@@ -109,7 +110,7 @@ app.get('/api/user/info', auth, async (req, res) => {
   const classes = await db.getClasses();
 
   res.json({
-    ...req.user, text, classes, server: __package.version, commit: process.env.COMMIT,
+    ...req.user, text, classes, server: __package.version, commit: process.env.COMMIT, unix: process.env.COMMITUNIX,
   });
 });
 
