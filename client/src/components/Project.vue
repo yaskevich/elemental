@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { ref, reactive, onBeforeMount } from 'vue';
+import { ref, reactive, onBeforeMount, toRaw } from 'vue';
 import store from '../store';
 import router from '../router';
 import { useRoute } from 'vue-router';
@@ -62,6 +62,9 @@ const handleValidateClick = async (e: MouseEvent) => {
     if (!data?.id) {
       console.log("database error");
     } else {
+      if (store?.state?.user?.text && store.state.user.text?.id === data.id) {
+        Object.assign(store.state.user.text as IText, toRaw(txt));
+      }
       id.value = data.id;
       router.replace(`/project/${data.id}`);
     }
@@ -144,7 +147,7 @@ const humanFileSize = (size: number) => {
 };
 
 </script>
-
+m
 <template>
   <n-card title="Project" :bordered="false" class="minimal left">
     <template #header-extra>
@@ -199,11 +202,11 @@ const humanFileSize = (size: number) => {
         />
       </n-form-item>
 
-      <n-form-item label="Grammar Tagging UI">
+      <!-- <n-form-item label="Grammar Tagging UI">
         <n-checkbox v-model:checked="txt.grammar" :label="`${txt.grammar ? '' : 'NOT'} enabled`" />
-      </n-form-item>
+      </n-form-item>-->
       <n-space justify="space-between">
-        <n-form-item label="Commenting UI">
+        <n-form-item label="Toolset for adding comments">
           <n-checkbox
             v-model:checked="txt.comments"
             :label="`${txt.comments ? '' : 'NOT'} enabled`"
@@ -219,7 +222,7 @@ const humanFileSize = (size: number) => {
         </n-form-item>
       </n-space>
     </n-form>
-
+    <n-divider></n-divider>
     <n-space vertical v-if="id">
       <n-space justify="space-between">
         <n-tag :type="txt.loaded ? 'success' : 'error'">
