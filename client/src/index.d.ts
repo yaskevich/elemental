@@ -37,6 +37,7 @@ declare global {
         sex: number,
         server: string,
         commit: string,
+        unix: number,
         privs: number,
         activated: boolean,
         requested: Date,
