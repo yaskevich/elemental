@@ -405,14 +405,14 @@ export default {
     };
   },
   async getTexts(id) {
-    let sql = 'SELECT * from texts';
+    let sql = 'SELECT * from texts ';
     const textId = Number(id);
     if (textId && textId > 0) {
       sql += ` WHERE id = ${textId}`;
     }
     let data = [];
     try {
-      const result = await pool.query(sql);
+      const result = await pool.query(`${sql} order by id`);
       data = result?.rows;
     } catch (err) {
       console.error(err);
@@ -675,23 +675,25 @@ export default {
     return data;
   },
   async getStringsRange(params) {
-    const range = params.tokens.map(Number);
-    // console.log('range', range);
     let data = [];
-    if (range.length) {
-      try {
-        const values = [range.shift()];
-        let sql = 'SELECT strings.*, tokens.meta FROM strings LEFT JOIN tokens ON strings.token_id = tokens.id where strings.id ';
-        if (range.length) {
-          values.push(range.pop());
-          sql += 'BETWEEN $1 AND $2';
-        } else {
-          sql += '=$1';
+    if (params.tokens) {
+      const range = params.tokens.map(Number);
+      // console.log('range', range);
+      if (range?.length) {
+        try {
+          const values = [range.shift()];
+          let sql = 'SELECT strings.*, tokens.meta FROM strings LEFT JOIN tokens ON strings.token_id = tokens.id where strings.id ';
+          if (range.length) {
+            values.push(range.pop());
+            sql += 'BETWEEN $1 AND $2';
+          } else {
+            sql += '=$1';
+          }
+          const result = await pool.query(sql, values);
+          data = result?.rows;
+        } catch (error) {
+          console.error(error);
         }
-        const result = await pool.query(sql, values);
-        data = result?.rows;
-      } catch (error) {
-        console.error(error);
       }
     }
     return data;
@@ -1068,7 +1070,7 @@ export default {
 
     const t1 = performance.now();
     const secs = ((t1 - t0) / 1000).toFixed(2);
-    console.log(`batch: ${secs}s`);
+    // console.log(`batch: ${secs}s`);
     return secs;
   },
   async setTextLoaded(textId) {
