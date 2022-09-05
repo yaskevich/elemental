@@ -80,7 +80,13 @@
                     >{{ currentClass.name || '…' }}</div>
                 </n-card>
                 <n-space justify="space-between">
+                    <n-button
+                        type="error"
+                        @click="deleteClass"
+                        v-if="currentClass?.id && currentClass.name !== 'error'"
+                    >Delete</n-button>
                     <n-button type="info" @click="showModal = false;">Cancel</n-button>
+
                     <n-button type="success" @click="saveClass" :disabled="!currentClass.name">Save</n-button>
                 </n-space>
             </n-space>
@@ -93,7 +99,9 @@
 <script setup lang="ts">
 import store from '../store';
 import { ref, reactive, toRaw, } from 'vue';
+import { useMessage } from 'naive-ui'
 
+const message = useMessage()
 const currentClass = reactive<IAnnotationClass>({} as IAnnotationClass);
 const showModal = ref(false);
 // const previewer = ref<HTMLDivElement>();
@@ -109,6 +117,18 @@ const cssFlags = [
 const addClass = () => {
     Object.assign(currentClass, { id: null, name: '', css: { 'background-color': '#DAF7A6', 'color': '#900C3F' } });
     showModal.value = true;
+};
+
+const deleteClass = async () => {
+    const name = currentClass.name;
+    const { data } = await store.deleteById('classes', name);
+
+    message.create(data ? `The class ${name} is used in comments. Total: ${data}. Please unset the class in comments before deleting.` : `The class ${name} was deleted successfully!`, { duration: 10000, closable: true, type: data ? 'error' : 'success' });
+    if (!data && store.state.user?.classes) {
+        showModal.value = false;
+        store.state.user.classes = store.state.user.classes.filter(x => x.name !== name);
+        store.setCustomCSS();
+    }
 };
 
 const editClass = (num: number) => {
