@@ -150,6 +150,11 @@ app.post('/api/text', auth, async (req, res) => {
   res.json(result);
 });
 
+app.post('/api/scheme', auth, async (req, res) => {
+  const result = await db.setScheme(req.body);
+  res.json(result);
+});
+
 app.post('/api/tokens', auth, async (req, res) => {
   const tid = req.body.id;
   const { cls } = req.body;
@@ -294,7 +299,7 @@ app.get('/api/test', (req, res) => {
 });
 
 app.get('/api/priority', auth, async (req, res) => {
-  const result = await db.getNextPriority();
+  const result = await db.getNextPriority(req.query.id);
   res.json(result);
 });
 
