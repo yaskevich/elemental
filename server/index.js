@@ -317,6 +317,8 @@ app.delete('/api/:table/:id', auth, async (req, res) => {
     if (!result?.length) {
       result = await db.deleteById(req.user, 'sources', req.params.id);
     }
+  } else if (req.params.table === 'classes') {
+    result = await db.deleteClass(req.params.id);
   }
 
   res.json(result);
