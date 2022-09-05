@@ -1,6 +1,6 @@
 {
   "name": "flowercat-client",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "FlowerCAT client application",
   "author": "Alyaxey Yaskevich",
   "license": "ISC",
@@ -26,26 +26,26 @@
     "@tiptap/extension-paragraph": "^2.0.0-beta.26",
     "@tiptap/extension-placeholder": "^2.0.0-beta.53",
     "@tiptap/extension-text": "^2.0.0-beta.17",
-    "@tiptap/vue-3": "2.0.0-beta.96",
+    "@tiptap/vue-3": "2.0.0-beta.97",
     "@yaskevich/extension-figure": "^1.0.0",
     "@yaskevich/extension-marker": "^1.0.2",
     "axios": "^0.27.2",
     "citation-js": "^0.6.4",
     "unplugin-auto-import": "^0.11.2",
     "unplugin-vue-components": "^0.22.4",
-    "vue": "^3.2.37",
-    "vue-router": "^4.1.4"
+    "vue": "^3.2.38",
+    "vue-router": "^4.1.5"
   },
   "devDependencies": {
     "@babel/types": "^7.18.13",
     "@vicons/material": "^0.12.0",
     "@vitejs/plugin-vue": "^3.0.3",
-    "naive-ui": "^2.32.2",
-    "sass": "^1.54.5",
-    "typescript": "^4.7.4",
+    "naive-ui": "^2.33.2",
+    "sass": "^1.54.8",
+    "typescript": "4.7.2",
     "vfonts": "^0.1.0",
     "vite": "^3.0.9",
-    "vite-plugin-checker": "^0.4.9",
-    "vue-tsc": "^0.40.1"
+    "vite-plugin-checker": "^0.5.1",
+    "vue-tsc": "^0.40.7"
   }
 }
