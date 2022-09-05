@@ -171,6 +171,7 @@ declare global {
     }
 
     interface IAnnotationClass {
+        id: number,
         name: string,
         css: keyable, // StyleValue from vue did not work out
     }

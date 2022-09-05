@@ -1,8 +1,8 @@
 <template>
     <n-card title="Annotation Classes" :bordered="false" class="minimal left">
-        <!-- <template #header-extra>
-            <n-button type="info" @click="editClass()">New</n-button>
-        </template>-->
+        <template #header-extra>
+            <n-button type="info" @click="addClass">New</n-button>
+        </template>
         <n-space vertical>
             <div
                 v-for="(item, index) in store.state.user?.classes"
@@ -37,6 +37,16 @@
                     style="text-align:center;"
                     autofocus
                 ></n-input>-->
+                <n-form-item label="Name">
+                    <n-input
+                        v-model:value="currentClass.name"
+                        clearable
+                        placeholder="..."
+                        :allow-input="onlyAllowedInput"
+                        :maxlength="8"
+                        :disabled="Boolean(currentClass?.id)"
+                    />
+                </n-form-item>
                 <n-form-item label="Text color">
                     <n-color-picker
                         v-model:value="currentClass.css.color"
@@ -64,11 +74,14 @@
             </n-form>
             <n-space vertical>
                 <n-card title="Preview" size="small">
-                    <div :style="currentClass.css" class="class-preview">{{ currentClass.name }}</div>
+                    <div
+                        :style="currentClass.css"
+                        class="class-preview"
+                    >{{ currentClass.name || '…' }}</div>
                 </n-card>
                 <n-space justify="space-between">
                     <n-button type="info" @click="showModal = false;">Cancel</n-button>
-                    <n-button type="success" @click="saveClass">Save</n-button>
+                    <n-button type="success" @click="saveClass" :disabled="!currentClass.name">Save</n-button>
                 </n-space>
             </n-space>
             <!-- {{ currentClass }} -->
@@ -81,10 +94,11 @@
 import store from '../store';
 import { ref, reactive, toRaw, } from 'vue';
 
-const currentClass = reactive<IAnnotationClass>({ name: '', css: {} });
-const itemNum = ref<undefined | number>(undefined);
+const currentClass = reactive<IAnnotationClass>({} as IAnnotationClass);
 const showModal = ref(false);
 // const previewer = ref<HTMLDivElement>();
+
+const onlyAllowedInput = (value: string) => !value || /^[a-z]+$/.test(value);
 
 const cssFlags = [
     { label: "Bold", prop: "font-weight", value: "bold" },
@@ -92,19 +106,29 @@ const cssFlags = [
     { label: "Underline", prop: "text-decoration", value: "underline" },
 ];
 
+const addClass = () => {
+    Object.assign(currentClass, { id: null, name: '', css: { 'background-color': '#DAF7A6', 'color': '#900C3F' } });
+    showModal.value = true;
+};
+
 const editClass = (num: number) => {
     showModal.value = true;
-    itemNum.value = num;
     Object.assign(currentClass, toRaw(store.state.user?.classes?.[num]));
 };
 
 const saveClass = async () => {
-    if (itemNum.value !== undefined && store?.state?.user?.classes?.[itemNum.value]) {
-        // unref
-        Object.assign(store.state.user.classes[itemNum.value], toRaw(currentClass));
-        // console.log(currentClass.css);
-        const { data } = await store.post('classes', currentClass);
-        console.log(data);
+    // console.log(currentClass);
+    const { data } = await store.post('classes', currentClass);
+    console.log(data);
+    if (data?.id && store.state?.user?.classes?.length) {
+        const item = toRaw(currentClass);
+        if (currentClass?.id) {
+            const classObject = store.state.user.classes.find(x => x.id === currentClass.id) as IAnnotationClass;
+            Object.assign(classObject, item);
+        } else {
+            currentClass.id = data.id;
+            store.state.user.classes.push(item);
+        }
         store.setCustomCSS();
     }
     showModal.value = false;
