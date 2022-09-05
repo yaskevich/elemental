@@ -38,7 +38,6 @@ const databaseScheme = {
     scheme json,
     lang text NOT NULL,
     loaded boolean DEFAULT false NOT NULL,
-    grammar boolean DEFAULT false NOT NULL,
     comments boolean DEFAULT false NOT NULL`,
 
   tags: `
@@ -612,11 +611,11 @@ export default {
     }
     return data;
   },
-  async getNextPriority() {
-    const sql = 'select floor(max(priority)) + 1 as priority from comments;';
+  async getNextPriority(textId) {
+    const sql = 'select floor(max(priority)) + 1 as priority from comments where text_id = $1';
     let data = [];
     try {
-      const result = await pool.query(sql);
+      const result = await pool.query(sql, [textId]);
       data = result?.rows[0];
     } catch (err) {
       console.error(err);
@@ -939,6 +938,19 @@ export default {
     }
     return data;
   },
+  async setScheme(params) {
+    let data = {};
+    if (params.id && params.scheme) {
+      try {
+        const sql = 'UPDATE texts SET scheme = $2 WHERE id = $1 RETURNING id';
+        const result = await pool.query(sql, [params.id, JSON.stringify(params.scheme)]);
+        data = result?.rows?.[0];
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    return data;
+  },
   async updatePubInfo(id, dir, zipsize, published) {
     let data = {};
     try {
@@ -1171,20 +1183,19 @@ export default {
   async setClass(params) {
     const values = [JSON.stringify(params.css, (k, v) => v ?? undefined)];
     // console.log(values);
-    // console.log(params);
-    // return;
+    console.log(params);
     let sql = '';
     let data = [];
-    if (params?.name) {
-      const name = String(params.name);
-      values.push(name);
-      sql = 'UPDATE classes SET css = $1 WHERE name = $2';
+    if (params?.id) {
+      const id = Number(params.id);
+      values.push(id);
+      sql = 'UPDATE classes SET css = $1 WHERE id = $2';
     } else {
+      values.push(params.name);
       sql = 'INSERT INTO classes (css, name) VALUES ($1, $2)';
     }
-    sql += ' RETURNING name';
-    // console.log(sql);
-
+    sql += ' RETURNING id';
+    console.log(sql);
     try {
       const result = await pool.query(sql, values);
       data = result?.rows?.[0];
