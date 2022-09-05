@@ -1,74 +1,176 @@
 <template>
-    <n-card title="Scheme" :bordered="false" class="minimal left">
-        <template #header-extra></template>
-        <h4>{{ text?.author }}. {{ text?.title }}</h4>
+    <n-card title="Scheme" :bordered="false" class="minimal left" v-show="isLoaded">
+        <template #header-extra>
+            <n-button type="info" @click="saveScheme" v-if="text?.scheme?.length">Save Scheme</n-button>
+        </template>
+        <n-h4 prefix="bar">{{ text?.author }}. {{ text?.title }}</n-h4>
         <n-space vertical size="large">
-            <n-tag type="success" v-for="item in text?.scheme" :key="item.id">
-                {{ item.title }}
-                <template #icon>
-                    <n-icon :component="item.type === 'line' ? AbcFilled : TextFormatFilled" />
+            <n-tooltip placement="bottom" v-for="item in text?.scheme" :key="item.id">
+                <template #trigger>
+                    <n-tag type="success">
+                        {{ item.title }}
+                        <template #icon>
+                            <n-icon
+                                :component="item.type === 'line' ? AbcFilled : TextFormatFilled"
+                            />
+                        </template>
+                    </n-tag>
                 </template>
-            </n-tag>
-            <n-divider></n-divider>
-            <n-form-item style="display:block;" label="Add new field">
-                <n-button-group>
-                    <n-tooltip placement="bottom">
-                        <template #trigger>
-                            <n-button @click="makeField('line')">
-                                <template #icon>
-                                    <n-icon :component="AbcFilled" />
-                                </template>
-                                Line
-                            </n-button>
-                        </template>
-                        Single-line text field with no formatting
-                    </n-tooltip>
-                    <n-tooltip placement="bottom">
-                        <template #trigger>
-                            <n-button @click="makeField('area')">
-                                <template #icon>
-                                    <n-icon :component="FormatAlignJustifyFilled" />
-                                </template>
-                                Text Area
-                            </n-button>
-                        </template>
-                        Multiline text field with no formatting
-                    </n-tooltip>
-                    <n-tooltip placement="bottom">
-                        <template #trigger>
-                            <n-button @click="makeField('rich')">
-                                <template #icon>
-                                    <n-icon :component="TextFormatFilled" />
-                                </template>
-                                Rich Text
-                            </n-button>
-                        </template>
-                        Multiline field with rich text formatting
-                    </n-tooltip>
-                </n-button-group>
-            </n-form-item>
+                Type: {{ item.type }}
+                <br />
+                ID: {{ item.id }}
+            </n-tooltip>
+            <n-alert
+                v-if="!text?.scheme?.length"
+                title="Scheme is empty"
+                type="warning"
+            >Add one or more text fields to enable fully-featured commenting workflow</n-alert>
+            <n-card title="New field">
+                <n-form ref="formRef" :label-width="80" :model="field" :rules="rules">
+                    <n-form-item
+                        label="Set name (it is a placeholder in a comment form)"
+                        path="title"
+                    >
+                        <n-input v-model:value="field.title" clearable placeholder="..." />
+                    </n-form-item>
+                    <n-form-item
+                        label="Set ID (technical property). English letters and numbers only"
+                        path="id"
+                    >
+                        <n-input
+                            v-model:value="field.id"
+                            clearable
+                            placeholder="..."
+                            :allow-input="onlyAllowedInput"
+                        />
+                    </n-form-item>
+                    <n-form-item style="display:block;" label="Select type" path="type">
+                        <n-radio-group v-model:value="field.type" name="types">
+                            <n-radio-button value="line">
+                                <n-tooltip placement="bottom">
+                                    <template #trigger>
+                                        <n-text>
+                                            <n-icon
+                                                :component="AbcFilled"
+                                                size="20"
+                                                class="icon-style"
+                                            />Line
+                                        </n-text>
+                                    </template>
+                                    Single-line text field with no formatting
+                                </n-tooltip>
+                            </n-radio-button>
+                            <n-radio-button value="area" :disabled="true">
+                                <n-tooltip placement="bottom">
+                                    <template #trigger>
+                                        <n-text>
+                                            <n-icon
+                                                :component="FormatAlignJustifyFilled"
+                                                size="20"
+                                                class="icon-style"
+                                            />Text Area
+                                        </n-text>
+                                    </template>
+                                    Multiline text field with no formatting
+                                </n-tooltip>
+                            </n-radio-button>
+                            <n-radio-button value="rich">
+                                <n-tooltip placement="bottom">
+                                    <template #trigger>
+                                        <n-text>
+                                            <n-icon
+                                                :component="TextFormatFilled"
+                                                size="20"
+                                                class="icon-style"
+                                            />Rich Text
+                                        </n-text>
+                                    </template>
+                                    Multiline field with rich text formatting
+                                </n-tooltip>
+                            </n-radio-button>
+                        </n-radio-group>
+                    </n-form-item>
+                    <n-button type="primary" @click="addField">Add</n-button>
+                </n-form>
+            </n-card>
         </n-space>
     </n-card>
 </template>
 
 <script setup lang="ts">
 import store from '../store';
-import { ref, onBeforeMount, } from 'vue';
+import { ref, onBeforeMount, reactive, toRaw, } from 'vue';
 import { AbcFilled, TextFormatFilled, FormatAlignJustifyFilled } from '@vicons/material';
 import { useRoute } from 'vue-router';
+import { FormInst, FormItemRule, useMessage } from 'naive-ui';
 
+const message = useMessage();
 const vuerouter = useRoute();
-const text = ref<IText>();
 
-const makeField = (value: string) => {
-    console.log(value);
+const formRef = ref<FormInst | null>(null);
+const text = ref<IText>();
+const isLoaded = ref(false);
+const field = reactive({ type: '', title: '', id: '' });
+
+const onlyAllowedInput = (value: string) => !value || /^[a-z][a-z0-9]*$/.test(value);
+
+const rules = {
+    id: {
+        required: true,
+        trigger: ['blur', 'input'],
+        message: 'Please put a text',
+    },
+    title: {
+        required: true,
+        trigger: ['blur', 'input'],
+        message: 'Please put a text',
+    },
+    type: {
+        required: true,
+        trigger: 'change',
+        message: 'Please select type'
+    }
+};
+
+const saveScheme = async () => {
+    const { data } = await store.post('scheme', { scheme: text.value?.scheme, id: text.value?.id });
+    // console.log('save', text.value?.scheme, data);
+    data?.id ? message.success("Scheme is set") : message.error("Database error");
+};
+
+const addField = async () => {
+    // e.preventDefault();
+    try {
+        await formRef.value?.validate(async (errors) => {
+            if (!errors) {
+                // message.success('Valid');
+                if (text.value?.scheme) {
+                    text.value.scheme.push({ ...toRaw(field) });
+                    Object.assign(field, { type: '', title: '', id: '' });
+                }
+            } else {
+                console.log(errors)
+                message.error('Not all required fields are filled!');
+            }
+        });
+    } catch (error) {
+        console.log("fail");
+    }
 };
 
 onBeforeMount(async () => {
     if (vuerouter.params.id) {
         const data = await store.get('texts', String(vuerouter.params.id));
         text.value = data?.shift();
+        isLoaded.value = true;
     }
 });
 
 </script>
+
+<style scoped>
+.icon-style {
+    vertical-align: middle;
+    margin-right: 5px;
+}
+</style>
