@@ -1183,7 +1183,7 @@ export default {
   async setClass(params) {
     const values = [JSON.stringify(params.css, (k, v) => v ?? undefined)];
     // console.log(values);
-    console.log(params);
+    // console.log(params);
     let sql = '';
     let data = [];
     if (params?.id) {
@@ -1195,7 +1195,7 @@ export default {
       sql = 'INSERT INTO classes (css, name) VALUES ($1, $2)';
     }
     sql += ' RETURNING id';
-    console.log(sql);
+    // console.log(sql);
     try {
       const result = await pool.query(sql, values);
       data = result?.rows?.[0];
@@ -1204,5 +1204,23 @@ export default {
       data = { error: err?.detail || err?.routine };
     }
     return data;
+  },
+  async deleteClass(className) {
+    let data = [];
+    if (className) {
+      const sql = `SELECT id, priority, title FROM comments WHERE 
+      jsonb_path_exists(entry::jsonb, '$.** ? (@.class == "${className}")')`;
+      // console.log(sql);
+      try {
+        const result = await pool.query(sql);
+        data = result?.rows?.length;
+        if (data === 0) {
+          await pool.query('DELETE FROM classes where name = $1', [className]);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    return data || 0;
   },
 };
