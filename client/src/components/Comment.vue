@@ -299,12 +299,9 @@ onBeforeMount(async () => {
 
   } else {
     console.log("no ID!");
-
     const data = await store.get('stringsrange', undefined, { tokens: tokensToBind });
-
-    const { priority } = await store.get('priority');
+    const { priority } = await store.get('priority', String(textId));
     // console.log("tokens", data);
-
     if (data.length) {
       comment.title = data
         .filter((x: IToken) => x.meta !== 'ip')
@@ -313,10 +310,7 @@ onBeforeMount(async () => {
       boundStrings.push(data);
     }
 
-    if (priority) {
-      comment.priority = priority;
-    }
-
+    comment.priority = priority || 1;
   }
 
   ready.value = true;
