@@ -83,11 +83,19 @@ const build = async (currentDir, id, siteDir, filename) => {
 
     // console.log("request to publish", textId, pubDir);
 
-    const [textInfo, tokens, comments, sources] = await Promise.all([db.getTexts(textId), db.getText(textId), db.getFullComments(textId), db.getSource()]);
+    const [textsInfo, tokens, comments, sources] = await Promise.all([db.getTexts(textId), db.getText(textId), db.getFullComments(textId), db.getSource()]);
     const sourcesDict = Object.assign({}, ...(sources.map((x) => ({ [x.id]: x }))));
     const commentsDict = Object.assign({}, ...(comments.map((x) => ({ [x.id]: x }))));
     // console.log(commentsDict);
     // console.log(sourcesDict);
+
+    const textInfo = textsInfo.shift();
+    // console.log('text', textInfo?.scheme);
+
+    const tooltipElement = textInfo?.scheme.find((x) => x.type === 'line')?.id;
+    const [modalElement, articleElement] = textInfo?.scheme.filter((x) => x.type === 'rich').map(x => x.id);
+    console.log(articleElement);
+    // rerurn error when crucial elements are not present
 
     const render = (obj) => {
       const rendermap = (d) => (d?.content ? d.content.map((c) => render(c)).join('') : '');
@@ -123,9 +131,9 @@ const build = async (currentDir, id, siteDir, filename) => {
 
     const compileModal = (cmt) => `
 <div id="ms${cmt.id}" class="modals" data-iziModal-title="${cmt.title}"
-data-iziModal-subtitle="${cmt?.entry?.trans ? cmt.entry.trans : '🙁'}"
+data-iziModal-subtitle="${cmt?.entry?.[tooltipElement] ? cmt.entry[tooltipElement] : '🙁'}"
 data-iziModal-icon="icon-home" data-iziModal-fullscreen="true" style="padding: 5px;">
-<div style="padding: 10px;">  ${cmt?.entry?.brief?.content.map(render).join('')}</div>
+<div style="padding: 10px;">  ${cmt?.entry?.[modalElement]?.content.map(render).join('')}</div>
 </div>`;
 
     let body = '';
@@ -144,7 +152,7 @@ data-iziModal-icon="icon-home" data-iziModal-fullscreen="true" style="padding: 5
         const firstComment = commentsDict[commentId];
         const isPublished = firstComment?.published;
 
-        const tooltipInfo = (isPublished && firstComment?.entry?.trans) ? ['tooltip', `aria-label="${firstComment?.entry?.trans}"`] : ['', ''];
+        const tooltipInfo = (isPublished && firstComment?.entry?.[tooltipElement]) ? ['tooltip', `aria-label="${firstComment?.entry?.[tooltipElement]}"`] : ['', ''];
 
         paragraph += (isPublished ? `<span class="${tooltipInfo[0]} token mark btn" ${tooltipInfo[1]} data-id="${commentId}">${token.form}</span>` : `<span class="token">${token.form}</span>`);
       }
@@ -154,7 +162,7 @@ data-iziModal-icon="icon-home" data-iziModal-fullscreen="true" style="padding: 5
     body += `<div class="row"> ${paragraph} </div>\n\n`;
 
     const modals = comments.map(compileModal).join('');
-    const output = compileHTML({ ...textInfo.shift(), body, modals });
+    const output = compileHTML({ ...textInfo, body, modals });
 
     fs.writeFileSync(path.join(pubDir, 'index.html'), output);
     fs.copyFileSync(cssPath, path.join(pubDir, 'site.css'));
