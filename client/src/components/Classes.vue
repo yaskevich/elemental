@@ -110,7 +110,7 @@ const onlyAllowedInput = (value: string) => !value || /^[a-z]+$/.test(value);
 
 const cssFlags = [
     { label: "Bold", prop: "font-weight", value: "bold" },
-    { label: "Monospace", prop: "font-familty", value: "monospace" },
+    { label: "Monospace", prop: "font-family", value: "monospace" },
     { label: "Underline", prop: "text-decoration", value: "underline" },
 ];
 
