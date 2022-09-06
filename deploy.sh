@@ -19,6 +19,8 @@ rm -rf $DIR/$PROD/$APP
 # degit $USER/$APP#$BRANCH $WORK
 git clone https://github.com/$USER/$APP $WORK --depth 1
 HASH=$(git -C $WORK rev-parse --short HEAD)
+UNIX=$(git -C $WORK log -1 --format=%ct)
+
 # echo $HASH
 
 rm $WORK/* 2>/dev/null
@@ -38,6 +40,7 @@ done
 npm install --prefix $WORK
 cp $DIR/$APP.env $WORK/.env
 printf "\nCOMMIT=%s" $HASH >> $WORK/.env
+printf "\nCOMMITUNIX=%s" $UNIX >> $WORK/.env
 
 mv $TEMP/backup $WORK
 mv $TEMP/images $WORK
@@ -46,7 +49,7 @@ mv $TEMP/sites $WORK
 rm -rf $TEMP
 
 cd $WORK
-rm -rf $WORK/client $WORK/server
+rm -rf $WORK/client $WORK/server $WORK/.git
 # # https://pm2.keymetrics.io/docs/usage/application-declaration/#ecosystem-file
 # # --cwd
 pm2 start ecosystem.config.cjs --cwd $WORK
