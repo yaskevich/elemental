@@ -5,48 +5,47 @@
         <n-alert title="No text" type="warning">Select specific text before (at Home screen)</n-alert>
       </div>
       <n-card title="Media management" :bordered="false" v-else>
-        <!-- <n-upload action="/api/upload" @preview="handlePreview">
-      <n-upload-dragger>
-        <div style="margin-bottom: 12px">
-          <n-icon size="48" :depth="3">
-            <archive-icon />
-          </n-icon>
-        </div>
-        <n-text style="font-size: 16px">
-          Click or drag an image to this area to upload
-        </n-text>
-        <n-p depth="3" style="margin: 8px 0 0 0">
-          Maximum file size is 2MB.
-        </n-p>
-      </n-upload-dragger>
-    </n-upload>
-        <n-divider />-->
-        <n-upload
-          ref="uploadRef"
-          :action="`/api/upload/${id}`"
-          :headers="headers"
-          :default-file-list="previewFileList"
-          list-type="image-card"
-          @remove="handleRemoval"
-          @finish="imageLoaded"
-          @download="handleDownload"
-          @before-upload="beforeUpload"
-          :is-error-state="checkError"
-          :show-download-button="true"
-        />
-        <!-- 
-        @error="handleError"
-        -->
-        <n-modal v-model:show="showModal" preset="card" style="width: 600px" title="A Cool Picture">
-          <img :src="previewImageUrl" style="width: 100%" />
-        </n-modal>
+        <template #header-extra>
+          <n-upload
+            ref="uploadRef"
+            :action="`/api/upload/${id}`"
+            :headers="headers"
+            @remove="handleRemoval"
+            @finish="imageLoaded"
+            @download="handleDownload"
+            @before-upload="beforeUpload"
+            :is-error-state="checkError"
+            :show-download-button="true"
+            :default-file-list="previewFileList"
+            :show-file-list="false"
+          >
+            <n-button type="success">Upload</n-button>
+          </n-upload></template
+        >
+        <n-space vertical>
+          <!-- <n-modal v-model:show="showModal" preset="card" style="width: 600px" title="A Cool Picture">
+            <img :src="previewImageUrl" style="width: 100%" />
+          </n-modal> -->
+          <!-- {{ loadedFiles }} -->
+          <div v-for="(img, index) in previewFileList" style="border: 1px dashed pink; padding: 5px">
+            <n-space justify="space-between">
+              <n-image width="100" :src="img?.url" :lazy="true" />
+              <n-space justify="space-between" vertical></n-space>
+              <n-text>{{ img?.title }}</n-text>
+              <n-space vertical>
+                <n-button type="default" @click="handleDownload(img)">Check</n-button>
+                <n-button type="error" @click="handleRemoval(img, index)">Delete</n-button>
+              </n-space>
+            </n-space>
+            <!-- {{ img }} -->
+          </div>
+        </n-space>
       </n-card>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-
 import { ref, reactive, onBeforeMount, h } from 'vue';
 import store from '../store';
 // import { ArchiveFilled as ArchiveIcon } from '@vicons/material';
@@ -62,8 +61,8 @@ const showModal = ref(false);
 const uploadRef = ref<UploadInst | null>(null);
 const previewImageUrl = ref('');
 const loadedFiles = reactive({} as { [key: string]: string });
-const headers = { Authorization: "Bearer " + store.state.token };
-const previewFileList = reactive<UploadFileInfo[]>([]);
+const headers = { Authorization: 'Bearer ' + store.state.token };
+const previewFileList = reactive<CustomFileInfo[]>([]);
 const message = useMessage();
 
 // const handlePreview = (file: UploadFileInfo, x) => {
@@ -73,23 +72,37 @@ const message = useMessage();
 //     showModal.value = true;
 // };
 
-const imageLoaded = (options: { file: UploadFileInfo, event?: Event }) => {
+const imageLoaded = (options: { file: CustomFileInfo; event?: Event }) => {
   // console.log("options", options, previewFileList);
-  loadedFiles[options.file.id] = (options?.event?.target as XMLHttpRequest)?.responseText || '';
+  console.log('loaded', options.file);
+
+  if (options?.file?.status === 'finished') {
+    const path = (options?.event?.target as XMLHttpRequest)?.responseText;
+    const url = `/api/images/${id}/${path}`;
+    console.log('path/url', path, url);
+    previewFileList.unshift({ ...options.file, url, title: options.file.name.split('.').slice(0, -1).join('.') });
+    loadedFiles[options.file.id] = path;
+  }
+
   return;
 };
 
 const renderCommentsList = (data: any, msgType: MessageType, isDelete?: boolean) => {
-  const links = data.map((x: any) => h(RouterLink, { to: '/comment/' + x.id, style: 'display:block;', class: "msglink" }, { default: () => x.title }));
-  const container = h('div', {}, [h('span', {}, `There are comments with this image (${data.length})`)]);
-  const warnMsg = isDelete ? "Remove the images from comments before deleting this image." : '';
-  const vnode = h('div', {}, [container, links, warnMsg]);
+  const links = data.map((x: any) =>
+    h(RouterLink, { to: '/comment/' + x.id, style: 'display:block;', class: 'msglink' }, { default: () => x.title })
+  );
+  const container = h('div', {}, [h('span', {}, `There are comments containing this image (${data.length})`)]);
+  const warnMsg = isDelete ? 'Remove the images from comments before deleting this image.' : '';
+  const vnode = h('div', {}, data.length ? [container, links, warnMsg] : ['This image is not bound to a comment']);
   message.create(() => vnode, { duration: 5000, closable: true, type: msgType });
-}
+};
 
-const handleRemoval = async (upInfo: { file: UploadFileInfo, fileList: Array<UploadFileInfo> }) => {
-  const filename = upInfo.file.fullPath ? loadedFiles[upInfo.file.id] : upInfo.file.name;
+// const handleRemoval = async (upInfo: { file: CustomFileInfo; fileList: Array<CustomFileInfo> }) => {
+const handleRemoval = async (file: CustomFileInfo, index: number) => {
+  const filename = file.fullPath ? loadedFiles[file.id] : file.id;
   // console.log(upInfo);
+  console.log(filename, index);
+
   const { data } = await store.post('unload', { id: id, file: filename });
   // console.log("result", data);
   if (Boolean(data?.errno || data?.error)) {
@@ -97,15 +110,18 @@ const handleRemoval = async (upInfo: { file: UploadFileInfo, fileList: Array<Upl
       // message.warning(`Image is bound to comments! Total: ${data.comments.length}`)
       renderCommentsList(data.comments, 'error', true);
     } else {
-      message.warning("Image removal failed!")
+      message.warning('Image removal failed!');
     }
     return false;
+  } else {
+    previewFileList.splice(index, 1);
+    // delete previewFileList[index];
   }
   return true;
 };
 
-const handleDownload = async (file: UploadFileInfo) => {
-  const filename = file.fullPath ? loadedFiles[file.id] : file.name;
+const handleDownload = async (file: CustomFileInfo) => {
+  const filename = file.fullPath ? loadedFiles[file.id] : file.id;
   const data = await store.get('check/img', filename, { text: id });
   // console.log("file", filename, data);
   // console.log(previewFileList);
@@ -113,7 +129,7 @@ const handleDownload = async (file: UploadFileInfo) => {
   return false;
 };
 
-const handleError = async (upInfo: { file: UploadFileInfo, event?: ProgressEvent }) => {
+const handleError = async (upInfo: { file: CustomFileInfo; event?: ProgressEvent }) => {
   // console.log("error: file", upInfo.file, upInfo.event);
   // console.log("error", loadedFiles, previewFileList);
   return false;
@@ -124,21 +140,21 @@ const checkError = (xhr: XMLHttpRequest) => {
   if (xhr.status === 200) {
     return false;
   } else if (xhr.status === 409) {
-    message.error("File already exists!");
+    message.error('File already exists!');
   } else if (xhr.status === 413) {
-    message.error("File size exceeds limit!");
+    message.error('File size exceeds limit!');
   } else {
     message.error(`Unknown error! ${xhr.status} ${xhr.statusText}`);
   }
   return true;
 };
 
-const beforeUpload = (data: { file: UploadFileInfo, fileList: UploadFileInfo[] }) => {
+const beforeUpload = (data: { file: CustomFileInfo; fileList: CustomFileInfo[] }) => {
   if (!['image/png', 'image/jpeg'].includes(String(data.file.file?.type))) {
-    message.error('Only uploading pictures is allowed!')
-    return false
+    message.error('Only uploading pictures is allowed!');
+    return false;
   }
-  return true
+  return true;
 };
 
 onBeforeMount(async () => {
@@ -146,9 +162,11 @@ onBeforeMount(async () => {
   // Object.assign(headers, { Authorization: "Bearer " + store.state.token });
   if (id) {
     const data = await store.get(`img/${id}`);
-    Object.assign(previewFileList, data.sort((a: any, b: any) => (new Date(a.created)).getTime() - (new Date(b.created)).getTime()));
+    Object.assign(
+      previewFileList,
+      data.sort((a: any, b: any) => new Date(b.created).getTime() - new Date(a.created).getTime())
+    );
   }
   isLoaded.value = true;
 });
-
 </script>
