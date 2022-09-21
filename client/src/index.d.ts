@@ -1,4 +1,6 @@
 import { StyleValue } from 'vue'
+import type { UploadInst, UploadFileInfo, MessageType } from 'naive-ui'
+
 
 declare global {
 
@@ -175,4 +177,8 @@ declare global {
         name: string,
         css: keyable, // StyleValue from vue did not work out
     }
+
+    interface CustomFileInfo extends UploadFileInfo {
+        title: string; 
+     }
 }
