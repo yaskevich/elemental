@@ -1223,4 +1223,18 @@ export default {
     }
     return data || 0;
   },
+  async renameImage(imageId, imageTitle) {
+    let data = [];
+    if (imageId) {
+      const sql = 'UPDATE images SET title = $2 WHERE id = $1 RETURNING id';
+      try {
+        const result = await pool.query(sql, [imageId, imageTitle]);
+        data = result?.rows?.[0];
+      } catch (err) {
+        console.error(JSON.stringify(err));
+        data = { error: err?.detail || err?.routine };
+      }
+    }
+    return data;
+  },
 };
