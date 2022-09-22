@@ -427,6 +427,11 @@ app.get('/api/check/:type', auth, async (req, res) => {
   res.json(result);
 });
 
+app.post('/api/rename', auth, async (req, res) => {
+  // console.log('rename', req.body.file);
+  res.json(await db.renameImage(req.body.file.id, req.body.file.title));
+});
+
 app.post('/api/unload', auth, async (req, res) => {
   const textId = String(Number(req.body.id) || 1);
   let result = {};
