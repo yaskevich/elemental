@@ -246,7 +246,7 @@ onBeforeMount(async () => {
     store.get('source'), store.get('users'), store.get('issues'), store.get('tags'), store.get(`img/${textId}`),
   ]);
 
-  Object.assign(images, imagesData.sort((a: any, b: any) => (new Date(a.created)).getTime() - (new Date(b.created)).getTime()));
+  Object.assign(images, imagesData.sort((a: any, b: any) => (new Date(b.created)).getTime() - (new Date(a.created)).getTime()));
 
   Object.assign(sources, sourcesData.map((x: any, i: number) => ({ ...x, label: `${x.citekey.padEnd(10, '.')} ${x.bibtex.title}`, value: i })));
   Object.assign(usersKV, Object.fromEntries(usersData.map((x: any) => [x.id, x])));
