@@ -17,8 +17,7 @@
             :is-error-state="checkError"
             :show-download-button="true"
             :default-file-list="previewFileList"
-            :show-file-list="false"
-          >
+            :show-file-list="false">
             <n-button type="success">Upload</n-button>
           </n-upload></template
         >
@@ -27,18 +26,45 @@
             <img :src="previewImageUrl" style="width: 100%" />
           </n-modal> -->
           <!-- {{ loadedFiles }} -->
-          <div v-for="(img, index) in previewFileList" style="border: 1px dashed pink; padding: 5px">
-            <n-space justify="space-between">
-              <n-image width="100" :src="img?.url" :lazy="true" />
-              <n-space justify="space-between" vertical></n-space>
-              <n-text>{{ img?.title }}</n-text>
-              <n-space vertical>
-                <n-button type="default" @click="handleDownload(img)">Check</n-button>
-                <n-button type="error" @click="handleRemoval(img, index)">Delete</n-button>
-              </n-space>
-            </n-space>
-            <!-- {{ img }} -->
-          </div>
+          <n-card v-for="(img, index) in previewFileList">
+            <n-row>
+              <n-col :span="10">
+                <n-image width="100" :src="img?.url" :lazy="true" />
+              </n-col>
+              <n-col :span="14">
+                <n-space vertical>
+                  <n-space justify="end">
+                    <n-button text style="font-size: 1.5rem" @click="editable = index" v-if="editable !== index">
+                      <n-icon :component="EditFilled" />
+                    </n-button>
+
+                    <n-button text @click="handleRemoval(img, index)" style="font-size: 1.5rem">
+                      <n-icon :component="DeleteFilled" color="#ab1f3f" />
+                    </n-button>
+
+                    <n-button text style="font-size: 1.5rem" @click="handleDownload(img)">
+                      <n-icon :component="InfoFilled" color="#1060c9" />
+                    </n-button>
+                  </n-space>
+                  <n-space justify="end">
+                    <n-text>{{ img.title }}</n-text>
+                  </n-space>
+                </n-space>
+              </n-col>
+            </n-row>
+            <n-row>
+              <n-input-group v-if="editable === index">
+                <n-input
+                  v-model:value="img.title"
+                  type="text"
+                  placeholder="Image Title..."
+                  autosize
+                  @blur="saveImageTitle(img)"
+                  @keyup.enter="editable = undefined" />
+                <n-button type="primary" ghost @click="saveImageTitle(img)"> Save </n-button>
+              </n-input-group>
+            </n-row>
+          </n-card>
         </n-space>
       </n-card>
     </div>
@@ -52,6 +78,7 @@ import store from '../store';
 import type { UploadInst, UploadFileInfo, MessageType } from 'naive-ui';
 import { useMessage } from 'naive-ui';
 import { RouterLink } from 'vue-router';
+import { EditFilled, DeleteFilled, InfoFilled } from '@vicons/material';
 // import { useRoute } from 'vue-router';
 // const vuerouter = useRoute();
 // const id = vuerouter.params.id || 1;
@@ -64,6 +91,7 @@ const loadedFiles = reactive({} as { [key: string]: string });
 const headers = { Authorization: 'Bearer ' + store.state.token };
 const previewFileList = reactive<CustomFileInfo[]>([]);
 const message = useMessage();
+const editable = ref<number | undefined>();
 
 // const handlePreview = (file: UploadFileInfo, x) => {
 //     const { url } = file;
@@ -72,14 +100,24 @@ const message = useMessage();
 //     showModal.value = true;
 // };
 
+const saveImageTitle = async (file: CustomFileInfo) => {
+  editable.value = undefined;
+  const filename = file.fullPath ? loadedFiles[file.id] : file.id;
+  const { data } = await store.post('rename', { file: { id: filename, title: file.title } });
+  if (data?.id !== filename) {
+    message.warning('Image renaming failed!');
+  }
+  // console.log('rename', data);
+};
+
 const imageLoaded = (options: { file: CustomFileInfo; event?: Event }) => {
   // console.log("options", options, previewFileList);
-  console.log('loaded', options.file);
+  // console.log('loaded', options.file);
 
   if (options?.file?.status === 'finished') {
     const path = (options?.event?.target as XMLHttpRequest)?.responseText;
     const url = `/api/images/${id}/${path}`;
-    console.log('path/url', path, url);
+    // console.log('path/url', path, url);
     previewFileList.unshift({ ...options.file, url, title: options.file.name.split('.').slice(0, -1).join('.') });
     loadedFiles[options.file.id] = path;
   }
@@ -101,7 +139,7 @@ const renderCommentsList = (data: any, msgType: MessageType, isDelete?: boolean)
 const handleRemoval = async (file: CustomFileInfo, index: number) => {
   const filename = file.fullPath ? loadedFiles[file.id] : file.id;
   // console.log(upInfo);
-  console.log(filename, index);
+  // console.log(filename, index);
 
   const { data } = await store.post('unload', { id: id, file: filename });
   // console.log("result", data);
