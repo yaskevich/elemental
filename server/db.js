@@ -233,6 +233,12 @@ export default {
     console.log('create user', formData);
     const data = formData;
     let isActivated = status;
+    const settings = await pool.query('SELECT * FROM settings');
+
+    if (!settings.rows.shift()?.registration_open) {
+      return { error: 'registration is closed' };
+    }
+
     const usersData = await pool.query('SELECT * FROM users');
     if (usersData.rows.length) {
       if (usersData.rows.filter((x) => x.email === data.email).length) {
