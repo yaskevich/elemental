@@ -39,6 +39,15 @@ const compileHTML = (params) => `
         console.log("click!", $(this).data("id"));
         $('#ms' + $(this).data("id")).iziModal('open');
       });
+      if("${params.clickable}"){
+        $(document).on('click', '.block', function (event) {
+          event.preventDefault();
+          console.log("switch!", $(this).data("id"));
+          $(".${params.clickable}"+$(this).data("id")).toggleClass("hidden");
+          $(".${params.modal}"+$(this).data("id")).toggleClass("hidden");
+        });
+      }
+
     });
   </script>
 </head>
@@ -93,8 +102,18 @@ const build = async (currentDir, id, siteDir, filename) => {
     // console.log('text', textInfo?.scheme);
 
     const tooltipElement = textInfo?.scheme.find((x) => x.type === 'line')?.id;
-    const [modalElement, articleElement] = textInfo?.scheme.filter((x) => x.type === 'rich').map(x => x.id);
-    console.log(articleElement);
+    if (!textInfo?.scheme) {
+      const error = 'Scheme issue!';
+      console.error(error);
+      return { error };
+    }
+
+    const [modalElement, articleElement] = textInfo.scheme.filter((x) => x.type === 'rich');
+    // if (!modalElement || !articleElement) {
+    //   const error = 'Rich text type issue!';
+    //   console.error(error);
+    //   return { error };
+    // }
     // rerurn error when crucial elements are not present
 
     const render = (obj) => {
@@ -133,8 +152,15 @@ const build = async (currentDir, id, siteDir, filename) => {
 <div id="ms${cmt.id}" class="modals" data-iziModal-title="${cmt.title}"
 data-iziModal-subtitle="${cmt?.entry?.[tooltipElement] ? cmt.entry[tooltipElement] : '🙁'}"
 data-iziModal-icon="icon-home" data-iziModal-fullscreen="true" style="padding: 5px;">
-<div style="padding: 10px;">  ${cmt?.entry?.[modalElement]?.content.map(render).join('')}</div>
-</div>`;
+<div style="padding: 10px;">
+<div style="padding-right: 10px;">
+<button type="button" data-id="${cmt.id}" class="${cmt?.entry?.[articleElement.id]?.content?.[0]?.content ? '' : 'hidden'} block ${modalElement.id}${cmt.id}">${articleElement.title}</button>
+<button type="button" data-id="${cmt.id}" class="hidden block ${articleElement.id}${cmt.id} ">${modalElement.title}</button>
+</div>
+<div class="${modalElement.id}${cmt.id}">${cmt?.entry?.[modalElement.id]?.content.map(render).join('')}</div>
+<div class="${articleElement.id}${cmt.id} hidden">${cmt?.entry?.[articleElement.id]?.content.map(render).join('')}</div></div>
+</div>
+`;
 
     let body = '';
     let paragraph = '';
@@ -162,7 +188,9 @@ data-iziModal-icon="icon-home" data-iziModal-fullscreen="true" style="padding: 5
     body += `<div class="row"> ${paragraph} </div>\n\n`;
 
     const modals = comments.map(compileModal).join('');
-    const output = compileHTML({ ...textInfo, body, modals });
+    const output = compileHTML({
+      ...textInfo, body, modals, modal: modalElement.id, ...(articleElement?.id && { clickable: articleElement.id })
+    });
 
     fs.writeFileSync(path.join(pubDir, 'index.html'), output);
     fs.copyFileSync(cssPath, path.join(pubDir, 'site.css'));
