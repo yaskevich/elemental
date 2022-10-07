@@ -92,11 +92,9 @@ const build = async (currentDir, id, siteDir, filename) => {
 
     // console.log("request to publish", textId, pubDir);
 
-    const [textsInfo, tokens, comments, sources] = await Promise.all([db.getTexts(textId), db.getText(textId), db.getFullComments(textId), db.getSource()]);
+    const [textsInfo, tokens, comments, sources] = await Promise.all([db.getTexts(textId), db.getText(textId), db.getFullComments(textId, true), db.getSource()]);
     const sourcesDict = Object.assign({}, ...(sources.map((x) => ({ [x.id]: x }))));
     const commentsDict = Object.assign({}, ...(comments.map((x) => ({ [x.id]: x }))));
-    // console.log(commentsDict);
-    // console.log(sourcesDict);
 
     const textInfo = textsInfo.shift();
     // console.log('text', textInfo?.scheme);
@@ -162,6 +160,8 @@ data-iziModal-icon="icon-home" data-iziModal-fullscreen="true" style="padding: 5
 </div>
 `;
 
+    const renderToken = (form, cid, tip) => (tip ? `<span class="tooltip token mark btn" aria-label="${tip}" data-id="${cid}">${form}</span>` : `<span class="token">${form}</span>`);
+
     let body = '';
     let paragraph = '';
     let p = 0;
@@ -174,13 +174,20 @@ data-iziModal-icon="icon-home" data-iziModal-fullscreen="true" style="padding: 5
         p = token.p;
       }
       if (token.meta !== 'ip') {
-        const commentId = token.comments?.[0];
-        const firstComment = commentsDict[commentId];
-        const isPublished = firstComment?.published;
+        const tips = token.comments.map((x) => [x, commentsDict[x]?.entry?.[tooltipElement].trim()]).filter((x) => Boolean(x[1]));
 
-        const tooltipInfo = (isPublished && firstComment?.entry?.[tooltipElement]) ? ['tooltip', `aria-label="${firstComment?.entry?.[tooltipElement]}"`] : ['', ''];
-
-        paragraph += (isPublished ? `<span class="${tooltipInfo[0]} token mark btn" ${tooltipInfo[1]} data-id="${commentId}">${token.form}</span>` : `<span class="token">${token.form}</span>`);
+        if (tips?.length) {
+          if (tips.length === 1) {
+            // commentsDict[commentId]
+            paragraph += renderToken(token.form, tips[0][0], tips[0][1]);
+          } else {
+            console.log(token.comments);
+            const tipString = tips.map((x, i) => `${i + 1}. ${x[1]}`).join(' ');
+            paragraph += renderToken(token.form, tips[0][0], tipString);
+          }
+        } else {
+          paragraph += renderToken(token.form);
+        }
       }
     });
     // generating tooltips - end
