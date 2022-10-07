@@ -968,11 +968,12 @@ export default {
     }
     return data;
   },
-  async getFullComments(id) {
+  async getFullComments(id, published = false) {
     let data = [];
     const textId = Number(id);
     if (textId) {
-      const sql = 'SELECT * FROM comments WHERE text_id = $1 ORDER by priority ASC, id ASC';
+      const suffix = published ? ' AND published = TRUE ' : '';
+      const sql = `SELECT * FROM comments WHERE text_id = $1 ${suffix} ORDER by priority ASC, id ASC`;
       try {
         const result = await pool.query(sql, [textId]);
         data = result?.rows;
