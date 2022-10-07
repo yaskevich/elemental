@@ -13,9 +13,8 @@ const compileHTML = (params) => `
   <meta name="keywords" content="annotation, comments">
   <meta name="description" content="${params.site}">
   <title>${params.site}</title>
-  <link rel="stylesheet" href="mini.css" media="screen">
+  <!-- <link rel="stylesheet" href="mini.css" media="screen"> -->
   <link rel="stylesheet" href="site.css" media="screen">
-  <!-- <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css"> -->
   <script type="text/javascript" src="jquery.js"></script>
   <script type="text/javascript" src="izi.js"></script>
   <link rel="stylesheet" href="izi.css" media="screen">
@@ -33,27 +32,32 @@ const compileHTML = (params) => `
   </style>
   <script type="text/javascript">
     $(function () {   // Handler for .ready() called.
-      $(".modals").iziModal();
+      $(".modals").iziModal({"group": "comments", "loop": true});
+      $(".choices").iziModal({ "overlayColor": "rgba(0, 0, 0, 0.6)", "padding": 10});
       $(document).on('click', '.btn', function (event) {
         event.preventDefault();
-        console.log("click!", $(this).data("id"));
+        // console.log("click!", $(this).data("id"));
         $('#ms' + $(this).data("id")).iziModal('open');
+      });
+      $(document).on('click', '.mult', function (event) {
+        event.preventDefault();
+        // console.log("click multi!", $(this).data("id"));
+        $('#ch' + $(this).data("id")).iziModal('open');
       });
       if("${params.clickable}"){
         $(document).on('click', '.block', function (event) {
           event.preventDefault();
-          console.log("switch!", $(this).data("id"));
+          // console.log("switch!", $(this).data("id"));
           $(".${params.clickable}"+$(this).data("id")).toggleClass("hidden");
           $(".${params.modal}"+$(this).data("id")).toggleClass("hidden");
         });
       }
-
     });
   </script>
 </head>
 
 <body>
-  <div class="container responsive-margin">
+  <div class="container centered" >
 
     <div class="row">
       <h2>${params.site}</h2>
@@ -66,6 +70,8 @@ const compileHTML = (params) => `
     </footer>
   </div>
     ${params.modals}
+    
+    ${params.choices}
 </body>
 
 </html>
@@ -75,6 +81,8 @@ const renderFigure = (figObj) => {
   const caption = figObj?.content?.[0]?.text ? `<figcaption>${figObj?.content?.[0]?.text}</figcaption>` : '';
   return `<figure><img src="${figObj.attrs.src}" />${caption}</figure>`;
 };
+
+const renderToken = (form, cid, tip, multi) => (tip ? `<span class="tooltip token mark ${multi ? 'mult' : 'btn'}" aria-label="${tip}" data-id="${cid}">${form}</span>` : `<span class="token">${form}</span>`);
 
 const build = async (currentDir, id, siteDir, filename) => {
   const textId = Number(id);
@@ -160,11 +168,10 @@ data-iziModal-icon="icon-home" data-iziModal-fullscreen="true" style="padding: 5
 </div>
 `;
 
-    const renderToken = (form, cid, tip) => (tip ? `<span class="tooltip token mark btn" aria-label="${tip}" data-id="${cid}">${form}</span>` : `<span class="token">${form}</span>`);
-
     let body = '';
     let paragraph = '';
     let p = 0;
+    const choiceModals = [];
 
     // generating tooltips - start
     tokens.forEach((token) => {
@@ -174,19 +181,21 @@ data-iziModal-icon="icon-home" data-iziModal-fullscreen="true" style="padding: 5
         p = token.p;
       }
       if (token.meta !== 'ip') {
-        const tips = token.comments.map((x) => [x, commentsDict[x]?.entry?.[tooltipElement].trim()]).filter((x) => Boolean(x[1]));
+        const tips = token.comments.map((x) => [x, commentsDict[x]?.entry?.[tooltipElement]?.trim()]).filter((x) => Boolean(x[1]));
 
         if (tips?.length) {
           if (tips.length === 1) {
             // commentsDict[commentId]
             paragraph += renderToken(token.form, tips[0][0], tips[0][1]);
           } else {
-            console.log(token.comments);
+            console.log(token.comments, token.id);
+            const choiceId = token.comments.join('-');
             const tipString = tips.map((x, i) => `${i + 1}. ${x[1]}`).join(' ');
-            paragraph += renderToken(token.form, tips[0][0], tipString);
+            choiceModals.push(`<div id="ch${choiceId}" class="choices"> ${token.comments.map((x) => `<div><button class="btn" data-id="${commentsDict[x].id}" data-izimodal-close="">${commentsDict[x].title}</button></div>`).join('')} </div>`);
+            paragraph += renderToken(token.form, choiceId, tipString, true);
           }
         } else {
-          paragraph += renderToken(token.form);
+          paragraph += renderToken(token.form, null, null, token.comments.length - 1);
         }
       }
     });
@@ -195,13 +204,14 @@ data-iziModal-icon="icon-home" data-iziModal-fullscreen="true" style="padding: 5
     body += `<div class="row"> ${paragraph} </div>\n\n`;
 
     const modals = comments.map(compileModal).join('');
+    const choices = choiceModals.join('\n');
     const output = compileHTML({
-      ...textInfo, body, modals, modal: modalElement.id, ...(articleElement?.id && { clickable: articleElement.id })
+      ...textInfo, body, modals, choices, modal: modalElement.id, ...(articleElement?.id && { clickable: articleElement.id })
     });
 
     fs.writeFileSync(path.join(pubDir, 'index.html'), output);
     fs.copyFileSync(cssPath, path.join(pubDir, 'site.css'));
-    fs.copyFileSync(path.join(currentDir, 'node_modules', 'mini.css', 'dist', 'mini-default.min.css'), path.join(pubDir, 'mini.css'));
+    // fs.copyFileSync(path.join(currentDir, 'node_modules', 'mini.css', 'dist', 'mini-default.min.css'), path.join(pubDir, 'mini.css'));
     fs.copyFileSync(path.join(currentDir, 'node_modules', 'jquery', 'dist', 'jquery.min.js'), path.join(pubDir, 'jquery.js'));
     fs.copyFileSync(path.join(currentDir, 'node_modules', 'izimodal', 'js', 'iziModal.min.js'), path.join(pubDir, 'izi.js'));
     fs.copyFileSync(path.join(currentDir, 'node_modules', 'izimodal', 'css', 'iziModal.min.css'), path.join(pubDir, 'izi.css'));
