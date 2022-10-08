@@ -73,6 +73,10 @@ div.blockquote:before {
   vertical-align: -0.4em;
 }
 
+div.blockquote:after {
+  content: no-close-quote;
+}
+
 .block {
   display: block;
   width: 100%;
@@ -93,7 +97,7 @@ div.blockquote:before {
 }
 
 .choices div {
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
 }
 
 @media only screen and (max-width: 40em) {
