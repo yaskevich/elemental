@@ -1,5 +1,5 @@
 <template>
-  <n-card title :bordered="false" class="minimal" v-if="ready">
+  <n-card :bordered="false" class="minimal" v-if="ready">
     <n-space vertical size="large">
       <n-space justify="center">
         <div v-for="(issue, index) in comment.issues" :key="'issue' + index">
@@ -8,42 +8,37 @@
               <n-tag
                 closable
                 @close="removeIssue(issue)"
-                :color="{ color: issuesKV[issue[0]].color, textColor: 'white', }"
-              >{{ issuesKV[issue[0]]?.["ru"] }}</n-tag>
+                :color="{ color: issuesKV[issue[0]].color, textColor: 'white' }"
+                >{{ issuesKV[issue[0]]?.['ru'] }}</n-tag
+              >
             </template>
-            {{ issue[1] ? ('Assigned to ' + usersKV[issue[1]].firstname + ' ' + usersKV[issue[1]].lastname) : 'Not assigned' }}
+            {{
+              issue[1]
+                ? 'Assigned to ' + usersKV[issue[1]].firstname + ' ' + usersKV[issue[1]].lastname
+                : 'Not assigned'
+            }}
           </n-tooltip>
         </div>
       </n-space>
 
       <n-space justify="center">
-        <n-button
-          secondary
-          type="info"
-          :disabled="!comment.id"
-          @click="showPreview(comment.id)"
-        >Preview</n-button>
+        <n-button secondary type="info" :disabled="!comment.id" @click="showPreview(comment.id)">Preview</n-button>
 
-        <n-switch style="margin-top: .4rem;" v-model:value="comment.published" :round="false">
+        <n-switch style="margin-top: 0.4rem" v-model:value="comment.published" :round="false">
           <template #checked>Published</template>
           <template #unchecked>Draft</template>
         </n-switch>
 
-        <n-button
-          type="info"
-          @click="saveComment"
-          :disabled="!(comment.title && comment.priority)"
-        >Save</n-button>
+        <n-button type="info" @click="saveComment" :disabled="!(comment.title && comment.priority)">Save</n-button>
       </n-space>
 
       <n-space justify="center">
         <n-input-number
           v-model:value="comment.priority"
           :validator="validateID"
-          style="width:100px;"
+          style="width: 100px"
           type="text"
-          placeholder="ID"
-        />
+          placeholder="ID" />
 
         <n-dropdown trigger="hover" @select="addTag" :options="tagsList">
           <n-button>+ tag</n-button>
@@ -57,12 +52,9 @@
       <n-text type="error" v-if="!comment.priority">ID should not be empty</n-text>
       <n-space justify="center">
         <div v-for="(tag, index) in comment.tags" :key="index">
-          <n-tag
-            closable
-            @close="removeTag(tag)"
-            style="margin-right: 10px;"
-            size="small"
-          >{{ tagsList.filter((x: any) => x.key == tag)?.shift()?.["label"] }}</n-tag>
+          <n-tag closable @close="removeTag(tag)" style="margin-right: 10px" size="small">{{
+            tagsList.filter((x: any) => x.key == tag)?.shift()?.['label']
+          }}</n-tag>
         </div>
       </n-space>
 
@@ -72,7 +64,7 @@
         placeholder="Heading"
         class="maininput"
         autofocus
-      ></n-input>
+        :allow-input="noSideSpace"></n-input>
 
       <n-text type="error" v-if="!comment.title">Heading should not be empty!</n-text>
 
@@ -82,10 +74,9 @@
           :options="[{ label: 'Go to text', key: 'go', stack: stack as Array<IToken>, icon: renderIcon(BackIcon) }, { label: 'Unbind span', key: 'unbind', stack: stack as Array<IToken>, icon: renderIcon(UnbindLink), disabled: !id }]"
           @select="handleSelect"
           v-for="(stack, index) in boundStrings"
-          :key="index"
-        >
+          :key="index">
           <n-button type="info" dashed size="small">
-            <template v-for="item in stack" :key="item.id" style="margin-right: 5px;">
+            <template v-for="item in stack" :key="item.id" style="margin-right: 5px">
               <span v-if="item.meta !== 'ip'">{{ item.form }}&nbsp;</span>
             </template>
           </n-button>
@@ -98,36 +89,34 @@
           v-model:value="comment.entry[item.id]"
           type="text"
           :placeholder="item.title"
-        />
+          :allow-input="noSideSpace" />
 
         <Tiptap
           v-if="item.type === 'rich'"
-          :ref="el => { editorRefs[item.id] = el }"
+          :ref="
+            el => {
+              editorRefs[item.id] = el;
+            }
+          "
           :editorclass="index % 2 ? 'even' : 'odd'"
           :sources="sources"
           :content="comment.entry[item.id]"
-          :images="images"
-        />
+          :images="images" />
       </template>
 
       <n-space v-if="Boolean(comment.id)" justify="space-between">
         <n-popconfirm @positive-click="deleteComment">
           <template #trigger>
             <n-button type="error" :disabled="Boolean(boundStrings?.length)">Delete</n-button>
-          </template> You are about to delete the comment. This action is permanent. Please confirm, if you are sure
+          </template>
+          You are about to delete the comment. This action is permanent. Please confirm, if you are sure
         </n-popconfirm>
-        <n-button
-          type="info"
-          @click="saveComment"
-          :disabled="!(comment.title && comment.priority)"
-        >Save</n-button>
+        <n-button type="info" @click="saveComment" :disabled="!(comment.title && comment.priority)">Save</n-button>
       </n-space>
 
-      <n-text
-        v-if="Boolean(boundStrings?.length)"
-        style="font-size: 0.75rem;"
-        type="error"
-      >It is not allowed to delete a comment, if it has bound tokens. One should unbind tokens before.</n-text>
+      <n-text v-if="Boolean(boundStrings?.length)" style="font-size: 0.75rem" type="error"
+        >It is not allowed to delete a comment, if it has bound tokens. One should unbind tokens before.</n-text
+      >
     </n-space>
   </n-card>
   <div v-else>
@@ -137,9 +126,21 @@
 </template>
 
 <script setup lang="ts">
-
 import store from '../store';
-import { ref, reactive, onBeforeMount, computed, onBeforeUnmount, onMounted, ComponentPublicInstance, h, toRaw, watch, onRenderTracked, onRenderTriggered } from 'vue';
+import {
+  ref,
+  reactive,
+  onBeforeMount,
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  ComponentPublicInstance,
+  h,
+  toRaw,
+  watch,
+  onRenderTracked,
+  onRenderTriggered,
+} from 'vue';
 import { onBeforeRouteLeave } from 'vue-router';
 import { useMessage } from 'naive-ui';
 import Tiptap from './Tiptap.vue';
@@ -157,8 +158,10 @@ const message = useMessage();
 const scheme = store?.state?.user?.text?.scheme || [];
 const textId = store?.state?.user?.text_id;
 
+const noSideSpace = (value: string) => !/ /g.test(value);
+
 let tokensToBind = vuerouter.query?.tokens ? String(vuerouter.query.tokens).split(',').map(Number) : [];
-console.log("received token ids", tokensToBind);
+console.log('received token ids', tokensToBind);
 
 let id = Number(vuerouter.params.id);
 
@@ -200,7 +203,8 @@ const removeTag = (id: number) => {
   comment.tags = comment.tags.filter(x => x !== id);
 };
 
-const addTag = (id: number) => {
+const addTag = (payload: Event) => {
+  const id = Number(payload);
   comment?.tags ? comment.tags.push(id) : (comment.tags = [id]);
 };
 
@@ -243,12 +247,26 @@ onBeforeUnmount(() => {
 
 onBeforeMount(async () => {
   const [sourcesData, usersData, issueData, tagData, imagesData] = await Promise.all([
-    store.get('source'), store.get('users'), store.get('issues'), store.get('tags'), store.get(`img/${textId}`),
+    store.get('source'),
+    store.get('users'),
+    store.get('issues'),
+    store.get('tags'),
+    store.get(`img/${textId}`),
   ]);
 
-  Object.assign(images, imagesData.sort((a: any, b: any) => (new Date(b.created)).getTime() - (new Date(a.created)).getTime()));
+  Object.assign(
+    images,
+    imagesData.sort((a: any, b: any) => new Date(b.created).getTime() - new Date(a.created).getTime())
+  );
 
-  Object.assign(sources, sourcesData.map((x: any, i: number) => ({ ...x, label: `${x.citekey.padEnd(10, '.')} ${x.bibtex.title}`, value: i })));
+  Object.assign(
+    sources,
+    sourcesData.map((x: any, i: number) => ({
+      ...x,
+      label: `${x.citekey.padEnd(10, '.')} ${x.bibtex.title}`,
+      value: i,
+    }))
+  );
   Object.assign(usersKV, Object.fromEntries(usersData.map((x: any) => [x.id, x])));
   Object.assign(
     tagsList,
@@ -258,21 +276,28 @@ onBeforeMount(async () => {
     label: x.ru,
     key: x.id,
     disabled: computed(() => comment.issues?.map((d: any) => d[0]).includes(x.id)),
-    children: [{
-      label: '(Nobody)',
-      key: [x.id, 0],
-      disabled: false,
-    }].concat(usersData.map((y: any) => ({
-      label: `${y.firstname} ${y.lastname}`,
-      key: [x.id, y.id],
-      disabled: false,
-    }))),
+    children: [
+      {
+        label: '(Nobody)',
+        key: [x.id, 0],
+        disabled: false,
+      },
+    ].concat(
+      usersData.map((y: any) => ({
+        label: `${y.firstname} ${y.lastname}`,
+        key: [x.id, y.id],
+        disabled: false,
+      }))
+    ),
   }));
   Object.assign(issuesList, issueListData);
   Object.assign(issuesKV, Object.fromEntries(issueData.map((x: any) => [x.id, x])));
 
   if (id) {
-    const [commentData, stringsList] = await Promise.all([store.get(`comment/${id}`), store.get('commentstrings', String(textId), { comment: id }),]);
+    const [commentData, stringsList] = await Promise.all([
+      store.get(`comment/${id}`),
+      store.get('commentstrings', String(textId), { comment: id }),
+    ]);
 
     if (commentData.length) {
       const commentStored = commentData?.[0];
@@ -284,7 +309,7 @@ onBeforeMount(async () => {
       let key = 0;
       let stack: Array<IToken> = [];
       for (let item of stringsList) {
-        if (key && (item.id !== key + 1)) {
+        if (key && item.id !== key + 1) {
           if (stack.length) {
             boundStrings.push(stack);
             stack = [];
@@ -296,9 +321,8 @@ onBeforeMount(async () => {
       boundStrings.push(stack);
       // console.log("boundStrings", boundStrings);
     }
-
   } else {
-    console.log("no ID!");
+    console.log('no ID!');
     const data = await store.get('stringsrange', undefined, { tokens: tokensToBind });
     const { priority } = await store.get('priority', String(textId));
     // console.log("tokens", data);
@@ -335,17 +359,18 @@ const checkValidMarkup = (document: any) => {
 const checkIsEntryUpdated = () => {
   let result = false;
 
-  scheme.filter(x => x.type === 'rich').map(x => {
-    // console.log(x.id, commentStored.entry[x.id]);
-    if (editorRefs[x.id]?.handle) {
-      comment.entry[x.id] = editorRefs[x.id].handle.getJSON();
-      // checkValidMarkup(comment.entry[x.id]);
-      editorRefs[x.id].handle.commands.setContent(comment.entry[x.id], false);
-    }
-  });
+  scheme
+    .filter(x => x.type === 'rich')
+    .map(x => {
+      // console.log(x.id, commentStored.entry[x.id]);
+      if (editorRefs[x.id]?.handle) {
+        comment.entry[x.id] = editorRefs[x.id].handle.getJSON();
+        // checkValidMarkup(comment.entry[x.id]);
+        editorRefs[x.id].handle.commands.setContent(comment.entry[x.id], false);
+      }
+    });
 
   if (comment?.id) {
-
     for (let key0 in comment0) {
       const key = key0 as keyof IComment;
       const val0 = comment0[key];
@@ -354,13 +379,12 @@ const checkIsEntryUpdated = () => {
       // console.log(`${key}1`, toRaw(val));
 
       if (JSON.stringify(val0) !== JSON.stringify(val)) {
-        console.log("change:", key);
+        console.log('change:', key);
         // console.log("change:", key, toRaw(val0), '→', toRaw(val));
         // console.log("change:", key, '\n\n', JSON.stringify(toRaw(val0)), '\n\n', JSON.stringify(toRaw(val)));
         result = true;
         break;
       }
-
     }
   } else {
     result = Boolean(comment?.title);
@@ -386,7 +410,7 @@ const saveComment = async () => {
       const boundTokensNumber = tokensToBind.length;
       if (boundTokensNumber) {
         const result = await store.post('strings', { tokens: tokensToBind, id: data.id });
-        console.log("bind tokens", result);
+        console.log('bind tokens', result);
         if (boundTokensNumber === result.data?.length) {
           console.log(`${boundTokensNumber} tokens were bound!`);
           tokensToBind = [];
@@ -432,12 +456,15 @@ const handleSelect = async (key: string | number, option: DropdownOption) => {
 
     if (data && tokenStr === tokens.sort().join()) {
       for (let i = 0; i < boundStrings.length; i++) {
-        const boundStringsStr = boundStrings[i].map(y => y.id).sort().join();
+        const boundStringsStr = boundStrings[i]
+          .map(y => y.id)
+          .sort()
+          .join();
         if (boundStringsStr === tokenStr) {
           boundStrings.splice(i, 1);
         }
       }
-      console.log("span binding removed");
+      console.log('span binding removed');
     } else {
       console.error('delete error for', comment.id);
     }
@@ -447,11 +474,10 @@ const handleSelect = async (key: string | number, option: DropdownOption) => {
 const renderIcon = (icon: Component) => {
   return () => {
     return h(NIcon, null, {
-      default: () => h(icon)
-    })
-  }
+      default: () => h(icon),
+    });
+  };
 };
-
 </script>
 
 <style>
