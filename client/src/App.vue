@@ -19,7 +19,8 @@ import {
   MenuBookFilled,
   ReceiptLongFilled,
   FormatPaintFilled,
-} from '@vicons/material'
+  WebFilled,
+} from '@vicons/material';
 import store from './store';
 import router from './router';
 import Login from './components/Login.vue';
@@ -33,32 +34,35 @@ const state = store.state;
 const settings = ref<ISettings>();
 
 const renderIcon = (icon: Component) => {
-  return () => h(NIcon, null, { default: () => h(icon) })
+  return () => h(NIcon, null, { default: () => h(icon) });
 };
 const user = computed(() => state?.user?.username);
 
 watch(state, (currentValue, oldValue) => {
-  console.log("state UPDATED", currentValue?.user?.text?.comments);
+  console.log('state UPDATED', currentValue?.user?.text?.comments);
   Object.assign(menuOptions, buildMenu());
 
   // console.log(oldValue);
 });
 
-
 const makeItem = (name: string, title: string, icon: Component, disabled: boolean = false) => ({
-  label: () => h(RouterLink, { to: { name: name, } },
-    { default: () => title }),
+  label: () => h(RouterLink, { to: { name: name } }, { default: () => title }),
   key: name,
   disabled: disabled,
   show: !disabled,
-  icon: renderIcon(icon)
+  icon: renderIcon(icon),
 });
 
-const processMenu = (key: string, item: MenuOption) => {
+const processMenu = async (key: string, item: MenuOption) => {
   if (key === 'logout') {
     store.logoutUser();
   } else if (key === 'profile') {
     router.push(`/user/${state?.user?.id}`);
+  } else if (key === 'site') {
+    const textId = state?.user?.text?.id;
+    const { data } = await store.post('publish', { id: textId });
+    console.log(data);
+    window.open(`/api/files/${textId}/`);
   }
 };
 
@@ -83,6 +87,12 @@ const buildMenu = () => [
       makeItem('Users', 'Users', PersonSearchFilled),
       // makeItem('Logs', 'Logs', HistoryFilled, true),
       // makeItem('', '', ),
+      {
+        label: 'Site',
+        key: 'site',
+        disabled: !state?.user?.text?.loaded,
+        icon: renderIcon(WebFilled),
+      },
     ],
     // children: [
     //   {
@@ -118,8 +128,8 @@ const buildMenu = () => [
         key: 'profile',
         disabled: false,
         icon: renderIcon(EditNoteFilled),
-      }
-    ]
+      },
+    ],
   },
 ];
 
@@ -141,31 +151,24 @@ onMounted(async () => {
 });
 
 // const color = 'green';
-
 </script>
 
 <template>
   <n-message-provider>
     <div id="main" v-if="loggedIn">
       <div v-if="dataReady">
-        <n-menu
-          v-model:value="activeKey"
-          mode="horizontal"
-          :options="menuOptions"
-          @update:value="processMenu"
-        />
+        <n-menu v-model:value="activeKey" mode="horizontal" :options="menuOptions" @update:value="processMenu" />
         <router-view />
       </div>
     </div>
-    <div v-else style="max-width:300px;margin:auto">
+    <div v-else style="max-width: 300px; margin: auto">
       <n-tabs
         default-value="signin"
         size="large"
         animated
         justify-content="center"
         style="margin: 0 -4px"
-        pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;"
-      >
+        pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;">
         <n-tab-pane name="signin" tab="Log in">
           <Login />
         </n-tab-pane>
@@ -269,7 +272,7 @@ blockquote.quote {
   border-left: 10px solid #ccc;
   margin: 1.5em 10px;
   padding: 0.5em 10px;
-  quotes: "\201C""\201D""\2018""\2019";
+  quotes: '\201C''\201D''\2018''\2019';
 }
 /*
 blockquote:before {
@@ -291,7 +294,7 @@ figure {
   text-align: center;
   margin: auto;
 
-  &[draggable="true"] {
+  &[draggable='true'] {
     border: 3px solid lightpink;
     padding: 5px;
   }
