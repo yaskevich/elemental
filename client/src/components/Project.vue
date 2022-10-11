@@ -1,28 +1,10 @@
 <script setup lang="ts">
-
 import { ref, reactive, onBeforeMount, toRaw } from 'vue';
 import store from '../store';
 import router from '../router';
 import { useRoute } from 'vue-router';
-import { FormInst, FormItemRule, FormValidationError, } from 'naive-ui'
+import { FormInst, FormItemRule, FormValidationError } from 'naive-ui';
 import type { SelectOption } from 'naive-ui';
-
-interface IText {
-  id: number;
-  author: string;
-  title: string;
-  meta: string;
-  grammar: boolean;
-  comments: boolean;
-  loaded: boolean;
-  published: string;
-  date: string;
-  credits: string;
-  site: string;
-  zipsize: number;
-  lang: string;
-  langLabel: string;
-}
 
 const vuerouter = useRoute();
 const id = ref(String(vuerouter.params.id));
@@ -60,7 +42,7 @@ const handleValidateClick = async (e: MouseEvent) => {
     const { data } = await store.post('text', txt);
     // console.log("result", data);
     if (!data?.id) {
-      console.log("database error");
+      console.log('database error');
     } else {
       if (store?.state?.user?.text && store.state.user.text?.id === data.id) {
         Object.assign(store.state.user.text as IText, toRaw(txt));
@@ -69,9 +51,8 @@ const handleValidateClick = async (e: MouseEvent) => {
       router.replace(`/project/${data.id}`);
     }
   } catch (errors: any) {
-    console.log("errors", errors);
+    console.log('errors', errors);
   }
-
 };
 
 const formatDate = () => {
@@ -103,8 +84,9 @@ const updateComplete = async (chunk?: string) => {
   }
 };
 
-const onSelect = (index: number) => {
+const onSelect = (payload: Event) => {
   // console.log("select");
+  const index = Number(payload);
   const langId = languages.value[index]?.tag as string;
   txt.lang = langId;
 };
@@ -127,7 +109,7 @@ onBeforeMount(async () => {
     await setLanguage();
   } else {
     await getLanguages();
-    console.log("add new");
+    console.log('add new');
   }
 });
 
@@ -145,7 +127,6 @@ const humanFileSize = (size: number) => {
   const i: number = Math.floor(Math.log(size) / Math.log(1024));
   return Number((size / Math.pow(1024, i)).toFixed(2)) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
 };
-
 </script>
 m
 <template>
@@ -164,15 +145,10 @@ m
       </n-form-item>
 
       <n-form-item label="Subtitle">
-        <n-input
-          v-model:value="txt.meta"
-          type="textarea"
-          :autosize="true"
-          placeholder="Subtitle or description"
-        />
+        <n-input v-model:value="txt.meta" type="textarea" :autosize="true" placeholder="Subtitle or description" />
       </n-form-item>
 
-      <n-form-item label="Language variety" path="langLabel" style="display:block;">
+      <n-form-item label="Language variety" path="langLabel" style="display: block">
         <n-auto-complete
           @select="onSelect"
           clearable
@@ -180,26 +156,19 @@ m
           v-model:value="txt.langLabel"
           :options="languages"
           placeholder="Please select a language"
-          @update:value="updateComplete"
-        />
+          @update:value="updateComplete" />
       </n-form-item>
 
       <n-form-item label="Site title">
-        <n-input
-          v-model:value="txt.site"
-          type="textarea"
-          :autosize="true"
-          placeholder="Site title"
-        />
+        <n-input v-model:value="txt.site" placeholder="Site title" />
+      </n-form-item>
+
+      <n-form-item label="URL">
+        <n-input v-model:value="txt.url" placeholder="Web link" />
       </n-form-item>
 
       <n-form-item label="Credits">
-        <n-input
-          v-model:value="txt.credits"
-          type="textarea"
-          :autosize="true"
-          placeholder="Credits"
-        />
+        <n-input v-model:value="txt.credits" type="textarea" :autosize="true" placeholder="Credits" />
       </n-form-item>
 
       <!-- <n-form-item label="Grammar Tagging UI">
@@ -207,18 +176,12 @@ m
       </n-form-item>-->
       <n-space justify="space-between">
         <n-form-item label="Toolset for adding comments">
-          <n-checkbox
-            v-model:checked="txt.comments"
-            :label="`${txt.comments ? '' : 'NOT'} enabled`"
-          />
+          <n-checkbox v-model:checked="txt.comments" :label="`${txt.comments ? '' : 'NOT'} enabled`" />
         </n-form-item>
         <n-form-item>
-          <n-button
-            v-if="txt.comments"
-            type="info"
-            @click="router.push('/scheme/' + vuerouter.params.id)"
-            size="small"
-          >Set Scheme</n-button>
+          <n-button v-if="txt.comments" type="info" @click="router.push('/scheme/' + vuerouter.params.id)" size="small"
+            >Set Scheme</n-button
+          >
         </n-form-item>
       </n-space>
     </n-form>
@@ -230,25 +193,18 @@ m
           <span v-if="!txt.loaded">NOT</span> loaded into the database
         </n-tag>
         <n-button type="info" @click="publishText" size="small" v-if="txt.loaded">Publish</n-button>
-        <n-button
-          v-else
-          type="info"
-          @click="router.push('/import/' + vuerouter.params.id)"
-          size="small"
-        >Import</n-button>
+        <n-button v-else type="info" @click="router.push('/import/' + vuerouter.params.id)" size="small"
+          >Import</n-button
+        >
       </n-space>
 
       <n-card v-if="txt.zipsize">
         <n-space vertical>
           <n-text type="info">Published: {{ txt.date }}</n-text>
           <n-space justify="space-between">
-            <n-button
-              ghost
-              type="info"
-              tag="a"
-              :href="`/api/files/${id}/site.zip`"
-              target="_blank"
-            >Download ({{ humanFileSize(txt.zipsize) }})</n-button>
+            <n-button ghost type="info" tag="a" :href="`/api/files/${id}/site.zip`" target="_blank"
+              >Download ({{ humanFileSize(txt.zipsize) }})</n-button
+            >
             <n-button ghost type="info" tag="a" :href="`/api/files/${id}/`" target="_blank">View</n-button>
           </n-space>
         </n-space>
@@ -256,6 +212,3 @@ m
     </n-space>
   </n-card>
 </template>
-
-<style scoped>
-</style>
