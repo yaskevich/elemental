@@ -35,6 +35,7 @@ const databaseScheme = {
     meta text,
     site text,
     credits text,
+    url text,
     scheme json,
     lang text NOT NULL,
     loaded boolean DEFAULT false NOT NULL,
@@ -920,15 +921,15 @@ export default {
   async setText(params) {
     let data = [];
     if (params.author && params.title) {
-      const values = [params.author, params.title, params?.meta || '', params?.grammar || false, params?.comments || false, params?.site || '', params?.credits || '', params.lang];
+      const values = [params.author, params.title, params?.meta || '', params?.grammar || false, params?.comments || false, params?.site || '', params?.credits || '', params.lang, params?.url?.trim() || ''];
       let sql = '';
 
       if (params.id) {
         const id = Number(params.id);
         values.push(id);
-        sql = 'UPDATE texts SET author = $1, title = $2, meta = $3, grammar = $4, comments = $5, site = $6, credits = $7, lang = $8 WHERE id = $9';
+        sql = 'UPDATE texts SET author = $1, title = $2, meta = $3, grammar = $4, comments = $5, site = $6, credits = $7, lang = $8, url =$9 WHERE id = $10';
       } else {
-        sql = 'INSERT INTO texts (author, title, meta, grammar, comments, site, credits, lang) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)';
+        sql = 'INSERT INTO texts (author, title, meta, grammar, comments, site, credits, lang, url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)';
       }
 
       sql += ' RETURNING id';
