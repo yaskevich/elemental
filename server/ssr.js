@@ -185,7 +185,15 @@ ${cmt?.entry?.[tooltipElement] ? `data-iziModal-subtitle="${cmt.entry[tooltipEle
         paragraphNumber = token.p;
       }
       if (token.meta !== 'ip') {
-        const tips = token.comments.map((x) => [x, commentsDict[x]?.entry?.[tooltipElement]?.trim()]).filter((x) => Boolean(x[1]));
+        const publishedComments = Uint32Array.of(...token.comments).sort().filter((x) => commentsDict?.[x]);
+        const tips = publishedComments.map((x) => [x, commentsDict[x]?.entry?.[tooltipElement]?.trim()]).filter((x) => Boolean(x[1]));
+
+        const choiceId = publishedComments.join('-');
+
+        if (publishedComments?.length > 1 && !choiceModals?.[choiceId]) {
+          const buttons = publishedComments.map((x) => `<div><button class="btn" data-id="${commentsDict[x].id}" data-izimodal-close="">${commentsDict[x].title}</button></div>`).join('');
+          choiceModals[choiceId] = `<div id="ch${choiceId}" class="choices"> ${buttons}</div>`;
+        }
 
         if (tips?.length) {
           if (tips.length === 1) {
@@ -193,12 +201,7 @@ ${cmt?.entry?.[tooltipElement] ? `data-iziModal-subtitle="${cmt.entry[tooltipEle
             paragraph += renderToken(token.form, tips[0][0], tips[0][1]);
           } else {
             // console.log(token.comments, token.id);
-            const choiceId = token.comments.join('-');
             const tipString = tips.map((x, i) => `${i + 1}. ${x[1]}`).join(' ');
-            if (!choiceModals?.[choiceId]) {
-              const buttons = token.comments.map((x) => `<div><button class="btn" data-id="${commentsDict[x].id}" data-izimodal-close="">${commentsDict[x].title}</button></div>`).join('');
-              choiceModals[choiceId] = `<div id="ch${choiceId}" class="choices"> ${buttons}</div>`;
-            }
             paragraph += renderToken(token.form, choiceId, tipString, true);
           }
         } else {
