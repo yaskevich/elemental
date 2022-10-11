@@ -17,6 +17,7 @@ declare global {
     author: string;
     title: string;
     meta: string;
+    url: string;
     grammar: boolean;
     comments: boolean;
     loaded: boolean;
