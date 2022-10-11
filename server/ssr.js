@@ -13,24 +13,28 @@ const compileHTML = (params) => `
   <meta name="keywords" content="annotation, comments">
   <meta name="description" content="${params.site}">
   <title>${params.site}</title>
-  <!-- <link rel="stylesheet" href="mini.css" media="screen"> -->
-  <link rel="stylesheet" href="site.css" media="screen">
-  <script type="text/javascript" src="jquery.js"></script>
-  <script type="text/javascript" src="izi.js"></script>
-  <link rel="stylesheet" href="izi.css" media="screen">
+  <!--
+    <link rel="stylesheet" href="mini.css" media="screen">
+    <link rel="stylesheet" href="izi.css" media="screen">
+    <script type="text/javascript" src="jquery.js"></script>
+    <script type="text/javascript" src="izi.js"></script>
+   -->
   <meta name="generator" content="FlowerCAT">
   <script type="application/ld+json">{
     "@context": "http://schema.org",
-    "@type": "Organization",
-    "name": "",
-    "url": "https://example.com/index.html"
+    "@type": "WebSite",
+    "name": "${params.title}",
+    "url": "${params.url}",
+    "description": "${params.site}"
     }</script>
   <meta property="og:title" content="${params.site}">
   <meta property="og:type" content="website">
-  <link rel="canonical" href="https://example.com/index.html">
+  <link rel="canonical" href="${params.url}">
   <style>
+    ${params.css}
   </style>
   <script type="text/javascript">
+    ${params.js}
     $(function () {   // Handler for .ready() called.
       $(".modals").iziModal({"group": "comments", "loop": true});
       $(".choices").iziModal({ "overlayColor": "rgba(0, 0, 0, 0.6)", "padding": 10});
@@ -94,6 +98,8 @@ const build = async (currentDir, id, siteDir, filename) => {
     const pubDir = path.join(siteDir, String(textId));
     const zipPath = path.join(pubDir, filename);
     const cssPath = path.join(currentDir, 'site.css');
+    const cssContent = fs.readFileSync(cssPath).toString() + fs.readFileSync(path.join(currentDir, 'node_modules', 'izimodal', 'css', 'iziModal.min.css')).toString();
+    const jsContent = fs.readFileSync(path.join(currentDir, 'node_modules', 'jquery', 'dist', 'jquery.min.js')).toString() + fs.readFileSync(path.join(currentDir, 'node_modules', 'izimodal', 'js', 'iziModal.min.js')).toString();
 
     fs.rmSync(pubDir, { recursive: true, force: true });
     fs.mkdirSync(pubDir, { recursive: true });
@@ -156,29 +162,27 @@ const build = async (currentDir, id, siteDir, filename) => {
 
     const compileModal = (cmt) => `
 <div id="ms${cmt.id}" class="modals" data-iziModal-title="${cmt.title}"
-data-iziModal-subtitle="${cmt?.entry?.[tooltipElement] ? cmt.entry[tooltipElement] : '🙁'}"
-data-iziModal-icon="icon-home" data-iziModal-fullscreen="true" style="padding: 5px;">
-<div style="padding: 10px;">
-<div style="padding-right: 10px;">
-<button type="button" data-id="${cmt.id}" class="${cmt?.entry?.[articleElement.id]?.content?.[0]?.content ? '' : 'hidden'} block ${modalElement.id}${cmt.id}">${articleElement.title}</button>
-<button type="button" data-id="${cmt.id}" class="hidden block ${articleElement.id}${cmt.id} ">${modalElement.title}</button>
-</div>
+${cmt?.entry?.[tooltipElement] ? `data-iziModal-subtitle="${cmt.entry[tooltipElement]}"` : ''} >
+<div class="content">
+<button type="button" data-id="${cmt.id}" class="block ${cmt?.entry?.[articleElement.id]?.content?.[0]?.content ? '' : 'hidden'} ${modalElement.id}${cmt.id}">➜ ${articleElement.title}</button>
+<button type="button" data-id="${cmt.id}" class="hidden block ${articleElement.id}${cmt.id} ">➜ ${modalElement.title}</button>
 <div class="${modalElement.id}${cmt.id}">${cmt?.entry?.[modalElement.id]?.content.map(render).join('')}</div>
-<div class="${articleElement.id}${cmt.id} hidden">${cmt?.entry?.[articleElement.id]?.content.map(render).join('')}</div></div>
+<div class="${articleElement.id}${cmt.id} hidden">${cmt?.entry?.[articleElement.id]?.content.map(render).join('')}</div>
+</div>
 </div>
 `;
 
     let body = '';
     let paragraph = '';
-    let p = 0;
-    const choiceModals = [];
+    let paragraphNumber = 0;
+    const choiceModals = {};
 
     // generating tooltips - start
     tokens.forEach((token) => {
-      if (token.p !== p) {
+      if (token.p !== paragraphNumber) {
         body += `<div class="row">${paragraph}</div>\n\n`;
         paragraph = '';
-        p = token.p;
+        paragraphNumber = token.p;
       }
       if (token.meta !== 'ip') {
         const tips = token.comments.map((x) => [x, commentsDict[x]?.entry?.[tooltipElement]?.trim()]).filter((x) => Boolean(x[1]));
@@ -188,10 +192,13 @@ data-iziModal-icon="icon-home" data-iziModal-fullscreen="true" style="padding: 5
             // commentsDict[commentId]
             paragraph += renderToken(token.form, tips[0][0], tips[0][1]);
           } else {
-            console.log(token.comments, token.id);
+            // console.log(token.comments, token.id);
             const choiceId = token.comments.join('-');
             const tipString = tips.map((x, i) => `${i + 1}. ${x[1]}`).join(' ');
-            choiceModals.push(`<div id="ch${choiceId}" class="choices"> ${token.comments.map((x) => `<div><button class="btn" data-id="${commentsDict[x].id}" data-izimodal-close="">${commentsDict[x].title}</button></div>`).join('')} </div>`);
+            if (!choiceModals?.[choiceId]) {
+              const buttons = token.comments.map((x) => `<div><button class="btn" data-id="${commentsDict[x].id}" data-izimodal-close="">${commentsDict[x].title}</button></div>`).join('');
+              choiceModals[choiceId] = `<div id="ch${choiceId}" class="choices"> ${buttons}</div>`;
+            }
             paragraph += renderToken(token.form, choiceId, tipString, true);
           }
         } else {
@@ -201,20 +208,15 @@ data-iziModal-icon="icon-home" data-iziModal-fullscreen="true" style="padding: 5
     });
     // generating tooltips - end
 
-    body += `<div class="row"> ${paragraph} </div>\n\n`;
+    body += `<div class="row">${paragraph}</div>\n\n`;
 
     const modals = comments.map(compileModal).join('');
-    const choices = choiceModals.join('\n');
+    const choices = Object.values(choiceModals).join('\n');
     const output = compileHTML({
-      ...textInfo, body, modals, choices, modal: modalElement.id, ...(articleElement?.id && { clickable: articleElement.id })
+      ...textInfo, js: jsContent, css: cssContent, body, modals, choices, modal: modalElement.id, ...(articleElement?.id && { clickable: articleElement.id })
     });
 
     fs.writeFileSync(path.join(pubDir, 'index.html'), output);
-    fs.copyFileSync(cssPath, path.join(pubDir, 'site.css'));
-    // fs.copyFileSync(path.join(currentDir, 'node_modules', 'mini.css', 'dist', 'mini-default.min.css'), path.join(pubDir, 'mini.css'));
-    fs.copyFileSync(path.join(currentDir, 'node_modules', 'jquery', 'dist', 'jquery.min.js'), path.join(pubDir, 'jquery.js'));
-    fs.copyFileSync(path.join(currentDir, 'node_modules', 'izimodal', 'js', 'iziModal.min.js'), path.join(pubDir, 'izi.js'));
-    fs.copyFileSync(path.join(currentDir, 'node_modules', 'izimodal', 'css', 'iziModal.min.css'), path.join(pubDir, 'izi.css'));
 
     const now = Date.now();
     zip.sync.zip(pubDir).compress().save(zipPath);
