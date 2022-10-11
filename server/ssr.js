@@ -185,7 +185,7 @@ ${cmt?.entry?.[tooltipElement] ? `data-iziModal-subtitle="${cmt.entry[tooltipEle
         paragraphNumber = token.p;
       }
       if (token.meta !== 'ip') {
-        const publishedComments = Uint32Array.of(...token.comments).sort().filter((x) => commentsDict?.[x]);
+        const publishedComments = token.comments.sort((a, b) => a - b).filter((x) => commentsDict?.[x]);
         const tips = publishedComments.map((x) => [x, commentsDict[x]?.entry?.[tooltipElement]?.trim()]).filter((x) => Boolean(x[1]));
 
         const choiceId = publishedComments.join('-');
@@ -205,7 +205,7 @@ ${cmt?.entry?.[tooltipElement] ? `data-iziModal-subtitle="${cmt.entry[tooltipEle
             paragraph += renderToken(token.form, choiceId, tipString, true);
           }
         } else {
-          paragraph += renderToken(token.form, null, null, token.comments.length - 1);
+          paragraph += renderToken(token.form, null, null, publishedComments.length > 1);
         }
       }
     });
