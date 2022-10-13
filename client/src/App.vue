@@ -37,13 +37,7 @@ const renderIcon = (icon: Component) => {
   return () => h(NIcon, null, { default: () => h(icon) });
 };
 const user = computed(() => state?.user?.username);
-
-watch(state, (currentValue, oldValue) => {
-  console.log('state UPDATED', currentValue?.user?.text?.comments);
-  Object.assign(menuOptions, buildMenu());
-
-  // console.log(oldValue);
-});
+const menuOptions: MenuOption[] = reactive([]);
 
 const makeItem = (name: string, title: string, icon: Component, disabled: boolean = false) => ({
   label: () => h(RouterLink, { to: { name: name } }, { default: () => title }),
@@ -58,15 +52,10 @@ const processMenu = async (key: string, item: MenuOption) => {
     store.logoutUser();
   } else if (key === 'profile') {
     router.push(`/user/${state?.user?.id}`);
-  } else if (key === 'site') {
-    const textId = state?.user?.text?.id;
-    const { data } = await store.post('publish', { id: textId });
-    console.log(data);
-    window.open(`/api/files/${textId}/`);
+  } else if (key === 'site' && state?.user?.text?.id) {
+    await store.renderSite(state.user.text.id);
   }
 };
-
-const menuOptions: MenuOption[] = reactive([]);
 
 const buildMenu = () => [
   makeItem('Home', 'Home', HomeFilled),
@@ -132,6 +121,12 @@ const buildMenu = () => [
     ],
   },
 ];
+
+watch(state, (currentValue, oldValue) => {
+  console.log('state UPDATED', currentValue?.user?.text?.comments);
+  Object.assign(menuOptions, buildMenu());
+  // console.log(oldValue);
+});
 
 // onBeforeMount(async () => {
 // });
