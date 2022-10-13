@@ -1,7 +1,7 @@
-import { reactive, ref } from "vue";
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import { reactive, ref } from 'vue';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import project from '../package.json';
-import router from "./router";
+import router from './router';
 
 import Document from '@tiptap/extension-document';
 import Paragraph from '@tiptap/extension-paragraph';
@@ -19,6 +19,7 @@ import Citation from './extensions/citation';
 import Figure from '@yaskevich/extension-figure';
 import Marker from '@yaskevich/extension-marker';
 import { generateHTML } from '@tiptap/core';
+import { messageDark } from 'naive-ui';
 
 const getExtensions = (sources: Array<IBib>) => [
   Document,
@@ -57,7 +58,6 @@ const getExtensions = (sources: Array<IBib>) => [
   Gapcursor,
 ];
 
-
 const convertJSONtoHTML = (json: Object, sources: Array<IBib>) => {
   return json ? generateHTML(json, getExtensions(sources)) : '';
 };
@@ -65,13 +65,17 @@ const convertJSONtoHTML = (json: Object, sources: Array<IBib>) => {
 const state = reactive<IState>({
   token: localStorage.getItem('token') || '',
   user: {} as IUser,
-  error: "",
+  error: '',
 });
+
+let browserTab: Window;
 
 const styleTagRef = ref<HTMLStyleElement>();
 
 const setCustomCSS = () => {
-  const css = state?.user?.classes.map(x => `var.${x.name}, button.${x.name} ${JSON.stringify(x.css).replaceAll('"', '').replaceAll(',', ';')}`).join('\n');
+  const css = state?.user?.classes
+    .map(x => `var.${x.name}, button.${x.name} ${JSON.stringify(x.css).replaceAll('"', '').replaceAll(',', ';')}`)
+    .join('\n');
   // console.log("CSS", css);
 
   // const styleTag = document.createElement('link');
@@ -93,14 +97,14 @@ const getFile = async (route: string, id: string): Promise<any> => {
   if (state.token && id) {
     try {
       const config = {
-        headers: { Authorization: "Bearer " + state.token },
-        responseType: "blob",
-        params: { id: id }
+        headers: { Authorization: 'Bearer ' + state.token },
+        responseType: 'blob',
+        params: { id: id },
       } as AxiosRequestConfig;
 
-      const response = await axios.get("/api/" + route, config);
-      const blob = new Blob([response.data], { type: 'application/gzip' })
-      const link = document.createElement('a')
+      const response = await axios.get('/api/' + route, config);
+      const blob = new Blob([response.data], { type: 'application/gzip' });
+      const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
       link.download = id;
       link.click();
@@ -118,61 +122,60 @@ const logoutUser = () => {
   router.replace('/login');
 };
 
-const get = async (route: string, id: string = "", data: Object = {}): Promise<any> => {
+const get = async (route: string, id: string = '', data: Object = {}): Promise<any> => {
   if (state.token) {
     try {
       // console.log("data", data);
       // console.log("token", state.token);
-      const config = state.token ?
-        { headers: { Authorization: "Bearer " + state.token }, "params": {} } : {};
+      const config = state.token ? { headers: { Authorization: 'Bearer ' + state.token }, params: {} } : {};
 
       let params = id ? { id } : {};
       config.params = { ...params, ...data };
 
-      const response = await axios.get("/api/" + route, config);
+      const response = await axios.get('/api/' + route, config);
       // console.log(response.data);
 
       return response.data;
     } catch (error: any | AxiosError) {
-      console.log("Cannot get", error);
+      console.log('Cannot get', error);
       if (axios.isAxiosError(error)) {
         // console.log("axios error");
         if (error.response?.status === 401) {
-          console.log("access denied!");
+          console.log('access denied!');
           logoutUser();
         }
       }
       return error;
     }
   }
-  console.log("No key. Fail.");
+  console.log('No key. Fail.');
 };
 
 const post = async (table: string, data: Object): Promise<any> => {
   if (state.token) {
     try {
-      const config = { headers: { Authorization: "Bearer " + state.token } };
+      const config = { headers: { Authorization: 'Bearer ' + state.token } };
       // const config = {};
       // console.log(`POST ${table}`);
       const response = await axios.post('/api/' + table, data, config);
       // console.log("store:response", response.data);
       return response;
     } catch (error) {
-      console.log("Cannot get", error);
+      console.log('Cannot get', error);
       return error;
     }
   }
-  console.log("No token. Fail.");
+  console.log('No token. Fail.');
 };
 
 const postUnauthorized = async (table: string, data: Object): Promise<any> => {
   try {
     // console.log(`POST ${table}`);
     const response = await axios.post('/api/' + table, data);
-    console.log("post [NO AUTH]", table, response.data);
+    console.log('post [NO AUTH]', table, response.data);
     return response;
   } catch (error) {
-    console.log("Cannot get", error);
+    console.log('Cannot get', error);
     return error;
   }
 };
@@ -180,10 +183,10 @@ const postUnauthorized = async (table: string, data: Object): Promise<any> => {
 const getUnauthorized = async (table: string, data?: Object): Promise<any> => {
   try {
     const response = await axios.get('/api/' + table, data);
-    console.log("get [NO AUTH]", table, response.data);
+    console.log('get [NO AUTH]', table, response.data);
     return response;
   } catch (error) {
-    console.log("Cannot get", error);
+    console.log('Cannot get', error);
     return error;
   }
 };
@@ -191,19 +194,19 @@ const getUnauthorized = async (table: string, data?: Object): Promise<any> => {
 const getUser = async () => {
   if (state.token) {
     try {
-      ``
+      ``;
       // console.log("token", state.token);
-      const config = { headers: { Authorization: "Bearer " + state.token }, };
-      const response = await axios.get("/api/user/info", config);
+      const config = { headers: { Authorization: 'Bearer ' + state.token } };
+      const response = await axios.get('/api/user/info', config);
       state.user = response.data;
       // console.log(state.user);
       if (state?.user?.classes) {
         setCustomCSS();
       }
     } catch (error: any | AxiosError) {
-      console.log("Cannot get user", error);
+      console.log('Cannot get user', error);
       if (error.response?.status === 401) {
-        console.log("access denied!");
+        console.log('access denied!');
         logoutUser();
       }
       return error;
@@ -214,18 +217,31 @@ const getUser = async () => {
 const deleteById = async (table: string, id: string): Promise<any> => {
   if (state.token) {
     try {
-      const config = { headers: { Authorization: "Bearer " + state.token }, "params": {} };
+      const config = { headers: { Authorization: 'Bearer ' + state.token }, params: {} };
       // if(id) { config["params"] = { id: id }; }
       // console.log("delete query", table, id);
-      const response = await axios.delete("/api/" + table + "/" + id, config);
+      const response = await axios.delete('/api/' + table + '/' + id, config);
       // console.log(response.data);
       return response;
     } catch (error) {
-      console.log("Cannot delete", error);
+      console.log('Cannot delete', error);
       return error;
     }
   }
-  console.log("No token. Fail.");
+  console.log('No token. Fail.');
+};
+
+const renderSite = async (id: number | string) => {
+  const { data } = await post('publish', { id });
+  console.log(data);
+  const url = `${window.location.origin}/api/files/${id}/`;
+  if (!browserTab || browserTab?.closed) {
+    browserTab = window.open(url, '_blank') as Window;
+    browserTab?.focus();
+  } else {
+    browserTab.location.reload();
+  }
+  browserTab?.focus();
 };
 
 export default {
@@ -243,4 +259,5 @@ export default {
   getExtensions,
   convertJSONtoHTML,
   setCustomCSS,
+  renderSite,
 };
