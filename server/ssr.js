@@ -135,8 +135,8 @@ const build = async (currentDir, id, siteDir, filename) => {
         switch (obj.type) {
           case 'text':
             if (obj?.marks) {
-              const cl = obj.marks.map((x) => x?.attrs?.class)?.[0];
-              return cl && cl !== 'error' ? `<span class="${cl}">${obj.text}</span>` : '';
+              const classes = obj.marks.map((x) => x?.attrs?.class || x?.type);
+              return classes.length && !classes.includes('error') ? `<span class="${classes.join(' ')}">${obj.text}</span>` : '';
             }
             return obj.text;
           case 'figure':
