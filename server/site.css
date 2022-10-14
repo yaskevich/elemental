@@ -32,6 +32,10 @@ body {
   cursor: pointer;
 }
 
+.bold {
+  font-weight: bold;
+}
+
 .name {
   font-weight: bold;
   font-style: italic;
@@ -43,7 +47,6 @@ body {
 
 .book {
   background: #eee;
-  padding: 0 3px;
   color: #c76c0c;
 }
 
