@@ -58,13 +58,7 @@
         </div>
       </n-space>
 
-      <n-input
-        v-model:value="comment.title"
-        type="text"
-        placeholder="Heading"
-        class="maininput"
-        autofocus
-        :allow-input="noSideSpace"></n-input>
+      <n-input v-model:value="comment.title" type="text" placeholder="Heading" class="maininput" autofocus></n-input>
 
       <n-text type="error" v-if="!comment.title">Heading should not be empty!</n-text>
 
@@ -88,8 +82,7 @@
           v-if="item.type === 'line'"
           v-model:value="comment.entry[item.id]"
           type="text"
-          :placeholder="item.title"
-          :allow-input="noSideSpace" />
+          :placeholder="item.title" />
 
         <Tiptap
           v-if="item.type === 'rich'"
@@ -157,8 +150,6 @@ const vuerouter = useRoute();
 const message = useMessage();
 const scheme = store?.state?.user?.text?.scheme || [];
 const textId = store?.state?.user?.text_id;
-
-const noSideSpace = (value: string) => !/ /g.test(value);
 
 let tokensToBind = vuerouter.query?.tokens ? String(vuerouter.query.tokens).split(',').map(Number) : [];
 console.log('received token ids', tokensToBind);
@@ -358,15 +349,20 @@ const checkValidMarkup = (document: any) => {
 
 const checkIsEntryUpdated = () => {
   let result = false;
+  comment.title = comment.title.trim();
 
   scheme
-    .filter(x => x.type === 'rich')
+    // .filter(x => x.type === 'rich')
     .map(x => {
       // console.log(x.id, commentStored.entry[x.id]);
-      if (editorRefs[x.id]?.handle) {
-        comment.entry[x.id] = editorRefs[x.id].handle.getJSON();
-        // checkValidMarkup(comment.entry[x.id]);
-        editorRefs[x.id].handle.commands.setContent(comment.entry[x.id], false);
+      if (x.type === 'rich') {
+        if (editorRefs[x.id]?.handle) {
+          comment.entry[x.id] = editorRefs[x.id].handle.getJSON();
+          // checkValidMarkup(comment.entry[x.id]);
+          editorRefs[x.id].handle.commands.setContent(comment.entry[x.id], false);
+        }
+      } else if (x.type === 'line' && comment?.entry?.[x.id]) {
+        comment.entry[x.id] = comment.entry[x.id].trim();
       }
     });
 
