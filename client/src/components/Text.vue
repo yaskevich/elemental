@@ -1,6 +1,5 @@
-
 <template>
-  <div v-if="isLoaded" class="left" style="padding: 0 10px 20px 10px;">
+  <div v-if="isLoaded" class="left" style="padding: 0 10px 20px 10px">
     <div class="minimal left" v-if="!store?.state?.user?.text_id">
       <n-alert title="No text" type="warning">Select specific text before (at Home screen)</n-alert>
     </div>
@@ -13,27 +12,55 @@
               :key="item.value"
               :value="item.value"
               :label="item.label"
-              :disabled="item.disabled"
-            />
+              :disabled="item.disabled" />
           </n-space>
         </n-radio-group>
 
-        <n-switch :round="false" :rail-style="actStyle" v-model:value="inspectMode">
-          <template #checked>Inspect</template>
-          <template #unchecked>Select</template>
-        </n-switch>
+        <template v-if="annotationMode === 'comment'">
+          <n-switch :round="false" :rail-style="actStyle" v-model:value="inspectMode">
+            <template #checked>Inspect</template>
+            <template #unchecked>Select</template>
+          </n-switch>
 
-        <!-- <n-button :color="inspectMode?'#ff69b4':'#8a2be2'" size="tiny" @click="inspectMode = !inspectMode">{{inspectMode?'Inspect':'Select'}}</n-button> -->
+          <!-- <n-button :color="inspectMode?'#ff69b4':'#8a2be2'" size="tiny" @click="inspectMode = !inspectMode">{{inspectMode?'Inspect':'Select'}}</n-button> -->
 
-        <n-switch
-          :round="false"
-          :rail-style="selStyle"
-          v-model:value="singleMode"
-          :style="`visibility: ${!inspectMode ? 'visible' : 'hidden'}`"
-        >
-          <template #checked>Unit</template>
-          <template #unchecked>Sequence</template>
-        </n-switch>
+          <n-switch
+            :round="false"
+            :rail-style="selStyle"
+            v-model:value="singleMode"
+            :style="`visibility: ${!inspectMode ? 'visible' : 'hidden'}`">
+            <template #checked>Unit</template>
+            <template #unchecked>Sequence</template>
+          </n-switch>
+        </template>
+        <template v-if="annotationMode === 'format'">
+          <n-button-group size="small">
+            <n-button @click="formattingMode = 'h1'" :type="formattingMode === 'h1' ? 'success' : 'default'">
+              <template #icon>
+                <n-icon :component="TitleFilled" />
+              </template>
+              Heading 1
+            </n-button>
+            <n-button @click="formattingMode = 'bold'" :type="formattingMode === 'bold' ? 'success' : 'default'">
+              <template #icon>
+                <n-icon :component="FormatBoldFilled" />
+              </template>
+              Bold
+            </n-button>
+            <n-button @click="formattingMode = 'italic'" :type="formattingMode === 'italic' ? 'success' : 'default'">
+              <template #icon>
+                <n-icon :component="FormatItalicFilled" />
+              </template>
+              Italic
+            </n-button>
+            <n-button @click="formattingMode = 'clear'" :type="formattingMode === 'clear' ? 'success' : 'default'">
+              <template #icon>
+                <n-icon :component="ClearFilled" />
+              </template>
+              Clear
+            </n-button>
+          </n-button-group>
+        </template>
       </n-space>
 
       <n-divider />
@@ -44,8 +71,7 @@
         :title="'Bound comments for “' + selectedToken.form + '”'"
         positive-text="Submit"
         negative-text="Cancel"
-        @positive-click="submitModal"
-      >
+        @positive-click="submitModal">
         <n-checkbox-group v-model:value="commentsToStore">
           <template v-for="(commentId, index) in selectedToken.comments" :key="index">
             <n-checkbox :value="commentId" :label="commentsObject[String(commentId)]['title']" />
@@ -55,18 +81,30 @@
       </n-modal>
 
       <div>
-        <template v-for="(token, index) in text" :key="token.id" style="padding:.5rem;">
-          <div v-if="index && token.p !== text[index - 1].p" style="margin-bottom:1rem;"></div>
+        <template v-for="(token, index) in text" :key="token.id" style="padding: 0.5rem">
+          <div v-if="index && token.p !== text[index - 1].p" style="margin-bottom: 1rem"></div>
           <button
             :id="`id${token.id}`"
-            :class="`text-button ${token?.checked ? 'selected-button' : ''}  ${token?.comments?.length ? 'commented' : ''} ${highlightedTokens.length && highlightedTokens.includes(token.id) ? 'highlighted' : ''}`"
+            :class="`text-button ${token?.checked ? 'selected-button' : ''}  ${
+              token?.comments?.length ? 'commented' : ''
+            } ${highlightedTokens.length && highlightedTokens.includes(token.id) ? 'highlighted' : ''}`"
             size="small"
-            :title="store.state.user?.text?.grammar ? token?.pos : token.comments.map(x => commentsObject[String(x)]['title']).join('•')"
+            :title="
+              store.state.user?.text?.grammar
+                ? token?.pos
+                : token.comments.map(x => commentsObject[String(x)]['title']).join('•')
+            "
             v-if="token.meta !== 'ip'"
             :disabled="token.meta === 'ip+'"
             @click="selectToken(token, $event)"
-            :style="store.state.user?.text?.grammar && token?.pos ? { 'background-color': grammarScheme?.[token.pos]?.['color'] || 'gray', 'color': grammarScheme?.[token.pos]?.['font'] || 'black' } : ''"
-          >
+            :style="
+              store.state.user?.text?.grammar && token?.pos
+                ? {
+                    'background-color': grammarScheme?.[token.pos]?.['color'] || 'gray',
+                    color: grammarScheme?.[token.pos]?.['font'] || 'black',
+                  }
+                : ''
+            ">
             {{ token.form }}
             <sup v-if="token?.comments?.length">{{ token.comments.length }}</sup>
           </button>
@@ -76,12 +114,9 @@
       <n-drawer v-model:show="showDrawer" placement="bottom" :on-update:show="drawerUpdated()">
         <n-drawer-content>
           <n-space vertical>
-            <div style="margin: 5px;">
+            <div style="margin: 5px">
               <template v-for="item in selectedArray" :key="item.id">
-                <span
-                  v-if="item.meta !== 'ip'"
-                  class="sequence selected-button text-button"
-                >{{ item.form }}</span>
+                <span v-if="item.meta !== 'ip'" class="sequence selected-button text-button">{{ item.form }}</span>
               </template>
             </div>
             <n-auto-complete
@@ -89,9 +124,8 @@
               :options="options"
               placeholder="Comment title or ID"
               :on-update:value="(userInput: string) => queryDatabase(userInput)"
-              :on-select="(selectedValue: number) => selectOption(selectedValue)"
-            />
-            <div v-if="selectedCommentId" style="margin: 5px;">Comment: {{ selectedCommentTitle }}</div>
+              :on-select="(selectedValue: number) => selectOption(selectedValue)" />
+            <div v-if="selectedCommentId" style="margin: 5px">Comment: {{ selectedCommentTitle }}</div>
             <div>
               <n-button @click="clearSelection">Clear tokens selection</n-button>&nbsp;
               <n-button @click="createComment" type="warning">Bind tokens to new comment</n-button>&nbsp;
@@ -105,11 +139,11 @@
 </template>
 
 <script setup lang="ts">
-
-import { ref, reactive, onBeforeMount, onUpdated, nextTick, computed, } from 'vue';
+import { ref, reactive, onBeforeMount, onUpdated, nextTick, computed } from 'vue';
 import store from '../store';
 import router from '../router';
 import { useRoute } from 'vue-router';
+import { TitleFilled, FormatBoldFilled, FormatItalicFilled, ClearFilled } from '@vicons/material';
 
 const vuerouter = useRoute();
 const highlightedTokens = vuerouter.query?.tokens ? String(vuerouter.query.tokens).split(',').map(Number) : [];
@@ -134,6 +168,7 @@ const selectedArray = ref([] as Array<IToken>);
 const showDrawer = computed(() =>
   singleMode.value ? Boolean(token1.value?.id) : Boolean(token1.value?.id && token2.value?.id)
 );
+const formattingMode = ref('h1');
 
 const scrollTo = (id: number) => {
   let element = document.querySelector(`#id${id}`);
@@ -162,11 +197,11 @@ onBeforeMount(async () => {
     const currentTextId = String(store?.state?.user?.text_id);
     const data = await store.get('text', currentTextId, { grammar: store.state.user?.text?.grammar });
     Object.assign(text, data);
-    console.log("content", Boolean(data[0]?.pos), data[0]);
+    console.log('content', Boolean(data[0]?.pos), data[0]);
 
     if (store.state.user?.text?.grammar) {
       const grammar = await store.get('grammar');
-      console.log("grammar", grammar);
+      console.log('grammar', grammar);
       Object.assign(grammarScheme, grammar);
     }
 
@@ -235,56 +270,61 @@ const queryDatabase = async (chunk: string) => {
 };
 
 const selectToken = (token: IToken, e: MouseEvent) => {
-  if (inspectMode.value || e.shiftKey) {
-    if (token?.comments?.length) {
-      // console.log('inspect', token);
-      selectedToken.value = token;
-      commentsToStore.value = token.comments;
-      showModal.value = true;
-    } else {
-      console.log('no bound comments');
-    }
-  } else {
-    // console.log("token", token);
-    if (token?.checked) {
-      // console.log('de-select', token);
-      if (token1.value?.id === token.id) {
-        token1.value = token2.value;
-        token2.value = {} as IToken;
+  console.log(annotationMode.value);
+  if (annotationMode.value === 'comment') {
+    if (inspectMode.value || e.shiftKey) {
+      if (token?.comments?.length) {
+        // console.log('inspect', token);
+        selectedToken.value = token;
+        commentsToStore.value = token.comments;
+        showModal.value = true;
       } else {
-        token2.value = {} as IToken;
+        console.log('no bound comments');
       }
-      token.checked = false;
     } else {
-      // console.log("select", token);
-      if (!token1.value?.id) {
-        token.checked = true;
-        token1.value = token;
-      } else {
-        if (token2.value?.id && token.s === token1.value.s && token.s === token2.value.s) {
-          // console.log("set!");
-          const d1 = Math.abs(token.id - token1.value.id);
-          const d2 = Math.abs(token.id - token2.value.id);
-          if (d1 < d2) {
-            token.checked = true;
-            token1.value.checked = false;
-            token1.value = token;
-          } else {
-            token.checked = true;
-            token2.value.checked = false;
-            token2.value = token;
-          }
-          // console.log("d1", d1);
-          // console.log("d2", d2);
-        } else if (token.s === token1.value.s) {
-          token2.value = token;
-          token.checked = true;
-          // console.log("sel", token1.value);
+      // console.log("token", token);
+      if (token?.checked) {
+        // console.log('de-select', token);
+        if (token1.value?.id === token.id) {
+          token1.value = token2.value;
+          token2.value = {} as IToken;
         } else {
-          console.log('nope!');
+          token2.value = {} as IToken;
+        }
+        token.checked = false;
+      } else {
+        // console.log("select", token);
+        if (!token1.value?.id) {
+          token.checked = true;
+          token1.value = token;
+        } else {
+          if (token2.value?.id && token.s === token1.value.s && token.s === token2.value.s) {
+            // console.log("set!");
+            const d1 = Math.abs(token.id - token1.value.id);
+            const d2 = Math.abs(token.id - token2.value.id);
+            if (d1 < d2) {
+              token.checked = true;
+              token1.value.checked = false;
+              token1.value = token;
+            } else {
+              token.checked = true;
+              token2.value.checked = false;
+              token2.value = token;
+            }
+            // console.log("d1", d1);
+            // console.log("d2", d2);
+          } else if (token.s === token1.value.s) {
+            token2.value = token;
+            token.checked = true;
+            // console.log("sel", token1.value);
+          } else {
+            console.log('nope!');
+          }
         }
       }
     }
+  } else if (annotationMode.value === 'format') {
+    console.log('format action', formattingMode.value);
   }
 };
 
@@ -335,19 +375,19 @@ const submitModal = async () => {
 const goToComment = (comment: number) => {
   // console.log("click", comment);
   router.push({ name: 'Comment', params: { id: comment, tokens: 'tetstst' } });
-}
+};
 
 const annotationMode = ref('comment');
 const items = [
   {
-    value: "comment",
-    label: "Comment",
+    value: 'comment',
+    label: 'Comment',
     disabled: false,
   },
   {
     value: 'format',
     label: 'Format',
-    disabled: true,
+    disabled: false,
   },
   {
     value: 'grammar',
@@ -355,9 +395,7 @@ const items = [
     disabled: true,
   },
 ];
-
 </script>
-
 
 <style scoped>
 .text-button {
