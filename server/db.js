@@ -99,6 +99,7 @@ const databaseScheme = {
     line integer,
     form text,
     repr text,
+    fmt text[] DEFAULT '{}',
     token_id integer,
     unit_id integer,
     comments integer[] DEFAULT '{}',
@@ -440,8 +441,8 @@ export default {
   },
   async getText(id, withGrammar = false) {
     // console.log("with grammar", withGrammar);
-    const sqlWithGrammar = 'select strings.id as id, strings.p, strings.s, strings.form, strings.repr, tokens.id as tid, tokens.meta, units.id as uid, units.pos, strings.comments from strings left join tokens on strings.token_id = tokens.id left join units on strings.unit_id = units.id where text_id = $1 ORDER BY strings.id';
-    const sql = 'select strings.id as id, strings.p, strings.s, strings.form, strings.repr, tokens.id as tid, tokens.meta, strings.comments from strings left join tokens on strings.token_id = tokens.id where text_id = $1 ORDER BY strings.id';
+    const sqlWithGrammar = 'select strings.id as id, strings.p, strings.s, strings.form, strings.repr, strings.fmt, tokens.id as tid, tokens.meta, units.id as uid, units.pos, strings.comments from strings left join tokens on strings.token_id = tokens.id left join units on strings.unit_id = units.id where text_id = $1 ORDER BY strings.id';
+    const sql = 'select strings.id as id, strings.p, strings.s, strings.form, strings.repr, strings.fmt, tokens.id as tid, tokens.meta, strings.comments from strings left join tokens on strings.token_id = tokens.id where text_id = $1 ORDER BY strings.id';
     let data = [];
     try {
       const result = await pool.query(withGrammar ? sqlWithGrammar : sql, [id]);
@@ -566,7 +567,7 @@ export default {
     const issuesAsArray = `{${params?.issues?.length ? params.issues.map((x) => `{${x.join(',')}}`).join(',') : ''}}`;
     // console.log("issues", issuesAsArray);
     const textId = Number(params.text_id);
-    const values = [textId, params.title, params.published, params.entry, params.priority, tagsAsArray, issuesAsArray];
+    const values = [textId, params.title.trim(), params.published, params.entry, params.priority, tagsAsArray, issuesAsArray];
 
     let sql = '';
 
@@ -1241,6 +1242,22 @@ export default {
       } catch (err) {
         console.error(JSON.stringify(err));
         data = { error: err?.detail || err?.routine };
+      }
+    }
+    return data;
+  },
+  async setFormatForString(params) {
+    console.log(params);
+    const id = Number(params?.id);
+    const fmtAsArray = `{${params?.fmt?.length ? params.fmt.join(',') : ''}}`;
+    let data = {};
+    if (id) {
+      try {
+        const sql = 'UPDATE strings SET fmt = $2 WHERE id = $1 RETURNING id';
+        const result = await pool.query(sql, [id, fmtAsArray]);
+        data = result?.rows?.shift();
+      } catch (err) {
+        console.error(err);
       }
     }
     return data;
