@@ -244,6 +244,10 @@ app.post('/api/strings', auth, async (req, res) => {
   res.json(await db.setCommentForString(req.body));
 });
 
+app.post('/api/format', auth, async (req, res) => {
+  res.json(await db.setFormatForString(req.body));
+});
+
 app.post('/api/tokencomments', auth, async (req, res) => {
   res.json(await db.setCommentsForToken(req.body));
 });
