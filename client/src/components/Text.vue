@@ -1,28 +1,25 @@
 <template>
   <div v-if="isLoaded" class="left" style="padding: 0 10px 20px 10px">
-    <div class="minimal left" v-if="!store?.state?.user?.text_id">
+    <n-space vertical justify="center" class="minimal" v-if="!store?.state?.user?.text_id">
       <n-alert title="No text" type="warning">Select specific text before (at Home screen)</n-alert>
-    </div>
+    </n-space>
     <div v-else>
-      <n-space justify="left" size="large">
-        <n-radio-group v-model:value="annotationMode" name="radiogroup">
-          <n-space>
+      <n-space vertical class="minimal" justify="center">
+        <n-space justify="center">
+          <n-radio-group v-model:value="annotationMode" name="radiogroup">
             <n-radio
               v-for="item in items"
               :key="item.value"
               :value="item.value"
               :label="item.label"
               :disabled="item.disabled" />
-          </n-space>
-        </n-radio-group>
-
-        <template v-if="annotationMode === 'comment'">
+          </n-radio-group>
+        </n-space>
+        <n-space justify="center" size="large" v-if="annotationMode === 'comment'">
           <n-switch :round="false" :rail-style="actStyle" v-model:value="inspectMode">
             <template #checked>Inspect</template>
             <template #unchecked>Select</template>
           </n-switch>
-
-          <!-- <n-button :color="inspectMode?'#ff69b4':'#8a2be2'" size="tiny" @click="inspectMode = !inspectMode">{{inspectMode?'Inspect':'Select'}}</n-button> -->
 
           <n-switch
             :round="false"
@@ -32,8 +29,8 @@
             <template #checked>Unit</template>
             <template #unchecked>Sequence</template>
           </n-switch>
-        </template>
-        <template v-if="annotationMode === 'format'">
+        </n-space>
+        <n-space justify="center" v-if="annotationMode === 'format'">
           <n-button-group size="small">
             <n-button @click="formattingMode = 'h1'" :type="formattingMode === 'h1' ? 'success' : 'default'">
               <template #icon>
@@ -60,10 +57,11 @@
               Clear
             </n-button>
           </n-button-group>
-        </template>
+        </n-space>
+        <n-divider />
       </n-space>
 
-      <n-divider />
+      <!-- <n-divider /> -->
 
       <n-modal
         v-model:show="showModal"
@@ -80,36 +78,39 @@
         </n-checkbox-group>
       </n-modal>
 
-      <div>
-        <template v-for="(token, index) in text" :key="token.id" style="padding: 0.5rem">
-          <div v-if="index && token.p !== text[index - 1].p" style="margin-bottom: 1rem"></div>
-          <button
-            :id="`id${token.id}`"
-            :class="`text-button ${token?.checked ? 'selected-button' : ''}  ${
-              token?.comments?.length ? 'commented' : ''
-            } ${highlightedTokens.length && highlightedTokens.includes(token.id) ? 'highlighted' : ''}`"
-            size="small"
-            :title="
-              store.state.user?.text?.grammar
-                ? token?.pos
-                : token.comments.map(x => commentsObject[String(x)]['title']).join('•')
-            "
-            v-if="token.meta !== 'ip'"
-            :disabled="token.meta === 'ip+'"
-            @click="selectToken(token, $event)"
-            :style="
-              store.state.user?.text?.grammar && token?.pos
-                ? {
-                    'background-color': grammarScheme?.[token.pos]?.['color'] || 'gray',
-                    color: grammarScheme?.[token.pos]?.['font'] || 'black',
-                  }
-                : ''
-            ">
-            {{ token.form }}
-            <sup v-if="token?.comments?.length">{{ token.comments.length }}</sup>
-          </button>
-        </template>
-      </div>
+      <n-scrollbar trigger="none" style="max-height: 600px" class="">
+        <div style="padding: 0 5px 0 5px">
+          <template v-for="(token, index) in text" :key="token.id" style="padding: 0.5rem">
+            <div v-if="index && token.p !== text[index - 1].p" style="margin-bottom: 1rem"></div>
+            <template v-if="token.meta !== 'ip' && index && token.p === text[index - 1].p"></template>
+            <button
+              :id="`id${token.id}`"
+              :class="`text-button ${
+                token.meta === 'ip' ? (['«', '('].includes(token.repr) ? 'right' : 'left') : 'token'
+              } ${token?.checked ? 'selected-button' : ''}  ${token?.comments?.length ? 'commented' : ''} ${
+                highlightedTokens.length && highlightedTokens.includes(token.id) ? 'highlighted' : ''
+              } ${token?.fmt?.join(' ') || ''}`"
+              size="small"
+              :title="
+                store.state.user?.text?.grammar
+                  ? token?.pos
+                  : token.comments.map(x => commentsObject[String(x)]['title']).join('•')
+              "
+              :disabled="token.meta === 'ip+'"
+              @click="selectToken(token, $event)"
+              :style="
+                store.state.user?.text?.grammar && token?.pos
+                  ? {
+                      'background-color': grammarScheme?.[token.pos]?.['color'] || 'gray',
+                      color: grammarScheme?.[token.pos]?.['font'] || 'black',
+                    }
+                  : ''
+              ">
+              {{ token.repr }}<sup v-if="token?.comments?.length">{{ token.comments.length }}</sup>
+            </button>
+          </template>
+        </div>
+      </n-scrollbar>
 
       <n-drawer v-model:show="showDrawer" placement="bottom" :on-update:show="drawerUpdated()">
         <n-drawer-content>
@@ -168,7 +169,7 @@ const selectedArray = ref([] as Array<IToken>);
 const showDrawer = computed(() =>
   singleMode.value ? Boolean(token1.value?.id) : Boolean(token1.value?.id && token2.value?.id)
 );
-const formattingMode = ref('h1');
+const formattingMode = ref('');
 
 const scrollTo = (id: number) => {
   let element = document.querySelector(`#id${id}`);
@@ -197,7 +198,7 @@ onBeforeMount(async () => {
     const currentTextId = String(store?.state?.user?.text_id);
     const data = await store.get('text', currentTextId, { grammar: store.state.user?.text?.grammar });
     Object.assign(text, data);
-    console.log('content', Boolean(data[0]?.pos), data[0]);
+    // console.log('content', Boolean(data[0]?.pos), data[0]);
 
     if (store.state.user?.text?.grammar) {
       const grammar = await store.get('grammar');
@@ -269,8 +270,8 @@ const queryDatabase = async (chunk: string) => {
   }
 };
 
-const selectToken = (token: IToken, e: MouseEvent) => {
-  console.log(annotationMode.value);
+const selectToken = async (token: IToken, e: MouseEvent) => {
+  // console.log(annotationMode.value);
   if (annotationMode.value === 'comment') {
     if (inspectMode.value || e.shiftKey) {
       if (token?.comments?.length) {
@@ -324,7 +325,18 @@ const selectToken = (token: IToken, e: MouseEvent) => {
       }
     }
   } else if (annotationMode.value === 'format') {
-    console.log('format action', formattingMode.value);
+    if (formattingMode.value === 'clear') {
+      token.fmt = [];
+    } else if (formattingMode.value === 'h1') {
+      token.fmt = ['h1'];
+    } else {
+      token.fmt.includes('h1') ? (token.fmt = [formattingMode.value]) : token.fmt.push(formattingMode.value);
+    }
+    // console.log('format action', token.id, token.fmt);
+    if (formattingMode.value) {
+      const { data } = await store.post('format', token);
+      console.log('format result', data);
+    }
   }
 };
 
@@ -381,12 +393,12 @@ const annotationMode = ref('comment');
 const items = [
   {
     value: 'comment',
-    label: 'Comment',
+    label: 'Comments',
     disabled: false,
   },
   {
     value: 'format',
-    label: 'Format',
+    label: 'Formatting',
     disabled: false,
   },
   {
@@ -406,6 +418,19 @@ const items = [
   cursor: pointer;
   overflow: hidden;
   outline: none;
+  font-size: 1rem;
+}
+
+.token {
+  padding: 0 5px 0 5px;
+}
+
+.left {
+  margin-left: -5px;
+}
+
+.right {
+  margin-right: -5px;
 }
 .selected-button {
   border: solid 1px black;
@@ -431,5 +456,18 @@ const items = [
 .highlighted {
   animation: blink 1s linear 1;
   background-color: yellow;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.h1 {
+  font-size: 1.2rem;
+  font-weight: 300;
 }
 </style>
