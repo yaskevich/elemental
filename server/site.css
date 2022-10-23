@@ -23,6 +23,18 @@ body {
   padding: 0 5px 0 5px;
 }
 
+.left {
+  padding-left: 5px;
+}
+
+.right {
+  padding-right: 5px;
+}
+
+.newline {
+  padding-left: 50px;
+}
+
 .mark {
   background: rgba(232, 209, 0, 0.59);
 }
@@ -46,8 +58,10 @@ body {
 }
 
 .book {
-  background: #eee;
-  color: #c76c0c;
+  /* background: #eee; */
+  /* color: #c76c0c; */
+  font-size: 75%;
+  color: gray;
 }
 
 .citation {
@@ -61,24 +75,24 @@ figcaption {
 
 div.blockquote {
   background: #f9f9f9;
-  border-left: 10px solid #ccc;
+  /* border-left: 10px solid #ccc; */
   margin: 1.5em 10px;
   padding: 0.5em 10px;
-  quotes: '\201C''\201D''\2018''\2019';
+  /* quotes: '\201C''\201D''\2018''\2019'; */
 }
 
-div.blockquote:before {
+/* div.blockquote:before {
   color: #ccc;
   content: open-quote;
   font-size: 4em;
   line-height: 0.1em;
   margin-right: 0.25em;
   vertical-align: -0.4em;
-}
+} 
 
 div.blockquote:after {
   content: no-close-quote;
-}
+} */
 
 .block {
   display: block;
@@ -89,6 +103,7 @@ div.blockquote:after {
   font-size: 1em;
   cursor: pointer;
   text-align: center;
+  color: black;
 }
 
 .block:hover {
@@ -98,6 +113,10 @@ div.blockquote:after {
 
 .hidden {
   display: none;
+}
+
+.highlighted {
+  background-color: pink;
 }
 
 .choices {
@@ -140,6 +159,15 @@ div.blockquote:after {
 img {
   max-width: 100%;
   height: auto;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.h1 {
+  font-size: 1.2rem;
+  font-weight: 300;
 }
 
 h2 {
