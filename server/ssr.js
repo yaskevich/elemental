@@ -36,7 +36,32 @@ const compileHTML = (params) => `
   <script type="text/javascript">
     ${params.js}
     $(function () {   // Handler for .ready() called.
-      $(".modals").iziModal({"group": "comments", "loop": true});
+      $(".modals").iziModal({
+        "group": "comments",
+        "loop": true,
+        "headerColor": '#729db6',
+        onOpening: function(){
+        },
+        onClosed: function(e){
+          $('.highlighted').removeClass('highlighted');
+          var id = e.id.slice(2);
+          var el = $('span.mark[data-id="'+id+'"]');
+          console.log('closed', id, !!el.length);
+
+          if (!el.length){
+            el = $('span.mark[data-id*="-'+ id + '-"');
+            console.log('alt', id, el.length);
+          }
+
+          if (el.length){
+            el.addClass("highlighted");
+            el[0].scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+            });
+          }
+        }
+      });
       $(".choices").iziModal({ "overlayColor": "rgba(0, 0, 0, 0.6)", "padding": 10});
       $(document).on('click', '.btn', function (event) {
         event.preventDefault();
@@ -86,8 +111,6 @@ const renderFigure = (figObj) => {
   return `<figure><img src="${figObj.attrs.src}" />${caption}</figure>`;
 };
 
-const renderToken = (form, cid, tip, multi) => (tip ? `<span class="tooltip token mark ${multi ? 'mult' : 'btn'}" aria-label="${tip}" data-id="${cid}">${form}</span>` : `<span class="token">${form}</span>`);
-
 const build = async (currentDir, id, siteDir, filename) => {
   const textId = Number(id);
   if (!textId) {
@@ -112,6 +135,52 @@ const build = async (currentDir, id, siteDir, filename) => {
 
     const textInfo = textsInfo.shift();
     // console.log('text', textInfo?.scheme);
+    // ${}
+
+    const isGlued = (tkn) => {
+      if (tkn?.meta === 'ip') {
+        return ['«', '('].includes(tkn?.repr) ? 'left' : 'right';
+      }
+      return '';
+    };
+
+    const renderToken = (nl, num, cid, tip, multi) => {
+      const mode = multi ? 'mult' : 'btn';
+      const nextToken = tokens?.[num + 1];
+      const prevToken = tokens?.[num - 1];
+      const curToken = tokens?.[num];
+
+      const { repr } = curToken;
+      const typePlus = isGlued(nextToken);
+      const typeMinus = isGlued(prevToken);
+      let classes = isGlued(curToken);
+
+      if (typePlus === 'right') {
+        if (typeMinus !== 'left') {
+          classes = curToken.meta === 'ip' ? '' : 'left';
+        } else {
+          classes = curToken.meta === 'ip' ? '' : 'middle';
+        }
+      }
+
+      if (!classes) {
+        if (typeMinus === 'left') {
+          classes = 'right';
+        } else {
+          classes = curToken.meta === 'ip' ? '' : 'token';
+        }
+      }
+
+      if (nl) {
+        classes += ' newline ';
+      }
+
+      classes += ` ${curToken.fmt.join(' ')}`;
+      const start = `<span class="${classes}`;
+      const middle = tip ? ` tooltip mark ${mode}" aria-label="${tip}" data-id="${cid}` : '';
+
+      return classes === 'right' && !tip ? repr : `${`${start + middle}">${repr}`}</span>`;
+    };
 
     const tooltipElement = textInfo?.scheme.find((x) => x.type === 'line')?.id;
     if (!textInfo?.scheme) {
@@ -164,10 +233,10 @@ const build = async (currentDir, id, siteDir, filename) => {
 <div id="ms${cmt.id}" class="modals" data-iziModal-title="${cmt.title}"
 ${cmt?.entry?.[tooltipElement] ? `data-iziModal-subtitle="${cmt.entry[tooltipElement]}"` : ''} >
 <div class="content">
-<button type="button" data-id="${cmt.id}" class="block ${cmt?.entry?.[articleElement.id]?.content?.[0]?.content ? '' : 'hidden'} ${modalElement.id}${cmt.id}">➜ ${articleElement.title}</button>
-<button type="button" data-id="${cmt.id}" class="hidden block ${articleElement.id}${cmt.id} ">➜ ${modalElement.title}</button>
 <div class="${modalElement.id}${cmt.id}">${cmt?.entry?.[modalElement.id]?.content.map(render).join('')}</div>
 <div class="${articleElement.id}${cmt.id} hidden">${cmt?.entry?.[articleElement.id]?.content.map(render).join('')}</div>
+<button type="button" data-id="${cmt.id}" class="block ${cmt?.entry?.[articleElement.id]?.content?.[0]?.content ? '' : 'hidden'} ${modalElement.id}${cmt.id}">➜ ${articleElement.title}</button>
+<button type="button" data-id="${cmt.id}" class="hidden block ${articleElement.id}${cmt.id} ">➜ ${modalElement.title}</button>
 </div>
 </div>
 `;
@@ -178,36 +247,38 @@ ${cmt?.entry?.[tooltipElement] ? `data-iziModal-subtitle="${cmt.entry[tooltipEle
     const choiceModals = {};
 
     // generating tooltips - start
-    tokens.forEach((token) => {
-      if (token.p !== paragraphNumber) {
+    tokens.forEach((token, index) => {
+      const isNewline = token.p !== paragraphNumber;
+      if (isNewline) {
         body += `<div class="row">${paragraph}</div>\n\n`;
         paragraph = '';
         paragraphNumber = token.p;
       }
-      if (token.meta !== 'ip') {
-        const publishedComments = token.comments.sort((a, b) => a - b).filter((x) => commentsDict?.[x]);
-        const tips = publishedComments.map((x) => [x, commentsDict[x]?.entry?.[tooltipElement]?.trim()]).filter((x) => Boolean(x[1]));
+      // if (token.meta !== 'ip') {
+      const publishedComments = token.comments.sort((a, b) => a - b).filter((x) => commentsDict?.[x]);
+      const tips = publishedComments.map((x) => [x, commentsDict[x]?.entry?.[tooltipElement]?.trim()]).filter((x) => Boolean(x[1]));
 
-        const choiceId = publishedComments.join('-');
+      let choiceId = publishedComments.join('-');
+      choiceId = choiceId ? `-${choiceId}-` : '';
 
-        if (publishedComments?.length > 1 && !choiceModals?.[choiceId]) {
-          const buttons = publishedComments.map((x) => `<div><button class="btn" data-id="${commentsDict[x].id}" data-izimodal-close="">${commentsDict[x].title}</button></div>`).join('');
-          choiceModals[choiceId] = `<div id="ch${choiceId}" class="choices"> ${buttons}</div>`;
-        }
-
-        if (tips?.length) {
-          if (tips.length === 1) {
-            // commentsDict[commentId]
-            paragraph += renderToken(token.form, tips[0][0], tips[0][1]);
-          } else {
-            // console.log(token.comments, token.id);
-            const tipString = tips.map((x, i) => `${i + 1}. ${x[1]}`).join(' ');
-            paragraph += renderToken(token.form, choiceId, tipString, true);
-          }
-        } else {
-          paragraph += renderToken(token.form, null, null, publishedComments.length > 1);
-        }
+      if (publishedComments?.length > 1 && !choiceModals?.[choiceId]) {
+        const buttons = publishedComments.map((x) => `<div><button class="btn" data-id="${commentsDict[x].id}" data-izimodal-close="">${commentsDict[x].title}</button></div>`).join('');
+        choiceModals[choiceId] = `<div id="ch${choiceId}" class="choices"> ${buttons}</div>`;
       }
+
+      if (tips?.length) {
+        if (tips.length === 1) {
+          // commentsDict[commentId]
+          paragraph += renderToken(isNewline, index, tips[0][0], tips[0][1]);
+        } else {
+          // console.log(token.comments, token.id);
+          const tipString = tips.map((x, i) => `${i + 1}. ${x[1]}`).join(' ');
+          paragraph += renderToken(isNewline, index, choiceId, tipString, true);
+        }
+      } else {
+        paragraph += renderToken(isNewline, index, null, null, publishedComments.length > 1);
+      }
+      // }
     });
     // generating tooltips - end
 
