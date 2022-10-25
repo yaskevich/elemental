@@ -1247,7 +1247,7 @@ export default {
     return data;
   },
   async setFormatForString(params) {
-    console.log(params);
+    // console.log(params);
     const id = Number(params?.id);
     const fmtAsArray = `{${params?.fmt?.length ? params.fmt.join(',') : ''}}`;
     let data = {};
@@ -1262,4 +1262,18 @@ export default {
     }
     return data;
   },
+  async getLogs(params) {
+    const offset = params?.offset || 0;
+    const limit = params?.limit || 50;
+    const id = Number(params.id) || 1;
+    const sql = "SELECT * from logs WHERE data0->>'text_id' = $3::text or data1->>'text_id' = $3::text ORDER BY created DESC, id DESC OFFSET $1 LIMIT $2";
+    const res = await pool.query(sql, [offset, limit, id]);
+    return res?.rows;
+  },
+  async getChange(params) {
+    const id = Number(params.id) || 1;
+    const sql = 'SELECT * from logs WHERE id = $1';
+    const res = await pool.query(sql, [id]);
+    return res?.rows?.shift();
+  }
 };
