@@ -507,5 +507,13 @@ app.get('/api/settings', async (req, res) => {
   res.json(await db.getSettings());
 });
 
+app.get('/api/logs', async (req, res) => {
+  res.json(await db.getLogs(req.query));
+});
+
+app.get('/api/change', async (req, res) => {
+  res.json(await db.getChange(req.query));
+});
+
 app.listen(port);
 console.log(`Running at Port ${port}`);
