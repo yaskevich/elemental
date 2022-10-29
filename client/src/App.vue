@@ -66,6 +66,12 @@ const buildMenu = () => [
     key: 'management',
     icon: renderIcon(SettingsFilled),
     children: [
+      {
+        label: 'Site',
+        key: 'site',
+        disabled: !state?.user?.text?.loaded,
+        icon: renderIcon(WebFilled),
+      },
       makeItem('Media', 'Media', PermMediaFilled),
       makeItem('Sources', 'Sources', MenuBookFilled),
       makeItem('Flow', 'Flow', ReceiptLongFilled),
@@ -74,14 +80,7 @@ const buildMenu = () => [
       makeItem('Issues', 'Issues', LabelFilled),
       makeItem('Backups', 'Backups', BackupFilled),
       makeItem('Users', 'Users', PersonSearchFilled),
-      // makeItem('Logs', 'Logs', HistoryFilled, true),
-      // makeItem('', '', ),
-      {
-        label: 'Site',
-        key: 'site',
-        disabled: !state?.user?.text?.loaded,
-        icon: renderIcon(WebFilled),
-      },
+      makeItem('Logs', 'Logs', HistoryFilled),
     ],
     // children: [
     //   {
