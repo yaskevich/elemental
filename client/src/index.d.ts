@@ -109,6 +109,7 @@ declare global {
     s: number;
     pos?: string;
     comments: Array<number>;
+    fmt: Array<string>;
   }
 
   interface IComment {
@@ -184,5 +185,15 @@ declare global {
 
   interface CustomFileInfo extends UploadFileInfo {
     title: string;
+  }
+
+  interface IChange {
+    id?: number;
+    user_id: number;
+    table_name: string;
+    data0: IComment;
+    data1: IComment;
+    created: string;
+    record_id: number;
   }
 }
