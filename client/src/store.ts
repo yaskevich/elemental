@@ -244,6 +244,16 @@ const renderSite = async (id: number | string) => {
   browserTab?.focus();
 };
 
+const scrollTo = (id: number|string) => {
+  let element = document.querySelector(`#${id}`);
+  if (element) {
+    element.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+    });
+  }
+};
+
 export default {
   state,
   getFile,
@@ -260,4 +270,5 @@ export default {
   convertJSONtoHTML,
   setCustomCSS,
   renderSite,
+  scrollTo,
 };
