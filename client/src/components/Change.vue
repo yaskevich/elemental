@@ -11,15 +11,13 @@
       </n-space>
 
       <table style="width: 100%; border-collapse: collapse">
-        <tr>
+        <tr id="title">
           <td class="bordered bold">Title</td>
-
           <td class="bordered">{{ record?.data0?.title }}</td>
           <td class="bordered">{{ record?.data1?.title }}</td>
         </tr>
-        <tr v-for="field in store?.state?.user?.text?.scheme">
+        <tr :id="field.id" v-for="field in store?.state?.user?.text?.scheme">
           <td class="bordered bold">{{ field.title }}</td>
-
           <td
             class="bordered"
             v-html="
@@ -35,13 +33,13 @@
                 : store.convertJSONtoHTML(record?.data1?.entry?.[field.id], sources)
             "></td>
         </tr>
-        <tr>
+        <tr id="priority">
           <td class="bordered bold">Priority</td>
 
           <td class="bordered">{{ record?.data0?.priority }}</td>
           <td class="bordered">{{ record?.data1?.priority }}</td>
         </tr>
-        <tr>
+        <tr id="published">
           <td class="bordered bold">Status</td>
 
           <td class="bordered">
@@ -51,25 +49,29 @@
           </td>
           <td class="bordered">{{ record?.data1?.published ? 'Published' : 'Draft' }}</td>
         </tr>
-        <tr>
+        <tr id="issues">
           <td class="bordered bold">Issues</td>
 
           <td class="bordered">
             <n-space>
-              <span v-for="item in record?.data0?.issues" :style="'padding: 3px;background-color:' + issuesKV[item[0]].color"
+              <span
+                v-for="item in record?.data0?.issues"
+                :style="'padding: 3px;background-color:' + issuesKV[item[0]].color"
                 >{{ issuesKV[item[0]][lang] + ' @' + usersKV[item[1]]?.username }}
               </span>
             </n-space>
           </td>
           <td class="bordered">
             <n-space>
-              <span v-for="item in record?.data1?.issues" :style="'color:white;padding: 3px;background-color:' + issuesKV[item[0]].color"
+              <span
+                v-for="item in record?.data1?.issues"
+                :style="'color:white;padding: 3px;background-color:' + issuesKV[item[0]].color"
                 >{{ issuesKV[item[0]][lang] + ' @' + usersKV[item[1]]?.username }}
               </span>
             </n-space>
           </td>
         </tr>
-        <tr>
+        <tr id="tags">
           <td class="bordered bold">Tags</td>
 
           <td class="bordered">{{ record?.data0?.tags?.map(x => tagsKV[x][lang]).join(', ') }}</td>
@@ -81,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onBeforeMount, h, DefineComponent, toRaw } from 'vue';
+import { ref, reactive, onBeforeMount, h, DefineComponent, toRaw, onUpdated, nextTick } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 import { NTime } from 'naive-ui';
 import store from '../store';
@@ -97,6 +99,16 @@ const issuesKV = reactive<keyable>({});
 const tagsKV = reactive([]);
 const lang = store?.state?.user?.text?.lang?.substring(0, 2) || 'en';
 const user = reactive({} as IUser);
+
+console.log();
+
+onUpdated(async () => {
+  if (vuerouter?.query?.select) {
+    nextTick(() => {
+      store.scrollTo(String(vuerouter.query.select));
+    });
+  }
+});
 
 onBeforeMount(async () => {
   const data = await store.get('change', String(id));
