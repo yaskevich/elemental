@@ -525,7 +525,7 @@ export default {
     // let sql = 'SELECT * from comments WHERE text_id = $1 ORDER BY id DESC';
     const sql = `SELECT id, priority, issues, tags, title, published,
      CASE WHEN id IN (SELECT unnest(comments) AS coms FROM strings WHERE comments::text <> '{}' group by coms)
-     THEN '1'::boolean else '0'::boolean END as bound
+     THEN True else False END as bound
      FROM comments WHERE text_id = $1 ORDER by priority DESC, id DESC`;
     // if (id) {
     //    sql += ' WHERE id = $1';
@@ -1266,7 +1266,11 @@ export default {
     const offset = params?.offset || 0;
     const limit = params?.limit || 50;
     const id = Number(params.id) || 1;
-    const sql = "SELECT * from logs WHERE data0->>'text_id' = $3::text or data1->>'text_id' = $3::text ORDER BY created DESC, id DESC OFFSET $1 LIMIT $2";
+    const sql = `SELECT 
+      logs.*, (CASE WHEN logs.record_id = comments.id THEN True ELSE False END) AS present
+      FROM logs LEFT JOIN comments ON logs.record_id = comments.id
+      WHERE data0->>'text_id' = $3::text or data1->>'text_id' = $3::text
+      ORDER BY logs.created DESC, logs.id DESC OFFSET $1 LIMIT $2`;
     const res = await pool.query(sql, [offset, limit, id]);
     return res?.rows;
   },
