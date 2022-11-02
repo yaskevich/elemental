@@ -1,14 +1,15 @@
 <template>
   <!-- <n-page-header subtitle="Review logs" @back="handleBack" style="max-width:600px;margin: 0 auto;padding-left: 1rem;"> -->
   <n-card title="Logs" class="minimal left" :bordered="false" v-if="isLoaded">
-    <n-data-table ref="tableRef" :columns="columns" :data="logs" :row-props="rowProps" />
+    <!-- :row-props="rowProps" -->
+    <n-data-table ref="tableRef" :columns="columns" :data="logs" />
   </n-card>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, onBeforeMount, h, DefineComponent, toRaw } from 'vue';
-import { RouterLink, useLink } from 'vue-router';
-import { NTime } from 'naive-ui';
+// import { RouterLink, useLink } from 'vue-router';
+import { NTime, NButton, NSpace } from 'naive-ui';
 import store from '../store';
 import router from '../router';
 
@@ -18,25 +19,36 @@ const users = ref([]);
 const isLoaded = ref(false);
 const scheme = reactive({} as keyable);
 
+const renderId = (id: number, isExisting: boolean) => {
+  if (isExisting) {
+    return h(
+      NButton,
+      {
+        // to: '/' + row.table_name + '/' + row.record_id,
+        onClick: () => router.push('/comment/' + id),
+      },
+      {
+        default: () => id,
+      }
+    );
+  }
+
+  return h(
+    NButton,
+    {
+      disabled: true,
+    },
+    {
+      default: () => id,
+    }
+  );
+};
+
 const columns = [
-  // {
-  //   title: 'ID',
-  //   key: 'id',
-  // },
   {
     title: 'ID',
     key: 'record_id',
-    render: (row: IChange) => {
-      return h(
-        RouterLink,
-        {
-          to: '/' + row.table_name + '/' + row.record_id,
-        },
-        {
-          default: () => row.record_id,
-        }
-      );
-    },
+    render: (row: IChange) => renderId(row.record_id, row.present),
   },
   {
     title: 'Date',
@@ -65,53 +77,74 @@ const columns = [
   {
     title: 'Changes',
     render: (row: IChange) => {
-      return compareRecords(row.data0, row.data1);
+      return h(
+        NSpace,
+        { vertical: true },
+        {
+          default: () => compareRecords(Number(row.id), row.data0, row.data1),
+        }
+      );
     },
-    ellipsis: {
-      tooltip: true,
-    },
+    // ellipsis: {
+    //   tooltip: true,
+    // },
   },
 ];
 
 const rowProps = (row: IChange) => {
   return {
-    style: 'cursor: pointer;',
     onClick: () => {
       // console.log(toRaw(row.data0), toRaw(row.data1));
-      router.push('/logs/' + row.id);
+      // router.push('/logs/' + row.id);
     },
   };
 };
 
-const compareRecords = (data0: IComment, data1: IComment) => {
+const compareRecords = (id: number, data0: IComment, data1: IComment) => {
   const fields = [];
 
   if (!data0?.title) {
-    return 'CREATED';
+    return h(
+      NButton,
+      { onClick: () => router.push({ name: 'Change', params: { id } }), type: 'warning' },
+      { default: () => 'CREATED' }
+    );
   }
   if (data0.title !== data1.title) {
-    fields.push('Title');
+    fields.push(['title', 'Title']);
   }
   if (data0.priority !== data1.priority) {
-    fields.push('Priority');
+    fields.push(['priority', 'Priority']);
   }
   if (data0.published !== data1.published) {
-    fields.push('Status');
+    fields.push(['published', 'Status']);
   }
   if (data0.tags.length !== new Set(data0.tags.concat(data1.tags)).size) {
-    fields.push('Tags');
+    fields.push(['tags', 'Tags']);
   }
   if (JSON.stringify(data0.issues) !== JSON.stringify(data1.issues)) {
-    fields.push('Issues');
+    fields.push(['issues', 'Issues']);
   }
 
   Object.keys(scheme).forEach(x => {
     if (JSON.stringify(data0.entry?.[x]) !== JSON.stringify(data1.entry?.[x])) {
-      fields.push(scheme[x].title);
+      fields.push([x, scheme[x].title]);
     }
   });
 
-  return fields.join(', ');
+  return fields.map(x =>
+    h(
+      NButton,
+      {
+        onClick: () => router.push({ name: 'Change', params: { id }, query: { select: x[0] } }),
+        size: 'small',
+        secondary: true,
+      },
+      {
+        default: () => x[1],
+      }
+    )
+  );
 };
 
 onBeforeMount(async () => {
