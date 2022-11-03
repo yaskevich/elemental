@@ -190,12 +190,8 @@ const build = async (currentDir, id, siteDir, filename) => {
     }
 
     const [modalElement, articleElement] = textInfo.scheme.filter((x) => x.type === 'rich');
-    // if (!modalElement || !articleElement) {
-    //   const error = 'Rich text type issue!';
-    //   console.error(error);
-    //   return { error };
-    // }
-    // rerurn error when crucial elements are not present
+
+    const escape = (str) => str.replaceAll("'", '&apos;').replaceAll('"', '&quot;');
 
     const render = (obj) => {
       const rendermap = (d) => (d?.content ? d.content.map((c) => render(c)).join('') : '');
@@ -205,9 +201,9 @@ const build = async (currentDir, id, siteDir, filename) => {
           case 'text':
             if (obj?.marks) {
               const classes = obj.marks.map((x) => x?.attrs?.class || x?.type);
-              return classes.length && !classes.includes('error') ? `<span class="${classes.join(' ')}">${obj.text}</span>` : '';
+              return classes.length && !classes.includes('error') ? `<span class="${classes.join(' ')}">${escape(obj?.text)}</span>` : '';
             }
-            return obj.text;
+            return escape(obj.text);
           case 'figure':
             return renderFigure(obj);
           // case 'image':
@@ -233,12 +229,13 @@ const build = async (currentDir, id, siteDir, filename) => {
 <div id="ms${cmt.id}" class="modals" data-iziModal-title="${cmt.title}"
 ${cmt?.entry?.[tooltipElement] ? `data-iziModal-subtitle="${cmt.entry[tooltipElement]}"` : ''} >
 <div class="content">
-<div class="${modalElement.id}${cmt.id}">${cmt?.entry?.[modalElement.id]?.content.map(render).join('')}</div>
+<div class="${modalElement.id}${cmt.id}">${cmt?.entry?.[modalElement.id]?.content.map(render).join('')}</div>${articleElement?.id ? `
 <div class="${articleElement.id}${cmt.id} hidden">${cmt?.entry?.[articleElement.id]?.content.map(render).join('')}</div>
 <button type="button" data-id="${cmt.id}" class="block ${cmt?.entry?.[articleElement.id]?.content?.[0]?.content ? '' : 'hidden'} ${modalElement.id}${cmt.id}">➜ ${articleElement.title}</button>
 <button type="button" data-id="${cmt.id}" class="hidden block ${articleElement.id}${cmt.id} ">➜ ${modalElement.title}</button>
-</div>
-</div>
+` : ''
+}
+</div></div>
 `;
 
     let body = '';
