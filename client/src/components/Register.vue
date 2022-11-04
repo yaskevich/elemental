@@ -2,14 +2,7 @@
   <div class="center-column">
     <h3>Registration</h3>
     <div class="left-column">
-      <n-form
-        :label-width="80"
-        :model="formValue"
-        :rules="rules"
-        :size="size"
-        ref="formRef"
-        v-if="showForm"
-      >
+      <n-form :label-width="80" :model="formValue" :rules="rules" :size="size" ref="formRef" v-if="showForm">
         <n-form-item label="Username (English letters and numbers)" path="user.username">
           <n-input v-model:value="formValue.user.username" placeholder="Input username" />
         </n-form-item>
@@ -26,11 +19,7 @@
         </n-form-item>
 
         <n-form-item label="Grammatical gender" path="user.sex">
-          <n-select
-            placeholder="Choose gender"
-            :options="generalOptions"
-            v-model:value="formValue.user.sex"
-          />
+          <n-select placeholder="Choose gender" :options="generalOptions" v-model:value="formValue.user.sex" />
         </n-form-item>
 
         <n-form-item>
@@ -38,12 +27,12 @@
         </n-form-item>
       </n-form>
     </div>
-    <div v-if="note">
+    <div v-if="datum?.message">
       <p>
-        After the administartor activates your account, you will be able to log in with the e-mail
-        <strong>{{ formValue.user.email }}</strong> and this password:
+        {{ datum?.activated ? 'Now you are' : 'After the administartor activates your account, you will be' }} able to
+        log in with the e-mail <strong>{{ formValue.user.email }}</strong> and this password:
       </p>
-      <div style="font-family: monospace;font-size:1.7rem;">{{ note }}</div>
+      <div style="font-family: monospace; font-size: 1.7rem">{{ datum.message }}</div>
       <p>Copy the password and store it securely.</p>
       <!-- <div>
           Copy password and go to
@@ -54,14 +43,13 @@
 </template>
 
 <script setup lang="ts">
-
 import store from '../store';
-import { ref, } from 'vue';
-import { FormInst, useMessage, } from 'naive-ui';
+import { ref, reactive } from 'vue';
+import { FormInst, useMessage } from 'naive-ui';
 const message = useMessage();
 
 const formRef = ref<FormInst | null>(null);
-const note = ref('');
+const datum = reactive({ message: '', activated: false });
 const showForm = ref(true);
 const formValue = ref({
   user: {
@@ -121,9 +109,8 @@ const handleValidateClick = (e: MouseEvent) => {
         // console.log(formValue.value);
         const { data } = await store.postUnauthorized('user/reg', formValue.value.user);
         if (data?.message) {
-          const pwd = data?.message;
-          console.log("result", data);
-          note.value = pwd;
+          Object.assign(datum, data);
+          console.log('result', data);
           showForm.value = false;
         } else {
           message.error(data?.error ? data.error : 'unknown error');
@@ -134,5 +121,4 @@ const handleValidateClick = (e: MouseEvent) => {
     });
   }
 };
-
 </script>
