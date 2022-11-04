@@ -44,7 +44,9 @@ const handleValidateClick = async (e: MouseEvent) => {
     if (!data?.id) {
       console.log('database error');
     } else {
-      if (store?.state?.user?.text && store.state.user.text?.id === data.id) {
+      if (!store?.state?.user?.text) {
+        await store.setCurrentText(data.id, txt.title);
+      } else if (store.state.user.text?.id === data.id) {
         Object.assign(store.state.user.text as IText, toRaw(txt));
       }
       id.value = data.id;
