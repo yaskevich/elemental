@@ -30,16 +30,18 @@ const databaseQuery = `SELECT table_name FROM information_schema.columns
 const databaseScheme = {
   texts: `
     id SERIAL PRIMARY KEY,
-    author text,
-    title text,
-    meta text,
-    site text,
-    credits text,
-    url text,
-    scheme json,
-    lang text NOT NULL,
-    loaded boolean DEFAULT false NOT NULL,
-    comments boolean DEFAULT false NOT NULL`,
+    author TEXT,
+    title TEXT,
+    meta TEXT,
+    site TEXT,
+    credits TEXT,
+    url TEXT,
+    scheme JSON,
+    lang TEXT NOT NULL,
+    published TIMESTAMP WITH TIME ZONE,
+    zipsize INTEGER,
+    loaded BOOLEAN DEFAULT false NOT NULL,
+    comments BOOLEAN DEFAULT false NOT NULL`,
 
   tags: `
     id SERIAL PRIMARY KEY,
@@ -162,6 +164,9 @@ const prepareTable = async (args) => {
     try {
       // const createResult = await pool.query(`CREATE TABLE IF NOT EXISTS ${key} (${value})`);
       await pool.query(`CREATE TABLE IF NOT EXISTS ${tableName} (${args[1]})`);
+      // const ownerResult = await pool.query(`ALTER TABLE ${tableName} OWNER TO ${process.env.PGUSER}`);
+      // console.log('owner', ownerResult);
+      await pool.query(`ALTER TABLE ${tableName} OWNER TO ${process.env.PGUSER}`);
 
       if (tableName === 'settings') {
         await pool.query('INSERT INTO settings DEFAULT VALUES');
@@ -172,12 +177,19 @@ const prepareTable = async (args) => {
     } catch (createError) {
       console.error(createError);
       console.error(`Issue with table '${tableName}'!`);
+      process.exit();
       throw createError;
     }
+    // process.exit();
     // console.log("create", createResult);
-    // const ownerResult = await pool.query(`ALTER TABLE ${key} OWNER TO ${process.env.PGUSER}`);
-    await pool.query(`ALTER TABLE ${tableName} OWNER TO ${process.env.PGUSER}`);
-    // console.log("owner", ownerResult);
+  }
+};
+
+const initDatabase = async () => {
+  /* eslint-disable-next-line no-restricted-syntax */
+  for (const timeout of Object.entries(databaseScheme)) {
+    /* eslint-disable-next-line no-await-in-loop */
+    await prepareTable(timeout);
   }
 };
 
@@ -186,7 +198,7 @@ if (tables.length !== Object.keys(databaseScheme).length) {
   try {
     await pool.query('BEGIN');
     try {
-      await Promise.all(Object.entries(databaseScheme).map(async (x) => prepareTable(x)));
+      await initDatabase();
       await pool.query('COMMIT');
       tablesResult = await pool.query(databaseQuery);
       console.log('initializing database: done');
@@ -234,7 +246,7 @@ export default {
   async createUser(formData, status = false) {
     console.log('create user', formData);
     const data = formData;
-    let isActivated = status;
+    let activated = status;
     const settings = await pool.query('SELECT * FROM settings');
 
     if (!settings.rows.shift()?.registration_open) {
@@ -253,7 +265,7 @@ export default {
       // if users table is empty it means it is first run and we have to create admin user
       // make later regular set up UI
       data.privs = 1;
-      isActivated = true;
+      activated = true;
       console.log('create admin');
     }
     const pwd = passGen.generate(passOptions);
@@ -261,9 +273,9 @@ export default {
     const hash = await bcrypt.hash(pwd, saltRounds);
     console.log('ready');
     // console.log(pwd, hash);
-    const result = await pool.query('INSERT INTO users (requested, username, firstname, lastname, email, sex, privs, _passhash, activated) VALUES(NOW(), LOWER($1), INITCAP($2), INITCAP($3), LOWER($4), $5, $6, $7, $8) RETURNING id', [data.username, data.firstname, data.lastname, data.email, data.sex, data.privs, hash, isActivated]);
+    const result = await pool.query('INSERT INTO users (requested, username, firstname, lastname, email, sex, privs, _passhash, activated) VALUES(NOW(), LOWER($1), INITCAP($2), INITCAP($3), LOWER($4), $5, $6, $7, $8) RETURNING id', [data.username, data.firstname, data.lastname, data.email, data.sex, data.privs, hash, activated]);
     if (result.rows.length === 1) {
-      return { message: pwd };
+      return { message: pwd, activated };
     }
     return { error: 'user' };
   },
@@ -922,15 +934,15 @@ export default {
   async setText(params) {
     let data = [];
     if (params.author && params.title) {
-      const values = [params.author, params.title, params?.meta || '', params?.grammar || false, params?.comments || false, params?.site || '', params?.credits || '', params.lang, params?.url?.trim() || ''];
+      const values = [params.author, params.title, params?.meta || '', params?.comments || false, params?.site || '', params?.credits || '', params.lang, params?.url?.trim() || ''];
       let sql = '';
 
       if (params.id) {
         const id = Number(params.id);
         values.push(id);
-        sql = 'UPDATE texts SET author = $1, title = $2, meta = $3, grammar = $4, comments = $5, site = $6, credits = $7, lang = $8, url =$9 WHERE id = $10';
+        sql = 'UPDATE texts SET author = $1, title = $2, meta = $3, comments = $4, site = $5, credits = $6, lang = $7, url = $8 WHERE id = $9';
       } else {
-        sql = 'INSERT INTO texts (author, title, meta, grammar, comments, site, credits, lang, url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)';
+        sql = 'INSERT INTO texts (author, title, meta, comments, site, credits, lang, url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)';
       }
 
       sql += ' RETURNING id';
@@ -959,11 +971,11 @@ export default {
     }
     return data;
   },
-  async updatePubInfo(id, dir, zipsize, published) {
+  async updatePubInfo(id, zipsize, published) {
     let data = {};
     try {
-      const sql = 'UPDATE texts SET dir = $2, zipsize = $3, published = to_timestamp($4 / 1000.0) WHERE id = $1 RETURNING id';
-      const result = await pool.query(sql, [id, dir, zipsize, published]);
+      const sql = 'UPDATE texts SET zipsize = $2, published = to_timestamp($3 / 1000.0) WHERE id = $1 RETURNING id';
+      const result = await pool.query(sql, [id, zipsize, published]);
       data = result?.rows?.[0];
     } catch (err) {
       console.error(err);
@@ -1066,7 +1078,7 @@ export default {
       for (const [i, item] of batch.entries()) {
         // { p: 45, s: 150, form: 'receive', repr: 'receive', meta: 'word' }
         // console.log(item);
-        const token = item.repr.toLowerCase();
+        const token = item.repr;
 
         await client.query('INSERT INTO tokens (token, lang, meta) VALUES($1, $2, $3) ON CONFLICT (token, lang) DO NOTHING', [token, langId, item.meta]);
         await client.query('INSERT INTO strings (text_id, p, s, form, repr) VALUES($1, $2, $3, $4, $5) ', [textId, item.p, item.s, item.form, token]);
