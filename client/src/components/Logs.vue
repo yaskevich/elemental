@@ -153,7 +153,10 @@ onBeforeMount(async () => {
   users.value = Object.assign({}, ...data.map((x: any) => ({ [x.id]: x })));
   // console.log('data from server', logs.value);
   const texts = await store.get('texts', String(store?.state?.user?.text_id));
-  Object.assign(scheme, Object.assign({}, ...texts.shift().scheme.map((x: any) => ({ [x.id]: x }))));
+  const schemeKV = texts?.shift()?.scheme?.map((x: any) => ({ [x.id]: x }));
+  if (schemeKV && Object.keys(schemeKV).length) {
+    Object.assign(scheme, Object.assign({}, ...schemeKV));
+  }
   isLoaded.value = true;
 });
 </script>
