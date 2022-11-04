@@ -62,6 +62,10 @@
 
       <n-text type="error" v-if="!comment.title">Heading should not be empty!</n-text>
 
+      <n-alert v-if="!store?.state?.user?.text?.scheme" title="Scheme is empty" type="warning">
+        The scheme is not set. Add fields via text properties (at Home screen)
+      </n-alert>
+
       <n-space justify="center" v-if="boundStrings.length">
         <n-dropdown
           trigger="hover"
@@ -349,7 +353,7 @@ const checkValidMarkup = (document: any) => {
 
 const checkIsEntryUpdated = () => {
   let result = false;
-  comment.title = comment.title.trim();
+  comment.title = comment?.title?.trim();
 
   scheme
     // .filter(x => x.type === 'rich')
