@@ -254,6 +254,20 @@ const scrollTo = (id: number|string) => {
   }
 };
 
+const setCurrentText = async (id: number, title: string) => {
+  if (id && state?.user) {
+    const { data } = await post('user/text', { id: id });
+    // console.log('change text', data);
+    if (data?.id) {
+      state.user.text_id = id;
+      state.user.text = data;
+      document.title = title;
+    } else {
+      console.error('error', data);
+    }
+  }
+};
+
 export default {
   state,
   getFile,
@@ -271,4 +285,5 @@ export default {
   setCustomCSS,
   renderSite,
   scrollTo,
+  setCurrentText,
 };
