@@ -42,7 +42,7 @@ const compileHTML = (params) => `
         "headerColor": '#729db6',
         onOpening: function(){
         },
-        onClosed: function(e){
+        onOpened: function(e){
           $('.highlighted').removeClass('highlighted');
           var id = e.id.slice(2);
           var el = $('span.mark[data-id="'+id+'"]');
@@ -98,9 +98,8 @@ const compileHTML = (params) => `
       <p>${params.credits}</p>
     </footer>
   </div>
-    ${params.modals}
-    
-    ${params.choices}
+${params.modals}
+${params.choices}
 </body>
 
 </html>
@@ -110,6 +109,8 @@ const renderFigure = (figObj) => {
   const caption = figObj?.content?.[0]?.text ? `<figcaption>${figObj?.content?.[0]?.text}</figcaption>` : '';
   return `<figure><img src="${figObj.attrs.src}" />${caption}</figure>`;
 };
+
+const escape = (str) => str.replaceAll("'", '&apos;').replaceAll('"', '&quot;');
 
 const build = async (currentDir, id, siteDir, filename) => {
   const textId = Number(id);
@@ -178,20 +179,17 @@ const build = async (currentDir, id, siteDir, filename) => {
       classes += ` ${curToken.fmt.join(' ')}`;
       const start = `<span class="${classes}`;
       const middle = tip ? ` tooltip mark ${mode}" aria-label="${tip}" data-id="${cid}` : '';
-
       return classes === 'right' && !tip ? repr : `${`${start + middle}">${repr}`}</span>`;
     };
 
-    const tooltipElement = textInfo?.scheme.find((x) => x.type === 'line')?.id;
-    if (!textInfo?.scheme) {
-      const error = 'Scheme issue!';
-      console.error(error);
-      return { error };
-    }
+    const tooltipElement = textInfo?.scheme?.find((x) => x.type === 'line')?.id;
+    // if (!textInfo?.scheme) {
+    //   const error = 'Scheme issue!';
+    //   console.error(error);
+    //   return { error };
+    // }
 
-    const [modalElement, articleElement] = textInfo.scheme.filter((x) => x.type === 'rich');
-
-    const escape = (str) => str.replaceAll("'", '&apos;').replaceAll('"', '&quot;');
+    const [modalElement, articleElement] = textInfo?.scheme ? textInfo.scheme.filter((x) => x.type === 'rich') : [];
 
     const render = (obj) => {
       const rendermap = (d) => (d?.content ? d.content.map((c) => render(c)).join('') : '');
@@ -281,10 +279,15 @@ ${cmt?.entry?.[tooltipElement] ? `data-iziModal-subtitle="${cmt.entry[tooltipEle
 
     body += `<div class="row">${paragraph}</div>\n\n`;
 
-    const modals = comments.map(compileModal).join('');
-    const choices = Object.values(choiceModals).join('\n');
     const output = compileHTML({
-      ...textInfo, js: jsContent, css: cssContent, body, modals, choices, modal: modalElement.id, ...(articleElement?.id && { clickable: articleElement.id })
+      ...textInfo,
+      js: jsContent,
+      css: cssContent,
+      body,
+      choices: Object.values(choiceModals).join('\n'),
+      modal: modalElement?.id,
+      modals: modalElement?.id ? comments.map(compileModal).join('') : '',
+      ...(articleElement?.id && { clickable: articleElement.id })
     });
 
     fs.writeFileSync(path.join(pubDir, 'index.html'), output);
@@ -293,7 +296,7 @@ ${cmt?.entry?.[tooltipElement] ? `data-iziModal-subtitle="${cmt.entry[tooltipEle
     zip.sync.zip(pubDir).compress().save(zipPath);
     const stats = fs.statSync(zipPath);
 
-    await db.updatePubInfo(textId, pubDir, stats.size, now);
+    await db.updatePubInfo(textId, stats.size, now);
     return { bytes: stats.size, dir: pubDir, published: now };
   } catch (genError) {
     console.error(`HTML generation error for text ${textId}`, genError);
