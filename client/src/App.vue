@@ -60,7 +60,7 @@ const processMenu = async (key: string, item: MenuOption) => {
 const buildMenu = () => [
   makeItem('Home', 'Home', HomeFilled),
   makeItem('Comments', 'Comments', CommentFilled, !store?.state?.user?.text?.comments),
-  makeItem('Text', 'Text', TextSnippetFilled),
+  makeItem('Text', 'Text', TextSnippetFilled, !store?.state?.user?.text?.loaded),
   {
     label: 'Management',
     key: 'management',
@@ -122,9 +122,8 @@ const buildMenu = () => [
 ];
 
 watch(state, (currentValue, oldValue) => {
-  console.log('state UPDATED', currentValue?.user?.text?.comments);
+  console.log('state UPDATED');
   Object.assign(menuOptions, buildMenu());
-  // console.log(oldValue);
 });
 
 // onBeforeMount(async () => {
