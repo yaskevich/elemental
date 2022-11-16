@@ -78,7 +78,7 @@
         </n-checkbox-group>
       </n-modal>
 
-      <n-scrollbar trigger="none" style="max-height: 600px" class="">
+      <n-scrollbar trigger="none" style="max-height: 600px">
         <div style="padding: 0 5px 0 5px">
           <template v-for="(token, index) in text" :key="token.id" style="padding: 0.5rem">
             <div v-if="index && token.p !== text[index - 1].p" style="margin-bottom: 1rem"></div>
@@ -127,11 +127,11 @@
               :on-update:value="(userInput: string) => queryDatabase(userInput)"
               :on-select="(selectedValue: number) => selectOption(selectedValue)" />
             <div v-if="selectedCommentId" style="margin: 5px">Comment: {{ selectedCommentTitle }}</div>
-            <div>
-              <n-button @click="clearSelection">Clear tokens selection</n-button>&nbsp;
-              <n-button @click="createComment" type="warning">Bind tokens to new comment</n-button>&nbsp;
+            <n-space>
+              <n-button @click="clearSelection">Clear tokens selection</n-button>
+              <n-button @click="createComment" type="warning">Bind tokens to new comment</n-button>
               <n-button @click="bindTokensToComment" v-if="selectedCommentId" type="success">Bind</n-button>
-            </div>
+            </n-space>
           </n-space>
         </n-drawer-content>
       </n-drawer>
@@ -171,20 +171,10 @@ const showDrawer = computed(() =>
 );
 const formattingMode = ref('');
 
-const scrollTo = (id: number) => {
-  let element = document.querySelector(`#id${id}`);
-  if (element) {
-    element.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-    });
-  }
-};
-
 onUpdated(async () => {
   if (highlightedTokens.length) {
     nextTick(() => {
-      scrollTo(highlightedTokens[0]);
+      store.scrollTo('id' + highlightedTokens[0]);
     });
   }
 });
@@ -386,7 +376,7 @@ const submitModal = async () => {
 
 const goToComment = (comment: number) => {
   // console.log("click", comment);
-  router.push({ name: 'Comment', params: { id: comment, tokens: 'tetstst' } });
+  router.push({ name: 'Comment', params: { id: comment } });
 };
 
 const annotationMode = ref('comment');
