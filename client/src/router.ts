@@ -92,7 +92,7 @@ const routes = [
     name: 'Preview',
   },
   {
-    path: '/logs/:id?',
+    path: '/logs',
     // component: Logs,
     component: () => import('./components/Logs.vue'),
     name: 'Logs',
