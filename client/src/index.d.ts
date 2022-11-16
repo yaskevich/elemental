@@ -195,5 +195,6 @@ declare global {
     data1: IComment;
     created: string;
     record_id: number;
+    present: boolean;
   }
 }
