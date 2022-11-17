@@ -266,12 +266,12 @@ export default {
       // make later regular set up UI
       data.privs = 1;
       activated = true;
-      console.log('create admin');
+      // console.log('create admin');
     }
     const pwd = passGen.generate(passOptions);
-    console.log('make hash');
+    // console.log('make hash');
     const hash = await bcrypt.hash(pwd, saltRounds);
-    console.log('ready');
+    // console.log('ready');
     // console.log(pwd, hash);
     const result = await pool.query('INSERT INTO users (requested, username, firstname, lastname, email, sex, privs, _passhash, activated) VALUES(NOW(), LOWER($1), INITCAP($2), INITCAP($3), LOWER($4), $5, $6, $7, $8) RETURNING id', [data.username, data.firstname, data.lastname, data.email, data.sex, data.privs, hash, activated]);
     if (result.rows.length === 1) {
@@ -1284,7 +1284,9 @@ export default {
       WHERE data0->>'text_id' = $3::text or data1->>'text_id' = $3::text
       ORDER BY logs.created DESC, logs.id DESC OFFSET $1 LIMIT $2`;
     const res = await pool.query(sql, [offset, limit, id]);
-    return res?.rows;
+
+    const count = await pool.query("SELECT count(*) FROM logs WHERE data0->>'text_id' = $1::text or data1->>'text_id' = $1::text", [id]);
+    return { data: res?.rows, count: Number(count?.rows?.[0]?.count || 0) };
   },
   async getChange(params) {
     const id = Number(params.id) || 1;
