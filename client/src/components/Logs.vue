@@ -2,12 +2,19 @@
   <!-- <n-page-header subtitle="Review logs" @back="handleBack" style="max-width:600px;margin: 0 auto;padding-left: 1rem;"> -->
   <n-card title="Logs" class="minimal left" :bordered="false" v-if="isLoaded">
     <!-- :row-props="rowProps" -->
-    <n-data-table ref="tableRef" :columns="columns" :data="logs" />
+    <n-data-table
+      remote
+      ref="tableRef"
+      :loading="isLoading"
+      :columns="columns"
+      :data="logs"
+      :pagination="pagination"
+      @update:page="handlePageChange" />
   </n-card>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onBeforeMount, h, DefineComponent, toRaw } from 'vue';
+import { ref, reactive, onBeforeMount, h } from 'vue';
 // import { RouterLink, useLink } from 'vue-router';
 import { NTime, NButton, NSpace } from 'naive-ui';
 import store from '../store';
@@ -17,7 +24,29 @@ const tableRef = ref(null);
 const logs = ref([]);
 const users = ref([]);
 const isLoaded = ref(false);
+const isLoading = ref(false);
 const scheme = reactive({} as keyable);
+const pagination = reactive({
+  page: 1,
+  pageSize: 10,
+  itemCount: 10,
+  prefix({ itemCount }: { itemCount: number }) {
+    return `Total: ${itemCount}`;
+  },
+});
+
+const handlePageChange = async (page: number) => {
+  // console.log('in', page, pagination);
+  pagination.page = page;
+  isLoading.value = true;
+  const datum = await store.get('logs', String(store?.state?.user?.text_id), {
+    offset: (pagination.page - 1) * pagination.pageSize,
+    limit: pagination.pageSize,
+  });
+  logs.value = datum.data;
+  pagination.itemCount = datum.count;
+  isLoading.value = false;
+};
 
 const renderId = (id: number, isExisting: boolean) => {
   if (isExisting) {
@@ -148,7 +177,7 @@ const compareRecords = (id: number, data0: IComment, data1: IComment) => {
 };
 
 onBeforeMount(async () => {
-  logs.value = await store.get('logs', String(store?.state?.user?.text_id));
+  await handlePageChange(1);
   const data = await store.get('users');
   users.value = Object.assign({}, ...data.map((x: any) => ({ [x.id]: x })));
   // console.log('data from server', logs.value);
