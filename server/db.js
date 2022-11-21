@@ -1293,5 +1293,16 @@ export default {
     const sql = 'SELECT * from logs WHERE id = $1';
     const res = await pool.query(sql, [id]);
     return res?.rows?.shift();
+  },
+  async getItemHistory(table, id, lim) {
+    const limNumber = Number(lim);
+    const limitation = limNumber ? ` LIMIT ${limNumber}` : '';
+    let data = [];
+    if (id) {
+      console.log(table, id);
+      const res = await pool.query(`SELECT id, user_id, round(extract(epoch from created)) as ut FROM logs WHERE table_name = $1 AND record_id = $2 ORDER BY created DESC ${limitation}`, [table, id]);
+      data = res?.rows;
+    }
+    return data;
   }
 };
