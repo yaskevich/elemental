@@ -615,9 +615,8 @@ export default {
           const table = 'comments';
           // enum types! - alter table logs
           const logValues = [userObject.id, table, resultId, previousCommentObject, newCommentObject];
-          await pool.query(logQuery, logValues);
-          // const logResult = await pool.query(logQuery, logValues);
-          // console.log(logQuery, logResult);
+          const logResult = await pool.query(logQuery, logValues);
+          data.change = logResult?.rows?.[0]?.id;
           await pool.query('COMMIT');
         } catch (error) {
           await pool.query('ROLLBACK');
@@ -1278,14 +1277,18 @@ export default {
     const offset = params?.offset || 0;
     const limit = params?.limit || 50;
     const id = Number(params.id) || 1;
+    const commentId = Number(params.comment);
+    // console.log('comment', commentId);
+    const condition = commentId ? `logs.record_id = ${commentId} AND` : '';
     const sql = `SELECT 
       logs.*, (CASE WHEN logs.record_id = comments.id THEN True ELSE False END) AS present
       FROM logs LEFT JOIN comments ON logs.record_id = comments.id
-      WHERE data0->>'text_id' = $3::text or data1->>'text_id' = $3::text
+      WHERE ${condition} (data0->>'text_id' = $3::text or data1->>'text_id' = $3::text)
       ORDER BY logs.created DESC, logs.id DESC OFFSET $1 LIMIT $2`;
+    // console.log(sql);
     const res = await pool.query(sql, [offset, limit, id]);
 
-    const count = await pool.query("SELECT count(*) FROM logs WHERE data0->>'text_id' = $1::text or data1->>'text_id' = $1::text", [id]);
+    const count = await pool.query(`SELECT count(*) FROM logs WHERE ${condition} (data0->>'text_id' = $1::text or data1->>'text_id' = $1::text)`, [id]);
     return { data: res?.rows, count: Number(count?.rows?.[0]?.count || 0) };
   },
   async getChange(params) {
@@ -1299,8 +1302,8 @@ export default {
     const limitation = limNumber ? ` LIMIT ${limNumber}` : '';
     let data = [];
     if (id) {
-      console.log(table, id);
-      const res = await pool.query(`SELECT id, user_id, round(extract(epoch from created)) as ut FROM logs WHERE table_name = $1 AND record_id = $2 ORDER BY created DESC ${limitation}`, [table, id]);
+      // console.log(table, id);
+      const res = await pool.query(`SELECT id, user_id, round(extract(epoch from created)) as ut, (CASE WHEN data0::text = '{}' THEN True ELSE False END) AS init FROM logs WHERE table_name = $1 AND record_id = $2 ORDER BY created DESC ${limitation}`, [table, id]);
       data = res?.rows;
     }
     return data;
