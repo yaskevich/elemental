@@ -17,9 +17,11 @@
 import { ref, reactive, onBeforeMount, h } from 'vue';
 // import { RouterLink, useLink } from 'vue-router';
 import { NTime, NButton, NSpace } from 'naive-ui';
+import { useRoute } from 'vue-router';
 import store from '../store';
 import router from '../router';
 
+const vuerouter = useRoute();
 const tableRef = ref(null);
 const logs = ref([]);
 const users = ref([]);
@@ -39,9 +41,11 @@ const handlePageChange = async (page: number) => {
   // console.log('in', page, pagination);
   pagination.page = page;
   isLoading.value = true;
+
   const datum = await store.get('logs', String(store?.state?.user?.text_id), {
     offset: (pagination.page - 1) * pagination.pageSize,
     limit: pagination.pageSize,
+    comment: vuerouter?.query?.comment,
   });
   logs.value = datum.data;
   pagination.itemCount = datum.count;
