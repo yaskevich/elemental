@@ -197,4 +197,11 @@ declare global {
     record_id: number;
     present: boolean;
   }
+
+  interface ICommentChange {
+    id?: number;
+    user_id: number;
+    ut?: number;
+    init: boolean;
+  }
 }
