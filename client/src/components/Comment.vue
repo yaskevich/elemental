@@ -114,6 +114,21 @@
       <n-text v-if="Boolean(boundStrings?.length)" style="font-size: 0.75rem" type="error"
         >It is not allowed to delete a comment, if it has bound tokens. One should unbind tokens before.</n-text
       >
+      <n-space vertical v-if="changes.length">
+        <n-divider></n-divider>
+        <n-button
+          secondary
+          :type="change?.ut ? 'default' : 'success'"
+          v-for="(change, row) in changes"
+          :key="change.id"
+          @click="$router.push('/logs/' + change.id)">
+          <n-time v-if="change?.ut" type="relative" :unix="true" :time="change.ut" />
+          <span v-else>{{ row ? 'Recently' : 'Just now' }}</span>
+          &nbsp;{{ change.init ? 'created' : 'edited' }} by {{ usersKV[change.user_id].firstname }}
+          {{ usersKV[change.user_id].lastname }}</n-button
+        >
+        <n-button type="success" @click="$router.push({ name: 'Logs', query: { comment: id } })">View History</n-button>
+      </n-space>
     </n-space>
   </n-card>
   <div v-else>
@@ -156,7 +171,7 @@ const scheme = store?.state?.user?.text?.scheme || [];
 const textId = store?.state?.user?.text_id;
 
 let tokensToBind = vuerouter.query?.tokens ? String(vuerouter.query.tokens).split(',').map(Number) : [];
-console.log('received token ids', tokensToBind);
+// console.log('received token ids', tokensToBind);
 
 let id = Number(vuerouter.params.id);
 
@@ -172,6 +187,8 @@ const usersKV = reactive<keyable>({});
 const issuesKV = reactive<keyable>({});
 const tagsList = reactive([]);
 const issuesList = reactive([]);
+
+const changes = ref([] as Array<ICommentChange>);
 // ref<HTMLDivElement>();
 const editorRefs = reactive<keyable>({});
 // onRenderTracked((event) => {
@@ -289,10 +306,13 @@ onBeforeMount(async () => {
   Object.assign(issuesKV, Object.fromEntries(issueData.map((x: any) => [x.id, x])));
 
   if (id) {
-    const [commentData, stringsList] = await Promise.all([
+    const [commentData, stringsList, changesList] = await Promise.all([
       store.get(`comment/${id}`),
       store.get('commentstrings', String(textId), { comment: id }),
+      store.get(`history`, String(id), { limit: 5 }),
     ]);
+    // console.log(changesList);
+    changes.value = changesList.map((x: any) => ({ ...x, ut: Number(x.ut) }));
 
     if (commentData.length) {
       const commentStored = commentData?.[0];
@@ -404,6 +424,13 @@ const saveComment = async () => {
 
     const { data } = await store.post('comment', comment);
     if (data?.id) {
+      // console.log(data);
+      if (store?.state?.user?.id) {
+        changes.value.unshift({ id: data.change, user_id: store.state.user.id, init: !Boolean(comment?.id) });
+        if (changes.value.length > 5) {
+          changes.value.splice(-1);
+        }
+      }
       comment.id = data.id;
       Object.assign(comment0, JSON.parse(JSON.stringify(toRaw(comment))));
       router.replace('/comment/' + comment.id);
