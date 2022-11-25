@@ -244,7 +244,7 @@ const renderSite = async (id: number | string) => {
   browserTab?.focus();
 };
 
-const scrollTo = (id: number|string) => {
+const scrollTo = (id: number | string) => {
   let element = document.querySelector(`#${id}`);
   if (element) {
     element.scrollIntoView({
@@ -268,6 +268,10 @@ const setCurrentText = async (id: number, title: string) => {
   }
 };
 
+const openInWindow = (path: string) => {
+  window.open(path, '_blank');
+};
+
 export default {
   state,
   getFile,
@@ -286,4 +290,5 @@ export default {
   renderSite,
   scrollTo,
   setCurrentText,
+  openInWindow,
 };
