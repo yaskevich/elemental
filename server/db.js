@@ -1307,5 +1307,18 @@ export default {
       data = res?.rows;
     }
     return data;
+  },
+  async getCommentsIndex(textId, field) {
+    const fieldName = String(field);
+    const data = {};
+    if (textId && /^[a-z]+$/.test(fieldName)) {
+      const res = await pool.query(`SELECT id, TRIM(BOTH FROM j::json#>>'{text}') as word FROM comments CROSS JOIN jsonb_path_query(entry::jsonb, '$.** ? (@.marks.attrs.
+        class=="${fieldName}")') as j WHERE text_id = $1 group by comments.id, word;`, [textId]);
+      res?.rows.forEach((item) => {
+        if (!data[item.id]) data[item.id] = [];
+        data[item.id].push(item.word);
+      });
+    }
+    return data;
   }
 };
