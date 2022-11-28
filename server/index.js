@@ -519,5 +519,9 @@ app.get('/api/history', async (req, res) => {
   res.json(await db.getItemHistory('comments', Number(req.query.id), Number(req.query.limit)));
 });
 
+app.get('/api/index', async (req, res) => {
+  res.json(await db.getCommentsIndex(Number(req.query.id), String(req.query.name)));
+});
+
 app.listen(port);
 console.log(`Running at Port ${port}`);
