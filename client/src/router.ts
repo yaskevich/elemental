@@ -162,6 +162,11 @@ const routes = [
     component: () => import('./components/Change.vue'),
     name: 'Change',
   },
+  {
+    path: '/index',
+    component: () => import('./components/Index.vue'),
+    name: 'Index',
+  },
 ];
 
 const router = createRouter({
