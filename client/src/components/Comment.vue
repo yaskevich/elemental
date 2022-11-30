@@ -284,6 +284,7 @@ onBeforeMount(async () => {
     tagsList,
     tagData.map((x: any) => ({ label: x.ru, key: x.id, disabled: computed(() => comment.tags?.includes(x.id)) }))
   );
+
   const issueListData = issueData.map((x: any) => ({
     label: x.ru,
     key: x.id,
@@ -298,7 +299,7 @@ onBeforeMount(async () => {
       usersData.map((y: any) => ({
         label: `${y.firstname} ${y.lastname}`,
         key: [x.id, y.id],
-        disabled: false,
+        disabled: !y.activated,
       }))
     ),
   }));
