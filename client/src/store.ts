@@ -272,6 +272,8 @@ const openInWindow = (path: string) => {
   window.open(path, '_blank');
 };
 
+const convertArrayToObject = (arr: any) => Object.assign({}, ...arr.map((x: any) => ({ [x.id]: x })));
+
 export default {
   state,
   getFile,
@@ -291,4 +293,5 @@ export default {
   scrollTo,
   setCurrentText,
   openInWindow,
+  convertArrayToObject,
 };
