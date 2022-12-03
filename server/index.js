@@ -523,5 +523,9 @@ app.get('/api/index', async (req, res) => {
   res.json(await db.getCommentsIndex(Number(req.query.id), String(req.query.name)));
 });
 
+app.get('/api/stats', async (req, res) => {
+  res.json(await db.getStats(Number(req.query.id)));
+});
+
 app.listen(port);
 console.log(`Running at Port ${port}`);
