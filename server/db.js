@@ -1327,7 +1327,13 @@ export default {
       const comments = await pool.query('SELECT count(*)::int as total, count(*) FILTER (where published = True) as ready, count(*) FILTER (where published != True) as draft FROM comments WHERE text_id = $1', [id]);
       const changes = await pool.query("select user_id, count(user_id)::int from logs WHERE (data0->>'text_id' = $1::text or data1->>'text_id' = $1::text) GROUP BY user_id", [id]);
       const words = await pool.query("select cardinality(comments) as qty, count(*)::int from strings join tokens on strings.token_id = tokens.id  where text_id = $1 and meta='word' group by qty", [id]);
-      data = { comments: comments?.rows, changes: changes?.rows, words: words?.rows };
+      const tags = await pool.query('select tags, count(tags) as qty from comments where text_id = $1 group by tags order by qty DESC', [id]);
+      data = {
+        comments: comments?.rows?.[0],
+        changes: changes?.rows,
+        words: words?.rows,
+        tags: tags?.rows,
+      };
     } catch (error) {
       console.error('Error querying stats', error);
     }
