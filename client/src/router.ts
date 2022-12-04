@@ -167,6 +167,11 @@ const routes = [
     component: () => import('./components/Index.vue'),
     name: 'Index',
   },
+  {
+    path: '/stats',
+    component: () => import('./components/Stats.vue'),
+    name: 'Stats',
+  },
 ];
 
 const router = createRouter({
