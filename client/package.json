@@ -27,6 +27,8 @@
     "@tiptap/extension-placeholder": "^2.0.0-beta.205",
     "@tiptap/extension-text": "^2.0.0-beta.205",
     "@tiptap/vue-3": "2.0.0-beta.205",
+    "@types/d3-axis": "^3.0.1",
+    "@types/d3-shape": "^3.1.0",
     "@types/node": "^18.11.11",
     "@yaskevich/extension-figure": "^1.0.0",
     "@yaskevich/extension-marker": "^1.0.2",
