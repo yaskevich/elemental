@@ -1,7 +1,7 @@
 <template>
   <n-card title="Stats" :bordered="false" class="minimal left">
     <n-space vertical v-if="isLoaded">
-      <!-- {{ stats }} -->
+      <n-h1 style="color: orangered; text-align: center;margin-top:-1.5rem;">{{Number ((data?.stats?.comments?.ready/(data?.stats?.comments?.total/100)).toFixed(2))}}%</n-h1>
       <n-descriptions label-placement="left" bordered :column="1">
         <n-descriptions-item>
           <template #label> Comments </template>
@@ -31,10 +31,10 @@
           {{ word?.count }}
         </n-descriptions-item>
       </n-descriptions>
-      <div ref="divRef" style="text-align: center">
+      <div ref="divRef" style="text-align: center;">
         <Chart
           :size="{ width: divRef?.clientWidth || 0, height: data.stats.changes.length * 40 }"
-          :data="data?.stats?.changes?.sort((a:any, b:any) => b.count - a.count).map((x:any) =>({count: x.count, abbr:  data?.users[x.user_id]?.firstname.charAt(0) +'.' +data?.users[x.user_id]?.lastname.charAt(0) +'.', user: data?.users[x.user_id]?.firstname +' ' +data?.users[x.user_id]?.lastname}))"
+          :data="data?.stats?.changes?.sort((a:any, b:any) => b?.count - a?.count).map((x:any) =>({count: x.count, abbr: data?.users[x.user_id]?.firstname?.charAt(0) +'.' +data?.users[x.user_id]?.lastname?.charAt(0) +'.', user: data?.users[x.user_id]?.firstname +' ' +data?.users[x.user_id]?.lastname}))"
           :margin="margin"
           direction="vertical"
           :axis="axis">
