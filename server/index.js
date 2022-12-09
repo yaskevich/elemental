@@ -132,12 +132,16 @@ app.post('/api/user/activate', auth, async (req, res) => {
 });
 
 app.post('/api/user/elevate', auth, async (req, res) => {
-  const result = await db.elevateUser(req.body?.id, req.user);
+  const result = await db.elevateUser(req.user, req.body?.id);
   res.json(result);
 });
 
 app.post('/api/user/update', auth, async (req, res) => {
   res.json(await db.updateUser(req.user, req.body));
+});
+
+app.post('/api/user/reset', auth, async (req, res) => {
+  res.json(await db.resetPassword(req.user, req.body?.id));
 });
 
 app.post('/api/user/text', auth, async (req, res) => {
