@@ -279,6 +279,33 @@ export default {
     }
     return { error: 'user' };
   },
+  async elevateUser(currentUser, userId) {
+    console.log('privileges elevation request:', userId, 'by', currentUser.id);
+    let data = {};
+    if (userId && currentUser.privs === 1) {
+      try {
+        const sql = 'UPDATE users SET privs = 1 WHERE id = $1 RETURNING id';
+        const result = await pool.query(sql, [userId]);
+        data = result?.rows?.[0];
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    return data;
+  },
+  async resetPassword(currentUser, id) {
+    if (currentUser.privs === 1) {
+      try {
+        const pwd = passGen.generate(passOptions);
+        const hash = await bcrypt.hash(pwd, saltRounds);
+        await pool.query('UPDATE users SET _passhash = $2 WHERE id = $1', [id, hash]);
+        return { message: pwd, id };
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    return { error: 'Operation is allowed only for administrators' };
+  },
   async updateUser(currentUser, props) {
     let data = {};
     const userId = Number(props?.id);
@@ -764,20 +791,6 @@ export default {
       try {
         const sql = 'UPDATE users SET activated = $2 WHERE id = $1 RETURNING id';
         const result = await pool.query(sql, [userId, status]);
-        data = result?.rows?.[0];
-      } catch (err) {
-        console.error(err);
-      }
-    }
-    return data;
-  },
-  async elevateUser(userId, currentUser) {
-    console.log('privileges elevation request:', userId, 'by', currentUser.id);
-    let data = {};
-    if (userId && currentUser.privs === 1) {
-      try {
-        const sql = 'UPDATE users SET privs = 1 WHERE id = $1 RETURNING id';
-        const result = await pool.query(sql, [userId]);
         data = result?.rows?.[0];
       } catch (err) {
         console.error(err);
