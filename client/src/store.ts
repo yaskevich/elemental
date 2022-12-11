@@ -274,6 +274,8 @@ const openInWindow = (path: string) => {
 
 const convertArrayToObject = (arr: any) => Object.assign({}, ...arr.map((x: any) => ({ [x.id]: x })));
 
+const percent = (x: number) => Number((x*100).toFixed(2)) + '%';
+
 export default {
   state,
   getFile,
@@ -294,4 +296,5 @@ export default {
   setCurrentText,
   openInWindow,
   convertArrayToObject,
+  percent,
 };
