@@ -1,15 +1,23 @@
 <template>
   <n-card title="Stats" :bordered="false" class="minimal left">
     <n-space vertical v-if="isLoaded">
-      <n-h1 style="color: orangered; text-align: center;margin-top:-1.5rem;">{{Number ((data?.stats?.comments?.ready/(data?.stats?.comments?.total/100)).toFixed(2))}}%</n-h1>
+      <n-tooltip trigger="hover" placement="bottom">
+        <template #trigger>
+          <n-h1 style="color: orangered; text-align: center; margin-top: -1.5rem">{{
+            store.percent(data?.stats?.comments?.ready / data?.stats?.comments?.total)
+          }}</n-h1>
+        </template>
+        {{ data?.stats?.comments?.ready }} published comments to {{ data?.stats?.comments?.draft }} drafts
+      </n-tooltip>
+
       <n-descriptions label-placement="left" bordered :column="1">
         <n-descriptions-item>
           <template #label> Comments </template>
-          {{ data?.stats?.comments?.total }} ({{ data?.stats?.comments?.ready }}/{{ data?.stats?.comments?.draft }})
+          <n-tag>{{ data?.stats?.comments?.total }}</n-tag>
         </n-descriptions-item>
         <n-descriptions-item>
           <template #label> Changes </template>
-          {{ data?.stats?.changes?.map((x: any) => x.count).reduce((a: any, b: any) => a + b, 0) }}
+          <n-tag>{{ data?.stats?.changes?.map((x: any) => x.count).reduce((a: any, b: any) => a + b, 0) }}</n-tag>
         </n-descriptions-item>
 
         <!-- <n-descriptions-item v-for="user in data?.stats?.changes">
@@ -21,20 +29,25 @@
 
         <n-descriptions-item>
           <template #label> Words </template>
-          {{ data?.stats?.words?.map((x: any) => x.count).reduce((a: any, b: any) => a + b, 0) }}
+          <n-tag> {{ total }} </n-tag>
         </n-descriptions-item>
 
         <n-descriptions-item v-for="word in data?.stats?.words?.sort((a:any, b:any) => b.count - a.count)">
           <template #label>
             • with{{ word?.qty ? ' ' + word?.qty : 'out' }} comment{{ word?.qty === 1 ? '' : 's' }}
           </template>
-          {{ word?.count }}
+          <n-space>
+            <div style="min-width: 50px">
+              <n-tag>{{ word?.count }}</n-tag>
+            </div>
+            <n-tag type="info"> {{ store.percent(word?.count / total) }} </n-tag>
+          </n-space>
         </n-descriptions-item>
       </n-descriptions>
-      <div ref="divRef" style="text-align: center;">
+      <div ref="divRef" style="text-align: center">
         <Chart
           :size="{ width: divRef?.clientWidth || 0, height: data.stats.changes.length * 40 }"
-          :data="data?.stats?.changes?.sort((a:any, b:any) => b?.count - a?.count).map((x:any) =>({count: x.count, abbr: data?.users[x.user_id]?.firstname?.charAt(0) +'.' +data?.users[x.user_id]?.lastname?.charAt(0) +'.', user: data?.users[x.user_id]?.firstname +' ' +data?.users[x.user_id]?.lastname}))"
+          :data="changes"
           :margin="margin"
           direction="vertical"
           :axis="axis">
@@ -61,13 +74,13 @@
             <n-space v-if="tag?.tags?.length">
               <n-tag type="success" v-for="tid in tag.tags">{{ data.tags?.[tid][lang] }}</n-tag>
             </n-space>
-            <div v-else>no tags</div>
+            <n-tag :bordered="false" v-else>without tags</n-tag>
             <n-tag>{{ tag.qty }}</n-tag>
           </n-space>
         </n-space>
       </div>
     </n-space>
-    <n-divider></n-divider>
+    <!-- <n-divider></n-divider> -->
   </n-card>
 </template>
 
@@ -87,6 +100,9 @@ const margin = ref({
   bottom: 0,
 });
 
+const changes = ref([]);
+const total = ref(0);
+
 const axis = ref({
   primary: {
     type: 'band',
@@ -105,12 +121,25 @@ onBeforeMount(async () => {
     store.get('issues'),
     store.get('tags'),
   ]);
+
+  const usersKV = store.convertArrayToObject(users);
   Object.assign(data, {
     stats,
-    users: store.convertArrayToObject(users),
+    users: usersKV,
     issues,
     tags: store.convertArrayToObject(tags) as keyable,
   });
+
+  changes.value = stats.changes
+    .sort((a: any, b: any) => b?.count - a?.count)
+    .map((x: any) => ({
+      count: x.count,
+      abbr: usersKV[x.user_id]?.firstname?.charAt(0) + '.' + usersKV[x.user_id]?.lastname?.charAt(0) + '.',
+      user: usersKV[x.user_id]?.firstname + ' ' + usersKV[x.user_id]?.lastname,
+    }));
+
+  total.value = stats?.words?.map((x: any) => x.count).reduce((a: any, b: any) => a + b, 0);
+
   isLoaded.value = true;
 });
 </script>
