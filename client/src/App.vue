@@ -20,6 +20,9 @@ import {
   ReceiptLongFilled,
   FormatPaintFilled,
   WebFilled,
+  SettingsSharp,
+  StackedBarChartFilled,
+  BuildFilled,
 } from '@vicons/material';
 import store from './store';
 import router from './router';
@@ -67,20 +70,28 @@ const buildMenu = () => [
     icon: renderIcon(SettingsFilled),
     children: [
       {
+        label: 'Settings',
+        icon: renderIcon(BuildFilled),
+        key: 'settings',
+        children: [
+          makeItem('Media', 'Media', PermMediaFilled),
+          makeItem('Sources', 'Sources', MenuBookFilled),
+          makeItem('Tags', 'Tags', AssignmentFilled),
+          makeItem('Classes', 'Classes', FormatPaintFilled),
+          makeItem('Issues', 'Issues', LabelFilled),
+        ],
+      },
+      makeItem('Flow', 'Flow', ReceiptLongFilled),
+      makeItem('Backups', 'Backups', BackupFilled),
+      makeItem('Users', 'Users', PersonSearchFilled),
+      makeItem('Stats', 'Stats', StackedBarChartFilled),
+      makeItem('Logs', 'Logs', HistoryFilled),
+      {
         label: 'Site',
         key: 'site',
         disabled: !state?.user?.text?.loaded,
         icon: renderIcon(WebFilled),
       },
-      makeItem('Media', 'Media', PermMediaFilled),
-      makeItem('Sources', 'Sources', MenuBookFilled),
-      makeItem('Flow', 'Flow', ReceiptLongFilled),
-      makeItem('Classes', 'Classes', FormatPaintFilled),
-      makeItem('Tags', 'Tags', AssignmentFilled),
-      makeItem('Issues', 'Issues', LabelFilled),
-      makeItem('Backups', 'Backups', BackupFilled),
-      makeItem('Users', 'Users', PersonSearchFilled),
-      makeItem('Logs', 'Logs', HistoryFilled),
     ],
     // children: [
     //   {
