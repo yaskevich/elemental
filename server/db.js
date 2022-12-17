@@ -1338,11 +1338,13 @@ export default {
     let data = {};
     if (id) {
       try {
-        const comments = await pool.query('SELECT count(*)::int as total, count(*) FILTER (where published = True) as ready, count(*) FILTER (where published != True) as draft FROM comments WHERE text_id = $1', [id]);
+        const comments = await pool.query('SELECT count(*)::int as total, count(*) FILTER (where published = True)::int as ready, count(*) FILTER (where published != True)::int as draft FROM comments WHERE text_id = $1', [id]);
         const changes = await pool.query("select user_id, count(user_id)::int from logs WHERE (data0->>'text_id' = $1::text or data1->>'text_id' = $1::text) GROUP BY user_id", [id]);
         const words = await pool.query("select cardinality(comments) as qty, count(*)::int from strings join tokens on strings.token_id = tokens.id  where text_id = $1 and meta='word' group by qty", [id]);
         const tags = await pool.query('select tags, count(tags) as qty from comments where text_id = $1 group by tags order by qty DESC', [id]);
+        const etc = await pool.query("select round(extract(epoch from(created + ((now() - created) / $2))))::int as etc from logs WHERE (data0->>'text_id' = $1::text or data1->>'text_id' = $1::text) order by created asc limit 1;", [id, comments.rows[0].ready / comments.rows[0].total]);
         data = {
+          etc: etc.rows?.[0]?.etc,
           comments: comments?.rows?.[0],
           changes: changes?.rows,
           words: words?.rows,
@@ -1353,5 +1355,5 @@ export default {
       }
     }
     return data;
-  }
+  },
 };
