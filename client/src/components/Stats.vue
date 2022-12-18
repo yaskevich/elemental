@@ -1,14 +1,23 @@
 <template>
   <n-card title="Stats" :bordered="false" class="minimal left">
     <n-space vertical v-if="isLoaded">
-      <n-tooltip trigger="hover" placement="bottom">
+      <n-tooltip trigger="hover" placement="top">
         <template #trigger>
-          <n-h1 style="color: orangered; text-align: center; margin-top: -1.5rem">{{
+          <n-h1 style="color: orangered; text-align: center; margin-top: -1.5rem; margin-bottom: -0.5rem">{{
             store.percent(data?.stats?.comments?.ready / data?.stats?.comments?.total)
           }}</n-h1>
         </template>
         {{ data?.stats?.comments?.ready }} published comments to {{ data?.stats?.comments?.draft }} drafts
       </n-tooltip>
+
+      <div style="text-align: center">
+        <n-tooltip trigger="hover" placement="bottom">
+          <template #trigger>
+            <span>ETC: <n-time :time="data?.stats?.etc" type="date" unix format="MMM yyyy" /></span>
+          </template>
+          Esitmated Time to Complete is <n-time :time="data?.stats?.etc" type="relative" unix />
+        </n-tooltip>
+      </div>
 
       <n-descriptions label-placement="left" bordered :column="1">
         <n-descriptions-item>
@@ -46,7 +55,7 @@
       </n-descriptions>
       <div ref="divRef" style="text-align: center">
         <Chart
-          :size="{ width: divRef?.clientWidth || 0, height: data.stats.changes.length * 40 }"
+          :size="{ width: divRef?.clientWidth || 0, height: data?.stats?.changes?.length * 40 }"
           :data="changes"
           :margin="margin"
           direction="vertical"
@@ -130,8 +139,8 @@ onBeforeMount(async () => {
     tags: store.convertArrayToObject(tags) as keyable,
   });
 
-  changes.value = stats.changes
-    .sort((a: any, b: any) => b?.count - a?.count)
+  changes.value = stats?.changes
+    ?.sort((a: any, b: any) => b?.count - a?.count)
     .map((x: any) => ({
       count: x.count,
       abbr: usersKV[x.user_id]?.firstname?.charAt(0) + '.' + usersKV[x.user_id]?.lastname?.charAt(0) + '.',
