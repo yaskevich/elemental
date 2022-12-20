@@ -351,6 +351,7 @@ onBeforeMount(async () => {
     }
 
     comment.priority = priority || 1;
+    comment.published = false;
   }
 
   ready.value = true;
