@@ -21,7 +21,7 @@
       <n-alert v-if="!text?.scheme?.length" title="Scheme is empty" type="warning"
         >Add one or more text fields to enable fully-featured commenting workflow</n-alert
       >
-      <n-button type="success">Add new field</n-button>
+      <n-button type="success" @click="renderModal()">Add new field</n-button>
     </n-space>
   </n-card>
   <n-modal
@@ -46,7 +46,7 @@
           :disabled="field.index !== undefined" />
       </n-form-item>
       <n-form-item style="display: block" label="Select type" path="type">
-        <n-radio-group v-model:value="field.type" name="types" :disabled="field.index !== undefined">
+        <n-radio-group v-model:value="field.type" name="types" :disabled="field.created">
           <n-radio-button value="line">
             <n-tooltip placement="bottom">
               <template #trigger>
@@ -93,21 +93,21 @@ const vuerouter = useRoute();
 const formRef = ref<FormInst | null>(null);
 const text = ref<IText>();
 const isLoaded = ref(false);
-const field = reactive({ type: '', title: '', id: '', index: undefined });
+const field = reactive({ type: '', title: '', id: '', index: undefined, created: false });
 const showModal = ref(false);
 
-const renderModal = (index: number) => {
+const renderModal = (index?: number) => {
   showModal.value = true;
   if (text?.value?.scheme) {
-    Object.assign(field, { index }, text.value.scheme[index]);
-  }
-};
-
-const saveField = () => {
-  console.log('field', field);
-  showModal.value = false;
-  if (text?.value?.scheme?.length && field?.index !== undefined) {
-    Object.assign(text.value.scheme[field.index], { type: field.type, id: field.id, title: field.title });
+    // console.log('index', index);
+    if (index !== undefined) {
+      Object.assign(field, text.value.scheme[index], { index });
+      // console.log("get", field);
+    } else {
+      // console.log('new', text.value.scheme);
+      Object.assign(field, { id: '', title: '', type: 'line', index: undefined, created: true });
+      console.log(field);
+    }
   }
 };
 
@@ -137,21 +137,50 @@ const saveScheme = async () => {
   data?.id ? message.success('Scheme is set') : message.error('Database error');
 };
 
-const addField = async () => {
+// const saveField = () => {
+//   console.log('field', field);
+//   showModal.value = false;
+//   if (text?.value?.scheme?.length) {
+//     if (field?.index !== undefined) {
+//       Object.assign(text.value.scheme[field.index], { type: field.type, id: field.id, title: field.title });
+//     } else {
+//       text.value.scheme.push({ ...toRaw(field) });
+//     }
+//   }
+// };
+
+const saveField = async () => {
   // e.preventDefault();
   try {
-    await formRef.value?.validate(async errors => {
-      if (!errors) {
-        // message.success('Valid');
-        if (text.value?.scheme) {
-          text.value.scheme.push({ ...toRaw(field) });
-          Object.assign(field, { type: '', title: '', id: '' });
+    if (text.value?.scheme.map(x => x.id).includes(field.id) && !field?.index) {
+      console.log(text.value.scheme, field);
+
+      message.error('New field ID is the same with existing one');
+    } else {
+      await formRef.value?.validate(async errors => {
+        if (!errors) {
+          // message.success('Valid');
+          showModal.value = false;
+          if (text.value?.scheme?.length) {
+            if (field?.index !== undefined) {
+              Object.assign(text.value.scheme[field.index], {
+                type: field.type,
+                id: field.id,
+                title: field.title,
+                index: text.value.scheme.length,
+              });
+            } else {
+              text.value.scheme.push({ ...toRaw(field) });
+            }
+            // text.value.scheme.push({ ...toRaw(field) });
+            // Object.assign(field, { type: '', title: '', id: '' });
+          }
+        } else {
+          console.log(errors);
+          message.error('Not all required fields are filled!');
         }
-      } else {
-        console.log(errors);
-        message.error('Not all required fields are filled!');
-      }
-    });
+      });
+    }
   } catch (error) {
     console.log('fail');
   }
