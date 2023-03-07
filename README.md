@@ -1,40 +1,41 @@
-# FlowerCAT
+# ELEMENTAL
 
-Corpus Annotation Tool &mdash; for tagging tokens and adding comments to them. Current direction of development is towards building an up-to-date platform for maintaining and publishing commented **digital editions**. However, the main idea behind the project is **providing a user-friendly and productive UI for any type of text annotation**.
+A tool for annotating texts  &mdash; for tagging tokens and adding comments to them. 
 
-### Status 
+Current direction of development is towards building an up-to-date platform for maintaining and publishing commented **digital editions**. However, the main idea behind the project is **providing a user-friendly and productive UI for any type of text annotation**, backed by a lightweight and easy to install application.
 
-`Beta / Work In Progress [September 2022]`
+## Status
 
-The code base is still in **experimental** phase and it is being redesigned during development and testing. Although the application does not have release-ready status yet, it is already in use in the [Center for Digital Humanities](https://hum.hse.ru/en/digital/about/) at the HSE University.
+**Pre-release / Work In Progress [March 2023]**
 
-Questions? Ideas? PRs? Feel free to create an issue on Github or [contact me](https://yaskevich.com/) directly.
+As for now, the project was tested only on a single text and with a single scheme of a comment. It would be great to have more different projects. I'd appreciate any feedback. Feel free to create an issue on Github or [contact me](https://yaskevich.com/) directly.
 
-### Development
+## Development
 
-It started in 2018 as a manual Part-of-Speech tagging tool written in JQuery (data loader in Python 3) backed with SQLite. As for now it is being rewritten in modern JavaScript – both client (Vue3/TypeScript) and server (NodeJS). The project architecture changes. Current tasks include migrating from SQLite to PostgreSQL (*completed*) and extending the toolset with the interface for adding comments for text tokens (*high priority*). Rewriting the old client for PoS from JQuery to Vue3 is in the backlog as well (*postponed*).
+It started in 2018 as a manual Part-of-Speech tagging tool written in JQuery (data loader in Python 3) backed with SQLite. It is being rewritten in modern JavaScript &mdash; both client (Vue3/TypeScript) and server (NodeJS). The project architecture changes. Current tasks include migrating from SQLite to PostgreSQL (*completed*) and extending the toolset with the interface for adding comments for text tokens (*high priority*). Rewriting the old client for PoS from JQuery to Vue3 is in the backlog as well (*postponed*).
 
-### Requirements
+## Setup and deployment
 
-NodeJS v14+, PostgreSQL v12+
+| Requirements                    | OS    | NodeJS | PostgreSQL |
+| ------------------------------- | ----- | ------ | ---------- |
+| Minimal setup                   | *any* | 14     | 12         |
+| Development setup (recommended) | Linux | 18     | 14         |
 
-Development setup: Linux, NodeJS v16, PostgreSQL v12
+Technically, the platform consists of two applications: client and server.
 
-### Setup and deployment
-
-Technically, the platform consists of two applications: client and server. One has to install client packages, compile client application and copy it into server `public` directory, then install server packages, set environmental variables (the easiest way is by creating `.env` file in project root directory) and run the server application.
+Installation routine consists of such sequence of steps as:  installing  client packages, compiling client application and copying it into server `public` directory, installing server packages, setting environmental variables (the easiest way is by creating an `.env` file in project root directory) and starting the server application. There is no need to do it manually, step by step, automation is a way. The example setup script is in [deploy.sh](/deploy.sh).
 
 This example of the content of `.env` file:
 
-```
+```shell
 # PostgreSQL user
-PGUSER=flowercat_user
+PGUSER=database_user
 # PostgreSQL host (IP or hostname)
 PGHOST=127.0.0.1
 # PostgreSQL password
 PGPASSWORD=...................
 # PostgreSQL database
-PGDATABASE=flowercat_database
+PGDATABASE=database_name
 # PostgreSQL port
 PGPORT=5432
 # Application port
@@ -50,16 +51,9 @@ IMGLIMIT=1024000
 TXTLIMIT=10240000
 ```
 
-The example setup script is in [deploy.sh](/deploy.sh).
+
 
 Obviously, in production environment one should use rather a process manager, than a bare NodeJS instance. I recommend [PM2](https://pm2.keymetrics.io), there is a [config file](/server/ecosystem.config.cjs) for it. Also, one can pass the environmental variables in any other manner: via Docker config, via PM2 config, etc.
-
-<details>
-  <summary>Trivia</summary>
-
-Initial version of the project was interactive manual *grammar* tagger for Belarusian text called **grammaticon** (2018). More functional and usable prototype (2020) was named **elemental** (2020), as it rendered text as a sequence of *elements* of different types. Since June 2022 it is branded as **flowercat**, because it became more multifunctional corpus annotation tool and other more straightforward names as *supercat*, *textcat* etc. were already occupied. So I had to use my imagination 🙂️ Also the application provides processing *flow*.
-
-</details>
 
 
 :space_invader:
