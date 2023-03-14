@@ -151,10 +151,10 @@ const saveScheme = async () => {
 
 const saveField = async () => {
   // e.preventDefault();
-  try {
-    if (text.value?.scheme.map(x => x.id).includes(field.id) && !field?.index) {
-      console.log(text.value.scheme, field);
 
+  try {
+    if (text.value?.scheme?.length && text.value?.scheme.map(x => x.id).includes(field.id) && !field?.index) {
+      console.log(text.value.scheme, field);
       message.error('New field ID is the same with existing one');
     } else {
       await formRef.value?.validate(async errors => {
@@ -174,6 +174,16 @@ const saveField = async () => {
             }
             // text.value.scheme.push({ ...toRaw(field) });
             // Object.assign(field, { type: '', title: '', id: '' });
+          } else if (text?.value) {
+            // console.log('Scheme is empty');
+            text.value.scheme = [
+              {
+                type: field.type,
+                id: field.id,
+                title: field.title,
+                index: 0,
+              } as ISchemeItem,
+            ];
           }
         } else {
           console.log(errors);
