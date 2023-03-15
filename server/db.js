@@ -45,14 +45,12 @@ const databaseScheme = {
 
   tags: `
     id SERIAL PRIMARY KEY,
-    en TEXT,
-    ru TEXT`,
+    title TEXT`,
 
   issues: `
     id SERIAL PRIMARY KEY,
     color TEXT NOT NULL DEFAULT '#000000',
-    en TEXT,
-    ru TEXT`,
+    title TEXT`,
 
   users: `
     id SERIAL PRIMARY KEY,
@@ -502,15 +500,15 @@ export default {
     }
     return data;
   },
-  async setIssue(issueId, color, en, ru) {
-    const values = [color, en, ru];
+  async setIssue(issueId, color, title) {
+    const values = [color, title];
     let sql = '';
     if (issueId) {
       const id = Number(issueId);
       values.push(id);
-      sql = 'UPDATE issues SET color = $1, en = $2, ru = $3  WHERE id = $4';
+      sql = 'UPDATE issues SET color = $1, title = $2 WHERE id = $3';
     } else {
-      sql = 'INSERT INTO issues (color, en, ru) VALUES ($1, $2, $3)';
+      sql = 'INSERT INTO issues (color, title) VALUES ($1, $2)';
     }
 
     sql += ' RETURNING id';
@@ -536,15 +534,15 @@ export default {
     }
     return data;
   },
-  async setTag(tagId, en, ru) {
-    const values = [en, ru];
+  async setTag(tagId, title) {
+    const values = [title];
     let sql = '';
     if (tagId) {
       const id = Number(tagId);
       values.push(id);
-      sql = 'UPDATE tags SET en = $1, ru = $2 WHERE id = $3';
+      sql = 'UPDATE tags SET title = $1 WHERE id = $2';
     } else {
-      sql = 'INSERT INTO tags (en, ru) VALUES ($1, $2)';
+      sql = 'INSERT INTO tags (title) VALUES ($1)';
     }
 
     sql += ' RETURNING id';
