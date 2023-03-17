@@ -20,15 +20,13 @@
             filterable
             placeholder="Filter by user"
             :options="userList"
-            @update:value="selectUser"
-          />
+            @update:value="selectUser" />
           <n-select
             v-model:value="selectedTag"
             filterable
             placeholder="Filter by tag"
             :options="tagsList"
-            @update:value="selectTag"
-          />
+            @update:value="selectTag" />
         </n-space>
         <!-- <n-data-table remote :columns="columns" :data="comments" :pagination="pagination" :row-key="getID" :row-class-name="rowClassName" /> -->
         <n-data-table
@@ -39,8 +37,7 @@
           :row-key="getID"
           :row-props="rowProps"
           :summary="summary"
-          :paginate-single-page="false"
-        />
+          :paginate-single-page="false" />
       </n-space>
       <template #footer>
         <!-- #footer -->
@@ -53,7 +50,6 @@
 </template>
 
 <script setup lang="ts">
-
 import store from '../store';
 import { ref, reactive, onBeforeMount, h, DefineComponent } from 'vue';
 import router from '../router';
@@ -67,23 +63,8 @@ const vuerouter = useRoute();
 const tableRef = ref(null);
 const ready = ref(false);
 const comments = reactive([]);
-
-interface IRow {
-  bound: boolean;
-  id: number;
-  issues: Array<Array<number>>;
-  tags: Array<number>;
-  priority: number;
-  published: null | boolean;
-  title: string;
-};
-
-interface keyable {
-  [key: string]: any;
-};
-
 const issues: keyable = reactive({}) as keyable;
-const issuesArray = reactive([{ value: 0, label: "(no label)" }] as Array<{ label: string, value: number }>);
+const issuesArray = reactive([{ value: 0, label: '(no label)' }] as Array<{ label: string; value: number }>);
 const issuesValues = reactive([] as Array<number>);
 const users: keyable = reactive({}) as keyable;
 const userList = reactive([]);
@@ -127,9 +108,15 @@ const selectTag = (x: number) => (tableRef?.value as any).filter({ title: -x });
 
 const clearSorter = () => (tableRef?.value as any).sort(null);
 
-const clearFilters = () => { (tableRef?.value as any).filter(null); selectedUser.value = null; selectedTag.value = null; }
+const clearFilters = () => {
+  (tableRef?.value as any).filter(null);
+  selectedUser.value = null;
+  selectedTag.value = null;
+};
 
-const reset = () => { clearSorter(), clearFilters() };
+const reset = () => {
+  clearSorter(), clearFilters();
+};
 
 const columns = [
   {
@@ -168,7 +155,7 @@ const columns = [
       // <span v-if="item.published" style="margin-left:10px;color:blue;">✓</span>
       // return row.published ? "true" : "false";
       return h(
-        row.bound ? ((NTag as unknown) as DefineComponent) : ((NText as unknown) as DefineComponent),
+        row.bound ? (NTag as unknown as DefineComponent) : (NText as unknown as DefineComponent),
         {
           type: row.bound ? 'info' : 'error',
         },
@@ -179,7 +166,7 @@ const columns = [
     },
   },
   {
-    title: h(NIcon, { "color": "gray", "size": 24, "title": 'Status' }, { default: () => h(CheckIcon) }),
+    title: h(NIcon, { color: 'gray', size: 24, title: 'Status' }, { default: () => h(CheckIcon) }),
     key: 'published',
     sorter: (row1: IRow, row2: IRow) => Number(row1.published) - Number(row2.published),
     align: 'center',
@@ -195,11 +182,13 @@ const columns = [
       //     default: () => row.published ? '✓': '',
       //   }
       // );
-      return row.published ? h(NIcon, { "color": "green", size: 16 }, { default: () => h(CheckIcon) }) : h('small', { "style": "color:#d0d3d4" }, 'draft');
+      return row.published
+        ? h(NIcon, { color: 'green', size: 16 }, { default: () => h(CheckIcon) })
+        : h('small', { style: 'color:#d0d3d4' }, 'draft');
     },
   },
   {
-    title: h(NIcon, { "color": "gray", "size": 24, "title": "Issues" }, { default: () => h(HelpIcon) }),
+    title: h(NIcon, { color: 'gray', size: 24, title: 'Issues' }, { default: () => h(HelpIcon) }),
     key: 'issues',
     // defaultFilterOptionValues: issuesValues,
     filterOptions: issuesArray,
@@ -208,7 +197,9 @@ const columns = [
       if (optionValue > 0) {
         selectedUser.value = null;
       }
-      return optionValue ? row.issues.map((x: Array<number>) => x[Number(optionValue < 0)]).includes(Math.abs(optionValue)) : !row.issues.length;
+      return optionValue
+        ? row.issues.map((x: Array<number>) => x[Number(optionValue < 0)]).includes(Math.abs(optionValue))
+        : !row.issues.length;
     },
     render(row: IRow) {
       const issuesList = row.issues.map((d: Array<number>) => {
@@ -219,13 +210,13 @@ const columns = [
             trigger: 'hover',
           },
           {
-            default: () => `${issues?.[d[0]]?.ru}${users?.[d[1]]?.username ? ' @' + users?.[d[1]]?.username : ''}`,
+            default: () => `${issues?.[d[0]]?.title}${users?.[d[1]]?.username ? ' @' + users?.[d[1]]?.username : ''}`,
             trigger: () =>
               h(
                 NIcon,
                 {
-                  "color": issues?.[d[0]]?.color || 'black',
-                  "size": 18,
+                  color: issues?.[d[0]]?.color || 'black',
+                  size: 18,
                   // class: 'square',
                   // style: `background-color:${issues?.[d[0]]?.color || 'black'};`,
                 },
@@ -280,23 +271,27 @@ onBeforeMount(async () => {
     console.log('change text id to prop', data);
   }
 
-
   if (store?.state?.user?.text_id) {
-
     const issuesData = await store.get('issues');
     const issuesObject = Object.fromEntries(issuesData.map((x: any) => [x.id, x]));
     Object.assign(issues, issuesObject);
 
-    issuesArray.push(...issuesData.map((x: any) => ({ value: x.id, label: x.ru })));
+    issuesArray.push(...issuesData.map((x: any) => ({ value: x.id, label: x.title })));
     issuesValues.push(...issuesArray.map((x: any) => x.value));
 
     const usersData = await store.get('users');
     Object.assign(users, Object.fromEntries(usersData.map((x: any) => [x.id, x])));
     // console.log('issues from server', issues);
-    Object.assign(userList, usersData.map((x: any) => ({ value: x.id, label: `${x.firstname} ${x.lastname}` })));
+    Object.assign(
+      userList,
+      usersData.map((x: any) => ({ value: x.id, label: `${x.firstname} ${x.lastname}` }))
+    );
 
     const tagsData = await store.get('tags');
-    Object.assign(tagsList, tagsData.map((x: any) => ({ value: x.id, label: x.ru })));
+    Object.assign(
+      tagsList,
+      tagsData.map((x: any) => ({ value: x.id, label: x.title }))
+    );
 
     // localStorage.setItem('text_id', String(id));
     const data = await store.get('comments/' + store.state.user.text_id);
@@ -326,7 +321,7 @@ const pagination = reactive({
 
 const summary = (pageData: Array<IRow>) => {
   // console.log("pagedata", pageData);
-  return ({
+  return {
     priority: {},
     published: {},
     issues: {},
@@ -338,24 +333,7 @@ const summary = (pageData: Array<IRow>) => {
         pageData.length
       ),
       colSpan: 3,
-    }
-  })
+    },
+  };
 };
-
 </script>
-
-<style scoped lang="scss">
-/*
-  :deep(td .square) {
-    width: 50%;
-    height: 0;
-    padding-bottom: 50%;
-    margin: 2px;
-  }
-  */
-/*
-  :deep(.bound td:nth-of-type(2)) {
-    background-color: lightblue !important;
-  }
-  */
-</style>
