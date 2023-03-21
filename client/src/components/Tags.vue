@@ -26,12 +26,23 @@
         <n-gi>
           <n-input v-model:value="item.title" placeholder="Title" />
         </n-gi>
+        <n-gi style="text-align: right">
+          <n-dropdown
+            trigger="hover"
+            :options="[
+              { label: 'Save', key: 0, data: item },
+              { label: 'Delete', key: 1, data: item },
+            ]"
+            @select="handleSelect">
+            <n-button>Manage</n-button>
+          </n-dropdown>
+        </n-gi>
         <!-- <n-gi>
           <n-input v-model:value="item.ru" placeholder="English title" />
         </n-gi> -->
-        <n-gi style="text-align: right">
+        <!-- <n-gi style="text-align: right">
           <n-button type="info" @click="editTag(item)">Save</n-button>
-        </n-gi>
+        </n-gi> -->
       </n-grid>
     </n-space>
   </n-card>
@@ -40,7 +51,9 @@
 <script setup lang="ts">
 import store from '../store';
 import { ref, reactive, onBeforeMount } from 'vue';
+import { useMessage } from 'naive-ui';
 
+const message = useMessage();
 const newTag = reactive({ title: '' });
 const tags: Array<ITag> = reactive([] as Array<ITag>);
 const showForm = ref(false);
@@ -53,6 +66,25 @@ onBeforeMount(async () => {
   isLoaded.value = true;
 });
 
+const handleSelect = async (key: string | number, option: any) => {
+  // console.log(String(key), option);
+  if (key) {
+    const { data } = await store.deleteById('tags', option.data.id);
+    if (data.success) {
+      message.success('The tag was deleted succesfully');
+
+      Object.assign(
+        tags,
+        tags.filter((x: ITag) => x.id !== data?.id)
+      );
+    } else {
+      message.error(`The tag cannot be deleted.\nThere are comments bound (${data?.comments})`);
+    }
+  } else {
+    await editTag(option.data);
+  }
+};
+
 const editTag = async (tag: ITag) => {
   // console.log('edit tag', tag);
   const params: ITag = {} as ITag;
@@ -64,7 +96,7 @@ const editTag = async (tag: ITag) => {
   if (result?.data?.id) {
     params.id = result.data.id;
     if (!tag?.id) {
-      tags.push(params);
+      tags.unshift(params);
       newTag.title = '';
     }
   } else {
@@ -72,5 +104,3 @@ const editTag = async (tag: ITag) => {
   }
 };
 </script>
-
-<style scoped></style>
