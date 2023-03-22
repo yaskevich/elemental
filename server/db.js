@@ -500,6 +500,44 @@ export default {
     }
     return data;
   },
+  async deleteTag(tagId) {
+    const sql = 'SELECT tags from comments WHERE $1 = ANY (tags)';
+    let comments = 0;
+    let success = false;
+    const id = Number(tagId);
+    try {
+      let result = await pool.query(sql, [tagId]);
+      comments = result?.rows?.length;
+      if (!comments) {
+        result = await pool.query('DELETE FROM tags where id = $1', [id]);
+        if (result?.rowCount === 1) {
+          success = true;
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    return { id, comments, success };
+  },
+  async deleteIssue(issueId) {
+    const sql = 'SELECT issues from comments WHERE $1 = ANY (issues[:][1:1])';
+    let comments = 0;
+    let success = false;
+    const id = Number(issueId);
+    try {
+      let result = await pool.query(sql, [issueId]);
+      comments = result?.rows?.length;
+      if (!comments) {
+        result = await pool.query('DELETE FROM issues where id = $1', [id]);
+        if (result?.rowCount === 1) {
+          success = true;
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    return { id, comments, success };
+  },
   async setIssue(issueId, color, title) {
     const values = [color, title];
     let sql = '';
