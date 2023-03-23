@@ -9,7 +9,7 @@
                 closable
                 @close="removeIssue(issue)"
                 :color="{ color: issuesKV[issue[0]].color, textColor: 'white' }"
-                >{{ issuesKV[issue[0]]?.['ru'] }}</n-tag
+                >{{ issuesKV[issue[0]]?.['title'] }}</n-tag
               >
             </template>
             {{
@@ -282,11 +282,11 @@ onBeforeMount(async () => {
   Object.assign(usersKV, Object.fromEntries(usersData.map((x: any) => [x.id, x])));
   Object.assign(
     tagsList,
-    tagData.map((x: any) => ({ label: x.ru, key: x.id, disabled: computed(() => comment.tags?.includes(x.id)) }))
+    tagData.map((x: any) => ({ label: x.title, key: x.id, disabled: computed(() => comment.tags?.includes(x.id)) }))
   );
 
   const issueListData = issueData.map((x: any) => ({
-    label: x.ru,
+    label: x.title,
     key: x.id,
     disabled: computed(() => comment.issues?.map((d: any) => d[0]).includes(x.id)),
     children: [
