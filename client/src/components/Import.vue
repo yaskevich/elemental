@@ -4,6 +4,7 @@
       <template #header-extra>
         <n-spin v-if="isProcessing" />
         <n-space v-else>
+          <n-checkbox v-model:checked="downloadJSON" label="Download JSON" style="vertical-align: sub" />
           <n-button icon-placement="left" type="primary" @click="startProcessing($event, true)">Test</n-button>
           <n-button icon-placement="left" type="error" @click="startProcessing($event, false)">Run</n-button>
         </n-space>
@@ -80,6 +81,7 @@ const form = reactive({ text: '', link: '', src: 'text', format: 'plain' });
 const textInfo = ref<IText>();
 const isLoaded = ref(false);
 const isProcessing = ref(false);
+const downloadJSON = ref(false);
 
 const rules = {
   text: {
@@ -129,10 +131,14 @@ onBeforeMount(async () => {
 
 ///////////////////////////////////////////////////////////////////
 // processing functions
-const wordRegExp = /^[А-Яа-яA-Za-z$'’*-]+$/;
+// const wordRegExp = /^[А-Яа-яA-Za-zĄĆĘŁŃÓŚŹŻąćęłńóśźż$'’*-]+$/;
+const wordRegExp = /^[\p{L}$'’*-]+$/u;
 // const sentences = paragraphs[p].split(/([.…!?,:;«»]+)/);
-const sentBorderRegExp = /(?<=[.…!?»])\s+(?=[«–А-ЯЎІЁA-Z])/;
-const tokenDetectRegExp = /([^А-Яа-яA-Za-z0-9$'’*-])/;
+// const sentBorderRegExp = /(?<=[.…!?»])\s+(?=[«–А-ЯЎІЁA-Z])/;
+const sentBorderRegExp = /(?<=[.…!?»])\s+(?=[«–\p{Lu}])/u;
+// const tokenDetectRegExp = /([^А-Яа-яA-Za-z0-9ĄĆĘŁŃÓŚŹŻąćęłńóśźż$'’*-])/;
+const tokenDetectRegExp = /([^\p{L}\d$'’*-])/gu;
+
 let [sentencesNumber, paragraphsNumber] = [0, 0];
 
 const formatToken = (pnum: number, snum: number, form: string, repr: string, type: string) => ({
@@ -151,6 +157,7 @@ const processToken = (para: number, sent: number, chars: string) => {
     .replaceAll("'", '’');
 
   const withPuncts = token.split(tokenDetectRegExp);
+
   const tokens = [];
 
   if (withPuncts.length > 1) {
@@ -190,7 +197,7 @@ const processSentence = (sentence: string, pnum: number) => {
 };
 
 const textToJSON = (userInput: string) => {
-  const paragraphs = userInput.split('\n');
+  const paragraphs = userInput.split('\n').map(x => x.replace(/^\s+/g, ''));
   paragraphsNumber = paragraphs.length;
   return paragraphs.map((p, pi) => p.split(sentBorderRegExp).map(s => processSentence(s, pi))).flat(4);
 };
@@ -214,12 +221,24 @@ const startProcessing = async (e: MouseEvent, dryRun: boolean) => {
 
           if (!dryRun) {
             const lang2Letter = textInfo.value?.lang.split('-').shift();
-            // console.log(textArray);
-
             const { data } = await store.post('load', { content: textArray, id: id, lang: lang2Letter });
             // console.log("text posted", data);
             serverSecs = data;
           }
+
+          if (downloadJSON.value) {
+            const element = document.createElement('a');
+            element.setAttribute(
+              'href',
+              'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(textArray, null, 4))
+            );
+            element.setAttribute('download', id + '.json');
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+          }
+
           const t1 = performance.now();
           const secs = ((t1 - t0) / 1000).toFixed(2);
 
