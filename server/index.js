@@ -206,12 +206,12 @@ app.post('/api/comment', auth, async (req, res) => {
 });
 
 app.post('/api/tag', auth, async (req, res) => {
-  const result = await db.setTag(req.body.id, req.body.en, req.body.ru);
+  const result = await db.setTag(req.body.id, req.body.title);
   res.json(result);
 });
 
 app.post('/api/issue', auth, async (req, res) => {
-  const result = await db.setIssue(req.body.id, req.body.color, req.body.en, req.body.ru);
+  const result = await db.setIssue(req.body.id, req.body.color, req.body.title);
   res.json(result);
 });
 
@@ -327,6 +327,10 @@ app.delete('/api/:table/:id', auth, async (req, res) => {
     }
   } else if (req.params.table === 'classes') {
     result = await db.deleteClass(req.params.id);
+  } else if (req.params.table === 'issues') {
+    result = await db.deleteIssue(req.params.id);
+  } else if (req.params.table === 'tags') {
+    result = await db.deleteTag(req.params.id);
   }
 
   res.json(result);
