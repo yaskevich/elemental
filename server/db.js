@@ -129,10 +129,11 @@ const databaseScheme = {
 
   sources: `
     id SERIAL PRIMARY KEY,
-    lang text NOT NULL,
-    citekey text NOT NULL UNIQUE,
-    bibtex jsonb NOT NULL,
-    text_id integer NOT NULL`,
+    lang TEXT NOT NULL,
+    citekey TEXT NOT NULL UNIQUE,
+    bibtex JSONB NOT NULL,
+    text_id INTEGER NOT NULL,
+    raw TEXT NOT NULL`,
 
   settings: `
     registration_open boolean default true`,
@@ -1167,16 +1168,17 @@ export default {
   async setSource(params) {
     const values = [];
     // console.log(params);
+    const raws = params.raw.split(/(?=@)/);
     // return;
     let sql = '';
     let data = [];
     if (params?.id) {
       const id = Number(params.id);
       values.push(id);
-      sql = 'UPDATE sources SET lang = $2, bibtex = $3, citekey = $4 WHERE id = $1';
+      sql = 'UPDATE sources SET lang = $2, bibtex = $3, citekey = $4, raw = $5 WHERE id = $1';
     } else {
       // console.log(params.bib.length);
-      sql = 'INSERT INTO sources (text_id, lang, bibtex, citekey) VALUES ($1, $2, $3, $4)';
+      sql = 'INSERT INTO sources (text_id, lang, bibtex, citekey, raw) VALUES ($1, $2, $3, $4, $5)';
       const textId = Number(params.text) || 1;
       values.push(textId);
     }
@@ -1186,12 +1188,12 @@ export default {
       const queue = [];
       for (let i = 0; i < params.bib.length; i++) {
         const bibjson = params.bib[i];
-        const query = pool.query(sql, values.concat([params.lang, JSON.stringify(bibjson), bibjson.id]));
+        const query = pool.query(sql, values.concat([params.lang, JSON.stringify(bibjson), bibjson.id, raws[i]]));
         queue.push(query);
       }
       data = (await Promise.all(queue)).map((x) => x?.rows?.[0]);
     } catch (err) {
-      // console.error(JSON.stringify(err));
+      console.error(JSON.stringify(err));
       data = { error: err?.detail || err?.routine };
     }
     return data;
