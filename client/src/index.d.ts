@@ -166,15 +166,13 @@ declare global {
 
   interface IIssue {
     id?: number;
-    en: string;
-    ru: string;
+    title: string;
     color: string;
   }
 
   interface ITag {
     id?: number;
-    en: string;
-    ru: string;
+    title: string;
   }
 
   interface IAnnotationClass {
