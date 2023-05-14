@@ -140,13 +140,19 @@ const setLanguage = async () => {
 const remove = async () => {
   // console.log(form.id);
   const { data } = await store.deleteById('sources', form.id);
-  // console.log("result", data);
+  //   console.log('result', data);
   if (data?.[0]?.id === Number(form.id)) {
     // message.success("The item was deleted successfully");
     router.push('/sources');
   } else if (data?.length) {
     const links = data.map((x: any) =>
-      h(RouterLink, { to: '/comment/' + x.id, style: 'display:block;', class: 'msglink' }, { default: () => x.title })
+      store?.state?.user?.text_id === x.text_id
+        ? h(
+            RouterLink,
+            { to: '/comment/' + x.id, style: 'display:block;', class: 'msglink' },
+            { default: () => x.title }
+          )
+        : h('div', {}, { default: () => `${x.title} @ text #${x.text_id}` })
     );
     const container = h('div', {}, [h('span', {}, `There are comments with this source (${data.length})`)]);
     const vnode = h('div', {}, [container, links, 'Remove the references from comments before deleting this source.']);
