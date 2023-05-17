@@ -172,6 +172,11 @@ const routes = [
     component: () => import('./components/Stats.vue'),
     name: 'Stats',
   },
+  {
+    path: '/settings',
+    component: () => import('./components/Settings.vue'),
+    name: 'Settings',
+  },
 ];
 
 const router = createRouter({
