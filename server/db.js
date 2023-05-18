@@ -57,73 +57,74 @@ const databaseScheme = {
     username TEXT NOT NULL,
     firstname TEXT NOT NULL,
     lastname TEXT NOT NULL,
-    email text NOT NULL,
-    sex integer NOT NULL,
-    privs integer NOT NULL,
-    prefs json,
+    email TEXT NOT NULL,
+    sex INTEGER NOT NULL,
+    privs INTEGER NOT NULL,
+    prefs JSON,
     _passhash TEXT NOT NULL,
     activated BOOLEAN NOT NULL DEFAULT FALSE,
-    requested timestamp with time zone,
-    text_id integer,
+    requested TIMESTAMP WITH TIME ZONE,
+    text_id INTEGER,
+    note TEXT,
     CONSTRAINT fk_users_texts FOREIGN KEY(text_id) REFERENCES texts(id)`,
 
   tokens: `
     id SERIAL PRIMARY KEY,
-    token text NOT NULL,
-    meta text,
-    lang text,
+    token TEXT NOT NULL,
+    meta TEXT,
+    lang TEXT,
     UNIQUE (token, lang)`,
 
   units: `
     id SERIAL PRIMARY KEY,
-    token_id integer,
-    pos text,
+    token_id INTEGER,
+    pos TEXT,
     CONSTRAINT fk_units_tokens FOREIGN KEY(token_id) REFERENCES tokens(id)`,
 
   comments: `
     id SERIAL PRIMARY KEY,
-    text_id integer,
-    title text NOT NULL,
-    published boolean DEFAULT false,
-    priority real,
-    tags integer[] DEFAULT '{}',
-    issues integer[] DEFAULT '{}',
-    entry json,
+    text_id INTEGER,
+    title TEXT NOT NULL,
+    published BOOLEAN DEFAULT false,
+    priority REAL,
+    tags INTEGER[] DEFAULT '{}',
+    issues INTEGER[] DEFAULT '{}',
+    entry JSON,
     CONSTRAINT fk_comments_texts FOREIGN KEY(text_id) REFERENCES texts(id)`,
 
   strings: `
     id SERIAL PRIMARY KEY,
-    text_id integer,
-    p integer,
-    s integer,
-    line integer,
-    form text,
-    repr text,
-    fmt text[] DEFAULT '{}',
-    token_id integer,
-    unit_id integer,
-    comments integer[] DEFAULT '{}',
+    text_id INTEGER,
+    p INTEGER,
+    s INTEGER,
+    line INTEGER,
+    form TEXT,
+    repr TEXT,
+    fmt TEXT[] DEFAULT '{}',
+    token_id INTEGER,
+    unit_id INTEGER,
+    comments INTEGER[] DEFAULT '{}',
     CONSTRAINT fk_strings_texts FOREIGN KEY(text_id) REFERENCES texts(id),
     CONSTRAINT fk_strings_tokens FOREIGN KEY(token_id) REFERENCES tokens(id),
     CONSTRAINT fk_strings_units FOREIGN KEY(unit_id) REFERENCES units(id)`,
 
   logs: `
     id SERIAL PRIMARY KEY,
-    created timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-    user_id integer NOT NULL,
-    data0 json,
-    data1 json,
-    table_name text NOT NULL,
-    record_id integer NOT NULL,
+    created TIMESTAMP_WITH_TIME_ZONE DEFAULT CURRENT_TIMESTAMP,
+    user_id INTEGER NOT NULL,
+    data0 JSON,
+    data1 JSON,
+    table_name TEXT NOT NULL,
+    record_id INTEGER NOT NULL,
     CONSTRAINT fk_logs_users FOREIGN KEY(user_id) REFERENCES users(id)`,
 
   images: `
     id TEXT NOT NULL UNIQUE,
-    filesize integer NOT NULL,
-    user_id integer NOT NULL,
-    text_id integer NOT NULL,
-    created timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-    title text NOT NULL DEFAULT 'unnamed ' || to_char(CURRENT_TIMESTAMP, 'yyyy-mm-dd HH:mm'),
+    filesize INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    text_id INTEGER NOT NULL,
+    created TIMESTAMP_WITH_TIME_ZONE DEFAULT CURRENT_TIMESTAMP,
+    title TEXT NOT NULL DEFAULT 'unnamed ' || to_char(CURRENT_TIMESTAMP, 'yyyy-mm-dd HH:mm'),
     CONSTRAINT fk_images_texts FOREIGN KEY(text_id) REFERENCES texts(id),
     CONSTRAINT fk_images_users FOREIGN KEY(user_id) REFERENCES users(id)`,
 
@@ -136,7 +137,10 @@ const databaseScheme = {
     raw TEXT NOT NULL`,
 
   settings: `
-    registration_open boolean default true`,
+    registration_open BOOLEAN DEFAULT TRUE,
+    registration_code TEXT,
+    txtsizelimit INTEGER NOT NULL DEFAULT 10,
+    imgsizelimit INTEGER NOT NULL DEFAULT 1`,
 
   classes: `
     id SERIAL PRIMARY KEY,
@@ -220,7 +224,12 @@ export default {
     const sql = 'UPDATE users SET requested = NOW() WHERE id = $1'; // to log activity
     await pool.query(sql, [id]);
     const result = await pool.query('SELECT * from users WHERE id = $1 AND activated = TRUE', [id]);
-    return result?.rows?.[0];
+    const data = result?.rows?.[0];
+    // console.log(data);
+    if (data?.id) {
+      delete data._passhash;
+    }
+    return data;
   },
   async getUserData(email, pwd) {
     if (!email) { return { error: 'email' }; }
@@ -243,12 +252,14 @@ export default {
     return { error: 'email' };
   },
   async createUser(formData, status = false) {
-    console.log('create user', formData);
+    // console.log('create user', formData);
     const data = formData;
-    let activated = status;
-    const settings = await pool.query('SELECT * FROM settings');
+    let isActivated = status;
+    let setup = false;
+    const settingsResult = await pool.query('SELECT * FROM settings');
+    const settings = settingsResult.rows.shift();
 
-    if (!settings.rows.shift()?.registration_open) {
+    if (!settings?.registration_open) {
       return { error: 'registration is closed' };
     }
 
@@ -264,17 +275,25 @@ export default {
       // if users table is empty it means it is first run and we have to create admin user
       // make later regular set up UI
       data.privs = 1;
-      activated = true;
-      // console.log('create admin');
+      isActivated = true;
+      setup = true;
+      console.log('create admin');
     }
+    const note = formData?.note || '';
+
+    if (settings?.registration_code?.length && note.includes(settings.registration_code)) {
+      console.log('activated via pass code');
+      isActivated = true;
+    }
+
     const pwd = passGen.generate(passOptions);
     // console.log('make hash');
     const hash = await bcrypt.hash(pwd, saltRounds);
     // console.log('ready');
     // console.log(pwd, hash);
-    const result = await pool.query('INSERT INTO users (requested, username, firstname, lastname, email, sex, privs, _passhash, activated) VALUES(NOW(), LOWER($1), INITCAP($2), INITCAP($3), LOWER($4), $5, $6, $7, $8) RETURNING id', [data.username, data.firstname, data.lastname, data.email, data.sex, data.privs, hash, activated]);
+    const result = await pool.query('INSERT INTO users (requested, username, firstname, lastname, email, sex, privs, _passhash, activated, note) VALUES(NOW(), LOWER($1), INITCAP($2), INITCAP($3), LOWER($4), $5, $6, $7, $8, $9) RETURNING id', [data.username, data.firstname, data.lastname, data.email, data.sex, data.privs, hash, isActivated, note]);
     if (result.rows.length === 1) {
-      return { message: pwd, activated };
+      return { message: pwd, status: isActivated, setup };
     }
     return { error: 'user' };
   },
@@ -1393,5 +1412,19 @@ export default {
       }
     }
     return data;
+  },
+  async updateSettings(user, params) {
+    // console.log(user);
+    if (user.privs < 3) {
+      const columns = databaseScheme.settings.split(',').map((x) => x.trim().split(' ').shift());
+      const query = Object.fromEntries(
+        Object.entries(params).filter(([key]) => columns.includes(key))
+      );
+      // console.log('settings', query);
+      const sql = `UPDATE settings SET ${Object.keys(query).map((x, i) => `${x} = $${i + 1}`)}`;
+      const result = await pool.query(sql, Object.values(query));
+      return result?.rowCount;
+    }
+    return 0;
   },
 };
