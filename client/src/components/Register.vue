@@ -22,6 +22,13 @@
           <n-select placeholder="Choose gender" :options="generalOptions" v-model:value="formValue.user.sex" />
         </n-form-item>
 
+        <n-form-item label="Note" path="user.note">
+          <n-input
+            v-model:value="formValue.user.note"
+            type="textarea"
+            placeholder="Input a note about yourself for administrator" />
+        </n-form-item>
+
         <n-form-item>
           <n-button @click="handleValidateClick">Submit</n-button>
         </n-form-item>
@@ -58,6 +65,7 @@ const formValue = ref({
     lastname: '',
     email: '',
     sex: undefined,
+    note: '',
   },
 });
 
