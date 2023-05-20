@@ -12,14 +12,14 @@ const compileHTML = (params) => `
   <meta charset="utf-8">
   <meta name="keywords" content="annotation, comments">
   <meta name="description" content="${params.site}">
-  <title>${params.site}</title>
+  <title>${params.site || params.title}</title>
   <!--
     <link rel="stylesheet" href="mini.css" media="screen">
     <link rel="stylesheet" href="izi.css" media="screen">
     <script type="text/javascript" src="jquery.js"></script>
     <script type="text/javascript" src="izi.js"></script>
    -->
-  <meta name="generator" content="FlowerCAT">
+  <meta name="generator" content="Elemental">
   <script type="application/ld+json">{
     "@context": "http://schema.org",
     "@type": "WebSite",
@@ -227,12 +227,11 @@ const build = async (currentDir, id, siteDir, filename) => {
 <div id="ms${cmt.id}" class="modals" data-iziModal-title="${cmt.title}"
 ${cmt?.entry?.[tooltipElement] ? `data-iziModal-subtitle="${cmt.entry[tooltipElement]}"` : ''} >
 <div class="content">
-<div class="${modalElement.id}${cmt.id}">${cmt?.entry?.[modalElement.id]?.content.map(render).join('')}</div>${articleElement?.id ? `
+<div class="${modalElement.id}${cmt.id}">${cmt?.entry?.[modalElement?.id]?.content?.map(render).join('') || ''}</div>
+${articleElement?.id ? `
 <div class="${articleElement.id}${cmt.id} hidden">${cmt?.entry?.[articleElement.id]?.content.map(render).join('')}</div>
 <button type="button" data-id="${cmt.id}" class="block ${cmt?.entry?.[articleElement.id]?.content?.[0]?.content ? '' : 'hidden'} ${modalElement.id}${cmt.id}">➜ ${articleElement.title}</button>
-<button type="button" data-id="${cmt.id}" class="hidden block ${articleElement.id}${cmt.id} ">➜ ${modalElement.title}</button>
-` : ''
-}
+<button type="button" data-id="${cmt.id}" class="hidden block ${articleElement.id}${cmt.id} ">➜ ${modalElement.title}</button>` : ''}
 </div></div>
 `;
 
