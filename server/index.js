@@ -31,9 +31,13 @@ fs.mkdirSync(siteDir, { recursive: true });
 const app = express();
 const zipName = 'site.zip';
 const port = process.env.PORT || 8080;
+const secret = process.env.SECRET;
 const appName = __package?.name || String(port);
-const imageFileLimit = Number(process.env.IMGLIMIT) || 1024 * 1024; // 1 MB
-const textContentLimit = Number(process.env.TXTLIMIT) || 1024 * 1024 * 10; // 10 MB
+const mega = 1024 * 1024;
+
+const options = await db.getSettings();
+const imageFileLimit = (options.imgsizelimit || 1) * mega; // 1 MB
+const textContentLimit = (options.txtsizelimit || 10) * mega; // 10 MB
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 
@@ -42,12 +46,12 @@ const createToken = (user) => jwt.sign({
   sub: user.id,
   iat: new Date().getTime(),
   exp: new Date().setDate(new Date().getDate() + 1),
-}, process.env.JWT_SECRET);
+}, secret);
 
 const strategy = new JWTStrategy(
   {
     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-    secretOrKey: process.env.JWT_SECRET,
+    secretOrKey: secret,
   },
   (jwtPayload, done) => db.getUserDataByID(jwtPayload.sub)
     .then((user) => done(null, user))
@@ -66,14 +70,14 @@ app.use(passport.initialize());
 app.use(bodyParser.json({ limit: textContentLimit }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(express.static(path.join(__dirname, 'node_modules', 'spectre.css', 'dist')));
-app.use(express.static(path.join(__dirname, 'node_modules', 'izimodal', 'css')));
-app.use(express.static(path.join(__dirname, 'node_modules', 'izimodal', 'js')));
-app.use(express.static(path.join(__dirname, 'node_modules', 'jquery', 'dist')));
-app.use(express.static(path.join(__dirname, 'node_modules', 'webui-popover', 'dist')));
-app.use(express.static(path.join(__dirname, 'node_modules', 'file-saver', 'dist')));
-app.use(express.static(path.join(__dirname, 'node_modules', '@simonwep', 'selection-js', 'lib')));
-app.use(express.static(path.join(__dirname, 'node_modules', 'bulma', 'css')));
+// app.use(express.static(path.join(__dirname, 'node_modules', 'spectre.css', 'dist')));
+// app.use(express.static(path.join(__dirname, 'node_modules', 'izimodal', 'css')));
+// app.use(express.static(path.join(__dirname, 'node_modules', 'izimodal', 'js')));
+// app.use(express.static(path.join(__dirname, 'node_modules', 'jquery', 'dist')));
+// app.use(express.static(path.join(__dirname, 'node_modules', 'webui-popover', 'dist')));
+// app.use(express.static(path.join(__dirname, 'node_modules', 'file-saver', 'dist')));
+// app.use(express.static(path.join(__dirname, 'node_modules', '@simonwep', 'selection-js', 'lib')));
+// app.use(express.static(path.join(__dirname, 'node_modules', 'bulma', 'css')));
 app.use(history());
 app.use(express.static(publicDir));
 
@@ -511,28 +515,42 @@ app.get('/api/source', auth, async (req, res) => {
   res.json(await db.getSource(req.query.id));
 });
 
-app.get('/api/settings', async (req, res) => {
-  res.json(await db.getSettings());
-});
-
-app.get('/api/logs', async (req, res) => {
+app.get('/api/logs', auth, async (req, res) => {
   res.json(await db.getLogs(req.query));
 });
 
-app.get('/api/change', async (req, res) => {
+app.get('/api/change', auth, async (req, res) => {
   res.json(await db.getChange(req.query));
 });
 
-app.get('/api/history', async (req, res) => {
+app.get('/api/history', auth, async (req, res) => {
   res.json(await db.getItemHistory('comments', Number(req.query.id), Number(req.query.limit)));
 });
 
-app.get('/api/index', async (req, res) => {
+app.get('/api/index', auth, async (req, res) => {
   res.json(await db.getCommentsIndex(Number(req.query.id), String(req.query.name)));
 });
 
-app.get('/api/stats', async (req, res) => {
+app.get('/api/stats', auth, async (req, res) => {
   res.json(await db.getStats(Number(req.query.id)));
+});
+
+app.get('/api/settings', auth, async (req, res) => {
+  res.json(await db.getSettings());
+});
+
+app.post('/api/settings', auth, async (req, res) => {
+  // const currentSettings = await db.getSettings();
+  const newSettings = req.body;
+  // if (currentSettings?.imgsizelimit !== newSettings.imgsizelimit || currentSettings?.txtsizelimit !== newSettings.txtsizelimit) {
+  //   console.log('limit change -> restart');
+  // }
+  res.json(await db.updateSettings(req.user, newSettings));
+});
+
+app.get('/api/registration', async (req, res) => {
+  const result = await db.getSettings();
+  res.json({ status: result.registration_open });
 });
 
 app.listen(port);
