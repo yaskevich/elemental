@@ -23,6 +23,8 @@ import {
   SettingsSharp,
   StackedBarChartFilled,
   BuildFilled,
+  ChangeCircleFilled,
+  FolderFilled,
 } from '@vicons/material';
 import store from './store';
 import router from './router';
@@ -34,7 +36,7 @@ const activeKey = ref<string | null>(null); // vuerouter?.name||'Home'
 const dataReady = ref(false);
 const loggedIn = computed(() => store?.state?.token?.length);
 const state = store.state;
-const settings = ref<ISettings>();
+const settings = ref<{status: boolean}>();
 
 const renderIcon = (icon: Component) => {
   return () => h(NIcon, null, { default: () => h(icon) });
@@ -70,22 +72,36 @@ const buildMenu = () => [
     icon: renderIcon(SettingsFilled),
     children: [
       {
-        label: 'Settings',
-        icon: renderIcon(BuildFilled),
-        key: 'settings',
+        label: 'Assets',
+        icon: renderIcon(FolderFilled),
+        key: 'assets',
         children: [
           makeItem('Media', 'Media', PermMediaFilled),
           makeItem('Sources', 'Sources', MenuBookFilled),
           makeItem('Tags', 'Tags', AssignmentFilled),
           makeItem('Classes', 'Classes', FormatPaintFilled),
-          makeItem('Issues', 'Issues', LabelFilled),
         ],
       },
-      makeItem('Flow', 'Flow', ReceiptLongFilled),
+
+      {
+        label: 'Work',
+        icon: renderIcon(ChangeCircleFilled),
+        key: 'workflow',
+        children: [
+          makeItem('Issues', 'Issues', LabelFilled),
+          makeItem('Users', 'Users', PersonSearchFilled),
+          makeItem('Stats', 'Stats', StackedBarChartFilled),
+          makeItem('Logs', 'Logs', HistoryFilled),
+        ],
+      },
+      makeItem(
+        'Settings',
+        'Settings',
+        BuildFilled,
+        Boolean(store?.state?.user?.privs && store?.state?.user?.privs > 3)
+      ),
       makeItem('Backups', 'Backups', BackupFilled),
-      makeItem('Users', 'Users', PersonSearchFilled),
-      makeItem('Stats', 'Stats', StackedBarChartFilled),
-      makeItem('Logs', 'Logs', HistoryFilled),
+      makeItem('Flow', 'Flow', ReceiptLongFilled),
       {
         label: 'Site',
         key: 'site',
@@ -147,7 +163,7 @@ onMounted(async () => {
   activeKey.value = String(vuerouter.name);
   // console.log("state", store.state.user);
   if (!storedTitle) {
-    const { data } = await store.getUnauthorized('settings');
+    const { data } = await store.getUnauthorized('registration');
     settings.value = data;
   }
 
@@ -177,7 +193,7 @@ onMounted(async () => {
           <Login />
         </n-tab-pane>
         <n-tab-pane name="signup" tab="Register">
-          <Register v-if="settings?.registration_open" />
+          <Register v-if="settings?.status" />
           <n-h2 v-else>
             <n-text type="warning">Registration is closed.</n-text>
           </n-h2>
