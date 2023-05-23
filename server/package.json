@@ -1,12 +1,12 @@
 {
   "name": "elemental-server",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "Elemental server application",
   "author": "Alyaxey Yaskevich",
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git://github.com/yaskevich/flowercat.git"
+    "url": "git://github.com/yaskevich/elemental.git"
   },
   "main": "index",
   "type": "module",
@@ -26,32 +26,26 @@
     ]
   },
   "dependencies": {
-    "@simonwep/selection-js": "^2.1.2",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.2",
-    "bulma": "^0.9.4",
     "cheerio": "^1.0.0-rc.12",
     "compression": "^1.7.4",
     "connect-history-api-fallback": "^2.0.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-fileupload": "^1.4.0",
-    "file-saver": "^2.0.5",
     "generate-password": "^1.7.0",
     "izimodal": "^1.6.1",
-    "jquery": "^3.6.3",
+    "jquery": "^3.7.0",
     "jsonwebtoken": "^9.0.0",
-    "mini.css": "^3.0.1",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
-    "pg": "^8.9.0",
-    "spectre.css": "^0.5.9",
-    "webui-popover": "^1.2.18",
+    "pg": "^8.11.0",
     "zip-local": "^0.3.5"
   },
   "devDependencies": {
     "args": "^5.0.3",
-    "eslint": "^8.35.0",
+    "eslint": "^8.41.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.27.5"
   }
