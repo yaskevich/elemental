@@ -1235,8 +1235,7 @@ export default {
   async checkCommentsForSource(id) {
     let data = [];
     if (id) {
-      const sql = `SELECT id, priority, title FROM comments WHERE jsonb_path_exists(entry::jsonb, '$.** ? (@.type == "citation" && @.attrs.id == ${id})')`;
-
+      const sql = `SELECT id, priority, title, text_id FROM comments WHERE jsonb_path_exists(entry::jsonb, '$.** ? (@.type == "citation" && @.attrs.id == ${id})')`;
       try {
         const result = await pool.query(sql);
         data = result?.rows;
