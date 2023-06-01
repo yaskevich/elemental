@@ -79,15 +79,27 @@
         <!-- <n-divider></n-divider> -->
         <div>
           <n-h4>Tags</n-h4>
-          <n-space vertical>
-            <n-space v-for="tag in data?.stats?.tags" justify="space-between">
-              <n-space v-if="tag?.tags?.length">
-                <n-tag type="success" v-for="tid in tag.tags">{{ data.tags?.[tid][lang] }}</n-tag>
+          <n-tabs type="line" animated>
+            <n-tab-pane name="grouped" tab="Groups">
+              <n-space vertical>
+                <n-space v-for="tag in data?.stats?.tags" justify="space-between">
+                  <n-space v-if="tag?.tags?.length">
+                    <n-tag type="success" v-for="tid in tag.tags">{{ data.tags?.[tid]['title'] }}</n-tag>
+                  </n-space>
+                  <n-tag :bordered="false" v-else>without tags</n-tag>
+                  <n-tag>{{ tag.qty }}</n-tag>
+                </n-space>
               </n-space>
-              <n-tag :bordered="false" v-else>without tags</n-tag>
-              <n-tag>{{ tag.qty }}</n-tag>
-            </n-space>
-          </n-space>
+            </n-tab-pane>
+            <n-tab-pane name="units" tab="Occurencies">
+              <n-space vertical>
+                <n-space justify="space-between" v-for="item in tagsArray">
+                  <n-tag type="success">{{ data.tags[item[0]].title }}</n-tag>
+                  <n-tag>{{ item[1] }}</n-tag>
+                </n-space>
+              </n-space>
+            </n-tab-pane>
+          </n-tabs>
         </div>
       </n-space>
       <n-alert v-else title="No comments" type="warning"
@@ -105,7 +117,6 @@ import { ChartAxis } from 'vue3-charts/dist/types';
 import store from '../store';
 const data = reactive({} as any);
 const isLoaded = ref(false);
-const lang = store?.state?.user?.text?.lang.slice(0, 2) || 'en';
 const divRef = ref<HTMLDivElement>();
 const margin = ref({
   left: 0,
@@ -116,6 +127,7 @@ const margin = ref({
 
 const changes = ref([]);
 const total = ref(0);
+const tagsArray = [] as any;
 
 const axis = ref({
   primary: {
@@ -135,6 +147,20 @@ onBeforeMount(async () => {
     store.get('issues'),
     store.get('tags'),
   ]);
+
+  const uniqTags = {} as any;
+  for (let tag of stats?.tags) {
+    for (let tagId of tag?.tags) {
+      // console.log(tagId, tag.qty);
+      const qty = uniqTags?.[tagId] ? uniqTags[tagId] : 0;
+      uniqTags[tagId] = qty + Number(tag.qty);
+    }
+  }
+
+  Object.assign(
+    tagsArray,
+    Object.entries(uniqTags).sort((a: any, b: any) => b[1] - a[1])
+  );
 
   const usersKV = store.convertArrayToObject(users);
   Object.assign(data, {
