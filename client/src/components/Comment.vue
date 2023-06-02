@@ -217,7 +217,7 @@ const removeTag = (id: number) => {
 
 const addTag = (payload: Event) => {
   const id = Number(payload);
-  comment?.tags ? comment.tags.push(id) : (comment.tags = [id]);
+  comment.tags = comment?.tags ? [...comment.tags, id].sort((a, b) => a - b) : [id];
 };
 
 const removeIssue = (item: [number, number]) => {
