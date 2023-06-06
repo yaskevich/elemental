@@ -105,10 +105,25 @@ export default {
     });
     return format;
   },
-  async importText(textId, content, language, isWeb) {
-    await db.deleteFromStrings(textId);
-    const result = await db.insertBatchIntoStrings(textId, content, language, isWeb);
-    await db.setTextLoaded(textId);
-    return result;
+  async importText(user, id, content, language, isWeb) {
+    const textId = Number(id);
+    if (textId) {
+      await db.deleteFromStrings(textId);
+      const result = await db.insertBatchIntoStrings(textId, content, language, isWeb);
+      await db.setTextLoaded(textId);
+      return result;
+    }
+    return {};
   },
+  getLanguages(locs, userInput) {
+    let matches = [];
+    if (userInput) {
+      const chunk = userInput.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(chunk, 'i');
+      matches = locs.filter((x) => x.location && (regex.test(x.tag) || regex.test(x.name) || regex.test(x.location) || regex.test(x.local)));
+    } else {
+      matches = locs.filter((x) => x.default && x.location);
+    }
+    return matches;
+  }
 };
