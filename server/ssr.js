@@ -1,7 +1,11 @@
 import fs from 'fs';
 import path from 'path';
-import zip from 'zip-local';
+import { zipSync, strToU8 } from 'fflate';
 import db from './db.js';
+
+const zipName = 'site.zip';
+const imagesSubdir = 'res';
+const indexFile = 'index.html';
 
 const compileHTML = (params) => `
 <!DOCTYPE html>
@@ -107,12 +111,12 @@ ${params.choices}
 
 const renderFigure = (figObj) => {
   const caption = figObj?.content?.[0]?.text ? `<figcaption>${figObj?.content?.[0]?.text}</figcaption>` : '';
-  return `<figure><img src="${figObj.attrs.src}" />${caption}</figure>`;
+  return `<figure><img src="${imagesSubdir}/${path.basename(figObj.attrs.src)}" />${caption}</figure>`;
 };
 
 const escape = (str) => str.replaceAll("'", '&apos;').replaceAll('"', '&quot;');
 
-const build = async (currentDir, id, siteDir, filename) => {
+const build = async (currentDir, id, siteDir, imagesDir) => {
   const textId = Number(id);
   if (!textId) {
     return { error: 'no ID' };
@@ -120,7 +124,8 @@ const build = async (currentDir, id, siteDir, filename) => {
 
   try {
     const pubDir = path.join(siteDir, String(textId));
-    const zipPath = path.join(pubDir, filename);
+    const imgDir = path.join(imagesDir, String(textId));
+    const zipPath = path.join(pubDir, zipName);
     const cssPath = path.join(currentDir, 'site.css');
     const cssContent = fs.readFileSync(cssPath).toString() + fs.readFileSync(path.join(currentDir, 'node_modules', 'izimodal', 'css', 'iziModal.min.css')).toString();
     const jsContent = fs.readFileSync(path.join(currentDir, 'node_modules', 'jquery', 'dist', 'jquery.min.js')).toString() + fs.readFileSync(path.join(currentDir, 'node_modules', 'izimodal', 'js', 'iziModal.min.js')).toString();
@@ -289,14 +294,26 @@ ${articleElement?.id ? `
       ...(articleElement?.id && { clickable: articleElement.id })
     });
 
-    fs.writeFileSync(path.join(pubDir, 'index.html'), output);
+    fs.writeFileSync(path.join(pubDir, indexFile), output);
 
+    fs.symlinkSync(imgDir, path.join(pubDir, imagesSubdir), 'dir');
     const now = Date.now();
-    zip.sync.zip(pubDir).compress().save(zipPath);
-    const stats = fs.statSync(zipPath);
+    // zip.sync.zip(pubDir).compress().save(zipPath);
 
-    await db.updatePubInfo(textId, stats.size, now);
-    return { bytes: stats.size, dir: pubDir, published: now };
+    const imagesList = Object.assign({}, ...fs.readdirSync(imgDir).map((x) => ({
+      [x]: [fs.readFileSync(path.join(imgDir, x)), { level: 0 }]
+    })));
+
+    const zipped = zipSync({ [imagesSubdir]: { ...imagesList }, [indexFile]: [strToU8(output), { level: 9 }] });
+
+    fs.writeFileSync(zipPath, zipped);
+
+    const stats = fs.statSync(zipPath);
+    // const size = output.length; // stats.size
+    const { size } = stats;
+
+    await db.updatePubInfo(textId, size, now);
+    return { bytes: size, dir: pubDir, published: now };
   } catch (genError) {
     console.error(`HTML generation error for text ${textId}`, genError);
     return { error: genError.message };
