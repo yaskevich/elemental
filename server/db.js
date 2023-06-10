@@ -219,7 +219,41 @@ const cleanCommentObject = (obj) => {
   return rest;
 };
 
+const getSettings = async () => {
+  let data = [];
+  const sql = 'SELECT * FROM settings';
+  try {
+    const result = await pool.query(sql);
+    data = result?.rows?.shift();
+  } catch (err) {
+    console.error(err);
+  }
+  return data;
+};
+
+let settings = await getSettings();
+
 export default {
+  getSettings,
+  getSettingsState() { return settings; },
+  async updateSettings(user, params) {
+    // console.log(user);
+    if (user.privs < 3) {
+      const columns = databaseScheme.settings.split(',').map((x) => x.trim().split(' ').shift());
+      const query = Object.fromEntries(
+        Object.entries(params).filter(([key]) => columns.includes(key))
+      );
+      // console.log('settings', query);
+      const sql = `UPDATE settings SET ${Object.keys(query).map((x, i) => `${x} = $${i + 1}`)}`;
+      const result = await pool.query(sql, Object.values(query));
+      const { rowCount } = result;
+      if (rowCount === 1) {
+        settings = query;
+      }
+      return rowCount;
+    }
+    return 0;
+  },
   async getUserDataByID(id) {
     const sql = 'UPDATE users SET requested = NOW() WHERE id = $1'; // to log activity
     await pool.query(sql, [id]);
@@ -251,15 +285,13 @@ export default {
     }
     return { error: 'email' };
   },
-  async createUser(formData, status = false) {
-    // console.log('create user', formData);
-    const data = formData;
+  async createUser(user, data, status = false) {
+    // console.log('create user', data);
+    const note = data?.note || '';
+    let privs = 5; // default user
     let isActivated = status;
     let setup = false;
-    const settingsResult = await pool.query('SELECT * FROM settings');
-    const settings = settingsResult.rows.shift();
-
-    if (!settings?.registration_open) {
+    if (!(status || settings?.registration_open)) {
       return { error: 'registration is closed' };
     }
 
@@ -274,12 +306,11 @@ export default {
     } else {
       // if users table is empty it means it is first run and we have to create admin user
       // make later regular set up UI
-      data.privs = 1;
+      privs = 1;
       isActivated = true;
       setup = true;
       console.log('create admin');
     }
-    const note = formData?.note || '';
 
     if (settings?.registration_code?.length && note.includes(settings.registration_code)) {
       console.log('activated via pass code');
@@ -291,7 +322,7 @@ export default {
     const hash = await bcrypt.hash(pwd, saltRounds);
     // console.log('ready');
     // console.log(pwd, hash);
-    const result = await pool.query('INSERT INTO users (requested, username, firstname, lastname, email, sex, privs, _passhash, activated, note) VALUES(NOW(), LOWER($1), INITCAP($2), INITCAP($3), LOWER($4), $5, $6, $7, $8, $9) RETURNING id', [data.username, data.firstname, data.lastname, data.email, data.sex, data.privs, hash, isActivated, note]);
+    const result = await pool.query('INSERT INTO users (requested, username, firstname, lastname, email, sex, privs, _passhash, activated, note) VALUES(NOW(), LOWER($1), INITCAP($2), INITCAP($3), LOWER($4), $5, $6, $7, $8, $9) RETURNING id', [data.username, data.firstname, data.lastname, data.email, data.sex, privs, hash, isActivated, note]);
     if (result.rows.length === 1) {
       return { message: pwd, status: isActivated, setup };
     }
@@ -380,7 +411,13 @@ export default {
     }
     return data;
   },
-  async processToken(tokenId, wordClass, mode, unitId, sentenceId) {
+  async processToken(user, tid, cls, modeId, uid, sid) {
+    console.log(`Strings ID ${sid} Token ID ${tid}, class ${cls}, single-mode ${modeId}, unit ${uid}`);
+    const tokenId = String(tid);
+    const wordClass = String(cls);
+    const mode = Number(modeId);
+    const unitId = Number(uid);
+    const sentenceId = Number(sid);
     // // sqlitedb.run("UPDATE units SET pos = ? WHERE id = ?", [cls, id], function(err, row){
     // sqlitedb.all("SELECT id, pos from units where token_id = ?",[id], (err, units) => {
     // console.log("units", units);
@@ -497,12 +534,13 @@ export default {
     return data;
   },
   async getText(id, withGrammar = false) {
+    const textId = Number(id) || 1;
     // console.log("with grammar", withGrammar);
     const sqlWithGrammar = 'select strings.id as id, strings.p, strings.s, strings.form, strings.repr, strings.fmt, tokens.id as tid, tokens.meta, units.id as uid, units.pos, strings.comments from strings left join tokens on strings.token_id = tokens.id left join units on strings.unit_id = units.id where text_id = $1 ORDER BY strings.id';
     const sql = 'select strings.id as id, strings.p, strings.s, strings.form, strings.repr, strings.fmt, tokens.id as tid, tokens.meta, strings.comments from strings left join tokens on strings.token_id = tokens.id where text_id = $1 ORDER BY strings.id';
     let data = [];
     try {
-      const result = await pool.query(withGrammar ? sqlWithGrammar : sql, [id]);
+      const result = await pool.query(withGrammar ? sqlWithGrammar : sql, [textId]);
       data = result?.rows;
     } catch (err) {
       console.error(err);
@@ -520,7 +558,7 @@ export default {
     }
     return data;
   },
-  async deleteTag(tagId) {
+  async deleteTag(user, tagId) {
     const sql = 'SELECT tags from comments WHERE $1 = ANY (tags)';
     let comments = 0;
     let success = false;
@@ -539,7 +577,7 @@ export default {
     }
     return { id, comments, success };
   },
-  async deleteIssue(issueId) {
+  async deleteIssue(user, issueId) {
     const sql = 'SELECT issues from comments WHERE $1 = ANY (issues[:][1:1])';
     let comments = 0;
     let success = false;
@@ -558,7 +596,7 @@ export default {
     }
     return { id, comments, success };
   },
-  async setIssue(issueId, color, title) {
+  async setIssue(user, issueId, color, title) {
     const values = [color, title];
     let sql = '';
     if (issueId) {
@@ -592,7 +630,7 @@ export default {
     }
     return data;
   },
-  async setTag(tagId, title) {
+  async setTag(user, tagId, title) {
     const values = [title];
     let sql = '';
     if (tagId) {
@@ -657,7 +695,7 @@ export default {
     }
     return data;
   },
-  async setComment(params, userObject) {
+  async setComment(user, params) {
     const tagsAsArray = `{${params?.tags?.length ? params.tags.join(',') : ''}}`;
     const issuesAsArray = `{${params?.issues?.length ? params.issues.map((x) => `{${x.join(',')}}`).join(',') : ''}}`;
     // console.log("issues", issuesAsArray);
@@ -697,7 +735,7 @@ export default {
           const logQuery = 'INSERT INTO logs (user_id, table_name, record_id, data0, data1) VALUES($1, $2, $3, $4, $5) RETURNING id';
           const table = 'comments';
           // enum types! - alter table logs
-          const logValues = [userObject.id, table, resultId, previousCommentObject, newCommentObject];
+          const logValues = [user.id, table, resultId, previousCommentObject, newCommentObject];
           const logResult = await pool.query(logQuery, logValues);
           data.change = logResult?.rows?.[0]?.id;
           await pool.query('COMMIT');
@@ -724,8 +762,9 @@ export default {
     }
     return data;
   },
-  async getCommentsTitles(textId, chunk) {
-    const checkedChunk = chunk.replace(/[^0-9А-Яа-яЎІЁўіёA-Za-z*-]/g, '');
+  async getCommentsTitles(id, chunk) {
+    const textId = Number(id) || 1;
+    const checkedChunk = String(chunk).replace(/[^0-9А-Яа-яЎІЁўіёA-Za-z*-]/g, '');
     // console.log(`${chunk}|${checkedChunk}|`);
     if (!checkedChunk) {
       return [];
@@ -742,7 +781,7 @@ export default {
     }
     return data;
   },
-  async setCommentForString(params) {
+  async setCommentForString(user, params) {
     const commentId = params?.id;
     const stringTokenIds = params.tokens;
     let data = {};
@@ -760,7 +799,7 @@ export default {
     }
     return data;
   },
-  async removeCommentFromString(params) {
+  async removeCommentFromString(user, params) {
     const commentId = params?.id;
     const stringTokenIds = params?.tokens;
     let data = {};
@@ -799,7 +838,9 @@ export default {
     }
     return data;
   },
-  async getTextComments(textId) {
+  async getTextComments(id) {
+    const textId = Number(id) || 1;
+
     const sql = "SELECT id, title FROM comments WHERE id IN (SELECT unnest(comments) AS coms FROM strings WHERE comments::text <> '{}' GROUP BY coms) AND text_id = $1";
     let data = [];
     try {
@@ -810,7 +851,7 @@ export default {
     }
     return data;
   },
-  async setCommentsForToken(params) {
+  async setCommentsForToken(user, params) {
     const tokenId = params?.id;
     const commentIds = params?.comments.map((x) => Number(x)).join(',');
     const commentIdsAsArray = `{${commentIds}}`;
@@ -840,7 +881,7 @@ export default {
     }
     return data;
   },
-  async changeActivationStatus(userId, currentUser, status) {
+  async changeActivationStatus(currentUser, userId, status) {
     console.log('activation request:', userId, 'by', currentUser.id);
     let data = {};
     if (userId && currentUser.privs === 1) {
@@ -983,7 +1024,7 @@ export default {
     };
   },
   async selectText(user, text) {
-    const userId = Number(user);
+    const userId = Number(user.id);
     const textId = Number(text);
     let data = {};
     if (userId && textId) {
@@ -999,7 +1040,7 @@ export default {
     }
     return data;
   },
-  async setText(params) {
+  async setTextProps(user, params) {
     let data = [];
     if (params.author && params.title) {
       const values = [params.author, params.title, params?.meta || '', params?.comments || false, params?.site || '', params?.credits || '', params.lang, params?.url?.trim() || ''];
@@ -1026,7 +1067,7 @@ export default {
     }
     return data;
   },
-  async setScheme(params) {
+  async setScheme(user, params) {
     let data = {};
     if (params.id && params.scheme) {
       try {
@@ -1184,7 +1225,7 @@ export default {
     }
     return result;
   },
-  async setSource(params) {
+  async setSource(user, params) {
     const values = [];
     // console.log(params);
     const raws = params.raw.split(/(?=@)/);
@@ -1245,18 +1286,6 @@ export default {
     }
     return data;
   },
-  async getSettings() {
-    let data = [];
-    const sql = 'SELECT * FROM settings';
-
-    try {
-      const result = await pool.query(sql);
-      data = result?.rows?.[0];
-    } catch (err) {
-      console.error(err);
-    }
-    return data;
-  },
   async getClasses() {
     let data = [];
     const sql = 'SELECT * FROM classes ORDER BY id';
@@ -1269,7 +1298,7 @@ export default {
     }
     return data;
   },
-  async setClass(params) {
+  async setClass(user, params) {
     const values = [JSON.stringify(params.css, (k, v) => v ?? undefined)];
     // console.log(values);
     // console.log(params);
@@ -1294,7 +1323,7 @@ export default {
     }
     return data;
   },
-  async deleteClass(className) {
+  async deleteClass(user, className) {
     let data = [];
     if (className) {
       const sql = `SELECT id, priority, title FROM comments WHERE 
@@ -1312,7 +1341,7 @@ export default {
     }
     return data || 0;
   },
-  async renameImage(imageId, imageTitle) {
+  async renameImage(user, imageId, imageTitle) {
     let data = [];
     if (imageId) {
       const sql = 'UPDATE images SET title = $2 WHERE id = $1 RETURNING id';
@@ -1326,7 +1355,7 @@ export default {
     }
     return data;
   },
-  async setFormatForString(params) {
+  async setFormatForString(user, params) {
     // console.log(params);
     const id = Number(params?.id);
     const fmtAsArray = `{${params?.fmt?.length ? params.fmt.join(',') : ''}}`;
@@ -1366,7 +1395,8 @@ export default {
     const res = await pool.query(sql, [id]);
     return res?.rows?.shift();
   },
-  async getItemHistory(table, id, lim) {
+  async getItemHistory(table, itemId, lim) {
+    const id = Number(itemId);
     const limNumber = Number(lim);
     const limitation = limNumber ? ` LIMIT ${limNumber}` : '';
     let data = [];
@@ -1377,7 +1407,8 @@ export default {
     }
     return data;
   },
-  async getCommentsIndex(textId, field) {
+  async getCommentsIndex(id, field) {
+    const textId = Number(id);
     const fieldName = String(field);
     const data = {};
     if (textId && /^[a-z]+$/.test(fieldName)) {
@@ -1391,14 +1422,15 @@ export default {
     return data;
   },
   async getStats(id) {
+    const textId = Number(id);
     let data = {};
-    if (id) {
+    if (textId) {
       try {
-        const comments = await pool.query('SELECT count(*)::int as total, count(*) FILTER (where published = True)::int as ready, count(*) FILTER (where published != True)::int as draft FROM comments WHERE text_id = $1', [id]);
-        const changes = await pool.query("select user_id, count(user_id)::int from logs WHERE (data0->>'text_id' = $1::text or data1->>'text_id' = $1::text) GROUP BY user_id", [id]);
-        const words = await pool.query("select cardinality(comments) as qty, count(*)::int from strings join tokens on strings.token_id = tokens.id  where text_id = $1 and meta='word' group by qty", [id]);
-        const tags = await pool.query('select tags, count(tags) as qty from comments where text_id = $1 group by tags order by qty DESC', [id]);
-        const etc = await pool.query("select round(extract(epoch from(created + ((now() - created) / $2))))::int as etc from logs WHERE (data0->>'text_id' = $1::text or data1->>'text_id' = $1::text) order by created asc limit 1;", [id, comments.rows[0].ready / comments.rows[0].total]);
+        const comments = await pool.query('SELECT count(*)::int as total, count(*) FILTER (where published = True)::int as ready, count(*) FILTER (where published != True)::int as draft FROM comments WHERE text_id = $1', [textId]);
+        const changes = await pool.query("select user_id, count(user_id)::int from logs WHERE (data0->>'text_id' = $1::text or data1->>'text_id' = $1::text) GROUP BY user_id", [textId]);
+        const words = await pool.query("select cardinality(comments) as qty, count(*)::int from strings join tokens on strings.token_id = tokens.id  where text_id = $1 and meta='word' group by qty", [textId]);
+        const tags = await pool.query('select tags, count(tags) as qty from comments where text_id = $1 group by tags order by qty DESC', [textId]);
+        const etc = await pool.query("select round(extract(epoch from(created + ((now() - created) / $2))))::int as etc from logs WHERE (data0->>'text_id' = $1::text or data1->>'text_id' = $1::text) order by created asc limit 1;", [textId, comments.rows[0].ready / comments.rows[0].total]);
         data = {
           etc: etc.rows?.[0]?.etc,
           comments: comments?.rows?.[0],
@@ -1411,19 +1443,5 @@ export default {
       }
     }
     return data;
-  },
-  async updateSettings(user, params) {
-    // console.log(user);
-    if (user.privs < 3) {
-      const columns = databaseScheme.settings.split(',').map((x) => x.trim().split(' ').shift());
-      const query = Object.fromEntries(
-        Object.entries(params).filter(([key]) => columns.includes(key))
-      );
-      // console.log('settings', query);
-      const sql = `UPDATE settings SET ${Object.keys(query).map((x, i) => `${x} = $${i + 1}`)}`;
-      const result = await pool.query(sql, Object.values(query));
-      return result?.rowCount;
-    }
-    return 0;
   },
 };
