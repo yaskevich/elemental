@@ -3,6 +3,7 @@
 auto-imports.d.ts
 components.d.ts
 data/
+backups/
 node_modules
 server/public/*/*
 server/images
