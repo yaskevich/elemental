@@ -1,56 +1,88 @@
 USER=yaskevich
-APP=flowercat
+APP=elemental
 BRANCH=master
 PROD=production
 DIR=$(pwd)
 WORK=$DIR/$PROD/$APP
-UUID=$(cat /proc/sys/kernel/random/uuid)
-TEMP=$DIR/$APP-$UUID
+TEMP=$DIR/$APP-$(date +"%Y%m%dT%H%M%S")
 
-mkdir $TEMP -p
-
-mv $WORK/backup/ $TEMP
-mv $WORK/images/ $TEMP
-mv $WORK/sites/ $TEMP
-
-
-pm2 delete $APP
-rm -rf $DIR/$PROD/$APP
 # degit $USER/$APP#$BRANCH $WORK
-git clone https://github.com/$USER/$APP $WORK --depth 1
-HASH=$(git -C $WORK rev-parse --short HEAD)
-UNIX=$(git -C $WORK log -1 --format=%ct)
+git clone https://github.com/$USER/$APP $TEMP --depth 1
+HASH=$(git -C $TEMP rev-parse --short HEAD)
+UNIX=$(git -C $TEMP log -1 --format=%ct)
 
-# echo $HASH
+rm $TEMP/* 2>/dev/null
+rm $TEMP/.* 2>/dev/null
 
-rm $WORK/* 2>/dev/null
-rm $WORK/.* 2>/dev/null
-npm install --prefix $WORK/client
-npm run build --prefix $WORK/client
-mv $WORK/client/dist $WORK/public
+npm install --prefix $TEMP/client
 
-cd $WORK/server
-for i in *
+if [ $? -eq 0 ]
+then
+  echo "CLIENT INSTALL SUCCESS"
+else
+  echo "CLIENT INSTALL FAIL"
+  exit
+fi
+
+npm run build --prefix $TEMP/client
+if [ $? -eq 0 ]
+then
+  echo "CLIENT BUILD SUCCESS"
+else
+  echo "CLIENT BUILD FAIL"
+  exit
+fi
+
+mv $TEMP/client/dist $TEMP/public
+
+for i in $TEMP/server/*
 do
   if [ -f "$i" ]; then
-    mv "$i" $WORK
+    # echo "COPY $i"
+    mv "$i" $TEMP
   fi
 done
 
-npm install --prefix $WORK
-cp $DIR/$APP.env $WORK/.env
-printf "\nCOMMIT=%s" $HASH >> $WORK/.env
-printf "\nCOMMITUNIX=%s" $UNIX >> $WORK/.env
+npm install --prefix $TEMP
 
-mv $TEMP/backup $WORK
-mv $TEMP/images $WORK
-mv $TEMP/sites $WORK
+if [ $? -eq 0 ]
+then
+  echo "SERVER INSTALL SUCCESS"
+else
+  echo "SERVER INSTALL FAIL"
+  exit
+fi
 
-rm -rf $TEMP
+npm audit fix --prefix $TEMP
 
-cd $WORK
-rm -rf $WORK/client $WORK/server $WORK/.git
+# echo "SET ENV"
+cp $DIR/$APP.env $TEMP/.env
+printf "\nCOMMIT=%s" $HASH >> $TEMP/.env
+printf "\nCOMMITUNIX=%s" $UNIX >> $TEMP/.env
+
+# echo "CLEAN"
+rm -rf $TEMP/client $TEMP/server $TEMP/.git
+
+# echo "LINK ASSETS"
+
+mkdir $DIR/assets/$APP/backups -p
+ln -s $DIR/assets/$APP/backups $TEMP
+
+mkdir $DIR/assets/$APP/images -p
+ln -s $DIR/assets/$APP/images $TEMP
+
+mkdir $DIR/assets/$APP/sites -p
+ln -s $DIR/assets/$APP/sites $TEMP
+
+# echo "STOP NODEJS"
+pm2 delete $APP
+
+# echo "LINK APP"
+rm $WORK 2>/dev/null
+ln -s $TEMP $WORK
+
+# echo "RUN NODEJS"
+# cd $WORK
 # # https://pm2.keymetrics.io/docs/usage/application-declaration/#ecosystem-file
-# # --cwd
-pm2 start ecosystem.config.cjs --cwd $WORK
+pm2 start $WORK/ecosystem.config.cjs --cwd $WORK --update-env
 pm2 save
