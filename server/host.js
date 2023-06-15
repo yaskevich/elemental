@@ -42,6 +42,12 @@ const setup = () => {
   app.set('trust proxy', 1);
   app.use(bodyParser.json({ limit: (options.txtsizelimit || 10) * mb })); // 10 MB
   app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(history({
+    index: '/',
+    rewrites: [
+      { from: /\/api\/.*$/, to: (context) => context.parsedUrl.pathname }
+    ]
+  }));
 
   Object.keys(dirs).forEach((x) => {
     const fullPath = path.join(__dirname, x);
@@ -52,8 +58,6 @@ const setup = () => {
     }
     dirs[x].path = fullPath;
   });
-
-  app.use(history());
 
   return app;
 };
