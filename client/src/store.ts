@@ -20,6 +20,8 @@ import Figure from '@yaskevich/extension-figure';
 import Marker from '@yaskevich/extension-marker';
 import { generateHTML } from '@tiptap/core';
 import { messageDark } from 'naive-ui';
+import { CheckCircleRound, SecurityFilled, DoNotTouchFilled, RadioButtonUncheckedFilled, } from '@vicons/material';
+
 
 const getExtensions = (sources: Array<IBib>) => [
   Document,
@@ -274,7 +276,23 @@ const openInWindow = (path: string) => {
 
 const convertArrayToObject = (arr: any) => Object.assign({}, ...arr.map((x: any) => ({ [x.id]: x })));
 
-const percent = (x: number) => Number((x*100).toFixed(2)) + '%';
+const percent = (x: number) => Number((x * 100).toFixed(2)) + '%';
+
+const getUserIcon = (status: boolean, privs: number) => {
+  if (!status) {
+    return RadioButtonUncheckedFilled;
+  }
+  if (privs === 1) {
+    return SecurityFilled
+  }
+  if (privs === 5) {
+    return CheckCircleRound
+  }
+  if (privs === 7) {
+    return DoNotTouchFilled
+  }
+
+};
 
 export default {
   state,
@@ -297,4 +315,5 @@ export default {
   openInWindow,
   convertArrayToObject,
   percent,
+  getUserIcon,
 };
