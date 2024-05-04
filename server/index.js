@@ -9,6 +9,13 @@ const app = host.setup();
 //   res.sendFile(host.getIndexPath());
 // });
 
+app.post('*', auth, (req, res, next) => {
+  // console.log('POST', req.url, req.user.privs);
+  if (req?.user?.privs < 6) {
+    next();
+  }
+});
+
 app.post('/api/user/login', async (req, res) => {
   const params = [req.body.email, req.body.password, host.appName, host.appInfo];
   res.json(await login(...params));
@@ -40,7 +47,7 @@ app.post('/api/user/activate', auth, async (req, res) => {
 });
 
 app.post('/api/user/elevate', auth, async (req, res) => {
-  res.json(await db.elevateUser(req.user, req.body?.id));
+  res.json(await db.elevateUser(req.user, req.body?.id, req.body.privs));
 });
 
 app.post('/api/user/update', auth, async (req, res) => {
