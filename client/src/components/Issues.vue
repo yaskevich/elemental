@@ -1,6 +1,6 @@
 <template>
   <n-card title="Issues" :bordered="false" class="minimal left" v-if="isLoaded">
-    <template #header-extra>
+    <template #header-extra v-if="store.hasRights()">
       <n-button v-if="!showForm" type="primary" @click="showForm = true">+ new</n-button>
     </template>
 
@@ -8,9 +8,7 @@
       <n-space vertical>
         <n-input v-model:value="newIssue.title" type="text" placeholder="Title" />
         <!-- <n-input v-model:value="newIssue.ru" type="text" placeholder="Russian title" /> -->
-        <n-color-picker
-          v-model:value="newIssue.color"
-          :show-alpha="false"
+        <n-color-picker v-model:value="newIssue.color" :show-alpha="false"
           :swatches="['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf']" />
         <n-space justify="center">
           <n-button tertiary type="warning" @click="showForm = false">Cancel</n-button>
@@ -26,36 +24,40 @@
 
     <n-space vertical size="large">
       <n-grid x-gap="12" cols="3" responsive="screen" y-gap="6" v-for="item in issues" :key="item.id">
-        <!-- 
+
+        <template v-if="store.hasRights()">
+          <!-- 
         <n-input-group v-for="item in issues" :key="item.id" style="display:block;">
         <n-space :size="4">-->
-        <n-gi>
-          <n-input v-model:value="item.title" placeholder="Title" style="min-width: 100%" />
-        </n-gi>
-        <!-- <n-gi>
+          <n-gi>
+            <n-input v-model:value="item.title" placeholder="Title" style="min-width: 100%" />
+          </n-gi>
+          <!-- <n-gi>
           <n-input v-model:value="item.ru" placeholder="Russian title" />
         </n-gi> -->
-        <n-gi>
-          <n-color-picker
-            style="width: 70px"
-            v-model:value="item.color"
-            :show-alpha="false"
-            :swatches="['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf']" />
-        </n-gi>
-        <n-gi style="text-align: right">
-          <n-dropdown
-            trigger="hover"
-            :options="[
-              { label: 'Save', key: 0, data: item },
-              { label: 'Delete', key: 1, data: item },
-            ]"
-            @select="handleSelect">
-            <n-button>Manage</n-button>
-          </n-dropdown>
-        </n-gi>
-        <!-- </n-space>
+          <n-gi>
+            <n-color-picker style="width: 70px" v-model:value="item.color" :show-alpha="false"
+              :swatches="['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf']" />
+          </n-gi>
+          <n-gi style="text-align: right">
+            <n-dropdown trigger="hover" :options="[
+    { label: 'Save', key: 0, data: item },
+    { label: 'Delete', key: 1, data: item },
+  ]" @select="handleSelect">
+              <n-button>Manage</n-button>
+            </n-dropdown>
+          </n-gi>
+          <!-- </n-space>
         </n-input-group>
         -->
+        </template>
+        <n-gi v-else>
+          <n-tag size="large" :color="{ 'color': item.color, textColor: 'white' }">
+            {{ item.title }}
+          </n-tag>
+        </n-gi>
+
+
       </n-grid>
     </n-space>
   </n-card>
