@@ -1,8 +1,5 @@
 <template>
-  <n-card
-    :title="user?.id ? `${user.firstname} ${user.lastname}` : 'User'"
-    :bordered="false"
-    class="minimal left"
+  <n-card :title="user?.id ? `${user.firstname} ${user.lastname}` : 'User'" :bordered="false" class="minimal left"
     v-if="isLoaded">
     <n-form ref="formRef" :label-width="80" :model="user" :rules="rules">
       <n-form-item label="Username" path="username">
@@ -20,16 +17,11 @@
       <n-space>
         <template v-if="store?.state?.user?.privs === 1">
           <template v-if="user.activated">
-            <n-alert
-              v-if="String(store?.state?.user?.id) === id"
-              title="Disabling your own account is not allowed"
-              type="warning"
-              >Ask other administrators to deactivate your account if you do not need it anymore</n-alert
-            >
+            <n-alert v-if="String(store?.state?.user?.id) === id" title="Disabling your own account is not allowed"
+              type="warning">Ask other administrators to deactivate your account if you do not need it anymore</n-alert>
             <n-button v-else type="error" @click="changeActivationStatus(false)">Deactivate</n-button>
-            <n-button v-if="user.activated && user.privs > 1" type="warning" @click="requestElevation"
-              >Make administrator</n-button
-            >
+            <!-- <n-button v-if="user.activated && user.privs > 1" type="warning" @click="requestElevation">Make
+              administrator</n-button> -->
           </template>
           <template v-else>
             <n-button type="success" @click="changeActivationStatus(true)">Activate</n-button>
@@ -40,6 +32,32 @@
         <template v-else>
           <n-button v-if="store?.state?.user?.id === user?.id" type="info" @click="saveUser">Save</n-button>
         </template>
+
+        <n-space v-if="store?.state?.user?.privs === 1 && user.activated && user.privs > 1">
+          <n-tag size="large" type="warning">
+            Change user rights:
+          </n-tag>
+          <n-button-group>
+            <n-button @click="requestElevation(1)" :disabled="user.privs === 1">
+              <template #icon>
+                <n-icon :component="store.getUserIcon(true, 1)" />
+              </template>
+              Administrator
+            </n-button>
+            <n-button @click="requestElevation(5)" :disabled="user.privs === 5">
+              <template #icon>
+                <n-icon :component="store.getUserIcon(true, 5)" />
+              </template>
+              Editor
+            </n-button>
+            <n-button @click="requestElevation(7)" :disabled="user.privs === 7">
+              <template #icon>
+                <n-icon :component="store.getUserIcon(true, 7)" />
+              </template>
+              Observer
+            </n-button>
+          </n-button-group>
+        </n-space>
       </n-space>
       <div style="font-family: monospace; font-size: 1.7rem; margin-top: 2rem">{{ datum?.message }}</div>
     </n-form>
@@ -59,6 +77,7 @@ const id = ref(String(vuerouter.params.id));
 const isLoaded = ref(false);
 const user = reactive({} as IUser);
 const datum = reactive({ message: '' });
+
 
 const rules = {
   username: {
@@ -93,11 +112,11 @@ const changeActivationStatus = async (status: boolean) => {
   }
 };
 
-const requestElevation = async () => {
-  const { data } = await store.post('user/elevate', { id: id.value });
-  console.log('elevated', data);
+const requestElevation = async (level: number) => {
+  const { data } = await store.post('user/elevate', { id: id.value, privs: level });
+  console.log('privs changed', data);
   if (data?.id) {
-    user.privs = 1;
+    user.privs = level;
   }
 };
 
