@@ -1,6 +1,6 @@
 <template>
     <n-card title="Sources" :bordered="false" class="minimal left" v-if="isLoaded">
-        <template #header-extra>
+        <template #header-extra v-if="store.hasRights()">
             <n-button type="primary" @click="$router.push('/source/')">+ new</n-button>
         </template>
         <div v-if="!sources.length">
@@ -12,7 +12,7 @@
             :key="key"
             style="margin-bottom: 5px;"
         >
-            <template #header-extra>
+            <template #header-extra v-if="store.hasRights()">
                 <n-button text @click="$router.push(`/source/${item.id}`)">
                     <template #icon>
                         <n-icon

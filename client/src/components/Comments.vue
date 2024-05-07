@@ -6,7 +6,7 @@
     </div>
 
     <n-card title="Comments" :bordered="false" v-else>
-      <template #header-extra>
+      <template #header-extra v-if="store.hasRights()">
         <n-button type="primary" @click="addComment">+ new</n-button>
       </template>
 

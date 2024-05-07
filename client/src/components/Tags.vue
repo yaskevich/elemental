@@ -1,6 +1,6 @@
 <template>
   <n-card title="Tags" :bordered="false" class="minimal left" v-if="isLoaded">
-    <template #header-extra>
+    <template #header-extra v-if="store.hasRights()">
       <n-button v-if="!showForm" type="primary" @click="showForm = true">+ new</n-button>
     </template>
 
@@ -24,16 +24,14 @@
     <n-space vertical size="large">
       <n-grid x-gap="12" cols="2" y-gap="6" responsive="screen" v-for="item in tags" :key="item.id">
         <n-gi>
-          <n-input v-model:value="item.title" placeholder="Title" />
+          <n-input v-model:value="item.title" placeholder="Title" v-if="store.hasRights()" />
+          <n-tag type="primary" size="large" v-else>{{ item.title }}</n-tag>
         </n-gi>
-        <n-gi style="text-align: right">
-          <n-dropdown
-            trigger="hover"
-            :options="[
-              { label: 'Save', key: 0, data: item },
-              { label: 'Delete', key: 1, data: item },
-            ]"
-            @select="handleSelect">
+        <n-gi style="text-align: right" v-if="store.hasRights()">
+          <n-dropdown trigger="hover" :options="[
+    { label: 'Save', key: 0, data: item },
+    { label: 'Delete', key: 1, data: item },
+  ]" @select="handleSelect">
             <n-button>Manage</n-button>
           </n-dropdown>
         </n-gi>

@@ -1,19 +1,18 @@
 <template>
     <n-card title="Annotation Classes" :bordered="false" class="minimal left">
-        <template #header-extra>
+        <template #header-extra v-if="store.hasRights()">
             <n-button type="info" @click="addClass">New</n-button>
         </template>
         <n-space vertical>
             <div
                 v-for="(item, index) in store.state.user?.classes"
                 style="text-align: center;"
-                :key="index"
-            >
+                :key="index">
                 <n-grid cols="1 400:12" x-gap="45" :collapsed-rows="1">
                     <n-gi span="10">
                         <div :style="item.css" class="class-preview">{{ item.name }}</div>
                     </n-gi>
-                    <n-gi>
+                    <n-gi v-if="store.hasRights()">
                         <n-button size="large" @click="editClass(index)">Edit</n-button>
                     </n-gi>
                 </n-grid>

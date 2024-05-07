@@ -5,22 +5,12 @@
         <n-alert title="No text" type="warning">Select specific text before (at Home screen)</n-alert>
       </div>
       <n-card title="Media management" :bordered="false" v-else>
-        <template #header-extra>
-          <n-upload
-            ref="uploadRef"
-            :action="`/api/upload/${id}`"
-            :headers="headers"
-            @remove="handleRemoval"
-            @finish="imageLoaded"
-            @download="handleDownload"
-            @before-upload="beforeUpload"
-            :is-error-state="checkError"
-            :show-download-button="true"
-            :default-file-list="previewFileList"
-            :show-file-list="false">
+        <template #header-extra v-if="store.hasRights()">
+          <n-upload ref="uploadRef" :action="`/api/upload/${id}`" :headers="headers" @remove="handleRemoval"
+            @finish="imageLoaded" @download="handleDownload" @before-upload="beforeUpload" :is-error-state="checkError"
+            :show-download-button="true" :default-file-list="previewFileList" :show-file-list="false">
             <n-button type="success">Upload</n-button>
-          </n-upload></template
-        >
+          </n-upload></template>
         <n-space vertical>
           <!-- <n-modal v-model:show="showModal" preset="card" style="width: 600px" title="A Cool Picture">
             <img :src="previewImageUrl" style="width: 100%" />
@@ -34,14 +24,14 @@
               <n-col :span="14">
                 <n-space vertical>
                   <n-space justify="end">
-                    <n-button text style="font-size: 1.5rem" @click="editable = index" v-if="editable !== index">
-                      <n-icon :component="EditFilled" />
-                    </n-button>
-
-                    <n-button text @click="handleRemoval(img, index)" style="font-size: 1.5rem">
-                      <n-icon :component="DeleteFilled" color="#ab1f3f" />
-                    </n-button>
-
+                    <template v-if="store.hasRights()">
+                      <n-button text style="font-size: 1.5rem" @click="editable = index" v-if="editable !== index">
+                        <n-icon :component="EditFilled" />
+                      </n-button>
+                      <n-button text @click="handleRemoval(img, index)" style="font-size: 1.5rem">
+                        <n-icon :component="DeleteFilled" color="#ab1f3f" />
+                      </n-button>
+                    </template>
                     <n-button text style="font-size: 1.5rem" @click="handleDownload(img)">
                       <n-icon :component="InfoFilled" color="#1060c9" />
                     </n-button>
@@ -54,13 +44,8 @@
             </n-row>
             <n-row>
               <n-input-group v-if="editable === index">
-                <n-input
-                  v-model:value="img.title"
-                  type="text"
-                  placeholder="Image Title..."
-                  autosize
-                  @blur="saveImageTitle(img)"
-                  @keyup.enter="editable = undefined" />
+                <n-input v-model:value="img.title" type="text" placeholder="Image Title..." autosize
+                  @blur="saveImageTitle(img)" @keyup.enter="editable = undefined" />
                 <n-button type="primary" ghost @click="saveImageTitle(img)"> Save </n-button>
               </n-input-group>
             </n-row>

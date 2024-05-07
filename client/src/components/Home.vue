@@ -21,22 +21,23 @@ const openTextProps = async (id?: number) => {
 
 <template>
   <n-card title="Projects" v-if="isLoaded" :bordered="false" class="minimal left">
-    <template #header-extra>
+
+    <template #header-extra v-if="store.hasRights()">
       <n-button icon-placement="left" type="primary" @click="openTextProps()">+ new</n-button>
     </template>
+
     <n-space vertical size="large">
       <n-space justify="space-between" v-for="(value, key) in texts" :key="key">
         <n-tooltip trigger="hover">
           <template #trigger>
-            <n-radio
-              :checked="value.id === store?.state?.user?.text_id"
-              @change="store.setCurrentText(value.id, value.title)"
-              >{{ value.author }}.&nbsp;{{ value.title }}</n-radio
-            >
+            <n-radio :checked="value.id === store?.state?.user?.text_id"
+              @change="store.setCurrentText(value.id, value.title)">
+              {{ value.author }}.&nbsp;{{ value.title }}</n-radio>
           </template>
           {{ value.id === store?.state?.user?.text_id ? 'This is default project' : 'Click to make default' }}
         </n-tooltip>
-        <n-button title="Text properties" secondary type="success" @click="openTextProps(value.id)">
+        <n-button v-if="store.hasRights()" title="Text properties" secondary type="success"
+          @click="openTextProps(value.id)">
           <template #icon>
             <n-icon color="gray" :component="ModeEditFilled" />
           </template>
@@ -60,11 +61,7 @@ const openTextProps = async (id?: number) => {
             </template>
             {{ store?.state.user?.unix ? new Date(store?.state.user.unix * 1000).toLocaleString() : '' }}
           </n-tooltip>
-          <n-button
-            text
-            tag="a"
-            :href="store.git + '/commit/' + store?.state.user.commit"
-            target="_blank"
+          <n-button text tag="a" :href="store.git + '/commit/' + store?.state.user.commit" target="_blank"
             type="primary">
             {{ store?.state.user.commit }}
           </n-button>
@@ -74,9 +71,8 @@ const openTextProps = async (id?: number) => {
 
     <!-- <n-divider /> -->
     <n-divider>
-      <n-button text tag="a" href="https://icons8.com/icon/93125/quote" target="_blank" type="primary"
-        >Quote icon by Icons8</n-button
-      >
+      <n-button text tag="a" href="https://icons8.com/icon/93125/quote" target="_blank" type="primary">Quote icon by
+        Icons8</n-button>
     </n-divider>
   </n-card>
 </template>
