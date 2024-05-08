@@ -1,22 +1,22 @@
 <template>
   <n-card :bordered="false" class="minimal" v-if="ready">
     <n-space vertical size="large">
+
+      <n-alert v-if="!store.hasRights()" title="Read-only mode: any changes will not be saved" type="warning" />
+
       <n-space justify="center">
         <div v-for="(issue, index) in comment.issues" :key="'issue' + index">
           <n-tooltip trigger="hover" placement="bottom">
             <template #trigger>
-              <n-tag
-                closable
-                @close="removeIssue(issue)"
-                :color="{ color: issuesKV[issue[0]].color, textColor: 'white' }"
-                >{{ issuesKV[issue[0]]?.['title'] }}</n-tag
-              >
+              <n-tag closable @close="removeIssue(issue)"
+                :color="{ color: issuesKV[issue[0]].color, textColor: 'white' }">{{ issuesKV[issue[0]]?.['title']
+                }}</n-tag>
             </template>
             {{
-              issue[1]
-                ? 'Assigned to ' + usersKV[issue[1]].firstname + ' ' + usersKV[issue[1]].lastname
-                : 'Not assigned'
-            }}
+    issue[1]
+      ? 'Assigned to ' + usersKV[issue[1]].firstname + ' ' + usersKV[issue[1]].lastname
+      : 'Not assigned'
+  }}
           </n-tooltip>
         </div>
       </n-space>
@@ -29,15 +29,12 @@
           <template #unchecked>Draft</template>
         </n-switch>
 
-        <n-button type="info" @click="saveComment" :disabled="!(comment.title && comment.priority)">Save</n-button>
+        <n-button type="info" @click="saveComment" :disabled="!(comment.title && comment.priority)"
+          v-if="store.hasRights()">Save</n-button>
       </n-space>
 
       <n-space justify="center">
-        <n-input-number
-          v-model:value="comment.priority"
-          :validator="validateID"
-          style="width: 100px"
-          type="text"
+        <n-input-number v-model:value="comment.priority" :validator="validateID" style="width: 100px" type="text"
           placeholder="ID" />
 
         <n-dropdown trigger="hover" @select="addTag" :options="tagsList">
@@ -53,12 +50,12 @@
       <n-space justify="center">
         <div v-for="(tag, index) in comment.tags" :key="index">
           <n-tag closable @close="removeTag(tag)" style="margin-right: 10px" size="small">{{
-            tagsList.filter((x: any) => x.key == tag)?.shift()?.['label']
-          }}</n-tag>
+    tagsList.filter((x: any) => x.key == tag)?.shift()?.['label']
+  }}</n-tag>
         </div>
       </n-space>
 
-      <n-input v-model:value="comment.title" type="text" placeholder="Heading" class="maininput" autofocus></n-input>
+      <n-input v-model:value="comment.title" type="text" placeholder="Heading" class="maininput" autofocus />
 
       <n-text type="error" v-if="!comment.title">Heading should not be empty!</n-text>
 
@@ -67,12 +64,9 @@
       </n-alert>
 
       <n-space justify="center" v-if="boundStrings.length">
-        <n-dropdown
-          trigger="hover"
-          :options="[{ label: 'Go to text', key: 'go', stack: stack as Array<IToken>, icon: renderIcon(BackIcon) }, { label: 'Unbind span', key: 'unbind', stack: stack as Array<IToken>, icon: renderIcon(UnbindLink), disabled: !id }]"
-          @select="handleSelect"
-          v-for="(stack, index) in boundStrings"
-          :key="index">
+        <n-dropdown trigger="hover"
+          :options="[{ label: 'Go to text', key: 'go', stack: stack as Array<IToken>, icon: renderIcon(BackIcon) }, { label: 'Unbind span', key: 'unbind', stack: stack as Array<IToken>, icon: renderIcon(UnbindLink), disabled: (!id || !store.hasRights()) }]"
+          @select="handleSelect" v-for="(stack, index) in boundStrings" :key="index">
           <n-button type="info" dashed size="small">
             <template v-for="item in stack" :key="item.id" style="margin-right: 5px">
               <span v-if="item.meta !== 'ip'">{{ item.form }}&nbsp;</span>
@@ -82,51 +76,37 @@
       </n-space>
 
       <template v-for="(item, index) in scheme" :key="item.id">
-        <n-input
-          v-if="item.type === 'line'"
-          v-model:value="comment.entry[item.id]"
-          type="text"
+        <n-input v-if="item.type === 'line'" v-model:value="comment.entry[item.id]" type="text"
           :placeholder="item.title" />
 
-        <Tiptap
-          v-if="item.type === 'rich'"
-          :ref="
-            el => {
-              editorRefs[item.id] = el;
-            }
-          "
-          :editorclass="index % 2 ? 'even' : 'odd'"
-          :sources="sources"
-          :content="comment.entry[item.id]"
+        <Tiptap :disabled="!store.hasRights()" v-if="item.type === 'rich'" :ref="el => {
+    editorRefs[item.id] = el;
+  }
+    " :editorclass="index % 2 ? 'even' : 'odd'" :sources="sources" :content="comment.entry[item.id]"
           :images="images" />
       </template>
 
       <n-space v-if="Boolean(comment.id)" justify="space-between">
-        <n-popconfirm @positive-click="deleteComment">
+        <n-popconfirm @positive-click="deleteComment" v-if="store.hasRights()">
           <template #trigger>
             <n-button type="error" :disabled="Boolean(boundStrings?.length)">Delete</n-button>
           </template>
           You are about to delete the comment. This action is permanent. Please confirm, if you are sure
         </n-popconfirm>
-        <n-button type="info" @click="saveComment" :disabled="!(comment.title && comment.priority)">Save</n-button>
+        <n-button type="info" @click="saveComment" :disabled="!(comment.title && comment.priority)"
+          v-if="store.hasRights()">Save</n-button>
       </n-space>
 
-      <n-text v-if="Boolean(boundStrings?.length)" style="font-size: 0.75rem" type="error"
-        >It is not allowed to delete a comment, if it has bound tokens. One should unbind tokens before.</n-text
-      >
+      <n-text v-if="Boolean(boundStrings?.length)" style="font-size: 0.75rem" type="error">It is not allowed to delete a
+        comment, if it has bound tokens. One should unbind tokens before.</n-text>
       <n-space vertical v-if="changes.length">
         <n-divider></n-divider>
-        <n-button
-          secondary
-          :type="change?.ut ? 'default' : 'success'"
-          v-for="(change, row) in changes"
-          :key="change.id"
+        <n-button secondary :type="change?.ut ? 'default' : 'success'" v-for="(change, row) in changes" :key="change.id"
           @click="$router.push('/logs/' + change.id)">
           <n-time v-if="change?.ut" type="relative" :unix="true" :time="change.ut" />
           <span v-else>{{ row ? 'Recently' : 'Just now' }}</span>
           &nbsp;{{ change.init ? 'created' : 'edited' }} by {{ usersKV[change.user_id].firstname }}
-          {{ usersKV[change.user_id].lastname }}</n-button
-        >
+          {{ usersKV[change.user_id].lastname }}</n-button>
         <n-button type="success" @click="$router.push({ name: 'Logs', query: { comment: id } })">View History</n-button>
       </n-space>
     </n-space>
@@ -241,21 +221,26 @@ const showPreview = (id: number) => {
 const validateID = (x: number) => x > 0;
 
 onBeforeRouteLeave(() => {
-  // https://next.router.vuejs.org/guide/advanced/composition-api.html#navigation-guards
-  if (checkIsEntryUpdated()) {
-    const answer = window.confirm('Leave the page?\nChanges you made may not be saved');
-    // cancel the navigation and stay on the same page
-    if (!answer) return false;
+  if (store.hasRights()) {
+    // https://next.router.vuejs.org/guide/advanced/composition-api.html#navigation-guards
+    if (checkIsEntryUpdated()) {
+      const answer = window.confirm('Leave the page?\nChanges you made may not be saved');
+      // cancel the navigation and stay on the same page
+      if (!answer) return false;
+    }
   }
 });
 
-onMounted(() => {
-  window.addEventListener('beforeunload', askToLeave);
-});
 
-onBeforeUnmount(() => {
-  window.removeEventListener('beforeunload', askToLeave);
-});
+if (store.hasRights()) {
+  onMounted(() => {
+    window.addEventListener('beforeunload', askToLeave);
+  });
+
+  onBeforeUnmount(() => {
+    window.removeEventListener('beforeunload', askToLeave);
+  });
+}
 
 onBeforeMount(async () => {
   const [sourcesData, usersData, issueData, tagData, imagesData] = await Promise.all([
