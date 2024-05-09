@@ -91,8 +91,7 @@
         <n-input v-model:value="titleToFilter" type="text" placeholder="Filter by image title" clearable />
         <n-space>
           <template
-            v-for="item in images.filter((x:any) => titleToFilter ? x.title.includes(titleToFilter) : true)"
-            :key="index">
+            v-for="item in images.filter((x:any) => titleToFilter ? x.title.includes(titleToFilter) : true)">
             <figure>
               <img width="100" class="selectable" :preview-disabled="true" :src="item.url" @click="selectImage(item)" />
               <figcaption class="modal-caption">
@@ -134,7 +133,7 @@ const titleToFilter = ref('');
 const customEditor = new Editor({
   content: '',
   autofocus: 'end',
-  editable: true,
+  editable: store.hasRights(),
   extensions: store.getExtensions(props.sources),
   // onUpdate({ editor }) {
   //   // The content has changed.

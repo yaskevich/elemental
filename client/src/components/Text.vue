@@ -6,25 +6,18 @@
     <div v-else>
       <n-space vertical class="minimal" justify="center">
         <n-space justify="center">
-          <n-radio-group v-model:value="annotationMode" name="radiogroup">
-            <n-radio
-              v-for="item in items"
-              :key="item.value"
-              :value="item.value"
-              :label="item.label"
+          <n-radio-group @change="handleChange" v-model:value="annotationMode" name="radiogroup">
+            <n-radio v-for="item in items" :key="item.value" :value="item.value" :label="item.label"
               :disabled="item.disabled" />
           </n-radio-group>
         </n-space>
         <n-space justify="center" size="large" v-if="annotationMode === 'comment'">
-          <n-switch :round="false" :rail-style="actStyle" v-model:value="inspectMode">
+          <n-switch :round="false" :rail-style="actStyle" v-model:value="inspectMode" :disabled="!store.hasRights()">
             <template #checked>Inspect</template>
             <template #unchecked>Select</template>
           </n-switch>
 
-          <n-switch
-            :round="false"
-            :rail-style="selStyle"
-            v-model:value="singleMode"
+          <n-switch :round="false" :rail-style="selStyle" :disabled="!store.hasRights()" v-model:value="singleMode"
             :style="`visibility: ${!inspectMode ? 'visible' : 'hidden'}`">
             <template #checked>Unit</template>
             <template #unchecked>Sequence</template>
@@ -32,25 +25,29 @@
         </n-space>
         <n-space justify="center" v-if="annotationMode === 'format'">
           <n-button-group size="small">
-            <n-button @click="formattingMode = 'h1'" :type="formattingMode === 'h1' ? 'success' : 'default'">
+            <n-button @click="formattingMode = 'h1'" :type="formattingMode === 'h1' ? 'success' : 'default'"
+              :disabled="!store.hasRights()">
               <template #icon>
                 <n-icon :component="TitleFilled" />
               </template>
               Heading 1
             </n-button>
-            <n-button @click="formattingMode = 'bold'" :type="formattingMode === 'bold' ? 'success' : 'default'">
+            <n-button @click="formattingMode = 'bold'" :type="formattingMode === 'bold' ? 'success' : 'default'"
+              :disabled="!store.hasRights()">
               <template #icon>
                 <n-icon :component="FormatBoldFilled" />
               </template>
               Bold
             </n-button>
-            <n-button @click="formattingMode = 'italic'" :type="formattingMode === 'italic' ? 'success' : 'default'">
+            <n-button @click="formattingMode = 'italic'" :type="formattingMode === 'italic' ? 'success' : 'default'"
+              :disabled="!store.hasRights()">
               <template #icon>
                 <n-icon :component="FormatItalicFilled" />
               </template>
               Italic
             </n-button>
-            <n-button @click="formattingMode = 'clear'" :type="formattingMode === 'clear' ? 'success' : 'default'">
+            <n-button @click="formattingMode = 'clear'" :type="formattingMode === 'clear' ? 'success' : 'default'"
+              :disabled="!store.hasRights()">
               <template #icon>
                 <n-icon :component="ClearFilled" />
               </template>
@@ -63,14 +60,10 @@
 
       <!-- <n-divider /> -->
 
-      <n-modal
-        v-model:show="showModal"
-        preset="dialog"
-        :title="'Bound comments for “' + selectedToken.form + '”'"
-        positive-text="Submit"
-        negative-text="Cancel"
-        @positive-click="submitModal">
-        <n-checkbox-group v-model:value="commentsToStore">
+      <n-modal v-model:show="showModal" :preset="store.hasRights() ? 'dialog' : 'card'"
+        :title="'Bound comments for “' + selectedToken.form + '”'" positive-text="Submit" negative-text="Cancel"
+        @positive-click="submitModal" style="max-width: 500px;">
+        <n-checkbox-group v-model:value="commentsToStore" :disabled="!store.hasRights()">
           <template v-for="(commentId, index) in selectedToken.comments" :key="index">
             <n-checkbox :value="commentId" :label="commentsObject[String(commentId)]['title']" />
             <n-button ghost type="primary" size="tiny" @click="goToComment(commentId)">Comment</n-button>
@@ -83,29 +76,19 @@
           <template v-for="(token, index) in text" :key="token.id" style="padding: 0.5rem">
             <div v-if="index && token.p !== text[index - 1].p" style="margin-bottom: 1rem"></div>
             <template v-if="token.meta !== 'ip' && index && token.p === text[index - 1].p"></template>
-            <button
-              :id="`id${token.id}`"
-              :class="`text-button ${
-                token.meta === 'ip' ? (['«', '('].includes(token.repr) ? 'right' : 'left') : 'token'
-              } ${token?.checked ? 'selected-button' : ''}  ${token?.comments?.length ? 'commented' : ''} ${
-                highlightedTokens.length && highlightedTokens.includes(token.id) ? 'highlighted' : ''
-              } ${token?.fmt?.join(' ') || ''}`"
-              size="small"
-              :title="
-                store.state.user?.text?.grammar
-                  ? token?.pos
-                  : token.comments.map(x => commentsObject[String(x)]['title']).join('•')
-              "
-              :disabled="token.meta === 'ip+'"
-              @click="selectToken(token, $event)"
-              :style="
-                store.state.user?.text?.grammar && token?.pos
-                  ? {
-                      'background-color': grammarScheme?.[token.pos]?.['color'] || 'gray',
-                      color: grammarScheme?.[token.pos]?.['font'] || 'black',
-                    }
-                  : ''
-              ">
+            <button :id="`id${token.id}`" :class="`text-button ${token.meta === 'ip' ? (['«', '('].includes(token.repr) ? 'right' : 'left') : 'token'
+    } ${token?.checked ? 'selected-button' : ''}  ${token?.comments?.length ? 'commented' : ''} ${highlightedTokens.length && highlightedTokens.includes(token.id) ? 'highlighted' : ''
+    } ${token?.fmt?.join(' ') || ''}`" size="small" :title="store.state.user?.text?.grammar
+    ? token?.pos
+    : token.comments.map(x => commentsObject[String(x)]['title']).join('•')
+    " :disabled="token.meta === 'ip+'" @click="selectToken(token, $event)" :style="annotationMode === 'grammar' &&
+    store.state.user?.text?.grammar && token?.pos
+    ? {
+      'background-color': grammarScheme?.[token.pos]?.['color'] || 'gray',
+      color: grammarScheme?.[token.pos]?.['font'] || 'black',
+    }
+    : ''
+    ">
               {{ token.repr }}<sup v-if="token?.comments?.length">{{ token.comments.length }}</sup>
             </button>
           </template>
@@ -120,10 +103,7 @@
                 <span v-if="item.meta !== 'ip'" class="sequence selected-button text-button">{{ item.form }}</span>
               </template>
             </div>
-            <n-auto-complete
-              clearable
-              :options="options"
-              placeholder="Comment title or ID"
+            <n-auto-complete clearable :options="options" placeholder="Comment title or ID"
               :on-update:value="(userInput: string) => queryDatabase(userInput)"
               :on-select="(selectedValue: number) => selectOption(selectedValue)" />
             <div v-if="selectedCommentId" style="margin: 5px">Comment: {{ selectedCommentTitle }}</div>
@@ -155,7 +135,7 @@ const grammarScheme = reactive({} as ICategoriesScheme);
 const commentsToStore = ref([] as Array<number>);
 const showModal = ref(false);
 const singleMode = ref(false);
-const inspectMode = ref(false);
+const inspectMode = ref(!store.hasRights());
 const isLoaded = ref(false);
 const commentsObject = reactive({} as keyable);
 const text = reactive([] as Array<IToken>);
@@ -179,7 +159,8 @@ onUpdated(async () => {
   }
 });
 
-onBeforeMount(async () => {
+const loadText = async () => {
+  isLoaded.value = false;
   // const userInfo = store.state.user;
   // const textInfo = store.state.user?.text;
   // console.log("text info", userInfo, textInfo);
@@ -190,7 +171,7 @@ onBeforeMount(async () => {
     Object.assign(text, data);
     // console.log('content', Boolean(data[0]?.pos), data[0]);
 
-    if (store.state.user?.text?.grammar) {
+    if (store.state.user?.text?.grammar && annotationMode.value === 'grammar') {
       const grammar = await store.get('grammar');
       console.log('grammar', grammar);
       Object.assign(grammarScheme, grammar);
@@ -201,7 +182,15 @@ onBeforeMount(async () => {
   }
 
   isLoaded.value = true;
-});
+};
+
+onBeforeMount(async () => await loadText());
+
+const handleChange = async () => {
+  console.log("switch mode");
+  await loadText();
+};
+
 
 // const drawerUpdated = (show:boolean) => {
 const drawerUpdated = () => {
@@ -394,7 +383,7 @@ const items = [
   {
     value: 'grammar',
     label: 'Grammar',
-    disabled: true,
+    // disabled: true,
   },
 ];
 </script>
@@ -422,9 +411,11 @@ const items = [
 .right {
   margin-right: -5px;
 }
+
 .selected-button {
   border: solid 1px black;
 }
+
 .sequence {
   font-weight: bold;
   /* color: darkred; */
@@ -432,6 +423,7 @@ const items = [
   margin-right: 5px;
   border-radius: 5px;
 }
+
 .commented {
   color: darkred;
   background-color: pink;

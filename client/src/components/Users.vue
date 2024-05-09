@@ -31,7 +31,7 @@
                         <n-time :time="new Date(item.requested)" />
                     </n-tooltip>
                 </n-gi>
-                <n-gi style class="aligned">
+                <n-gi style class="aligned" v-if="store.hasRights()">
                     <!-- <n-button type="error" @click="editUser(item)">Deactivate</n-button> -->
                     <n-button type="info" size="small" @click="editUser(item)">Manage</n-button>
                 </n-gi>
