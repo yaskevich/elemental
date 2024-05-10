@@ -54,7 +54,8 @@
             </n-space>
           </n-descriptions-item>
         </n-descriptions>
-        <div ref="divRef" style="text-align: center">
+
+        <div ref="divRef" style="text-align: center" v-if="Object.keys(data!.stats!.changes)?.length > 1">
           <Chart
             :size="{ width: divRef?.clientWidth || 0, height: data?.stats?.changes?.length * 40 }"
             :data="changes"
