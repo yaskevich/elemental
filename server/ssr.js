@@ -300,9 +300,9 @@ ${articleElement?.id ? `
     const now = Date.now();
     // zip.sync.zip(pubDir).compress().save(zipPath);
 
-    const imagesList = Object.assign({}, ...fs.readdirSync(imgDir).map((x) => ({
+    const imagesList = fs.existsSync(imgDir) ? Object.assign({}, ...fs.readdirSync(imgDir).map((x) => ({
       [x]: [fs.readFileSync(path.join(imgDir, x)), { level: 0 }]
-    })));
+    }))) : [];
 
     const zipped = zipSync({ [imagesSubdir]: { ...imagesList }, [indexFile]: [strToU8(output), { level: 9 }] });
 
