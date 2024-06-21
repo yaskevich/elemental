@@ -72,6 +72,9 @@ const state = reactive<IState>({
 
 let browserTab: Window;
 
+const hasRights = () => state!.user!.privs < 6;
+
+
 const styleTagRef = ref<HTMLStyleElement>();
 
 const setCustomCSS = () => {
@@ -153,7 +156,7 @@ const get = async (route: string, id: string = '', data: Object = {}): Promise<a
   console.log('No key. Fail.');
 };
 
-const post = async (table: string, data: Object): Promise<any> => {
+const post = async (table: string, data: Object = {}): Promise<any> => {
   if (state.token) {
     try {
       const config = { headers: { Authorization: 'Bearer ' + state.token } };
@@ -316,4 +319,5 @@ export default {
   convertArrayToObject,
   percent,
   getUserIcon,
+  hasRights,
 };
