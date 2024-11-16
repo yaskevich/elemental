@@ -160,6 +160,8 @@ const build = async (currentDir, id, siteDir, imagesDir) => {
       const typePlus = isGlued(nextToken);
       const typeMinus = isGlued(prevToken);
       let classes = isGlued(curToken);
+      let prefix = '';
+      let postfix = '';
 
       if (typePlus === 'right') {
         if (typeMinus !== 'left') {
@@ -177,6 +179,12 @@ const build = async (currentDir, id, siteDir, imagesDir) => {
         }
       }
 
+      if (classes === 'left') {
+        prefix = '<span class="solid">';
+      } else if (classes === 'right') {
+        postfix = '</span>';
+      }
+
       if (nl) {
         classes += ' newline ';
       }
@@ -184,7 +192,8 @@ const build = async (currentDir, id, siteDir, imagesDir) => {
       classes += ` ${curToken.fmt.join(' ')}`;
       const start = `<span class="${classes}`;
       const middle = tip ? ` tooltip mark ${mode}" aria-label="${tip}" data-id="${cid}` : '';
-      return classes === 'right' && !tip ? repr : `${`${start + middle}">${repr}`}</span>`;
+      const result = classes === 'right' && !tip ? repr : `${`${start + middle}">${repr}`}</span>`;
+      return `${prefix}${result}${postfix}`;
     };
 
     const tooltipElement = textInfo?.scheme?.find((x) => x.type === 'line')?.id;
