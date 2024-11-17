@@ -9,16 +9,18 @@ const app = host.setup();
 //   res.sendFile(host.getIndexPath());
 // });
 
+app.post('/api/user/login', async (req, res) => {
+  const params = [req, host.appName, host.appInfo];
+  res.json(await login(...params));
+});
+
 app.post('*', auth, (req, res, next) => {
   // console.log('POST', req.url, req.user.privs);
   if (req?.user?.privs < 6) {
     next();
+  } else {
+    res.sendStatus(403);
   }
-});
-
-app.post('/api/user/login', async (req, res) => {
-  const params = [req.body.email, req.body.password, host.appName, host.appInfo];
-  res.json(await login(...params));
 });
 
 app.get('/api/user/logout', auth, async () => {
@@ -226,6 +228,9 @@ app.post('/api/publish', auth, async (req, res) => {
 
 app.delete('/api/:table/:id', auth, async (req, res) => {
   // console.log('DELETE params', req.params, 'query', req.query);
+  if (req?.user?.privs < 6) {
+    return res.sendStatus(403);
+  }
   let result = {};
   if (['comments'].includes(req.params.table)) {
     result = await db.deleteById(req.user, req.params.table, req.params.id);
@@ -241,20 +246,20 @@ app.delete('/api/:table/:id', auth, async (req, res) => {
   } else if (req.params.table === 'tags') {
     result = await db.deleteTag(req.user, req.params.id);
   }
-  res.json(result);
+  return res.json(result);
 });
 
-app.get('/api/backup', auth, async (req, res) => {
+app.post('/api/backup', auth, async (req, res) => {
   res.json(host.performBackup(req.user));
 });
 
-app.get('/api/backups', auth, async (req, res) => {
+app.get('/api/backup', auth, async (req, res) => {
   res.json(host.listBackups());
 });
 
 app.get('/api/backupfile', auth, async (req, res) => {
   const filePath = host.getBackupFilePath(req.query.id);
-  if (filePath) {
+  if (req?.user?.privs < 6 && filePath) {
     res.download(filePath, (err) => {
       if (err) {
         console.log(err);
