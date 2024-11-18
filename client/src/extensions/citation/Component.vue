@@ -15,11 +15,14 @@
 </template>
 
 <script setup lang="ts">
-import { NodeViewWrapper, nodeViewProps } from '@tiptap/vue-3';
+import { NodeViewWrapper } from '@tiptap/vue-3';
+import type { NodeViewProps } from '@tiptap/vue-3';
 import { ArticleFilled } from '@vicons/material';
 import Cite from 'citation-js';
 
-const props = defineProps(nodeViewProps);
+// const props = defineProps(nodeViewProps);
+const props = defineProps<NodeViewProps>();
+
 const source = props.extension.options.sources.filter((x: IBib) => x.id === props.node.attrs.id)?.[0];
 const html = (new Cite(source?.bibtex)).format('bibliography', { format: 'html', template: 'apa', lang: source?.lang });
 
