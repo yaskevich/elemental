@@ -177,7 +177,9 @@ onMounted(async () => {
   <n-message-provider>
     <div id="main" v-if="loggedIn">
       <div v-if="dataReady">
+        <n-space justify="center">
         <n-menu v-model:value="activeKey" mode="horizontal" :options="menuOptions" @update:value="processMenu" />
+        </n-space>
         <router-view />
       </div>
     </div>
