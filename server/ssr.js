@@ -93,13 +93,13 @@ const compileHTML = (params) => `
   <div class="container centered" >
 
     <div class="row">
-      <h2>${params.site}</h2>
+      <div class="${params.siteclass}">${params.site}</div>
     </div>
 
     ${params.body}
 
     <footer>
-      <p>${params.credits}</p>
+      <p class="${params.creditsclass}">${params.credits}</p>
     </footer>
   </div>
 ${params.modals}
