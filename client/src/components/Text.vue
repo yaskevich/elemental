@@ -25,6 +25,13 @@
         </n-space>
         <n-space justify="center" v-if="annotationMode === 'format'">
           <n-button-group size="small">
+            <n-button @click="formattingMode = 'h0'" :type="formattingMode === 'h0' ? 'success' : 'default'"
+              :disabled="!store.hasRights()">
+              <template #icon>
+                <n-icon :component="TextFieldsFilled" />
+              </template>
+              Title
+            </n-button>
             <n-button @click="formattingMode = 'h1'" :type="formattingMode === 'h1' ? 'success' : 'default'"
               :disabled="!store.hasRights()">
               <template #icon>
@@ -77,18 +84,18 @@
             <div v-if="index && token.p !== text[index - 1].p" style="margin-bottom: 1rem"></div>
             <template v-if="token.meta !== 'ip' && index && token.p === text[index - 1].p"></template>
             <button :id="`id${token.id}`" :class="`text-button ${token.meta === 'ip' ? (['«', '('].includes(token.repr) ? 'right' : 'left') : 'token'
-    } ${token?.checked ? 'selected-button' : ''}  ${token?.comments?.length ? 'commented' : ''} ${highlightedTokens.length && highlightedTokens.includes(token.id) ? 'highlighted' : ''
-    } ${token?.fmt?.join(' ') || ''}`" size="small" :title="store.state.user?.text?.grammar
-    ? token?.pos
-    : token.comments.map(x => commentsObject[String(x)]['title']).join('•')
-    " :disabled="token.meta === 'ip+'" @click="selectToken(token, $event)" :style="annotationMode === 'grammar' &&
-    store.state.user?.text?.grammar && token?.pos
-    ? {
-      'background-color': grammarScheme?.[token.pos]?.['color'] || 'gray',
-      color: grammarScheme?.[token.pos]?.['font'] || 'black',
-    }
-    : ''
-    ">
+              } ${token?.checked ? 'selected-button' : ''}  ${token?.comments?.length ? 'commented' : ''} ${highlightedTokens.length && highlightedTokens.includes(token.id) ? 'highlighted' : ''
+              } ${token?.fmt?.join(' ') || ''}`" size="small" :title="store.state.user?.text?.grammar
+                ? token?.pos
+                : token.comments.map((x: number) => commentsObject[String(x)]['title']).join('•')
+                " :disabled="token.meta === 'ip+'" @click="selectToken(token, $event)" :style="annotationMode === 'grammar' &&
+                  store.state.user?.text?.grammar && token?.pos
+                  ? {
+                    'background-color': grammarScheme?.[token.pos]?.['color'] || 'gray',
+                    color: grammarScheme?.[token.pos]?.['font'] || 'black',
+                  }
+                  : ''
+                  ">
               {{ token.repr }}<sup v-if="token?.comments?.length">{{ token.comments.length }}</sup>
             </button>
           </template>
@@ -124,7 +131,7 @@ import { ref, reactive, onBeforeMount, onUpdated, nextTick, computed } from 'vue
 import store from '../store';
 import router from '../router';
 import { useRoute } from 'vue-router';
-import { TitleFilled, FormatBoldFilled, FormatItalicFilled, ClearFilled } from '@vicons/material';
+import { TitleFilled, FormatBoldFilled, FormatItalicFilled, ClearFilled, TextFieldsFilled } from '@vicons/material';
 
 const vuerouter = useRoute();
 const highlightedTokens = vuerouter.query?.tokens ? String(vuerouter.query.tokens).split(',').map(Number) : [];
@@ -451,5 +458,10 @@ const items = [
 .h1 {
   font-size: 1.2rem;
   font-weight: 300;
+}
+
+.h0 {
+  font-size: 1.5rem;
+  font-weight: 500;
 }
 </style>
