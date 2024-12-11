@@ -12,6 +12,13 @@ const txt = reactive({} as IText);
 const formRef = ref<FormInst | null>(null);
 const langLoading = ref(true);
 
+const headers = [
+  { label: 'Hidden', value: 'hidden' },
+  { label: 'Level 1', value: 'h0' },
+  { label: 'Level 2', value: 'h1' },
+  { label: 'Text', value: '' },
+];
+
 const rules = {
   author: {
     required: true,
@@ -130,7 +137,6 @@ const humanFileSize = (size: number) => {
   return Number((size / Math.pow(1024, i)).toFixed(2)) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
 };
 </script>
-m
 <template>
   <n-card title="Project" :bordered="false" class="minimal left">
     <template #header-extra>
@@ -151,18 +157,13 @@ m
       </n-form-item>
 
       <n-form-item label="Language variety" path="langLabel" style="display: block">
-        <n-auto-complete
-          @select="onSelect"
-          clearable
-          :loading="langLoading"
-          v-model:value="txt.langLabel"
-          :options="languages"
-          placeholder="Please select a language"
-          @update:value="updateComplete" />
+        <n-auto-complete @select="onSelect" clearable :loading="langLoading" v-model:value="txt.langLabel"
+          :options="languages" placeholder="Please select a language" @update:value="updateComplete" />
       </n-form-item>
 
       <n-form-item label="Site title">
         <n-input v-model:value="txt.site" placeholder="Site title" />
+        <n-select v-model:value="txt.siteclass" :options="headers" style="width: 150px" />
       </n-form-item>
 
       <n-form-item label="URL">
@@ -171,6 +172,7 @@ m
 
       <n-form-item label="Credits">
         <n-input v-model:value="txt.credits" type="textarea" :autosize="true" placeholder="Credits" />
+        <n-select v-model:value="txt.creditsclass" :options="headers" style="width: 150px" />
       </n-form-item>
 
       <!-- <n-form-item label="Grammar Tagging UI">
@@ -181,9 +183,9 @@ m
           <n-checkbox v-model:checked="txt.comments" :label="`${txt.comments ? '' : 'NOT'} enabled`" />
         </n-form-item>
         <n-form-item>
-          <n-button v-if="txt.comments" type="info" @click="router.push('/scheme/' + vuerouter.params.id)" size="small"
-            >Set Scheme</n-button
-          >
+          <n-button v-if="txt.comments" type="info" @click="router.push('/scheme/' + vuerouter.params.id)"
+            size="small">Set
+            Scheme</n-button>
         </n-form-item>
       </n-space>
     </n-form>
@@ -195,18 +197,16 @@ m
           <span v-if="!txt.loaded">NOT</span> loaded into the database
         </n-tag>
         <n-button type="info" @click="publishText" size="small" v-if="txt.loaded">Publish</n-button>
-        <n-button v-else type="info" @click="router.push('/import/' + vuerouter.params.id)" size="small"
-          >Import</n-button
-        >
+        <n-button v-else type="info" @click="router.push('/import/' + vuerouter.params.id)"
+          size="small">Import</n-button>
       </n-space>
 
       <n-card v-if="txt.zipsize">
         <n-space vertical>
           <n-text type="info">Published: {{ txt.date }}</n-text>
           <n-space justify="space-between">
-            <n-button ghost type="info" tag="a" :href="`/api/files/${id}/site.zip`" target="_blank"
-              >Download ({{ humanFileSize(txt.zipsize) }})</n-button
-            >
+            <n-button ghost type="info" tag="a" :href="`/api/files/${id}/site.zip`" target="_blank">Download ({{
+              humanFileSize(txt.zipsize) }})</n-button>
             <n-button ghost type="info" tag="a" :href="`/api/files/${id}/`" target="_blank">View</n-button>
           </n-space>
         </n-space>
