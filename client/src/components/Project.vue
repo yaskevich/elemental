@@ -175,6 +175,16 @@ const humanFileSize = (size: number) => {
         <n-select v-model:value="txt.creditsclass" :options="headers" style="width: 150px" />
       </n-form-item>
 
+      <n-form-item label="Background color of commented word">
+        <n-color-picker v-model:value="txt.colormark" :show-alpha="true"
+          :swatches="['#eee066', '#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffc0cb']" />
+      </n-form-item>
+
+      <n-form-item label="Background color of selected word">
+        <n-color-picker v-model:value="txt.colorselect" :show-alpha="true"
+          :swatches="['#ffc0cb', '#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#eee066']" />
+      </n-form-item>
+
       <!-- <n-form-item label="Grammar Tagging UI">
         <n-checkbox v-model:checked="txt.grammar" :label="`${txt.grammar ? '' : 'NOT'} enabled`" />
       </n-form-item>-->
