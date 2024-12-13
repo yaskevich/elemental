@@ -35,6 +35,12 @@ const compileHTML = (params) => `
   <meta property="og:type" content="website">
   <link rel="canonical" href="${params.url}">
   <style>
+    .mark {
+      background: ${params.colormark};
+    }
+    .highlighted {
+      background-color: ${params.colorselect};
+    }
     ${params.css}
   </style>
   <script type="text/javascript">
