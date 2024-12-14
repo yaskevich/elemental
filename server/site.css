@@ -23,6 +23,10 @@ body {
   padding: 0 5px 0 5px;
 }
 
+.solid {
+  white-space: nowrap;
+}
+
 .left {
   padding-left: 5px;
 }
@@ -33,10 +37,6 @@ body {
 
 .newline {
   margin-left: 50px;
-}
-
-.mark {
-  background: rgba(232, 209, 0, 0.59);
 }
 
 .btn,
@@ -115,10 +115,6 @@ div.blockquote:after {
   display: none;
 }
 
-.highlighted {
-  background-color: pink;
-}
-
 .choices {
   height: 100%;
 }
@@ -133,6 +129,7 @@ div.blockquote:after {
 }
 
 @media only screen and (max-width: 40em) {
+
   .tooltip::after,
   .tooltip::before {
     display: none;
@@ -165,12 +162,17 @@ img {
   font-style: italic;
 }
 
+.iziModal-header-subtitle {
+  font-size: 15px !important;
+  color: #eee !important;
+}
+
 .h1 {
   font-size: 1.2rem;
   font-weight: 300;
 }
 
-h2 {
+.h0 {
   line-height: 1.2;
   margin: calc(1.5 * var(--universal-margin)) var(--universal-margin);
   font-weight: 500;
@@ -364,12 +366,12 @@ footer {
   --collapse-selected-label-border-color: #0277bd;
 }
 
-.collapse > :checked + label {
+.collapse> :checked+label {
   background: var(--collapse-selected-label-back-color);
   border-bottom-color: var(--collapse-selected-label-border-color);
 }
 
-.collapse > :checked + label + div {
+.collapse> :checked+label+div {
   box-sizing: border-box;
   position: relative;
   width: 100%;
