@@ -196,9 +196,8 @@ const build = async (currentDir, id, siteDir, imagesDir) => {
       }
 
       classes += ` ${curToken.fmt.join(' ')}`;
-      const start = `<span class="${classes}`;
-      const middle = tip ? ` tooltip mark ${mode}" aria-label="${tip}" data-id="${cid}` : '';
-      const result = classes === 'right' && !tip ? repr : `${`${start + middle}">${repr}`}</span>`;
+      const attrs = cid ? ` ${tip ? 'tooltip' : ''} mark ${mode}" aria-label="${tip}" data-id="${cid}` : '';
+      const result = classes === 'right' && !tip ? repr : `${`${`<span class="${classes}${attrs}`}">${repr}`}</span>`;
       return `${prefix}${result}${postfix}`;
     };
 
@@ -272,8 +271,7 @@ ${articleElement?.id ? `
       const publishedComments = token.comments.sort((a, b) => a - b).filter((x) => commentsDict?.[x]);
       const tips = publishedComments.map((x) => [x, commentsDict[x]?.entry?.[tooltipElement]?.trim()]).filter((x) => Boolean(x[1]));
 
-      let choiceId = publishedComments.join('-');
-      choiceId = choiceId ? `-${choiceId}-` : '';
+      const choiceId = publishedComments.join('-') || '';
 
       if (publishedComments?.length > 1 && !choiceModals?.[choiceId]) {
         const buttons = publishedComments.map((x) => `<div><button class="btn" data-id="${commentsDict[x].id}" data-izimodal-close="">${commentsDict[x].title}</button></div>`).join('');
@@ -290,7 +288,7 @@ ${articleElement?.id ? `
           paragraph += renderToken(isNewline, index, choiceId, tipString, true);
         }
       } else {
-        paragraph += renderToken(isNewline, index, null, null, publishedComments.length > 1);
+        paragraph += renderToken(isNewline, index, choiceId, null, publishedComments.length > 1);
       }
       // }
     });
