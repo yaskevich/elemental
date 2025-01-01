@@ -1,9 +1,17 @@
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import passGen from 'generate-password';
+import path from 'path';
 import pg from 'pg';
+import { Worker } from 'worker_threads';
+import { fileURLToPath } from 'url';
 
 const configLoaded = dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const loggerPath = path.join(__dirname, 'logger.js');
 
 // if it is not run under PM2 and dotenv config is not provided
 if (!process.env.NODE_ENV && configLoaded.error) {
@@ -34,9 +42,13 @@ const databaseScheme = {
     title TEXT,
     meta TEXT,
     site TEXT,
+    siteclass TEXT DEFAULT 'h1',
     credits TEXT,
+    creditsclass TEXT DEFAULT '',
     url TEXT,
     scheme JSON,
+    colormark TEXT NOT NULL DEFAULT '#EEE066',
+    colorselect TEXT NOT NULL DEFAULT '#FFC0CB',
     lang TEXT NOT NULL,
     published TIMESTAMP WITH TIME ZONE,
     zipsize INTEGER,
@@ -110,7 +122,7 @@ const databaseScheme = {
 
   logs: `
     id SERIAL PRIMARY KEY,
-    created TIMESTAMP_WITH_TIME_ZONE DEFAULT CURRENT_TIMESTAMP,
+    created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     user_id INTEGER NOT NULL,
     data0 JSON,
     data1 JSON,
@@ -123,7 +135,7 @@ const databaseScheme = {
     filesize INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
     text_id INTEGER NOT NULL,
-    created TIMESTAMP_WITH_TIME_ZONE DEFAULT CURRENT_TIMESTAMP,
+    created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     title TEXT NOT NULL DEFAULT 'unnamed ' || to_char(CURRENT_TIMESTAMP, 'yyyy-mm-dd HH:mm'),
     CONSTRAINT fk_images_texts FOREIGN KEY(text_id) REFERENCES texts(id),
     CONSTRAINT fk_images_users FOREIGN KEY(user_id) REFERENCES users(id)`,
@@ -288,7 +300,7 @@ export default {
   async createUser(user, data, status = false) {
     // console.log('create user', data);
     const note = data?.note || '';
-    let privs = 5; // default user
+    let privs = 7; // default user
     let isActivated = status;
     let setup = false;
     if (!(status || settings?.registration_open)) {
@@ -328,13 +340,17 @@ export default {
     }
     return { error: 'user' };
   },
-  async elevateUser(currentUser, userId) {
-    console.log('privileges elevation request:', userId, 'by', currentUser.id);
+  async elevateUser(currentUser, userId, userPrivs) {
+    console.log('privileges change request:', userId, 'by', currentUser.id, 'to', userPrivs);
     let data = {};
+    let privs = Number(userPrivs);
+    if (![1, 5, 7].includes(privs)) {
+      privs = 7;
+    }
     if (userId && currentUser.privs === 1) {
       try {
-        const sql = 'UPDATE users SET privs = 1 WHERE id = $1 RETURNING id';
-        const result = await pool.query(sql, [userId]);
+        const sql = 'UPDATE users SET privs = $2 WHERE id = $1 RETURNING id';
+        const result = await pool.query(sql, [userId, privs]);
         data = result?.rows?.[0];
       } catch (err) {
         console.error(err);
@@ -873,11 +889,13 @@ export default {
     const { id: textId, comment: commentId } = params;
     const sql = 'SELECT strings.*, tokens.meta FROM strings LEFT JOIN tokens ON strings.token_id = tokens.id WHERE text_id = $1 AND $2 = ANY (comments::int[]) ORDER BY id';
     let data = [];
-    try {
-      const result = await pool.query(sql, [textId, commentId]);
-      data = result?.rows;
-    } catch (err) {
-      console.error(err);
+    if (textId) {
+      try {
+        const result = await pool.query(sql, [textId, commentId]);
+        data = result?.rows;
+      } catch (err) {
+        console.error(err);
+      }
     }
     return data;
   },
@@ -918,7 +936,6 @@ export default {
   },
   async deleteById(currentUser, table, id, limits = {}) {
     console.log(`DELETE from ${table} with ${id} by ${currentUser.id} (${currentUser.username})`);
-    // console.log(table, id, limits);
     let data = [];
     try {
       const sqlLimit = Object.entries(limits).map((x) => `AND ${x[0]} = ${x[1]}`).join(' ');
@@ -1043,15 +1060,15 @@ export default {
   async setTextProps(user, params) {
     let data = [];
     if (params.author && params.title) {
-      const values = [params.author, params.title, params?.meta || '', params?.comments || false, params?.site || '', params?.credits || '', params.lang, params?.url?.trim() || ''];
+      const values = [params.author, params.title, params?.meta || '', params?.comments || false, params?.site || '', params?.credits || '', params.lang, params?.url?.trim() || '', params.siteclass, params.creditsclass, params.colormark, params.colorselect];
       let sql = '';
 
       if (params.id) {
         const id = Number(params.id);
         values.push(id);
-        sql = 'UPDATE texts SET author = $1, title = $2, meta = $3, comments = $4, site = $5, credits = $6, lang = $7, url = $8 WHERE id = $9';
+        sql = 'UPDATE texts SET author = $1, title = $2, meta = $3, comments = $4, site = $5, credits = $6, lang = $7, url = $8, siteclass = $9, creditsclass = $10, colormark = $11, colorselect = $12 WHERE id = $13';
       } else {
-        sql = 'INSERT INTO texts (author, title, meta, comments, site, credits, lang, url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)';
+        sql = 'INSERT INTO texts (author, title, meta, comments, site, credits, lang, url, siteclass, creditsclass, colormark, colorselect) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)';
       }
 
       sql += ' RETURNING id';
@@ -1444,4 +1461,5 @@ export default {
     }
     return data;
   },
+
 };
