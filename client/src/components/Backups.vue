@@ -9,6 +9,12 @@
         recommended to make backups regularly and store them in other safe places as well.</n-alert>
     </div>
 
+    <div>
+      One backup file per day is stored. A backup made the same day will rewrite an earlier backup of that date. Current server date
+      and
+      time: <n-time style="font-weight: bold;" format="yyyy-MM-dd HH:mm" :time-zone="store?.state?.user?.zone" />
+    </div>
+
     <n-grid :x-gap="48" :y-gap="16" cols="2 400:4 600:6" style="margin-top:1rem;">
       <n-gi v-for="(item, index) in backups" :key="index" style="text-align:center">
         <n-button v-if="store.hasRights()" :secondary="!item.marked" type="primary" :loading="item.state"
@@ -45,9 +51,9 @@ const processing = ref(false);
 
 const makeBackup = async () => {
   processing.value = true;
-  const data = await store.post('backup');
+  const { data } = await store.post('backup');
   processing.value = false;
-  // console.log(data);
+  console.log("backup", data);
   if (data?.error) {
     message.error(`Database backup error: ${data.error}`, { duration: 5000 });
   } else {
