@@ -13,10 +13,10 @@
                 }}</n-tag>
             </template>
             {{
-    issue[1]
-      ? 'Assigned to ' + usersKV[issue[1]].firstname + ' ' + usersKV[issue[1]].lastname
-      : 'Not assigned'
-  }}
+              issue[1]
+                ? 'Assigned to ' + usersKV[issue[1]].firstname + ' ' + usersKV[issue[1]].lastname
+                : 'Not assigned'
+            }}
           </n-tooltip>
         </div>
       </n-space>
@@ -41,19 +41,21 @@
           <n-button>+ tag</n-button>
         </n-dropdown>
 
-        <n-dropdown trigger="hover" @select="addIssue" :options="issuesList">
-          <n-button>+ issue</n-button>
-        </n-dropdown>
+        <!-- <n-dropdown trigger="hover" @select="addIssue" :options="issuesList"> -->
+        <n-button @click="renderModal">+ issue</n-button>
+        <!-- </n-dropdown> -->
       </n-space>
 
       <n-text type="error" v-if="!comment.priority">ID should not be empty</n-text>
       <n-space justify="center">
         <div v-for="(tag, index) in comment.tags" :key="index">
           <n-tag closable @close="removeTag(tag)" style="margin-right: 10px" size="small">{{
-    tagsList.filter((x: any) => x.key == tag)?.shift()?.['label']
-  }}</n-tag>
+            tagsList.filter((x: any) => x.key == tag)?.shift()?.['label']
+          }}</n-tag>
         </div>
       </n-space>
+      <!-- 
+      <n-button type="error" @click="loadExport">Load!</n-button> -->
 
       <n-input v-model:value="comment.title" type="text" placeholder="Heading" class="maininput" autofocus />
 
@@ -80,9 +82,9 @@
           :placeholder="item.title" />
 
         <Tiptap :disabled="!store.hasRights()" v-if="item.type === 'rich'" :ref="el => {
-    editorRefs[item.id] = el;
-  }
-    " :editorclass="index % 2 ? 'even' : 'odd'" :sources="sources" :content="comment.entry[item.id]"
+          editorRefs[item.id] = el;
+        }
+          " :editorclass="index % 2 ? 'even' : 'odd'" :sources="sources" :content="comment.entry[item.id]"
           :images="images" />
       </template>
 
@@ -110,6 +112,46 @@
         <n-button type="success" @click="$router.push({ name: 'Logs', query: { comment: id } })">View History</n-button>
       </n-space>
     </n-space>
+    <n-modal v-model:show="showModal" style="width: 350px" class="custom-card" preset="card" title="New issue"
+      @esc="closeModal" @mask-click="closeModal" :bordered="false">
+      <template #header-extra>
+        <n-button @click="confirmIssue" size="tiny" type="info" v-if="chosenUser && chosenIssue">Confirm</n-button>
+      </template>
+
+      <template v-if="chosenIssue">
+        <n-space vertical>
+          <n-tag :color="{ color: issuesKV[chosenIssue].color, textColor: 'white' }">{{ issuesKV[chosenIssue].title
+            }}</n-tag>
+          <n-radio-group v-model:value="chosenUser" name="radiousers">
+            <n-space vertical>
+              <n-radio v-for="item in users" :key="item.id" :value="item.id">
+                <template #default>
+                  {{ `${item.firstname} ${item.lastname}` }}
+                </template>
+              </n-radio>
+            </n-space>
+          </n-radio-group>
+        </n-space>
+      </template>
+
+      <n-radio-group v-else v-model:value="chosenIssue" name="radioissues">
+        <n-space vertical>
+          <n-radio v-for="(item, key) in issuesKV" :key="key" :value="key"
+            :disabled="comment.issues.map(x => x[0]).includes(Number(key))">
+            <template #default>
+              <n-tag :color="{ color: item.color, textColor: 'white' }">{{ item.title }}</n-tag>
+            </template>
+          </n-radio>
+        </n-space>
+      </n-radio-group>
+      <template #footer>
+        <n-space justify="space-between">
+          <n-button secondary @click="closeModal" type="warning">Cancel</n-button>
+          <n-button @click="confirmIssue" type="info" :disabled="!chosenUser || !chosenIssue">Confirm</n-button>
+        </n-space>
+      </template>
+    </n-modal>
+
   </n-card>
   <div v-else>
     loading...
@@ -149,7 +191,9 @@ const vuerouter = useRoute();
 const message = useMessage();
 const scheme = store?.state?.user?.text?.scheme || [];
 const textId = store?.state?.user?.text_id;
-
+const chosenIssue = ref();
+const chosenUser = ref();
+const showModal = ref(false);
 let tokensToBind = vuerouter.query?.tokens ? String(vuerouter.query.tokens).split(',').map(Number) : [];
 // console.log('received token ids', tokensToBind);
 
@@ -167,7 +211,7 @@ const usersKV = reactive<keyable>({});
 const issuesKV = reactive<keyable>({});
 const tagsList = reactive([]);
 const issuesList = reactive([]);
-
+const users = ref<Array<IUser>>();
 const changes = ref([] as Array<ICommentChange>);
 // ref<HTMLDivElement>();
 const editorRefs = reactive<keyable>({});
@@ -217,6 +261,41 @@ const askToLeave = (event: any) => {
 const showPreview = (id: number) => {
   router.push(`/preview/${id}`);
 };
+
+const renderModal = () => {
+  chosenIssue.value = null;
+  chosenUser.value = null;
+  showModal.value = true;
+};
+
+const closeModal = () => {
+  console.log("close modal");
+  showModal.value = false;
+};
+
+const confirmIssue = () => {
+  if (chosenIssue.value && chosenUser.value) {
+    addIssue([Number(chosenIssue.value), Number(chosenUser.value)])
+  }
+  closeModal();
+};
+// const loadExport = async () => {
+//   const upd = await store.get(`data/unit/${id}`);
+//   console.log(upd);
+//   // upd.title
+//   // upd.short
+//   // upd.long
+//   // upd.sub
+//   editorRefs['brief']?.handle.commands.setContent(upd?.short);
+//   editorRefs['article']?.handle.commands.setContent(upd?.long);
+//   comment.entry.trans = upd.sub || '';
+//   // comment title
+//   // comment.entry.article
+//   // comment.entry.brief
+//   // comment.entry.trans
+//   // console.log(comment);
+
+// };
 
 const validateID = (x: number) => x > 0;
 
@@ -270,6 +349,8 @@ onBeforeMount(async () => {
     tagData.map((x: any) => ({ label: x.title, key: x.id, disabled: computed(() => comment.tags?.includes(x.id)) }))
   );
 
+  users.value = usersData.filter((y: any) => y.activated);
+
   const issueListData = issueData.map((x: any) => ({
     label: x.title,
     key: x.id,
@@ -281,7 +362,7 @@ onBeforeMount(async () => {
         disabled: false,
       },
     ].concat(
-      usersData.map((y: any) => ({
+      usersData.filter((y: any) => y.activated).map((y: any) => ({
         label: `${y.firstname} ${y.lastname}`,
         key: [x.id, y.id],
         disabled: !y.activated,
