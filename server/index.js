@@ -1,3 +1,4 @@
+// import fs from 'fs';
 import nlp from './nlp.js';
 import db from './db.js';
 import { auth, login } from './auth.js';
@@ -12,6 +13,10 @@ const app = host.setup();
 app.post('/api/user/login', async (req, res) => {
   const params = [req, host.appName, host.appInfo];
   res.json(await login(...params));
+});
+
+app.post('/api/user/reg', async (req, res) => {
+  res.json(await db.createUser(null, req.body, false));
 });
 
 app.post('*', auth, (req, res, next) => {
@@ -31,12 +36,8 @@ app.get('/api/user/info', auth, async (req, res) => {
   const text = await db.getUserText(req.user.id);
   const classes = await db.getClasses();
   res.json({
-    ...req.user, text, classes, ...host.appInfo
+    ...req.user, text, classes, ...host.appInfo, zone: Intl.DateTimeFormat().resolvedOptions().timeZone
   });
-});
-
-app.post('/api/user/reg', async (req, res) => {
-  res.json(await db.createUser(null, req.body, false));
 });
 
 app.post('/api/user/add', auth, async (req, res) => {
