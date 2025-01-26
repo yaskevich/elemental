@@ -36,7 +36,7 @@ const activeKey = ref<string | null>(null); // vuerouter?.name||'Home'
 const dataReady = ref(false);
 const loggedIn = computed(() => store?.state?.token?.length);
 const state = store.state;
-const settings = ref<{status: boolean}>();
+const settings = ref<{ status: boolean }>();
 
 const renderIcon = (icon: Component) => {
   return () => h(NIcon, null, { default: () => h(icon) });
@@ -174,35 +174,32 @@ onMounted(async () => {
 </script>
 
 <template>
-  <n-message-provider>
-    <div id="main" v-if="loggedIn">
-      <div v-if="dataReady">
-        <n-space justify="center">
-        <n-menu v-model:value="activeKey" mode="horizontal" :options="menuOptions" @update:value="processMenu" />
-        </n-space>
-        <router-view />
+  <n-config-provider>
+    <n-message-provider>
+      <div id="main" v-if="loggedIn">
+        <div v-if="dataReady">
+          <n-space justify="center">
+            <n-menu v-model:value="activeKey" mode="horizontal" :options="menuOptions" @update:value="processMenu" />
+          </n-space>
+          <router-view />
+        </div>
       </div>
-    </div>
-    <div v-else style="max-width: 300px; margin: auto">
-      <n-tabs
-        default-value="signin"
-        size="large"
-        animated
-        justify-content="center"
-        style="margin: 0 -4px"
-        pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;">
-        <n-tab-pane name="signin" tab="Log in">
-          <Login />
-        </n-tab-pane>
-        <n-tab-pane name="signup" tab="Register">
-          <Register v-if="settings?.status" />
-          <n-h2 v-else>
-            <n-text type="warning">Registration is closed.</n-text>
-          </n-h2>
-        </n-tab-pane>
-      </n-tabs>
-    </div>
-  </n-message-provider>
+      <div v-else style="max-width: 300px; margin: auto">
+        <n-tabs default-value="signin" size="large" animated justify-content="center" style="margin: 0 -4px"
+          pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;">
+          <n-tab-pane name="signin" tab="Log in">
+            <Login />
+          </n-tab-pane>
+          <n-tab-pane name="signup" tab="Register">
+            <Register v-if="settings?.status" />
+            <n-h2 v-else>
+              <n-text type="warning">Registration is closed.</n-text>
+            </n-h2>
+          </n-tab-pane>
+        </n-tabs>
+      </div>
+    </n-message-provider>
+  </n-config-provider>
 </template>
 
 <style lang="scss">
@@ -230,6 +227,7 @@ onMounted(async () => {
 
 .center-column {
   text-align: center;
+
   .left-column {
     padding: 0 1rem 0 1rem;
     display: inline-table;
@@ -294,8 +292,9 @@ blockquote.quote {
   border-left: 10px solid #ccc;
   margin: 1.5em 10px;
   padding: 0.5em 10px;
-  quotes: '\201C''\201D''\2018''\2019';
+  quotes: '\201C' '\201D' '\2018' '\2019';
 }
+
 /*
 blockquote:before {
   color: #ccc;
@@ -321,6 +320,7 @@ figure {
     padding: 5px;
   }
 }
+
 figcaption {
   margin-top: 0.25rem;
   text-align: center;
@@ -328,6 +328,7 @@ figcaption {
   border: 2px dashed #0d0d0d20;
   border-radius: 0.5rem;
 }
+
 cite {
   font-style: normal;
   color: gray;
