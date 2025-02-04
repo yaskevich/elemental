@@ -29,6 +29,10 @@ declare global {
     lang: string;
     langLabel: string;
     scheme: Array<ISchemeItem>;
+    siteclass: string;
+    creditsclass: string;
+    colormark: string;
+    colorselect: string;
   }
   interface ISettings {
     registration_open: boolean;
@@ -48,6 +52,7 @@ declare global {
     activated: boolean;
     requested: Date;
     text_id: number;
+    zone: string;
     text?: IText;
     classes: Array<IAnnotationClass>;
   }
