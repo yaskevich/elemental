@@ -19,7 +19,7 @@ app.post('/api/user/reg', async (req, res) => {
   res.json(await db.createUser(null, req.body, false));
 });
 
-app.post('*', auth, (req, res, next) => {
+app.post('*splat', auth, (req, res, next) => {
   // console.log('POST', req.url, req.user.privs);
   if (req?.user?.privs < 6) {
     next();
